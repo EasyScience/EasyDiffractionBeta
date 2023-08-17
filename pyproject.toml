@@ -3,6 +3,9 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 # Information about the EasyExampleApp project.
 # Note that while the project is called EasyExampleApp
 # the application itself is EasyExample.
