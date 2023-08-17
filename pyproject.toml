@@ -8,7 +8,7 @@ allow-direct-references = true
 
 # Information about the EasyExampleApp project.
 # Note that while the project is called EasyExampleApp
-# the application itself is EasyExample.
+# the application itself is EasyExample. 
 [project]
 name = 'easyDiffractionApp'
 version = '0.9.0-alpha'
