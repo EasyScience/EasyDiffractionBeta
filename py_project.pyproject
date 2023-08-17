@@ -1,0 +1,25 @@
+{
+"files": [    
+    "easyDiffractionApp/main.py",
+
+    "easyDiffractionApp/Logic/Analysis.py",
+    "easyDiffractionApp/Logic/Calculators.py",
+    "easyDiffractionApp/Logic/Connections.py",
+    "easyDiffractionApp/Logic/Data.py",
+    "easyDiffractionApp/Logic/Experiment.py",
+    "easyDiffractionApp/Logic/Fittables.py",
+    "easyDiffractionApp/Logic/Fitting.py",
+    "easyDiffractionApp/Logic/Helpers.py",
+    "easyDiffractionApp/Logic/Model.py",
+    "easyDiffractionApp/Logic/Plotting.py",
+    "easyDiffractionApp/Logic/Project.py",
+    "easyDiffractionApp/Logic/PyProxy.py",
+    "easyDiffractionApp/Logic/Status.py",
+    "easyDiffractionApp/Logic/Summary.py",
+    "easyDiffractionApp/Logic/Tables.py",
+
+    "easyDiffractionApp/Gui/main.qml",
+
+    "easyDiffractionApp/resources.qrc"
+    ]
+}
