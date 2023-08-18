@@ -11,7 +11,9 @@ import pathlib
 import Functions, Config
 
 
-CONFIG = Config.Config()
+CONFIG = Config.Config(sys.argv[1], sys.argv[2])
+
+FTP_PASSWORD = sys.argv[3]
 
 def connect(ftp, host, port):
     try:
@@ -133,12 +135,6 @@ def removeDir(ftp, path):
         Functions.printSuccessMessage(message)
 
 def deploy():
-    branch = sys.argv[1]
-    if branch != 'master':
-        Functions.printNeutralMessage(f'No ftp upload for branch {branch}')
-        return
-
-    password = sys.argv[2]
     host = CONFIG['ci']['app']['setup']['ftp']['host']
     port = CONFIG['ci']['app']['setup']['ftp']['port']
     user = CONFIG['ci']['app']['setup']['ftp']['user']
@@ -152,7 +148,7 @@ def deploy():
 
     ftp = ftplib.FTP()
     connect(ftp, host, port)
-    login(ftp, user, password)
+    login(ftp, user, FTP_PASSWORD)
     removeDir(ftp, online_repository_dir_path)
     makeDir(ftp, online_repository_dir_path)
     upload(ftp, local_repository_dir_path, online_repository_subdir_path)

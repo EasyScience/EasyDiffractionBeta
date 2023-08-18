@@ -361,5 +361,5 @@ if __name__ == "__main__":
     installQtInstallerFramework()
     createInstallerSourceDir()
     createOfflineInstaller()
-    #createOnlineRepositoryLocally()
-    #addFilesToLocalRepository()
+    createOnlineRepositoryLocally()
+    addFilesToLocalRepository()

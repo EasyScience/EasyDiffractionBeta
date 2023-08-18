@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   make-installer:
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     runs-on: ${{ matrix.os }}
 
@@ -144,6 +144,13 @@ jobs:
           tag: ${{ env.RELEASE_TAG }}
           name: ${{ env.RELEASE_TITLE }}
           bodyFile: "RELEASE.md"
+
+      - name: Upload online app installer to repository via FTP (master branch)
+        if: github.event_name == 'push' && env.BRANCH_NAME == 'master'
+        run: >
+          python ${{ env.SCRIPTS_PATH }}/UploadToFtp.py
+          ${{ env.BRANCH_NAME }} ${{ matrix.os }}
+          ${{ secrets.APP_REPO_FTP_PASSWORD }}
 
       - name: Upload zipped offline app installer for the next job step
         uses: actions/upload-artifact@master
