@@ -15,8 +15,6 @@ import Functions
 
 CONFIG = Config.Config(sys.argv[1], sys.argv[2])
 
-Functions.printFailMessage('SignAppInstaller.py called with this many arguments: ' + str(len(sys.argv)))
-
 MACOS_IDENTITY = CONFIG['ci']['codesign']['macos']['identity']
 MACOS_CERTIFICATE_ENCODED = sys.argv[3]       # Encoded content of the certificate.p12 file
 MACOS_CERTIFICATE_PASSWORD = sys.argv[4]      # Password associated with the certificate.p12 file
