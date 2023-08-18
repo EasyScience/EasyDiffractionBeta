@@ -273,13 +273,22 @@ class Experiment(QObject):
         cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
         cryspyObjBlockIdx = cryspyObjBlockNames.index(currentExperimentName)
 
-        cryspyDictBlockName = f'pd_{currentExperimentName}'
-
         if not edCif:
             edCif = CryspyParser.dataBlockToCif(currentDataBlock)
         cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
         cryspyExperimentsObj = str_to_globaln(cryspyCif)
         cryspyExperimentsDict = cryspyExperimentsObj.get_dictionary()
+
+        # experiment block name may have different prefixes, but always connected with '_' to the experiment name
+        cryspyDictBlockName = None
+        for exp in cryspyExperimentsDict:
+            if currentExperimentName in exp:
+                cryspyDictBlockName = exp
+                break
+        if cryspyDictBlockName is None:
+            console.error(f"Block '{cryspyDictBlockName}' not found in cryspy dictionary")
+            return
+
         _, edExperimentsNoMeas = CryspyParser.cryspyObjAndDictToEdExperiments(cryspyExperimentsObj,
                                                                               cryspyExperimentsDict)
 

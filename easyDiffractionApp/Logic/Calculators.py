@@ -599,7 +599,16 @@ class CryspyParser:
 
     @staticmethod
     def cryspyObjAndDictToEdExperiments(cryspy_obj, cryspy_dict):
-        experiment_names = [name.replace('pd_', '') for name in cryspy_dict.keys() if name.startswith('pd_')]
+
+        exp_substrings = ['pd_', 'data_'] # possible experiment prefixes
+        experiment_names = []
+        # get experiment names from cryspy_dict
+        for key in cryspy_dict.keys():
+            for substring in exp_substrings:
+                if key.startswith(substring):
+                    key = key.replace(substring, "").replace("_", "")
+                    experiment_names.append(key)
+
         ed_experiments_meas_only = []
         ed_experiments = []
 
@@ -945,7 +954,9 @@ class CryspyParser:
                         pd_meas_2theta_range_inc = (pd_meas_2theta_range_max - pd_meas_2theta_range_min) / (len(ed_meas_points) - 1)
                         ed_experiment['params']['_pd_meas_2theta_range_inc']['value'] = pd_meas_2theta_range_inc
 
-            ed_experiments_meas_only.append(ed_experiment_meas_only)
-            ed_experiments.append(ed_experiment)
+            if ed_experiment_meas_only is not None:
+                ed_experiments_meas_only.append(ed_experiment_meas_only)
+            if ed_experiment is not None:
+                ed_experiments.append(ed_experiment)
 
         return ed_experiments_meas_only, ed_experiments
