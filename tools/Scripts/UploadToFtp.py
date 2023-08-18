@@ -146,6 +146,10 @@ def deploy():
     online_repository_subdir_path = f'{prefix}/{repo_subdir}'
     online_repository_dir_path = f'{online_repository_subdir_path}/{CONFIG.setup_os}'
 
+    #Functions.printNeutralMessage(f'local_repository_dir_path {local_repository_dir_path}')
+    #Functions.printNeutralMessage(f'online_repository_dir_path {online_repository_dir_path}')
+    #Functions.printNeutralMessage(f'host:port {host}:{port}')
+
     ftp = ftplib.FTP()
     connect(ftp, host, port)
     login(ftp, user, FTP_PASSWORD)
