@@ -14,7 +14,7 @@
 
 ## Main features
 
-**EasyDiffraction** is an open source project under the [BSD-3-Clause License](LICENSE.md). 
+**EasyDiffraction** is an open source project under the [BSD-3-Clause License](LICENSE.md).
 
 **EasyDiffraction** application is cross-platform, with support for Windows, macOS and Linux (Ubuntu). Its intuitive tabbed interface allows for a clear and defined data modelling and analysis workflow. There are also built-in step-by-step user guides and tutorials for new users.
 
@@ -80,8 +80,8 @@ For bug reports and feature requests, please use [Issue Tracker](https://github.
 
 <!---CI Build Status--->
 
-[20]: https://img.shields.io/github/actions/workflow/status/easyscience/easydiffractionapp/build.yml?branch=master
-[21]: https://github.com/easyscience/easydiffractionapp/actions/workflows/build.yml?query=workflow%3A%22build+macOS%2C+Linux%2C+Windows%22+branch%3Amaster
+[20]: https://img.shields.io/github/actions/workflow/status/easyscience/easydiffractionapp/installer.yml?branch=master
+[21]: https://github.com/easyscience/easydiffractionapp/actions/workflows/installer.yml?query=workflow%3A%22Build+Installer%22+branch%3Amaster
 
 <!---Release--->
 
