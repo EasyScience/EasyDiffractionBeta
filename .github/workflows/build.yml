@@ -131,6 +131,20 @@ jobs:
           name: ${{ env.BRANCH_NAME }}
           bodyFile: "RELEASE.md"
 
+      - name: Upload zipped offline app installer to GitHub releases (master branch)
+        if: github.event_name == 'push' && env.BRANCH_NAME == 'master'
+        uses: ncipollo/release-action@v1
+        with:
+          draft: true
+          prerelease: true
+          allowUpdates: true
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "${{ env.DISTRIBUTION_PATH }}/*.zip"
+          tag: ${{ env.RELEASE_TAG }}
+          name: ${{ env.RELEASE_TITLE }}
+          bodyFile: "RELEASE.md"
+
       - name: Upload zipped offline app installer for the next job step
         uses: actions/upload-artifact@master
         with:
