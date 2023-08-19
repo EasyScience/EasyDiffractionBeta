@@ -292,9 +292,10 @@ def createInstallerSourceDir():
         ##Functions.copyDir(source=docs_dir_src, destination=os.path.join(docs_data_subsubdir_path, 'Documentation'))
         #Functions.copyDir(source=docs_dir_src, destination=os.path.join(app_data_subsubdir_path, docs_dir_dest))
         # package: examples
-        #examples_dir_src = CONFIG['ci']['project']['subdirs']['examples']['src']
-        #examples_dir_dest = CONFIG['ci']['project']['subdirs']['examples']['dest']
-        #Functions.copyDir(source=examples_dir_src, destination=os.path.join(app_data_subsubdir_path, examples_dir_dest))
+        examples_dir_src = CONFIG['ci']['project']['subdirs']['examples']['src'].replace('{PROJECT_NAME}/', '')
+        examples_dir_dest = CONFIG['ci']['project']['subdirs']['examples']['dest']
+        Functions.copyDir(source=os.path.join(CONFIG['project']['name'], examples_dir_src),
+                          destination=os.path.join(app_data_subsubdir_path, examples_dir_dest))
         # TODO: change the handling of failure in all methods in Functions.py so they bubble up exceptions
         # TODO: remove this platform conditional once the above is done
     except Exception as exception:
