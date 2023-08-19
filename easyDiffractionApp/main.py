@@ -41,6 +41,11 @@ if __name__ == '__main__':
         engine.addImportPath(p)
     console.debug('Resource paths exposed to QML')
 
+    from PySide6.QtQml import qmlRegisterType
+    from EasyApp.Logic.Maintenance import Updater
+    qmlRegisterType(Updater, 'EasyApp.Logic.Maintenance', 1, 0, 'Updater')
+    console.debug('Updater type registered instantiation in QML')
+
     from Logic.Helpers import PersistentSettingsHandler
     settingsHandler = PersistentSettingsHandler()
     engine.rootContext().setContextProperty('pySettingsPath', settingsHandler.path)
