@@ -24,7 +24,6 @@ _EMPTY_DATA = [
 ]
 
 
-
 class Fittables(QObject):
     dataChanged = Signal()
     dataJsonChanged = Signal()

@@ -46,6 +46,11 @@ if __name__ == '__main__':
     qmlRegisterType(Updater, 'EasyApp.Logic.Maintenance', 1, 0, 'Updater')
     console.debug('Updater type registered instantiation in QML')
 
+    from Logic.Helpers import TranslationsHandler
+    translationsHandler = TranslationsHandler(engine)
+    engine.rootContext().setContextProperty('pyTranslator', translationsHandler.translator)
+    console.debug('Translator object exposed to QML')
+
     from Logic.Helpers import PersistentSettingsHandler
     settingsHandler = PersistentSettingsHandler()
     engine.rootContext().setContextProperty('pySettingsPath', settingsHandler.path)

@@ -10,7 +10,7 @@ import sys
 import time
 from urllib.parse import urlparse
 
-from PySide6.QtCore import QObject, QCoreApplication, Signal, Slot, Property, Qt
+from PySide6.QtCore import Qt, QObject, QCoreApplication, Signal, Slot, Property
 from PySide6.QtGui import QStyleHints
 from PySide6.QtWidgets import QApplication
 
@@ -236,6 +236,7 @@ class BackendHelpers(QObject):
             furi = furi[1:].replace('/', os.path.sep)
         return furi
 
+
 class PyProxyWorker(QObject):
     pyProxyExposedToQml = Signal()
 
@@ -254,3 +255,35 @@ class PyProxyWorker(QObject):
         self._engine.rootContext().setContextProperty('pyProxy', proxy)
         self.pyProxyExposedToQml.emit()
         console.debug('PyProxy object exposed to QML')
+
+
+class TranslationsHandler(QObject):
+
+    def __init__(self, engine, parent=None):
+        from EasyApp.Logic.Translate import Translator
+
+        super().__init__(parent)
+        self.translator = Translator(QApplication.instance(),
+                                     engine,
+                                     self.translationsPath(),
+                                     self.languages())
+
+    def translationsPath(self):  # NEED FIX: read from pyproject.toml
+        translationsPath = 'Gui/Resources/Translations'
+        translationsPath = os.path.join(*translationsPath.split('/'))
+        console.debug(f'Translations path: {translationsPath}')
+        return translationsPath
+
+    def languages(self):  # NEED FIX: read from pyproject.toml
+        languages = [ { 'code': 'en', 'name': 'English' },
+                      { 'code': 'fr', 'name': 'Française' },
+                      { 'code': 'de', 'name': 'Deutsch' },
+                      { 'code': 'es', 'name': 'Español' },
+                      { 'code': 'it', 'name': 'Italiano' },
+                      { 'code': 'pt', 'name': 'Português' },
+                      { 'code': 'da', 'name': 'Dansk' },
+                      { 'code': 'sv', 'name': 'Svenska' },
+                      { 'code': 'pl', 'name': 'Polski' },
+                      { 'code': 'ru', 'name': 'Русский' } ]
+        console.debug(f'Languages: {[lang["code"] for lang in languages]}')
+        return languages

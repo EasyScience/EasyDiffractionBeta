@@ -9,10 +9,10 @@ import os, sys
 import xml.etree.ElementTree as ET
 #import googletrans
 import google_trans_new
-import PySide2
 import Functions, Config
 
 
+QT_BIN_DIR = '/Users/as/Qt/6.5.0/macos/bin'
 CONFIG = Config.Config()
 #TRANSLATOR = googletrans.Translator()
 TRANSLATOR = google_trans_new.google_translator()
@@ -86,7 +86,7 @@ def translateText(in_text, from_language, to_language):
 def updateTsFiles():
     try:
         message = 'update .ts files'
-        qt_lupdate_path = '/Users/andrewsazonov/Qt5.14.1/5.14.1/clang_64/bin/lupdate'
+        qt_lupdate_path = f'{QT_BIN_DIR}/lupdate'
         ts_files = tsFilePaths()
         Functions.run(
             qt_lupdate_path,
@@ -103,7 +103,7 @@ def updateTsFiles():
 def releaseTsFiles():
     try:
         message = 'release .ts files'
-        qt_lrelease_path = '/Users/andrewsazonov/Qt5.14.1/5.14.1/clang_64/bin/lrelease'
+        qt_lrelease_path = f'{QT_BIN_DIR}/lrelease'
         ts_files = tsFilePaths()
         Functions.run(
             qt_lrelease_path,
@@ -116,6 +116,8 @@ def releaseTsFiles():
         Functions.printSuccessMessage(message)
 
 if __name__ == "__main__":
+    # also need method to create ts files, if those are not created yet
+
     updateTsFiles()
     translateTsFiles()
     releaseTsFiles()
