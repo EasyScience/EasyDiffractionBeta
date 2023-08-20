@@ -18,51 +18,6 @@ EaElements.RemoteController {
 
     visible: false
 
-    // Timers
-
-    Timer {
-        id: runTutorialTimer
-
-        interval: 1000
-
-        onTriggered: {
-            console.debug('Application is lunched in test mode.')
-
-            //print('Start saving screenshots.')
-            //saveScreenshotTimer.start()
-
-            console.debug("Run basic GUI test.")
-            runBasicGuiTest()
-
-            //print('Stop saving screenshots.')
-            //saveScreenshotTimer.stop()
-        }
-    }
-
-    Timer {
-        id: runGuiTestTimer
-
-        interval: 1000
-
-        onTriggered: runBasicGuiTest()
-    }
-
-    Timer {
-        id: saveScreenshotTimer
-
-        property int imageNumber: 0
-
-        interval: 200
-        repeat: true
-
-        onTriggered: {
-            const digitsCount = 6
-            const fileSuffix = (1e15 + ++imageNumber + '').slice(-digitsCount)
-            const filePath = `tests/gui/screenshot_${fileSuffix}.jpg`
-            saveScreenshot(parent, filePath)
-        }
-    }
-
     // Tutorials
 
     function setupRunTutorial() {
@@ -78,7 +33,41 @@ EaElements.RemoteController {
         rc.visible = false
     }
 
-    function runDataFittingTutorial() {
+    function runAppInterfaceTutorial() {
+        setupRunTutorial()
+
+        rc.mouseClick(Globals.Refs.app.appbar.preferencesButton)
+
+        rc.mouseClick(Globals.Refs.app.preferences.updatesTab)
+        rc.mouseClick(Globals.Refs.app.preferences.appearanceTab)
+        rc.mouseClick(Globals.Refs.app.preferences.experimentalTab)
+        rc.mouseClick(Globals.Refs.app.preferences.developTab)
+        rc.mouseClick(Globals.Refs.app.preferences.promptsTab)
+
+        completeRunTutorial()
+    }
+
+    function runBasicUsageTutorial() {
+        setupRunTutorial()
+
+        // Home Page
+        rc.mouseClick(Globals.Refs.app.homePage.startButton)
+
+        // Project Page
+        rc.mouseClick(Globals.Refs.app.projectPage.continueButton)
+
+        // Model Page
+        rc.mouseClick(Globals.Refs.app.modelPage.addNewModelManuallyButton)
+        rc.mouseClick(Globals.Refs.app.projectPage.spaceGroupGroup)
+        rc.mouseClick(Globals.Refs.app.projectPage.cellGroup)
+        rc.mouseClick(Globals.Refs.app.projectPage.atomSiteGroup)
+        rc.mouseClick(Globals.Refs.app.projectPage.atomicDisplacementGroup)
+        rc.mouseClick(Globals.Refs.app.modelPage.continueButton)
+
+        completeRunTutorial()
+    }
+
+    function runAdvancedUsageTutorial() {
         setupRunTutorial()
 
         // Home Page

@@ -90,6 +90,7 @@ EaComponents.ApplicationWindow {
             fontIcon: 'cog'
             ToolTip.text: qsTr('Application preferences')
             onClicked: EaGlobals.Vars.showAppPreferencesDialog = true
+            Component.onCompleted: Globals.Refs.app.appbar.preferencesButton = this
         },
 
         EaElements.ToolButton {

@@ -3,6 +3,7 @@
 // © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
 
 import QtQuick
+import QtQuick.Controls
 
 import EasyApp.Gui.Elements as EaElements
 import EasyApp.Gui.Components as EaComponents
@@ -27,6 +28,8 @@ EaComponents.SideBarColumn {
         visible: Globals.Proxies.main.model.defined
 
         Loader { source: 'SideBarBasic/SpaceGroup.qml' }
+
+        Component.onCompleted: Globals.Refs.app.projectPage.spaceGroupGroup = this.titleArea
     }
 
     EaElements.GroupBox {
@@ -35,6 +38,8 @@ EaComponents.SideBarColumn {
         visible: Globals.Proxies.main.model.defined
 
         Loader { source: 'SideBarBasic/Cell.qml' }
+
+        Component.onCompleted: Globals.Refs.app.projectPage.cellGroup = this.titleArea
     }
 
     EaElements.GroupBox {
@@ -43,6 +48,8 @@ EaComponents.SideBarColumn {
         visible: Globals.Proxies.main.model.defined
 
         Loader { source: 'SideBarBasic/AtomSite.qml' }
+
+        Component.onCompleted: Globals.Refs.app.projectPage.atomSiteGroup = this.titleArea
     }
 
     EaElements.GroupBox {
@@ -51,6 +58,8 @@ EaComponents.SideBarColumn {
         visible: Globals.Proxies.main.model.defined
 
         Loader { source: 'SideBarBasic/AtomSiteAdp.qml' }
+
+        Component.onCompleted: Globals.Refs.app.projectPage.atomicDisplacementGroup = this.titleArea
     }
 
 }

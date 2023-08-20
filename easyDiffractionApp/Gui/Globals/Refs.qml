@@ -18,7 +18,8 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
             'modelButton': null,
             'experimentButton': null,
             'analysisButton': null,
-            'summaryButton': null
+            'summaryButton': null,
+            'preferencesButton': null
         },
         'homePage': {
             'startButton': null
@@ -28,12 +29,6 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
             'examples': [],
             'continueButton': null
         },
-        'experimentPage': {
-            'continueButton': null,
-            'importDataFromLocalDriveButton': null,
-            'addDefaultExperimentDataButton': null,
-            'plotView': null
-        },
         'modelPage': {
             'continueButton': null,
             'loadNewModelFromFileButton': null,
@@ -41,7 +36,17 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
             'plotView': null,
             'shiftParameter': null,
             'widthParameter': null,
-            'scaleParameter': null
+            'scaleParameter': null,
+            'spaceGroupGroup': null,
+            'cellGroup': null,
+            'atomSiteGroup': null,
+            'atomicDisplacementGroup': null
+        },
+        'experimentPage': {
+            'continueButton': null,
+            'importDataFromLocalDriveButton': null,
+            'addDefaultExperimentDataButton': null,
+            'plotView': null
         },
         'analysisPage': {
             'continueButton': null,
@@ -50,6 +55,13 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
             'fitStatusDialogOkButton': null,
         },
         'summaryPage': {
+        },
+        'preferences': {
+            'promptsTab': null,
+            'updatesTab': null,
+            'appearanceTab': null,
+            'experimentalTab': null,
+            'developTab': null
         }
     }
 

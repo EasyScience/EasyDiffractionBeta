@@ -31,6 +31,7 @@ Item {
             fillMode: Image.PreserveAspectFit
             antialiasing: true
         }
+        // Application logo
 
         // Application name
         Row {
@@ -54,6 +55,7 @@ Item {
                 text: Globals.Configs.appConfig.nameSuffixForLogo
             }
         }
+        // Application name
 
         // Application version
         EaElements.Label {
@@ -63,6 +65,7 @@ Item {
 
             text: qsTr('Version') + ` ${Globals.Configs.appConfig.version} (${Globals.Configs.appConfig.date})`
         }
+        // Application version
 
         // Github branch
         EaElements.Label {
@@ -75,6 +78,7 @@ Item {
 
             text: qsTr('Branch') + ` <a href="${Globals.Configs.appConfig.branchUrl}">${Globals.Configs.appConfig.branch}</a>`
         }
+        // Github branch
 
         // Vertical spacer
         Item { width: 1; height: EaStyle.Sizes.fontPixelSize * 2.5 }
@@ -94,6 +98,7 @@ Item {
             }
             Component.onCompleted: Globals.Refs.app.homePage.startButton = this
         }
+        // Start button
 
         // Vertical spacer
         Item { width: 1; height: EaStyle.Sizes.fontPixelSize * 2.5 }
@@ -127,43 +132,43 @@ Item {
                 spacing: EaStyle.Sizes.fontPixelSize
 
                 EaElements.Button {
-                    enabled: false
                     text: qsTr("Tutorial") + " 1: " + qsTr("App interface")
-                    onClicked: console.debug("Tutorial 1 button clicked")
+                    onClicked: {
+                        console.debug(`Clicking '${text}' button: ${this}`)
+                        tutorialsController.runAppInterfaceTutorial()
+                    }
                 }
                 EaElements.Button {
-                    enabled: false
                     text: qsTr("Tutorial") + " 2: " + qsTr("Basic usage")
-                    onClicked: console.debug("Tutorial 2 button clicked")
+                    onClicked: {
+                        console.debug(`Clicking '${text}' button: ${this}`)
+                        tutorialsController.runBasicUsageTutorial()
+                    }
                 }
                 EaElements.Button {
-                    //enabled: false
                     text: qsTr("Tutorial") + " 3: " + qsTr("Advanced usage")
                     onClicked: {
-                        console.debug("Tutorial 3 button clicked")
-                        dataFittingTutorialTimer.start()
+                        console.debug(`Clicking '${text}' button: ${this}`)
+                        tutorialsController.runAdvancedUsageTutorial()
                     }
                 }
             }
         }
+        // Links
+
     }
+
+    // User tutorials
+    Components.UserTutorialsController {
+        id: tutorialsController
+    }
+    // User tutorials
 
     Component.onCompleted: {
         console.debug(`Home page loaded: ${this}`)
         Globals.Vars.homePageCreated = true
     }
+
     Component.onDestruction: console.debug(`Home page destroyed: ${this}`)
-
-    // User tutorials
-
-    Components.UserTutorialsController {
-        id: tutorialsController
-    }
-
-    Timer {
-        id: dataFittingTutorialTimer
-        interval: 100
-        onTriggered: tutorialsController.runDataFittingTutorial()
-    }
 
 }
