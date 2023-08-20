@@ -7,15 +7,14 @@ __version__ = '0.0.1'
 
 import os, sys
 import xml.etree.ElementTree as ET
-#import googletrans
-import google_trans_new
+import deepl
 import Functions, Config
 
 
+AUTH_KEY = 'Authentication Key for DeepL API from https://www.deepl.com/account/summary'
 QT_BIN_DIR = '/Users/as/Qt/6.5.0/macos/bin'
 CONFIG = Config.Config()
-#TRANSLATOR = googletrans.Translator()
-TRANSLATOR = google_trans_new.google_translator()
+TRANSLATOR = deepl.Translator(AUTH_KEY)
 
 def tsFilesDirPath():
     ts_files_dir = CONFIG['ci']['app']['translations']['dir']
@@ -73,14 +72,9 @@ def translateXmlString(xml_string, from_language, to_language):
     return ET.tostring(root, encoding='utf8').decode('utf8')
 
 def translateText(in_text, from_language, to_language):
-    #translation = TRANSLATOR.translate(in_text, src=from_language, dest=to_language)
-    #out_text = translation.text
-    out_text = TRANSLATOR.translate(in_text, lang_src=from_language, lang_tgt=to_language)
-    print(f'[{from_language}] {in_text} -> [{to_language}] {out_text}')
-    if isinstance(out_text, list):
-        out_text = out_text[0]
-    if in_text[0].isupper():
-        out_text = out_text.capitalize()
+    result = TRANSLATOR.translate_text(in_text, source_lang=from_language, target_lang=to_language)
+    out_text = result.text
+    Functions.printNeutralMessage(f'[{from_language}] {in_text} -> [{to_language}] {out_text}')
     return out_text
 
 def updateTsFiles():

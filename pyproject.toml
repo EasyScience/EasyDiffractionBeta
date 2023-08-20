@@ -120,8 +120,7 @@ pix_fmt = 'yuv420p'     # Pixel format
 
 [ci.app.translations]
 dir = 'Gui/Resources/Translations'
-languages = [ { code = 'en', name = 'English' }, { code = 'fr', name = 'Française' }, { code = 'de', name = 'Deutsch' },
-              { code = 'es', name = 'Español' }, { code = 'it', name = 'Italiano' },  { code = 'pt', name = 'Português' },
+languages = [ { code = 'en', name = 'English' },
               { code = 'da', name = 'Dansk' },   { code = 'sv', name = 'Svenska' },   { code = 'pl', name = 'Polski' },
               { code = 'ru', name = 'Русский' } ]
 

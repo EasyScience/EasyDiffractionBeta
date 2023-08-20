@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
+<?xml version='1.0' encoding='utf8'?>
 <TS version="2.1" language="sv_SE">
 <context>
     <name>AnalysisConstraints</name>
@@ -22,15 +21,15 @@
 <context>
     <name>Appearance</name>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarAdvanced/Appearance.qml" line="16"/>
+        <location filename="../../Components/Pages/Model/SideBarAdvanced/Appearance.qml" line="16" />
         <source>Display coordinate vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa koordinatvektorer</translation>
     </message>
 </context>
 <context>
     <name>ApplicationWindow</name>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="57"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="57" />
         <source>Save current state of the project</source>
         <translation>Spara aktuellt tillstånd för projektet </translation>
     </message>
@@ -39,59 +38,59 @@
         <translation type="vanished">Återställ till början utan projekt, faser och data </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="74"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="74" />
         <source>Reset to initial state without project, model and data</source>
-        <translation type="unfinished"></translation>
+        <translation>Återställning till utgångsläge utan projekt, modell och data</translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="91"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="91" />
         <source>Application preferences</source>
         <translation>Ansökningsinställningar </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="97"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="98" />
         <source>Get online help</source>
         <translation>Få online-hjälp </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="103"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="104" />
         <source>Report a bug or issue</source>
         <translation>Rapportera ett fel eller ett problem </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="117"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="118" />
         <source>Home</source>
         <translation>Hem </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="118"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="119" />
         <source>Home page</source>
         <translation>Hemsida </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="129"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="130" />
         <source>Project</source>
         <translation>Projekt </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="130"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="131" />
         <source>Project description page</source>
         <translation>Projektbeskrivning sida </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="141"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="142" />
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Modell</translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="142"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="143" />
         <source>Model description page</source>
-        <translation type="unfinished"></translation>
+        <translation>Modellbeskrivningssida</translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="155"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="156" />
         <source>Experimental settings and measured data page</source>
-        <translation type="unfinished"></translation>
+        <translation>Experimentella inställningar och uppmätta data sida</translation>
     </message>
     <message>
         <source>Sample</source>
@@ -102,7 +101,7 @@
         <translation type="vanished">Provmodell beskrivning sida </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="154"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="155" />
         <source>Experiment</source>
         <translation>Experimentera </translation>
     </message>
@@ -111,22 +110,22 @@
         <translation type="vanished">Experimentella inställningar och data sida </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="167"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="168" />
         <source>Analysis</source>
         <translation>Analys </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="168"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="169" />
         <source>Simulation and fitting page</source>
         <translation>Simulering och passande sida </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="179"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="180" />
         <source>Summary</source>
         <translation>Sammanfattning </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="180"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="181" />
         <source>Summary of the work done</source>
         <translation>Sammanfattning av det utförda arbetet </translation>
     </message>
@@ -205,88 +204,88 @@ This operation cannot be undone.</source>
 <context>
     <name>AtomSite</name>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="22"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="22" />
         <source>No atoms defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga atomer definierade</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="92"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="92" />
         <source>WP</source>
-        <translation type="unfinished"></translation>
+        <translation>WP</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="171"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="171" />
         <source>Remove this atom</source>
-        <translation type="unfinished">Ta bort denna atom </translation>
+        <translation>Ta bort denna atom </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="187"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="187" />
         <source>Append new atom</source>
-        <translation type="unfinished">Lägg till ny atom </translation>
+        <translation>Lägg till ny atom </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="197"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="197" />
         <source>Duplicate selected atom</source>
-        <translation type="unfinished">Duplicera utvalda atom </translation>
+        <translation>Duplicera utvalda atom </translation>
     </message>
 </context>
 <context>
     <name>AtomSiteAdp</name>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="20"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="20" />
         <source>No atoms defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga atomer definierade</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="71"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="71" />
         <source>ani11</source>
-        <translation type="unfinished"></translation>
+        <translation>ani11</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="78"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="78" />
         <source>ani22</source>
-        <translation type="unfinished"></translation>
+        <translation>ani22</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="85"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="85" />
         <source>ani33</source>
-        <translation type="unfinished"></translation>
+        <translation>ani33</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="92"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="92" />
         <source>ani12</source>
-        <translation type="unfinished"></translation>
+        <translation>ani12</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="99"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="99" />
         <source>ani13</source>
-        <translation type="unfinished"></translation>
+        <translation>ani13</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="106"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="106" />
         <source>ani23</source>
-        <translation type="unfinished"></translation>
+        <translation>ani23</translation>
     </message>
 </context>
 <context>
     <name>CloseDialog</name>
     <message>
-        <location filename="../../Components/CloseDialog.qml" line="15"/>
+        <location filename="../../Components/CloseDialog.qml" line="15" />
         <source>Save Changes</source>
         <translation>Spara ändringar </translation>
     </message>
     <message>
-        <location filename="../../Components/CloseDialog.qml" line="19"/>
+        <location filename="../../Components/CloseDialog.qml" line="19" />
         <source>The project has not been saved. Do you want to exit?</source>
         <translation>Projektet har inte sparats. vill du avsluta? </translation>
     </message>
     <message>
-        <location filename="../../Components/CloseDialog.qml" line="24"/>
+        <location filename="../../Components/CloseDialog.qml" line="24" />
         <source>Save and exit</source>
         <translation>Spara och avsluta </translation>
     </message>
     <message>
-        <location filename="../../Components/CloseDialog.qml" line="32"/>
+        <location filename="../../Components/CloseDialog.qml" line="32" />
         <source>Exit without saving</source>
         <translation>Avsluta utan att spara </translation>
     </message>
@@ -294,57 +293,57 @@ This operation cannot be undone.</source>
 <context>
     <name>DescriptionTab</name>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="61"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="61" />
         <source>Enter project name here</source>
-        <translation type="unfinished"></translation>
+        <translation>Ange projektets namn här</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="88"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="88" />
         <source>Enter project description here</source>
-        <translation type="unfinished"></translation>
+        <translation>Ange projektbeskrivning här</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="126"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="126" />
         <source>Last modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Senast ändrad</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="147"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="147" />
         <source>Location</source>
-        <translation type="unfinished">Plats </translation>
+        <translation>Plats </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="162"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="162" />
         <source>Model directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Modellkatalog</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="175"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="175" />
         <source>Experiment directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog över experiment</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="188"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="188" />
         <source>Analysis directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog för analys</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="201"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="201" />
         <source>Summary directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Översiktlig katalog</translation>
     </message>
 </context>
 <context>
     <name>Examples</name>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/Examples.qml" line="24"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/Examples.qml" line="24" />
         <source>No examples available</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga exempel tillgängliga</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/Examples.qml" line="38"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/Examples.qml" line="38" />
         <source>name / description</source>
-        <translation type="unfinished"></translation>
+        <translation>namn / beskrivning</translation>
     </message>
 </context>
 <context>
@@ -409,184 +408,184 @@ This operation cannot be undone.</source>
 <context>
     <name>Experiments</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Experiments.qml" line="60"/>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Experiments.qml" line="104"/>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="83"/>
-        <location filename="../../Components/Pages/Experiment/SideBarText/Experiments.qml" line="60"/>
-        <location filename="../../Components/Pages/Experiment/SideBarText/Experiments.qml" line="104"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Experiments.qml" line="60" />
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Experiments.qml" line="104" />
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="83" />
+        <location filename="../../Components/Pages/Experiment/SideBarText/Experiments.qml" line="60" />
+        <location filename="../../Components/Pages/Experiment/SideBarText/Experiments.qml" line="104" />
         <source>Measured pattern color</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppmätt mönsterfärg</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="27"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="27" />
         <source>No experiments defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga experiment definierade</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="61"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="61" />
         <source>label</source>
-        <translation type="unfinished"></translation>
+        <translation>etikett</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="96"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="96" />
         <source>Remove this dataset</source>
-        <translation type="unfinished">Ta bort den här dataseten </translation>
+        <translation>Ta bort den här dataseten </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="113"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="113" />
         <source>Load experiment(s) from file(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ladda experiment från fil(er)</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="131"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="131" />
         <source>Define experiment manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Definiera experiment manuellt</translation>
     </message>
 </context>
 <context>
     <name>ExportReportGroup</name>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="29"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="29" />
         <source>Enter report file name here</source>
-        <translation type="unfinished">Ange rapportfilnamn här </translation>
+        <translation>Ange rapportfilnamn här </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="33"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="33" />
         <source>Name</source>
-        <translation type="unfinished">Namn </translation>
+        <translation>Namn </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="47"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="47" />
         <source>Interactive HTML</source>
-        <translation type="unfinished">Interaktiv html </translation>
+        <translation>Interaktiv html </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="48"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="48" />
         <source>Static PDF</source>
-        <translation type="unfinished">Statisk pdf </translation>
+        <translation>Statisk pdf </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="52"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="52" />
         <source>Format</source>
-        <translation type="unfinished">Formatera </translation>
+        <translation>Formatera </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="65"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="65" />
         <source>Enter report location here</source>
-        <translation type="unfinished">Ange rapportplats här </translation>
+        <translation>Ange rapportplats här </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="68"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="68" />
         <source>Location</source>
-        <translation type="unfinished">Plats </translation>
+        <translation>Plats </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="76"/>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="100"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="76" />
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="100" />
         <source>Choose report parent directory</source>
-        <translation type="unfinished">Välj rapportera föräldrakatalog </translation>
+        <translation>Välj rapportera föräldrakatalog </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="86"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="86" />
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara</translation>
     </message>
 </context>
 <context>
     <name>FitStatusDialog</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/FitStatusDialog.qml" line="19"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/FitStatusDialog.qml" line="19" />
         <source>Fit status</source>
-        <translation type="unfinished"></translation>
+        <translation>Status för passform</translation>
     </message>
 </context>
 <context>
     <name>Fittables</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="39"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="39" />
         <source>Filter criteria</source>
-        <translation type="unfinished"></translation>
+        <translation>Filterkriterier</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="61"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="61" />
         <source>Filter by name</source>
-        <translation type="unfinished">Filtrera med namn </translation>
+        <translation>Filtrera med namn </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="93"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="93" />
         <source>Filter by variability</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtrera efter variabilitet</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="123"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="123" />
         <source>No parameters found</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga parametrar hittades</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="147"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="147" />
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>namn</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="155"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="155" />
         <source>value</source>
-        <translation type="unfinished"></translation>
+        <translation>värde</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="168"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="168" />
         <source>error</source>
-        <translation type="unfinished"></translation>
+        <translation>fel</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="175"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="175" />
         <source>min</source>
-        <translation type="unfinished"></translation>
+        <translation>min</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="182"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="182" />
         <source>max</source>
-        <translation type="unfinished"></translation>
+        <translation>max</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="188"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="188" />
         <source>vary</source>
-        <translation type="unfinished"></translation>
+        <translation>variera</translation>
     </message>
 </context>
 <context>
     <name>Fitting</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fitting.qml" line="24"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fitting.qml" line="24" />
         <source>Cancel fitting</source>
-        <translation type="unfinished"></translation>
+        <translation>Avbryt montering</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fitting.qml" line="24"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fitting.qml" line="24" />
         <source>Start fitting</source>
-        <translation type="unfinished">Börja passar </translation>
+        <translation>Börja passar </translation>
     </message>
 </context>
 <context>
     <name>GetStarted</name>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="24"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="24" />
         <source>Create a new project</source>
-        <translation type="unfinished">Skapa ett nytt projekt </translation>
+        <translation>Skapa ett nytt projekt </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="39"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="39" />
         <source>Open an existing project</source>
-        <translation type="unfinished">Öppna ett befintligt projekt </translation>
+        <translation>Öppna ett befintligt projekt </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="60"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="60" />
         <source>Save project as...</source>
-        <translation type="unfinished">Spara projekt som ... </translation>
+        <translation>Spara projekt som ... </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="68"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="68" />
         <source>Close current project</source>
-        <translation type="unfinished"></translation>
+        <translation>Stäng aktuellt projekt</translation>
     </message>
 </context>
 <context>
@@ -668,283 +667,283 @@ This operation cannot be undone.</source>
 <context>
     <name>Minimizer</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml" line="23"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml" line="23" />
         <source>Minimizer</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimering</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml" line="38"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml" line="38" />
         <source>Method</source>
-        <translation type="unfinished">Metod </translation>
+        <translation>Metod </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml" line="53"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml" line="53" />
         <source>Tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerans</translation>
     </message>
 </context>
 <context>
     <name>Models</name>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="27"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="27" />
         <source>No models defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga modeller definierade</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="61"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="61" />
         <source>label</source>
-        <translation type="unfinished"></translation>
+        <translation>etikett</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="83"/>
-        <location filename="../../Components/Pages/Model/SideBarText/Models.qml" line="59"/>
-        <location filename="../../Components/Pages/Model/SideBarText/Models.qml" line="103"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="83" />
+        <location filename="../../Components/Pages/Model/SideBarText/Models.qml" line="59" />
+        <location filename="../../Components/Pages/Model/SideBarText/Models.qml" line="103" />
         <source>Calculated pattern color</source>
-        <translation type="unfinished"></translation>
+        <translation>Beräknad mönsterfärg</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="96"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="96" />
         <source>Remove this model</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort denna modell</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="114"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="114" />
         <source>Load model(s) from file(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ladda modell(er) från fil(er)</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="131"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="131" />
         <source>Define model manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Definiera modellen manuellt</translation>
     </message>
 </context>
 <context>
     <name>Page</name>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="64"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="66" />
         <source>Version</source>
-        <translation type="unfinished">Version </translation>
+        <translation>Version </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="76"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="79" />
         <source>Branch</source>
-        <translation type="unfinished">Gren </translation>
+        <translation>Gren </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="89"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="93" />
         <source>Start</source>
-        <translation type="unfinished">Start </translation>
+        <translation>Start </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="117"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="122" />
         <source>Online documentation</source>
-        <translation type="unfinished">Online dokumentation </translation>
+        <translation>Online dokumentation </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="121"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="126" />
         <source>Get in touch online</source>
-        <translation type="unfinished">Komma i kontakt online </translation>
+        <translation>Komma i kontakt online </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="131"/>
-        <location filename="../../Components/Pages/Home/Page.qml" line="136"/>
-        <location filename="../../Components/Pages/Home/Page.qml" line="141"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="135" />
+        <location filename="../../Components/Pages/Home/Page.qml" line="142" />
+        <location filename="../../Components/Pages/Home/Page.qml" line="149" />
         <source>Tutorial</source>
-        <translation type="unfinished">Handledning </translation>
+        <translation>Handledning </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="131"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="135" />
         <source>App interface</source>
-        <translation type="unfinished">App gränssnitt </translation>
+        <translation>App gränssnitt </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="136"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="142" />
         <source>Basic usage</source>
-        <translation type="unfinished"></translation>
+        <translation>Grundläggande användning</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="141"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="149" />
         <source>Advanced usage</source>
-        <translation type="unfinished"></translation>
+        <translation>Avancerad användning</translation>
     </message>
 </context>
 <context>
     <name>PageStructure</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="22"/>
+        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="22" />
         <source>No analysis done</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen analys har gjorts</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="28"/>
+        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="28" />
         <source>Fitting</source>
-        <translation type="unfinished">Passande </translation>
+        <translation>Passande </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="29"/>
+        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="29" />
         <source>Simulation</source>
-        <translation type="unfinished">Simulering </translation>
+        <translation>Simulering </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="43"/>
-        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="37"/>
-        <location filename="../../Components/Pages/Model/PageStructure.qml" line="37"/>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="37"/>
-        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="38"/>
+        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="43" />
+        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="37" />
+        <location filename="../../Components/Pages/Model/PageStructure.qml" line="37" />
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="37" />
+        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="38" />
         <source>Basic controls</source>
-        <translation type="unfinished">Grundläggande kontroller </translation>
+        <translation>Grundläggande kontroller </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="44"/>
-        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="38"/>
-        <location filename="../../Components/Pages/Model/PageStructure.qml" line="38"/>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="38"/>
-        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="39"/>
+        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="44" />
+        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="38" />
+        <location filename="../../Components/Pages/Model/PageStructure.qml" line="38" />
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="38" />
+        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="39" />
         <source>Advanced controls</source>
-        <translation type="unfinished">Avancerade kontroller </translation>
+        <translation>Avancerade kontroller </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="45"/>
-        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="39"/>
-        <location filename="../../Components/Pages/Model/PageStructure.qml" line="39"/>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="39"/>
+        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="45" />
+        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="39" />
+        <location filename="../../Components/Pages/Model/PageStructure.qml" line="39" />
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="39" />
         <source>Text mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Textläge</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="20"/>
+        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="20" />
         <source>No experiments defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga experiment definierade</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="24"/>
+        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="24" />
         <source>Chart view</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagram vy</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/PageStructure.qml" line="20"/>
+        <location filename="../../Components/Pages/Model/PageStructure.qml" line="20" />
         <source>No models defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga modeller definierade</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/PageStructure.qml" line="24"/>
+        <location filename="../../Components/Pages/Model/PageStructure.qml" line="24" />
         <source>Structure view</source>
-        <translation type="unfinished">Strukturvy </translation>
+        <translation>Strukturvy </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="20"/>
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="20" />
         <source>No project created / opened</source>
-        <translation type="unfinished"></translation>
+        <translation>Inget projekt skapat/öppnat</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="24"/>
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="24" />
         <source>Description</source>
-        <translation type="unfinished">Beskrivning </translation>
+        <translation>Beskrivning </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="49"/>
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="49" />
         <source>Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>Fortsätta</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="50"/>
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="50" />
         <source>Continue without project</source>
-        <translation type="unfinished"></translation>
+        <translation>Fortsätta utan projekt</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="21"/>
+        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="21" />
         <source>No Summary Generated</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen sammanfattning genererad</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="25"/>
+        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="25" />
         <source>Report</source>
-        <translation type="unfinished">Rapportera </translation>
+        <translation>Rapportera </translation>
     </message>
 </context>
 <context>
     <name>ParamNames</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/ParamNames.qml" line="58"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/ParamNames.qml" line="58" />
         <source>Iconified name with pretty labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Ikoniserat namn med vackra etiketter</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/ParamNames.qml" line="60"/>
-        <location filename="../../Sandbox/ParamNames.qml" line="52"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/ParamNames.qml" line="60" />
+        <location filename="../../Sandbox/ParamNames.qml" line="52" />
         <source>Full plain text name with labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Fullständigt namn i klartext med etiketter</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/ParamNames.qml" line="44"/>
+        <location filename="../../Sandbox/ParamNames.qml" line="44" />
         <source>Shortest iconified name with pretty labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kortaste ikoniserade namn med vackra etiketter</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/ParamNames.qml" line="46"/>
+        <location filename="../../Sandbox/ParamNames.qml" line="46" />
         <source>Shorter iconified name with pretty labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kortare ikonifierat namn med vackra etiketter</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/ParamNames.qml" line="48"/>
+        <location filename="../../Sandbox/ParamNames.qml" line="48" />
         <source>Full iconified name with pretty labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Fullständigt ikoniserat namn med vackra etiketter</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/ParamNames.qml" line="50"/>
+        <location filename="../../Sandbox/ParamNames.qml" line="50" />
         <source>Full plain text name with pretty labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Fullständigt namn i klartext med vackra etiketter</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/ParamNames.qml" line="54"/>
+        <location filename="../../Sandbox/ParamNames.qml" line="54" />
         <source>Full plain text name with indices</source>
-        <translation type="unfinished"></translation>
+        <translation>Fullständigt namn i klartext med index</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/ParamNames.qml" line="75"/>
+        <location filename="../../Sandbox/ParamNames.qml" line="75" />
         <source>file name / file path</source>
-        <translation type="unfinished"></translation>
+        <translation>filnamn / filväg</translation>
     </message>
 </context>
 <context>
     <name>PdBackground</name>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="21"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="21" />
         <source>No background points defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga bakgrundspunkter definierade</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="90"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="90" />
         <source>Remove this point</source>
-        <translation type="unfinished">Ta bort denna punkt </translation>
+        <translation>Ta bort denna punkt </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="106"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="106" />
         <source>Append new point</source>
-        <translation type="unfinished">Lägg till ny punkt </translation>
+        <translation>Lägg till ny punkt </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="116"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="116" />
         <source>Reset to default points</source>
-        <translation type="unfinished">Återställ till standardpunkter </translation>
+        <translation>Återställ till standardpunkter </translation>
     </message>
 </context>
 <context>
     <name>Phase</name>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Phase.qml" line="21"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Phase.qml" line="21" />
         <source>No phases defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga faser definierade</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Phase.qml" line="80"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Phase.qml" line="80" />
         <source>Calculated pattern color</source>
-        <translation type="unfinished"></translation>
+        <translation>Beräknad mönsterfärg</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Phase.qml" line="103"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Phase.qml" line="103" />
         <source>Remove this phase</source>
-        <translation type="unfinished">Ta bort den här fasen </translation>
+        <translation>Ta bort den här fasen </translation>
     </message>
 </context>
 <context>
@@ -961,59 +960,59 @@ This operation cannot be undone.</source>
 <context>
     <name>QtCharts1dTab</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="158"/>
-        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="64"/>
+        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="158" />
+        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="64" />
         <source>Hide legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Dölj legend</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="159"/>
-        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="65"/>
+        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="159" />
+        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="65" />
         <source>Show legend</source>
-        <translation type="unfinished">Visa legenden </translation>
+        <translation>Visa legenden </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="170"/>
-        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="76"/>
+        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="170" />
+        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="76" />
         <source>Show coordinates tooltip on hover</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa koordinaternas verktygstips vid hovring</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="183"/>
-        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="89"/>
+        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="183" />
+        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="89" />
         <source>Enable pan</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivera panna</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="194"/>
-        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="100"/>
+        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="194" />
+        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="100" />
         <source>Enable box zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivera zoomning av rutan</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="204"/>
-        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="110"/>
+        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="204" />
+        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="110" />
         <source>Reset axes</source>
-        <translation type="unfinished"></translation>
+        <translation>Återställ axlar</translation>
     </message>
 </context>
 <context>
     <name>Recent</name>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/Recent.qml" line="25"/>
-        <location filename="../../Sandbox/Recent.qml" line="20"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/Recent.qml" line="25" />
+        <location filename="../../Sandbox/Recent.qml" line="20" />
         <source>No recent projects found</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga nya projekt hittades</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/Recent.qml" line="49"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/Recent.qml" line="49" />
         <source>file name / file path</source>
-        <translation type="unfinished"></translation>
+        <translation>filnamn / filväg</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/Recent.qml" line="46"/>
+        <location filename="../../Sandbox/Recent.qml" line="46" />
         <source>file</source>
-        <translation type="unfinished"></translation>
+        <translation>fil</translation>
     </message>
 </context>
 <context>
@@ -1059,9 +1058,9 @@ This operation cannot be undone.</source>
 <context>
     <name>Scrolling</name>
     <message>
-        <location filename="../../Sandbox/Scrolling.qml" line="26"/>
+        <location filename="../../Sandbox/Scrolling.qml" line="26" />
         <source>Scrolling example</source>
-        <translation type="unfinished"></translation>
+        <translation>Exempel på rullning</translation>
     </message>
 </context>
 <context>
@@ -1103,30 +1102,30 @@ This operation cannot be undone.</source>
         <translation type="vanished">Visa legenden </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced.qml" line="14"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced.qml" line="14" />
         <source>Parameter names</source>
-        <translation type="unfinished"></translation>
+        <translation>Namn på parametrar</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced.qml" line="22"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced.qml" line="22" />
         <source>Calculation engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Beräkningsmotor</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced.qml" line="29"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced.qml" line="29" />
         <source>Minimization engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor för minimering</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarAdvanced.qml" line="14"/>
-        <location filename="../../Components/Pages/Summary/SideBarAdvanced.qml" line="14"/>
+        <location filename="../../Components/Pages/Experiment/SideBarAdvanced.qml" line="14" />
+        <location filename="../../Components/Pages/Summary/SideBarAdvanced.qml" line="14" />
         <source>Empty group</source>
-        <translation type="unfinished"></translation>
+        <translation>Tom grupp</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarAdvanced.qml" line="14"/>
+        <location filename="../../Components/Pages/Model/SideBarAdvanced.qml" line="14" />
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Utseende</translation>
     </message>
 </context>
 <context>
@@ -1208,29 +1207,29 @@ This operation cannot be undone.</source>
         <translation type="vanished">Metod </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="16"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="16" />
         <source>Experiments</source>
-        <translation type="unfinished"></translation>
+        <translation>Experiment</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="25"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="25" />
         <source>Diffraction radiation</source>
-        <translation type="unfinished"></translation>
+        <translation>Diffraktionsstrålning</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="33"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="33" />
         <source>Measured range</source>
         <translation>Uppmätt intervall </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="41"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="41" />
         <source>Instrument resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Instrumentets upplösning</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="49"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="49" />
         <source>Peak asymmetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Topp asymmetri</translation>
     </message>
     <message>
         <source>Simulation range</source>
@@ -1257,7 +1256,7 @@ This operation cannot be undone.</source>
         <translation type="vanished">Lorentzian provbredd </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="57"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="57" />
         <source>Background</source>
         <translation>Bakgrund </translation>
     </message>
@@ -1278,7 +1277,7 @@ This operation cannot be undone.</source>
         <translation type="vanished">Återställ till standardpunkter </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="65"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="65" />
         <source>Associated phases</source>
         <translation>Associerade faser </translation>
     </message>
@@ -1287,14 +1286,14 @@ This operation cannot be undone.</source>
         <translation type="vanished">Data filer </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic.qml" line="17"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic.qml" line="17" />
         <source>Get started</source>
         <translation>Komma igång </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic.qml" line="34"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic.qml" line="34" />
         <source>Recent projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Nya projekt</translation>
     </message>
     <message>
         <source>Create a new project</source>
@@ -1313,7 +1312,7 @@ This operation cannot be undone.</source>
         <translation type="vanished">Spara projekt som ... </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic.qml" line="25"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic.qml" line="25" />
         <source>Examples</source>
         <translation>Exemplar </translation>
     </message>
@@ -1350,7 +1349,7 @@ This operation cannot be undone.</source>
         <translation type="vanished">Atomic displacement parametrar </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic.qml" line="17"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic.qml" line="17" />
         <source>Export report</source>
         <translation>Exportrapport </translation>
     </message>
@@ -1391,284 +1390,284 @@ This operation cannot be undone.</source>
         <translation type="vanished">Exportera </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="16"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="17" />
         <source>Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Modeller</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="25"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="26" />
         <source>Space group</source>
-        <translation type="unfinished">Rymdgrupp </translation>
+        <translation>Rymdgrupp </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="33"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="36" />
         <source>Cell</source>
-        <translation type="unfinished"></translation>
+        <translation>Cell</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="41"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="46" />
         <source>Atom site</source>
-        <translation type="unfinished"></translation>
+        <translation>Atomplats</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="49"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="56" />
         <source>Atomic displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Atomär förskjutning</translation>
     </message>
 </context>
 <context>
     <name>SplashScreen</name>
     <message>
-        <location filename="../../Components/SplashScreen.qml" line="16"/>
+        <location filename="../../Components/SplashScreen.qml" line="16" />
         <source>Version</source>
-        <translation type="unfinished">Version </translation>
+        <translation>Version </translation>
     </message>
 </context>
 <context>
     <name>StatusBar</name>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="19"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="21"/>
+        <location filename="../../Components/StatusBar.qml" line="19" />
+        <location filename="../../Sandbox/StatusBar.qml" line="21" />
         <source>Project</source>
-        <translation type="unfinished">Projekt </translation>
+        <translation>Projekt </translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="21"/>
+        <location filename="../../Components/StatusBar.qml" line="21" />
         <source>Current project</source>
-        <translation type="unfinished"></translation>
+        <translation>Pågående projekt</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="26"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="28"/>
+        <location filename="../../Components/StatusBar.qml" line="26" />
+        <location filename="../../Sandbox/StatusBar.qml" line="28" />
         <source>Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Modeller</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="28"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="30"/>
+        <location filename="../../Components/StatusBar.qml" line="28" />
+        <location filename="../../Sandbox/StatusBar.qml" line="30" />
         <source>Number of models added</source>
-        <translation type="unfinished"></translation>
+        <translation>Antal modeller som lagts till</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="33"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="35"/>
+        <location filename="../../Components/StatusBar.qml" line="33" />
+        <location filename="../../Sandbox/StatusBar.qml" line="35" />
         <source>Experiments</source>
-        <translation type="unfinished"></translation>
+        <translation>Experiment</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="35"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="37"/>
+        <location filename="../../Components/StatusBar.qml" line="35" />
+        <location filename="../../Sandbox/StatusBar.qml" line="37" />
         <source>Number of experiments added</source>
-        <translation type="unfinished"></translation>
+        <translation>Antal experiment som lagts till</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="40"/>
+        <location filename="../../Components/StatusBar.qml" line="40" />
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkylator</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="42"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="44"/>
+        <location filename="../../Components/StatusBar.qml" line="42" />
+        <location filename="../../Sandbox/StatusBar.qml" line="44" />
         <source>Current calculation engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor för aktuell beräkning</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="47"/>
+        <location filename="../../Components/StatusBar.qml" line="47" />
         <source>Minimizer</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimering</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="49"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="51"/>
+        <location filename="../../Components/StatusBar.qml" line="49" />
+        <location filename="../../Sandbox/StatusBar.qml" line="51" />
         <source>Current minimization engine and method</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor och metod för strömminimering</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="54"/>
+        <location filename="../../Components/StatusBar.qml" line="54" />
         <source>Parameters</source>
-        <translation type="unfinished">Parametrar </translation>
+        <translation>Parametrar </translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="56"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="58"/>
+        <location filename="../../Components/StatusBar.qml" line="56" />
+        <location filename="../../Sandbox/StatusBar.qml" line="58" />
         <source>Number of parameters: total, free and fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Antal parametrar: totala, fria och fasta</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="61"/>
+        <location filename="../../Components/StatusBar.qml" line="61" />
         <source>Fit iterations</source>
-        <translation type="unfinished"></translation>
+        <translation>Anpassa iterationer</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="63"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="65"/>
+        <location filename="../../Components/StatusBar.qml" line="63" />
+        <location filename="../../Sandbox/StatusBar.qml" line="65" />
         <source>Number of fit iterations after the last refinement step</source>
-        <translation type="unfinished"></translation>
+        <translation>Antal fit-iterationer efter det sista förfiningssteget</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="69"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="70"/>
+        <location filename="../../Components/StatusBar.qml" line="69" />
+        <location filename="../../Sandbox/StatusBar.qml" line="70" />
         <source>Goodness-of-fit</source>
-        <translation type="unfinished"></translation>
+        <translation>Lämplighet</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="72"/>
+        <location filename="../../Components/StatusBar.qml" line="72" />
         <source>Reduced χ² goodness-of-fit: previous → last</source>
-        <translation type="unfinished"></translation>
+        <translation>Reducerad χ² goodness-of-fit: föregående → senaste</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="73"/>
+        <location filename="../../Components/StatusBar.qml" line="73" />
         <source>Reduced χ² goodness-of-fit</source>
-        <translation type="unfinished"></translation>
+        <translation>Reducerad χ² goodness-of-fit</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="78"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="78"/>
+        <location filename="../../Components/StatusBar.qml" line="78" />
+        <location filename="../../Sandbox/StatusBar.qml" line="78" />
         <source>Fit status</source>
-        <translation type="unfinished"></translation>
+        <translation>Status för passform</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="80"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="80"/>
+        <location filename="../../Components/StatusBar.qml" line="80" />
+        <location filename="../../Sandbox/StatusBar.qml" line="80" />
         <source>Status of the last refinement step</source>
-        <translation type="unfinished"></translation>
+        <translation>Status för det senaste förfiningssteget</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/StatusBar.qml" line="23"/>
+        <location filename="../../Sandbox/StatusBar.qml" line="23" />
         <source>Current project name</source>
-        <translation type="unfinished"></translation>
+        <translation>Namn på aktuellt projekt</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/StatusBar.qml" line="42"/>
+        <location filename="../../Sandbox/StatusBar.qml" line="42" />
         <source>Calculate</source>
-        <translation type="unfinished"></translation>
+        <translation>Beräkna</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/StatusBar.qml" line="49"/>
+        <location filename="../../Sandbox/StatusBar.qml" line="49" />
         <source>Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimera</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/StatusBar.qml" line="56"/>
+        <location filename="../../Sandbox/StatusBar.qml" line="56" />
         <source>Params</source>
-        <translation type="unfinished"></translation>
+        <translation>Params</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/StatusBar.qml" line="63"/>
+        <location filename="../../Sandbox/StatusBar.qml" line="63" />
         <source>Fit iteration</source>
-        <translation type="unfinished"></translation>
+        <translation>Passande iteration</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/StatusBar.qml" line="73"/>
+        <location filename="../../Sandbox/StatusBar.qml" line="73" />
         <source>Goodness-of-fit (χ²): previous and last comparisons</source>
-        <translation type="unfinished"></translation>
+        <translation>Goodness-of-fit (χ²): tidigare och senaste jämförelser</translation>
     </message>
 </context>
 <context>
     <name>StructureViewTab</name>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="298"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="298" />
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>Zooma in</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="309"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="309" />
         <source>Zoom out</source>
-        <translation type="unfinished"></translation>
+        <translation>Zooma ut</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="320"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="320" />
         <source>Reset to default scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Återställ till standardskala</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="333"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="333" />
         <source>View along the a axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Vy längs a-axeln</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="344"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="344" />
         <source>View along the b axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Vy längs b-axeln</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="355"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="355" />
         <source>View along the c axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Vy längs c-axeln</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="366"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="366" />
         <source>Reset to default rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Återställ till standardrotation</translation>
     </message>
 </context>
 <context>
     <name>TableView</name>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="24"/>
+        <location filename="../../Sandbox/TableView.qml" line="24" />
         <source>No recent projects found: regular table</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga nya projekt hittades: vanligt bord</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="47"/>
+        <location filename="../../Sandbox/TableView.qml" line="47" />
         <source>No recent projects found: tall table</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga nya projekt hittades: högt bord</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="75"/>
+        <location filename="../../Sandbox/TableView.qml" line="75" />
         <source>No models defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga modeller definierade</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="90"/>
+        <location filename="../../Sandbox/TableView.qml" line="90" />
         <source>label</source>
-        <translation type="unfinished"></translation>
+        <translation>etikett</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="113"/>
+        <location filename="../../Sandbox/TableView.qml" line="113" />
         <source>Calculated pattern color</source>
-        <translation type="unfinished"></translation>
+        <translation>Beräknad mönsterfärg</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="123"/>
+        <location filename="../../Sandbox/TableView.qml" line="123" />
         <source>Remove this model</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort denna modell</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="146"/>
+        <location filename="../../Sandbox/TableView.qml" line="146" />
         <source>No recent projects found</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga nya projekt hittades</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="170"/>
+        <location filename="../../Sandbox/TableView.qml" line="170" />
         <source>file</source>
-        <translation type="unfinished"></translation>
+        <translation>fil</translation>
     </message>
 </context>
 <context>
     <name>TextView</name>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarText/TextView.qml" line="99"/>
-        <location filename="../../Components/Pages/Model/SideBarText/TextView.qml" line="105"/>
+        <location filename="../../Components/Pages/Experiment/SideBarText/TextView.qml" line="99" />
+        <location filename="../../Components/Pages/Model/SideBarText/TextView.qml" line="105" />
         <source>Apply changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tillämpa ändringar</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TextView.qml" line="50"/>
+        <location filename="../../Sandbox/TextView.qml" line="50" />
         <source>Apply all changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tillämpa alla ändringar</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TextView.qml" line="67"/>
+        <location filename="../../Sandbox/TextView.qml" line="67" />
         <source>Undo all changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ångra alla ändringar</translation>
     </message>
 </context>
 <context>
     <name>UserGuides</name>
     <message>
-        <source>Click here to show the &apos;About&apos; window.</source>
-        <translation type="vanished">Klicka här för att visa fönstret &quot;om&quot;. </translation>
+        <source>Click here to show the 'About' window.</source>
+        <translation type="vanished">Klicka här för att visa fönstret "om". </translation>
     </message>
     <message>
         <source>Here you can find links to the online resources.</source>

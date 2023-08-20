@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
+<?xml version='1.0' encoding='utf8'?>
 <TS version="2.1" language="es_ES">
 <context>
     <name>AnalysisConstraints</name>
@@ -22,15 +21,15 @@
 <context>
     <name>Appearance</name>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarAdvanced/Appearance.qml" line="16"/>
+        <location filename="../../Components/Pages/Model/SideBarAdvanced/Appearance.qml" line="16" />
         <source>Display coordinate vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualizar vectores de coordenadas</translation>
     </message>
 </context>
 <context>
     <name>ApplicationWindow</name>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="57"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="57" />
         <source>Save current state of the project</source>
         <translation>Guardar estado actual del proyecto </translation>
     </message>
@@ -39,59 +38,59 @@
         <translation type="vanished">Restablecer al estado inicial sin proyecto, fases y datos. </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="74"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="74" />
         <source>Reset to initial state without project, model and data</source>
-        <translation type="unfinished"></translation>
+        <translation>Restablecer el estado inicial sin proyecto, modelo ni datos</translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="91"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="91" />
         <source>Application preferences</source>
         <translation>Preferencias de aplicación </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="97"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="98" />
         <source>Get online help</source>
         <translation>Obtener ayuda en línea </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="103"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="104" />
         <source>Report a bug or issue</source>
         <translation>Reportar un error o problema </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="117"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="118" />
         <source>Home</source>
         <translation>Casa </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="118"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="119" />
         <source>Home page</source>
         <translation>Página de inicio </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="129"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="130" />
         <source>Project</source>
         <translation>Proyecto </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="130"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="131" />
         <source>Project description page</source>
         <translation>Página de descripción del proyecto </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="141"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="142" />
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelo</translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="142"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="143" />
         <source>Model description page</source>
-        <translation type="unfinished"></translation>
+        <translation>Página de descripción del modelo</translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="155"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="156" />
         <source>Experimental settings and measured data page</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración experimental y página de datos medidos</translation>
     </message>
     <message>
         <source>Sample</source>
@@ -102,7 +101,7 @@
         <translation type="vanished">Página de descripción del modelo de muestra </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="154"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="155" />
         <source>Experiment</source>
         <translation>Experimentar </translation>
     </message>
@@ -111,22 +110,22 @@
         <translation type="vanished">Configuraciones experimentales y página de datos. </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="167"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="168" />
         <source>Analysis</source>
         <translation>Análisis </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="168"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="169" />
         <source>Simulation and fitting page</source>
         <translation>Página de simulación y accesorios. </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="179"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="180" />
         <source>Summary</source>
         <translation>Resumen </translation>
     </message>
     <message>
-        <location filename="../../Components/ApplicationWindow.qml" line="180"/>
+        <location filename="../../Components/ApplicationWindow.qml" line="181" />
         <source>Summary of the work done</source>
         <translation>Resumen del trabajo realizado. </translation>
     </message>
@@ -205,88 +204,88 @@ This operation cannot be undone.</source>
 <context>
     <name>AtomSite</name>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="22"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="22" />
         <source>No atoms defined</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay átomos definidos</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="92"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="92" />
         <source>WP</source>
-        <translation type="unfinished"></translation>
+        <translation>WP</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="171"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="171" />
         <source>Remove this atom</source>
-        <translation type="unfinished">Retire este átomo </translation>
+        <translation>Retire este átomo </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="187"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="187" />
         <source>Append new atom</source>
-        <translation type="unfinished">Añadir nuevo átomo </translation>
+        <translation>Añadir nuevo átomo </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="197"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSite.qml" line="197" />
         <source>Duplicate selected atom</source>
-        <translation type="unfinished">Duplicar atom seleccionado </translation>
+        <translation>Duplicar atom seleccionado </translation>
     </message>
 </context>
 <context>
     <name>AtomSiteAdp</name>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="20"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="20" />
         <source>No atoms defined</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay átomos definidos</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="71"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="71" />
         <source>ani11</source>
-        <translation type="unfinished"></translation>
+        <translation>ani11</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="78"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="78" />
         <source>ani22</source>
-        <translation type="unfinished"></translation>
+        <translation>ani22</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="85"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="85" />
         <source>ani33</source>
-        <translation type="unfinished"></translation>
+        <translation>ani33</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="92"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="92" />
         <source>ani12</source>
-        <translation type="unfinished"></translation>
+        <translation>ani12</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="99"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="99" />
         <source>ani13</source>
-        <translation type="unfinished"></translation>
+        <translation>ani13</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="106"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml" line="106" />
         <source>ani23</source>
-        <translation type="unfinished"></translation>
+        <translation>ani23</translation>
     </message>
 </context>
 <context>
     <name>CloseDialog</name>
     <message>
-        <location filename="../../Components/CloseDialog.qml" line="15"/>
+        <location filename="../../Components/CloseDialog.qml" line="15" />
         <source>Save Changes</source>
         <translation>Guardar cambios </translation>
     </message>
     <message>
-        <location filename="../../Components/CloseDialog.qml" line="19"/>
+        <location filename="../../Components/CloseDialog.qml" line="19" />
         <source>The project has not been saved. Do you want to exit?</source>
         <translation>El proyecto no se ha salvado. ¿quieres salir? </translation>
     </message>
     <message>
-        <location filename="../../Components/CloseDialog.qml" line="24"/>
+        <location filename="../../Components/CloseDialog.qml" line="24" />
         <source>Save and exit</source>
         <translation>Guardar y salir </translation>
     </message>
     <message>
-        <location filename="../../Components/CloseDialog.qml" line="32"/>
+        <location filename="../../Components/CloseDialog.qml" line="32" />
         <source>Exit without saving</source>
         <translation>Salir sin guardar </translation>
     </message>
@@ -294,57 +293,57 @@ This operation cannot be undone.</source>
 <context>
     <name>DescriptionTab</name>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="61"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="61" />
         <source>Enter project name here</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduzca aquí el nombre del proyecto</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="88"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="88" />
         <source>Enter project description here</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduzca aquí la descripción del proyecto</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="126"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="126" />
         <source>Last modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Última modificación</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="147"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="147" />
         <source>Location</source>
-        <translation type="unfinished">Localización </translation>
+        <translation>Localización </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="162"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="162" />
         <source>Model directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Directorio de modelos</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="175"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="175" />
         <source>Experiment directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Directorio de experimentos</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="188"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="188" />
         <source>Analysis directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Directorio de análisis</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="201"/>
+        <location filename="../../Components/Pages/Project/MainContent/DescriptionTab.qml" line="201" />
         <source>Summary directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Directorio resumido</translation>
     </message>
 </context>
 <context>
     <name>Examples</name>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/Examples.qml" line="24"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/Examples.qml" line="24" />
         <source>No examples available</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay ejemplos disponibles</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/Examples.qml" line="38"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/Examples.qml" line="38" />
         <source>name / description</source>
-        <translation type="unfinished"></translation>
+        <translation>nombre / descripción</translation>
     </message>
 </context>
 <context>
@@ -409,184 +408,184 @@ This operation cannot be undone.</source>
 <context>
     <name>Experiments</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Experiments.qml" line="60"/>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Experiments.qml" line="104"/>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="83"/>
-        <location filename="../../Components/Pages/Experiment/SideBarText/Experiments.qml" line="60"/>
-        <location filename="../../Components/Pages/Experiment/SideBarText/Experiments.qml" line="104"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Experiments.qml" line="60" />
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Experiments.qml" line="104" />
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="83" />
+        <location filename="../../Components/Pages/Experiment/SideBarText/Experiments.qml" line="60" />
+        <location filename="../../Components/Pages/Experiment/SideBarText/Experiments.qml" line="104" />
         <source>Measured pattern color</source>
-        <translation type="unfinished"></translation>
+        <translation>Color del patrón medido</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="27"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="27" />
         <source>No experiments defined</source>
-        <translation type="unfinished"></translation>
+        <translation>No se han definido experimentos</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="61"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="61" />
         <source>label</source>
-        <translation type="unfinished"></translation>
+        <translation>etiqueta</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="96"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="96" />
         <source>Remove this dataset</source>
-        <translation type="unfinished">Retire este conjunto de datos </translation>
+        <translation>Retire este conjunto de datos </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="113"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="113" />
         <source>Load experiment(s) from file(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar experimento(s) desde archivo(s)</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="131"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Experiments.qml" line="131" />
         <source>Define experiment manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Definir el experimento manualmente</translation>
     </message>
 </context>
 <context>
     <name>ExportReportGroup</name>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="29"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="29" />
         <source>Enter report file name here</source>
-        <translation type="unfinished">Ingrese el nombre del archivo de informe aquí </translation>
+        <translation>Ingrese el nombre del archivo de informe aquí </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="33"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="33" />
         <source>Name</source>
-        <translation type="unfinished">Nombre </translation>
+        <translation>Nombre </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="47"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="47" />
         <source>Interactive HTML</source>
-        <translation type="unfinished">Html interactivo </translation>
+        <translation>Html interactivo </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="48"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="48" />
         <source>Static PDF</source>
-        <translation type="unfinished">Pdf estático </translation>
+        <translation>Pdf estático </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="52"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="52" />
         <source>Format</source>
-        <translation type="unfinished">Formato </translation>
+        <translation>Formato </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="65"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="65" />
         <source>Enter report location here</source>
-        <translation type="unfinished">Ingrese la ubicación del informe aquí </translation>
+        <translation>Ingrese la ubicación del informe aquí </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="68"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="68" />
         <source>Location</source>
-        <translation type="unfinished">Localización </translation>
+        <translation>Localización </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="76"/>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="100"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="76" />
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="100" />
         <source>Choose report parent directory</source>
-        <translation type="unfinished">Elija el directorio principal del informe </translation>
+        <translation>Elija el directorio principal del informe </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="86"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml" line="86" />
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar</translation>
     </message>
 </context>
 <context>
     <name>FitStatusDialog</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/FitStatusDialog.qml" line="19"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/FitStatusDialog.qml" line="19" />
         <source>Fit status</source>
-        <translation type="unfinished"></translation>
+        <translation>Estado de forma</translation>
     </message>
 </context>
 <context>
     <name>Fittables</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="39"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="39" />
         <source>Filter criteria</source>
-        <translation type="unfinished"></translation>
+        <translation>Criterios de filtrado</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="61"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="61" />
         <source>Filter by name</source>
-        <translation type="unfinished">Filtrar por nombre </translation>
+        <translation>Filtrar por nombre </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="93"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="93" />
         <source>Filter by variability</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtrar por variabilidad</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="123"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="123" />
         <source>No parameters found</source>
-        <translation type="unfinished"></translation>
+        <translation>No se han encontrado parámetros</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="147"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="147" />
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>nombre</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="155"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="155" />
         <source>value</source>
-        <translation type="unfinished"></translation>
+        <translation>valor</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="168"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="168" />
         <source>error</source>
-        <translation type="unfinished"></translation>
+        <translation>error</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="175"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="175" />
         <source>min</source>
-        <translation type="unfinished"></translation>
+        <translation>min</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="182"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="182" />
         <source>max</source>
-        <translation type="unfinished"></translation>
+        <translation>max</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="188"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fittables.qml" line="188" />
         <source>vary</source>
-        <translation type="unfinished"></translation>
+        <translation>variar</translation>
     </message>
 </context>
 <context>
     <name>Fitting</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fitting.qml" line="24"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fitting.qml" line="24" />
         <source>Cancel fitting</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancelar la instalación</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fitting.qml" line="24"/>
+        <location filename="../../Components/Pages/Analysis/SideBarBasic/Fitting.qml" line="24" />
         <source>Start fitting</source>
-        <translation type="unfinished">Empezar a montar </translation>
+        <translation>Empezar a montar </translation>
     </message>
 </context>
 <context>
     <name>GetStarted</name>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="24"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="24" />
         <source>Create a new project</source>
-        <translation type="unfinished">Crear un nuevo proyecto </translation>
+        <translation>Crear un nuevo proyecto </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="39"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="39" />
         <source>Open an existing project</source>
-        <translation type="unfinished">Abrir un proyecto existente </translation>
+        <translation>Abrir un proyecto existente </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="60"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="60" />
         <source>Save project as...</source>
-        <translation type="unfinished">Guardar proyecto como... </translation>
+        <translation>Guardar proyecto como... </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="68"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/GetStarted.qml" line="68" />
         <source>Close current project</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerrar el proyecto actual</translation>
     </message>
 </context>
 <context>
@@ -668,283 +667,283 @@ This operation cannot be undone.</source>
 <context>
     <name>Minimizer</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml" line="23"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml" line="23" />
         <source>Minimizer</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimizador</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml" line="38"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml" line="38" />
         <source>Method</source>
-        <translation type="unfinished">Método </translation>
+        <translation>Método </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml" line="53"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml" line="53" />
         <source>Tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerancia</translation>
     </message>
 </context>
 <context>
     <name>Models</name>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="27"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="27" />
         <source>No models defined</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay modelos definidos</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="61"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="61" />
         <source>label</source>
-        <translation type="unfinished"></translation>
+        <translation>etiqueta</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="83"/>
-        <location filename="../../Components/Pages/Model/SideBarText/Models.qml" line="59"/>
-        <location filename="../../Components/Pages/Model/SideBarText/Models.qml" line="103"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="83" />
+        <location filename="../../Components/Pages/Model/SideBarText/Models.qml" line="59" />
+        <location filename="../../Components/Pages/Model/SideBarText/Models.qml" line="103" />
         <source>Calculated pattern color</source>
-        <translation type="unfinished"></translation>
+        <translation>Color del patrón calculado</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="96"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="96" />
         <source>Remove this model</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar este modelo</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="114"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="114" />
         <source>Load model(s) from file(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar modelo(s) desde archivo(s)</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="131"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic/Models.qml" line="131" />
         <source>Define model manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Definir el modelo manualmente</translation>
     </message>
 </context>
 <context>
     <name>Page</name>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="64"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="66" />
         <source>Version</source>
-        <translation type="unfinished">Versión </translation>
+        <translation>Versión </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="76"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="79" />
         <source>Branch</source>
-        <translation type="unfinished">Rama </translation>
+        <translation>Rama </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="89"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="93" />
         <source>Start</source>
-        <translation type="unfinished">Comienzo </translation>
+        <translation>Comienzo </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="117"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="122" />
         <source>Online documentation</source>
-        <translation type="unfinished">Documentación en línea </translation>
+        <translation>Documentación en línea </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="121"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="126" />
         <source>Get in touch online</source>
-        <translation type="unfinished">Ponerse en contacto en línea </translation>
+        <translation>Ponerse en contacto en línea </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="131"/>
-        <location filename="../../Components/Pages/Home/Page.qml" line="136"/>
-        <location filename="../../Components/Pages/Home/Page.qml" line="141"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="135" />
+        <location filename="../../Components/Pages/Home/Page.qml" line="142" />
+        <location filename="../../Components/Pages/Home/Page.qml" line="149" />
         <source>Tutorial</source>
-        <translation type="unfinished">Tutorial </translation>
+        <translation>Tutorial </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="131"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="135" />
         <source>App interface</source>
-        <translation type="unfinished">Interfaz de aplicación </translation>
+        <translation>Interfaz de aplicación </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="136"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="142" />
         <source>Basic usage</source>
-        <translation type="unfinished"></translation>
+        <translation>Uso básico</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Home/Page.qml" line="141"/>
+        <location filename="../../Components/Pages/Home/Page.qml" line="149" />
         <source>Advanced usage</source>
-        <translation type="unfinished"></translation>
+        <translation>Uso avanzado</translation>
     </message>
 </context>
 <context>
     <name>PageStructure</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="22"/>
+        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="22" />
         <source>No analysis done</source>
-        <translation type="unfinished"></translation>
+        <translation>No se ha realizado ningún análisis</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="28"/>
+        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="28" />
         <source>Fitting</source>
-        <translation type="unfinished">Adecuado</translation>
+        <translation>Adecuado</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="29"/>
+        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="29" />
         <source>Simulation</source>
-        <translation type="unfinished">Simulación </translation>
+        <translation>Simulación </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="43"/>
-        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="37"/>
-        <location filename="../../Components/Pages/Model/PageStructure.qml" line="37"/>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="37"/>
-        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="38"/>
+        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="43" />
+        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="37" />
+        <location filename="../../Components/Pages/Model/PageStructure.qml" line="37" />
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="37" />
+        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="38" />
         <source>Basic controls</source>
-        <translation type="unfinished">Controles básicos </translation>
+        <translation>Controles básicos </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="44"/>
-        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="38"/>
-        <location filename="../../Components/Pages/Model/PageStructure.qml" line="38"/>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="38"/>
-        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="39"/>
+        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="44" />
+        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="38" />
+        <location filename="../../Components/Pages/Model/PageStructure.qml" line="38" />
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="38" />
+        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="39" />
         <source>Advanced controls</source>
-        <translation type="unfinished">Controles avanzados </translation>
+        <translation>Controles avanzados </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="45"/>
-        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="39"/>
-        <location filename="../../Components/Pages/Model/PageStructure.qml" line="39"/>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="39"/>
+        <location filename="../../Components/Pages/Analysis/PageStructure.qml" line="45" />
+        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="39" />
+        <location filename="../../Components/Pages/Model/PageStructure.qml" line="39" />
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="39" />
         <source>Text mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo texto</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="20"/>
+        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="20" />
         <source>No experiments defined</source>
-        <translation type="unfinished"></translation>
+        <translation>No se han definido experimentos</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="24"/>
+        <location filename="../../Components/Pages/Experiment/PageStructure.qml" line="24" />
         <source>Chart view</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista del gráfico</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/PageStructure.qml" line="20"/>
+        <location filename="../../Components/Pages/Model/PageStructure.qml" line="20" />
         <source>No models defined</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay modelos definidos</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/PageStructure.qml" line="24"/>
+        <location filename="../../Components/Pages/Model/PageStructure.qml" line="24" />
         <source>Structure view</source>
-        <translation type="unfinished">Vista de la estructura </translation>
+        <translation>Vista de la estructura </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="20"/>
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="20" />
         <source>No project created / opened</source>
-        <translation type="unfinished"></translation>
+        <translation>Ningún proyecto creado / abierto</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="24"/>
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="24" />
         <source>Description</source>
-        <translation type="unfinished">Descripción </translation>
+        <translation>Descripción </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="49"/>
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="49" />
         <source>Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>Continúe en</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/PageStructure.qml" line="50"/>
+        <location filename="../../Components/Pages/Project/PageStructure.qml" line="50" />
         <source>Continue without project</source>
-        <translation type="unfinished"></translation>
+        <translation>Continuar sin proyecto</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="21"/>
+        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="21" />
         <source>No Summary Generated</source>
-        <translation type="unfinished"></translation>
+        <translation>No se ha generado ningún resumen</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="25"/>
+        <location filename="../../Components/Pages/Summary/PageStructure.qml" line="25" />
         <source>Report</source>
-        <translation type="unfinished">Informe </translation>
+        <translation>Informe </translation>
     </message>
 </context>
 <context>
     <name>ParamNames</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/ParamNames.qml" line="58"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/ParamNames.qml" line="58" />
         <source>Iconified name with pretty labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre iconificado con bonitas etiquetas</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/ParamNames.qml" line="60"/>
-        <location filename="../../Sandbox/ParamNames.qml" line="52"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced/ParamNames.qml" line="60" />
+        <location filename="../../Sandbox/ParamNames.qml" line="52" />
         <source>Full plain text name with labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre completo en texto plano con etiquetas</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/ParamNames.qml" line="44"/>
+        <location filename="../../Sandbox/ParamNames.qml" line="44" />
         <source>Shortest iconified name with pretty labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre iconificado más corto con etiquetas bonitas</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/ParamNames.qml" line="46"/>
+        <location filename="../../Sandbox/ParamNames.qml" line="46" />
         <source>Shorter iconified name with pretty labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre iconificado más corto con etiquetas bonitas</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/ParamNames.qml" line="48"/>
+        <location filename="../../Sandbox/ParamNames.qml" line="48" />
         <source>Full iconified name with pretty labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre completo iconificado con bonitas etiquetas</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/ParamNames.qml" line="50"/>
+        <location filename="../../Sandbox/ParamNames.qml" line="50" />
         <source>Full plain text name with pretty labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre completo en texto plano con etiquetas bonitas</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/ParamNames.qml" line="54"/>
+        <location filename="../../Sandbox/ParamNames.qml" line="54" />
         <source>Full plain text name with indices</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre completo en texto plano con índices</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/ParamNames.qml" line="75"/>
+        <location filename="../../Sandbox/ParamNames.qml" line="75" />
         <source>file name / file path</source>
-        <translation type="unfinished"></translation>
+        <translation>nombre del archivo / ruta del archivo</translation>
     </message>
 </context>
 <context>
     <name>PdBackground</name>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="21"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="21" />
         <source>No background points defined</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay puntos de fondo definidos</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="90"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="90" />
         <source>Remove this point</source>
-        <translation type="unfinished">Quitar este punto </translation>
+        <translation>Quitar este punto </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="106"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="106" />
         <source>Append new point</source>
-        <translation type="unfinished">Añadir nuevo punto </translation>
+        <translation>Añadir nuevo punto </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="116"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/PdBackground.qml" line="116" />
         <source>Reset to default points</source>
-        <translation type="unfinished">Restablecer a los puntos predeterminados </translation>
+        <translation>Restablecer a los puntos predeterminados </translation>
     </message>
 </context>
 <context>
     <name>Phase</name>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Phase.qml" line="21"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Phase.qml" line="21" />
         <source>No phases defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Sin fases definidas</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Phase.qml" line="80"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Phase.qml" line="80" />
         <source>Calculated pattern color</source>
-        <translation type="unfinished"></translation>
+        <translation>Color del patrón calculado</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic/Phase.qml" line="103"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic/Phase.qml" line="103" />
         <source>Remove this phase</source>
-        <translation type="unfinished">Retire esta fase </translation>
+        <translation>Retire esta fase </translation>
     </message>
 </context>
 <context>
@@ -961,59 +960,59 @@ This operation cannot be undone.</source>
 <context>
     <name>QtCharts1dTab</name>
     <message>
-        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="158"/>
-        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="64"/>
+        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="158" />
+        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="64" />
         <source>Hide legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocultar leyenda</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="159"/>
-        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="65"/>
+        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="159" />
+        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="65" />
         <source>Show legend</source>
-        <translation type="unfinished">Mostrar leyenda </translation>
+        <translation>Mostrar leyenda </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="170"/>
-        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="76"/>
+        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="170" />
+        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="76" />
         <source>Show coordinates tooltip on hover</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar información sobre las coordenadas al pasar el ratón por encima</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="183"/>
-        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="89"/>
+        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="183" />
+        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="89" />
         <source>Enable pan</source>
-        <translation type="unfinished"></translation>
+        <translation>Activar panorámica</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="194"/>
-        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="100"/>
+        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="194" />
+        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="100" />
         <source>Enable box zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Activar el zoom de caja</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="204"/>
-        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="110"/>
+        <location filename="../../Components/Pages/Analysis/MainContent/QtCharts1dTab.qml" line="204" />
+        <location filename="../../Components/Pages/Experiment/MainContent/QtCharts1dTab.qml" line="110" />
         <source>Reset axes</source>
-        <translation type="unfinished"></translation>
+        <translation>Restablecer ejes</translation>
     </message>
 </context>
 <context>
     <name>Recent</name>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/Recent.qml" line="25"/>
-        <location filename="../../Sandbox/Recent.qml" line="20"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/Recent.qml" line="25" />
+        <location filename="../../Sandbox/Recent.qml" line="20" />
         <source>No recent projects found</source>
-        <translation type="unfinished"></translation>
+        <translation>No se han encontrado proyectos recientes</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic/Recent.qml" line="49"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic/Recent.qml" line="49" />
         <source>file name / file path</source>
-        <translation type="unfinished"></translation>
+        <translation>nombre del archivo / ruta del archivo</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/Recent.qml" line="46"/>
+        <location filename="../../Sandbox/Recent.qml" line="46" />
         <source>file</source>
-        <translation type="unfinished"></translation>
+        <translation>archivo</translation>
     </message>
 </context>
 <context>
@@ -1059,9 +1058,9 @@ This operation cannot be undone.</source>
 <context>
     <name>Scrolling</name>
     <message>
-        <location filename="../../Sandbox/Scrolling.qml" line="26"/>
+        <location filename="../../Sandbox/Scrolling.qml" line="26" />
         <source>Scrolling example</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejemplo de desplazamiento</translation>
     </message>
 </context>
 <context>
@@ -1103,30 +1102,30 @@ This operation cannot be undone.</source>
         <translation type="vanished">Mostrar leyenda </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced.qml" line="14"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced.qml" line="14" />
         <source>Parameter names</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombres de los parámetros</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced.qml" line="22"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced.qml" line="22" />
         <source>Calculation engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor de cálculo</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Analysis/SideBarAdvanced.qml" line="29"/>
+        <location filename="../../Components/Pages/Analysis/SideBarAdvanced.qml" line="29" />
         <source>Minimization engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor de minimización</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarAdvanced.qml" line="14"/>
-        <location filename="../../Components/Pages/Summary/SideBarAdvanced.qml" line="14"/>
+        <location filename="../../Components/Pages/Experiment/SideBarAdvanced.qml" line="14" />
+        <location filename="../../Components/Pages/Summary/SideBarAdvanced.qml" line="14" />
         <source>Empty group</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupo vacío</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarAdvanced.qml" line="14"/>
+        <location filename="../../Components/Pages/Model/SideBarAdvanced.qml" line="14" />
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Apariencia</translation>
     </message>
 </context>
 <context>
@@ -1208,29 +1207,29 @@ This operation cannot be undone.</source>
         <translation type="vanished">Método </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="16"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="16" />
         <source>Experiments</source>
-        <translation type="unfinished"></translation>
+        <translation>Experimentos</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="25"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="25" />
         <source>Diffraction radiation</source>
-        <translation type="unfinished"></translation>
+        <translation>Radiación de difracción</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="33"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="33" />
         <source>Measured range</source>
         <translation>Rango medido </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="41"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="41" />
         <source>Instrument resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Resolución del instrumento</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="49"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="49" />
         <source>Peak asymmetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Asimetría máxima</translation>
     </message>
     <message>
         <source>Simulation range</source>
@@ -1257,7 +1256,7 @@ This operation cannot be undone.</source>
         <translation type="vanished">Muestra de lorentzian que se amplía </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="57"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="57" />
         <source>Background</source>
         <translation>Fondo </translation>
     </message>
@@ -1278,7 +1277,7 @@ This operation cannot be undone.</source>
         <translation type="vanished">Restablecer a los puntos predeterminados </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="65"/>
+        <location filename="../../Components/Pages/Experiment/SideBarBasic.qml" line="65" />
         <source>Associated phases</source>
         <translation>Fases asociadas </translation>
     </message>
@@ -1287,14 +1286,14 @@ This operation cannot be undone.</source>
         <translation type="vanished">Archivos de información </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic.qml" line="17"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic.qml" line="17" />
         <source>Get started</source>
         <translation>Empezar </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic.qml" line="34"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic.qml" line="34" />
         <source>Recent projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyectos recientes</translation>
     </message>
     <message>
         <source>Create a new project</source>
@@ -1313,7 +1312,7 @@ This operation cannot be undone.</source>
         <translation type="vanished">Guardar proyecto como... </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Project/SideBarBasic.qml" line="25"/>
+        <location filename="../../Components/Pages/Project/SideBarBasic.qml" line="25" />
         <source>Examples</source>
         <translation>Ejemplos </translation>
     </message>
@@ -1350,7 +1349,7 @@ This operation cannot be undone.</source>
         <translation type="vanished">Parámetros de desplazamiento atómico </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Summary/SideBarBasic.qml" line="17"/>
+        <location filename="../../Components/Pages/Summary/SideBarBasic.qml" line="17" />
         <source>Export report</source>
         <translation>Reporte de exportacion </translation>
     </message>
@@ -1391,284 +1390,284 @@ This operation cannot be undone.</source>
         <translation type="vanished">Exportar </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="16"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="17" />
         <source>Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelos</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="25"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="26" />
         <source>Space group</source>
-        <translation type="unfinished">Grupo espacial </translation>
+        <translation>Grupo espacial </translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="33"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="36" />
         <source>Cell</source>
-        <translation type="unfinished"></translation>
+        <translation>Celda</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="41"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="46" />
         <source>Atom site</source>
-        <translation type="unfinished"></translation>
+        <translation>Sitio Atom</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="49"/>
+        <location filename="../../Components/Pages/Model/SideBarBasic.qml" line="56" />
         <source>Atomic displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Desplazamiento atómico</translation>
     </message>
 </context>
 <context>
     <name>SplashScreen</name>
     <message>
-        <location filename="../../Components/SplashScreen.qml" line="16"/>
+        <location filename="../../Components/SplashScreen.qml" line="16" />
         <source>Version</source>
-        <translation type="unfinished">Versión </translation>
+        <translation>Versión </translation>
     </message>
 </context>
 <context>
     <name>StatusBar</name>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="19"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="21"/>
+        <location filename="../../Components/StatusBar.qml" line="19" />
+        <location filename="../../Sandbox/StatusBar.qml" line="21" />
         <source>Project</source>
-        <translation type="unfinished">Proyecto </translation>
+        <translation>Proyecto </translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="21"/>
+        <location filename="../../Components/StatusBar.qml" line="21" />
         <source>Current project</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyecto actual</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="26"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="28"/>
+        <location filename="../../Components/StatusBar.qml" line="26" />
+        <location filename="../../Sandbox/StatusBar.qml" line="28" />
         <source>Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelos</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="28"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="30"/>
+        <location filename="../../Components/StatusBar.qml" line="28" />
+        <location filename="../../Sandbox/StatusBar.qml" line="30" />
         <source>Number of models added</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de modelos añadidos</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="33"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="35"/>
+        <location filename="../../Components/StatusBar.qml" line="33" />
+        <location filename="../../Sandbox/StatusBar.qml" line="35" />
         <source>Experiments</source>
-        <translation type="unfinished"></translation>
+        <translation>Experimentos</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="35"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="37"/>
+        <location filename="../../Components/StatusBar.qml" line="35" />
+        <location filename="../../Sandbox/StatusBar.qml" line="37" />
         <source>Number of experiments added</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de experimentos añadidos</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="40"/>
+        <location filename="../../Components/StatusBar.qml" line="40" />
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculadora</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="42"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="44"/>
+        <location filename="../../Components/StatusBar.qml" line="42" />
+        <location filename="../../Sandbox/StatusBar.qml" line="44" />
         <source>Current calculation engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor de cálculo actual</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="47"/>
+        <location filename="../../Components/StatusBar.qml" line="47" />
         <source>Minimizer</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimizador</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="49"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="51"/>
+        <location filename="../../Components/StatusBar.qml" line="49" />
+        <location filename="../../Sandbox/StatusBar.qml" line="51" />
         <source>Current minimization engine and method</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor y método de minimización de corriente</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="54"/>
+        <location filename="../../Components/StatusBar.qml" line="54" />
         <source>Parameters</source>
-        <translation type="unfinished">Parámetros </translation>
+        <translation>Parámetros </translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="56"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="58"/>
+        <location filename="../../Components/StatusBar.qml" line="56" />
+        <location filename="../../Sandbox/StatusBar.qml" line="58" />
         <source>Number of parameters: total, free and fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de parámetros: total, libre y fijo</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="61"/>
+        <location filename="../../Components/StatusBar.qml" line="61" />
         <source>Fit iterations</source>
-        <translation type="unfinished"></translation>
+        <translation>Iteraciones de ajuste</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="63"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="65"/>
+        <location filename="../../Components/StatusBar.qml" line="63" />
+        <location filename="../../Sandbox/StatusBar.qml" line="65" />
         <source>Number of fit iterations after the last refinement step</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de iteraciones de ajuste después del último paso de refinamiento</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="69"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="70"/>
+        <location filename="../../Components/StatusBar.qml" line="69" />
+        <location filename="../../Sandbox/StatusBar.qml" line="70" />
         <source>Goodness-of-fit</source>
-        <translation type="unfinished"></translation>
+        <translation>Bondad de ajuste</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="72"/>
+        <location filename="../../Components/StatusBar.qml" line="72" />
         <source>Reduced χ² goodness-of-fit: previous → last</source>
-        <translation type="unfinished"></translation>
+        <translation>Bondad de ajuste χ² reducida: anterior → última.</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="73"/>
+        <location filename="../../Components/StatusBar.qml" line="73" />
         <source>Reduced χ² goodness-of-fit</source>
-        <translation type="unfinished"></translation>
+        <translation>Bondad de ajuste χ² reducida</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="78"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="78"/>
+        <location filename="../../Components/StatusBar.qml" line="78" />
+        <location filename="../../Sandbox/StatusBar.qml" line="78" />
         <source>Fit status</source>
-        <translation type="unfinished"></translation>
+        <translation>Estado de forma</translation>
     </message>
     <message>
-        <location filename="../../Components/StatusBar.qml" line="80"/>
-        <location filename="../../Sandbox/StatusBar.qml" line="80"/>
+        <location filename="../../Components/StatusBar.qml" line="80" />
+        <location filename="../../Sandbox/StatusBar.qml" line="80" />
         <source>Status of the last refinement step</source>
-        <translation type="unfinished"></translation>
+        <translation>Estado del último paso de perfeccionamiento</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/StatusBar.qml" line="23"/>
+        <location filename="../../Sandbox/StatusBar.qml" line="23" />
         <source>Current project name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del proyecto actual</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/StatusBar.qml" line="42"/>
+        <location filename="../../Sandbox/StatusBar.qml" line="42" />
         <source>Calculate</source>
-        <translation type="unfinished"></translation>
+        <translation>Calcule</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/StatusBar.qml" line="49"/>
+        <location filename="../../Sandbox/StatusBar.qml" line="49" />
         <source>Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimice</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/StatusBar.qml" line="56"/>
+        <location filename="../../Sandbox/StatusBar.qml" line="56" />
         <source>Params</source>
-        <translation type="unfinished"></translation>
+        <translation>Parámetros</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/StatusBar.qml" line="63"/>
+        <location filename="../../Sandbox/StatusBar.qml" line="63" />
         <source>Fit iteration</source>
-        <translation type="unfinished"></translation>
+        <translation>Iteración de ajuste</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/StatusBar.qml" line="73"/>
+        <location filename="../../Sandbox/StatusBar.qml" line="73" />
         <source>Goodness-of-fit (χ²): previous and last comparisons</source>
-        <translation type="unfinished"></translation>
+        <translation>Bondad de ajuste (χ²): comparaciones anterior y última</translation>
     </message>
 </context>
 <context>
     <name>StructureViewTab</name>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="298"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="298" />
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>Ampliar</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="309"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="309" />
         <source>Zoom out</source>
-        <translation type="unfinished"></translation>
+        <translation>Alejar</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="320"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="320" />
         <source>Reset to default scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Restablecer la escala por defecto</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="333"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="333" />
         <source>View along the a axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista a lo largo del eje a</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="344"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="344" />
         <source>View along the b axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista a lo largo del eje b</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="355"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="355" />
         <source>View along the c axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista a lo largo del eje c</translation>
     </message>
     <message>
-        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="366"/>
+        <location filename="../../Components/Pages/Model/MainContent/StructureViewTab.qml" line="366" />
         <source>Reset to default rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Restablecer rotación por defecto</translation>
     </message>
 </context>
 <context>
     <name>TableView</name>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="24"/>
+        <location filename="../../Sandbox/TableView.qml" line="24" />
         <source>No recent projects found: regular table</source>
-        <translation type="unfinished"></translation>
+        <translation>No se han encontrado proyectos recientes: tabla periódica</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="47"/>
+        <location filename="../../Sandbox/TableView.qml" line="47" />
         <source>No recent projects found: tall table</source>
-        <translation type="unfinished"></translation>
+        <translation>No se han encontrado proyectos recientes: mesa alta</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="75"/>
+        <location filename="../../Sandbox/TableView.qml" line="75" />
         <source>No models defined</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay modelos definidos</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="90"/>
+        <location filename="../../Sandbox/TableView.qml" line="90" />
         <source>label</source>
-        <translation type="unfinished"></translation>
+        <translation>etiqueta</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="113"/>
+        <location filename="../../Sandbox/TableView.qml" line="113" />
         <source>Calculated pattern color</source>
-        <translation type="unfinished"></translation>
+        <translation>Color del patrón calculado</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="123"/>
+        <location filename="../../Sandbox/TableView.qml" line="123" />
         <source>Remove this model</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar este modelo</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="146"/>
+        <location filename="../../Sandbox/TableView.qml" line="146" />
         <source>No recent projects found</source>
-        <translation type="unfinished"></translation>
+        <translation>No se han encontrado proyectos recientes</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TableView.qml" line="170"/>
+        <location filename="../../Sandbox/TableView.qml" line="170" />
         <source>file</source>
-        <translation type="unfinished"></translation>
+        <translation>archivo</translation>
     </message>
 </context>
 <context>
     <name>TextView</name>
     <message>
-        <location filename="../../Components/Pages/Experiment/SideBarText/TextView.qml" line="99"/>
-        <location filename="../../Components/Pages/Model/SideBarText/TextView.qml" line="105"/>
+        <location filename="../../Components/Pages/Experiment/SideBarText/TextView.qml" line="99" />
+        <location filename="../../Components/Pages/Model/SideBarText/TextView.qml" line="105" />
         <source>Apply changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplicar cambios</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TextView.qml" line="50"/>
+        <location filename="../../Sandbox/TextView.qml" line="50" />
         <source>Apply all changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplicar todos los cambios</translation>
     </message>
     <message>
-        <location filename="../../Sandbox/TextView.qml" line="67"/>
+        <location filename="../../Sandbox/TextView.qml" line="67" />
         <source>Undo all changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Deshacer todos los cambios</translation>
     </message>
 </context>
 <context>
     <name>UserGuides</name>
     <message>
-        <source>Click here to show the &apos;About&apos; window.</source>
-        <translation type="vanished">Haga clic aquí para mostrar la ventana &apos;acerca de&apos;. </translation>
+        <source>Click here to show the 'About' window.</source>
+        <translation type="vanished">Haga clic aquí para mostrar la ventana 'acerca de'. </translation>
     </message>
     <message>
         <source>Here you can find links to the online resources.</source>
