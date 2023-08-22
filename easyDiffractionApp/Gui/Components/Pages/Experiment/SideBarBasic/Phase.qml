@@ -25,7 +25,7 @@ EaElements.GroupColumn {
         // directly access that model in every row using the TableView index property.
         model: typeof Globals.Proxies.main.experiment.dataBlocksNoMeas[Globals.Proxies.main.experiment.currentIndex] === 'undefined' ?
             [] :
-            Globals.Proxies.main.experiment.dataBlocksNoMeas[Globals.Proxies.main.experiment.currentIndex].loops._phase
+            Globals.Proxies.main.experiment.dataBlocksNoMeas[Globals.Proxies.main.experiment.currentIndex].loops._pd_phase_block
         // Table model
 
         // Header row
@@ -45,14 +45,14 @@ EaElements.GroupColumn {
                 width: EaStyle.Sizes.fontPixelSize * 6.0
                 horizontalAlignment: Text.AlignLeft
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.experimentLoopParam('_phase', '_label', 0).title ?? ''  // 0 = 1st element index
+                text: Globals.Proxies.experimentLoopParam('_pd_phase_block', 'id', 0).shortPrettyName ?? ''  // 0 = 1st element index
             }
 
             EaComponents.TableViewLabel {
                 width: EaStyle.Sizes.fontPixelSize * 4.0
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.experimentLoopParam('_phase', '_scale', 0).title ?? ''  // 0 = 1st element index
+                text: Globals.Proxies.experimentLoopParam('_pd_phase_block', 'scale', 0).shortPrettyName ?? ''  // 0 = 1st element index
             }
 
             EaComponents.TableViewLabel {
@@ -85,12 +85,12 @@ EaElements.GroupColumn {
 
             EaComponents.TableViewParameter {
                 readOnly: true
-                parameter: Globals.Proxies.experimentLoopParam('_phase', '_label', index)
+                parameter: Globals.Proxies.experimentLoopParam('_pd_phase_block', 'id', index)
                 onEditingFinished: Globals.Proxies.setExperimentLoopParamWithFullUpdate(parameter, 'value', text)
             }
 
             EaComponents.TableViewParameter {
-                parameter: Globals.Proxies.experimentLoopParam('_phase', '_scale', index)
+                parameter: Globals.Proxies.experimentLoopParam('_pd_phase_block', 'scale', index)
                 onEditingFinished: Globals.Proxies.setExperimentLoopParam(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setExperimentLoopParam(parameter, 'fit', fitCheckBox.checked)
             }

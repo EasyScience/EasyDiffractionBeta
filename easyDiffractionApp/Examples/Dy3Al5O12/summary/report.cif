@@ -1,25 +1,25 @@
 data_dy3al5o12
 
-_cell_length_a 11.8997(0.0011)
-_cell_length_b 11.8997
-_cell_length_c 11.8997
-_cell_angle_alpha 90
-_cell_angle_beta 90
-_cell_angle_gamma 90
-_space_group_name_H-M_alt "I a -3 d"
-_space_group_IT_coordinate_system_code 1
+_cell.length_a 11.8997(0.0011)
+_cell.length_b 11.8997
+_cell.length_c 11.8997
+_cell.angle_alpha 90
+_cell.angle_beta 90
+_cell.angle_gamma 90
+_space_group.name_H-M_alt "I a -3 d"
+_space_group.IT_coordinate_system_code 1
 
 loop_
-_atom_site_label
-_atom_site_type_symbol
-_atom_site_fract_x
-_atom_site_fract_y
-_atom_site_fract_z
-_atom_site_occupancy
-_atom_site_adp_type
-_atom_site_B_iso_or_equiv
-_atom_site_multiplicity
-_atom_site_Wyckoff_symbol
+_atom_site.label
+_atom_site.type_symbol
+_atom_site.fract_x
+_atom_site.fract_y
+_atom_site.fract_z
+_atom_site.occupancy
+_atom_site.adp_type
+_atom_site.B_iso_or_equiv
+_atom_site.multiplicity
+_atom_site.Wyckoff_symbol
 Dy Dy 0.125 0 0.25 1 Biso 0 24 c 
 Al1 Al 0.375 0 0.25 1 Biso 0 24 d 
 Al2 Al 0 0 0 1 Biso 0 16 a 
@@ -27,30 +27,30 @@ O O 0.0301(0.0004) 0.0499(0.0006) 0.648(0.0008) 1 Biso 0 96 h
 
 data_g41
 
-_diffrn_radiation_probe neutron
-_diffrn_radiation_wavelength 2.4
-_pd_meas_2theta_offset -0.0708(0.0001)
-_pd_instr_resolution_u 0.8971(0.0786)
-_pd_instr_resolution_v -0.3054(0.0833)
-_pd_instr_resolution_w 0.0966(0.0206)
-_pd_instr_resolution_x 0
-_pd_instr_resolution_y 0
-_pd_meas_2theta_range_min 13.6
-_pd_meas_2theta_range_max 93.5
-_pd_meas_2theta_range_inc 0.05
-_pd_instr_reflex_asymmetry_p1 0
-_pd_instr_reflex_asymmetry_p2 0
-_pd_instr_reflex_asymmetry_p3 0
-_pd_instr_reflex_asymmetry_p4 0
+_diffrn_radiation.probe neutron
+_diffrn_radiation_wavelength.wavelength 2.4
+_pd_calib.2theta_offset -0.0708(0.0001)
+_pd_instr.resolution_u 0.8971(0.0786)
+_pd_instr.resolution_v -0.3054(0.0833)
+_pd_instr.resolution_w 0.0966(0.0206)
+_pd_instr.resolution_x 0
+_pd_instr.resolution_y 0
+_pd_meas.2theta_scan_range_min 13.6
+_pd_meas.2theta_scan_range_max 93.5
+_pd_meas.2theta_scan_range_inc 0.05
+_pd_instr.reflex_asymmetry_p1 0
+_pd_instr.reflex_asymmetry_p2 0
+_pd_instr.reflex_asymmetry_p3 0
+_pd_instr.reflex_asymmetry_p4 0
 
 loop_
-_phase_label
-_phase_scale
+_pd_phase_block.id
+_pd_phase_block.scale
 dy3al5o12 0.0274(0.0003) 
 
 loop_
-_pd_background_2theta
-_pd_background_intensity
+_pd_background.line_segment_X
+_pd_background.line_segment_intensity
 10 960.0009(20.2876) 
 20 949.1556(7.8066) 
 30 1001.7074(7.3431) 

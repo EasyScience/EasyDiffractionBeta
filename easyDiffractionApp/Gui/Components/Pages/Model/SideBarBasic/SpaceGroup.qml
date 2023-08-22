@@ -15,22 +15,22 @@ EaElements.GroupRow {
 
     EaElements.ParamTextField {
         readOnly: true
-        parameter: Globals.Proxies.modelMainParam('_space_group_crystal_system')
+        parameter: Globals.Proxies.modelMainParam('_space_group', 'crystal_system')
     }
 
     EaElements.ParamTextField {
         readOnly: true
-        parameter: Globals.Proxies.modelMainParam('_space_group_IT_number')
+        parameter: Globals.Proxies.modelMainParam('_space_group', 'IT_number')
     }
 
     EaElements.ParamTextField {
-        parameter: Globals.Proxies.modelMainParam('_space_group_name_H-M_alt')
+        parameter: Globals.Proxies.modelMainParam('_space_group', 'name_H-M_alt')
         onEditingFinished: Globals.Proxies.setModelMainParamWithFullUpdate(parameter, 'value', text)
         warned: !Globals.Proxies.main.model.spaceGroupNames.includes(text)
     }
 
     EaElements.ParamComboBox {
-        parameter: Globals.Proxies.modelMainParam('_space_group_IT_coordinate_system_code')
+        parameter: Globals.Proxies.modelMainParam('_space_group', 'IT_coordinate_system_code')
         onActivated: Globals.Proxies.setModelMainParamWithFullUpdate(parameter, 'value', currentText)
     }
 

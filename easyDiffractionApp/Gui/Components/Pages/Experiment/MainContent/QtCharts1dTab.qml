@@ -30,14 +30,14 @@ Rectangle {
         axisX.max: Globals.Proxies.rangeValue('xMax')
         axisX.minAfterReset: Globals.Proxies.rangeValue('xMin')
         axisX.maxAfterReset: Globals.Proxies.rangeValue('xMax')
-        axisX.onRangeChanged: saveImgTimer.restart()
+        axisX.onRangeChanged: if (Globals.Proxies.main.project.created) saveImgTimer.restart()
 
         axisY.title: "Imeas, Ibkg"
         axisY.min: Globals.Proxies.rangeValue('yMin')
         axisY.max: Globals.Proxies.rangeValue('yMax')
         axisY.minAfterReset: Globals.Proxies.rangeValue('yMin')
         axisY.maxAfterReset: Globals.Proxies.rangeValue('yMax')
-        axisY.onRangeChanged: saveImgTimer.restart()
+        axisY.onRangeChanged: if (Globals.Proxies.main.project.created) saveImgTimer.restart()
 
         measSerie.pointsVisible: true
 

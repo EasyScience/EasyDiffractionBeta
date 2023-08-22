@@ -21,18 +21,17 @@ EaComponents.TableView {
     property var param: {
         "blockType": "model",
         "blockIcon": "layer-group",
-        "blockIndex": 0,
+        "blockIdx": 0,
         "blockName": "co2sio4",
-        "groupIcon": "atom",
-        "loopName": "_atom_site",
-        "prettyLoopName": "atom",
+        "categoryIcon": "atom",
+        "category": "_atom_site",
+        "prettyCategory": "atom",
         "rowIndex": 2,
         "rowName": "Si",
-        "prettyRowName": "",
         "icon": "map-marker-alt",
         "name": "_fract_x",
         "prettyName": "fract x",
-        "title": "x" }
+        "shortPrettyName": "x" }
 
     showHeader: false
     tallRows: true

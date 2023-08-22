@@ -23,8 +23,8 @@ Column {
     property alias residSerie: residSerie
 
     property var phaseNames: Globals.Proxies.main.experiment.dataBlocksNoMeas[
-                                 Globals.Proxies.main.experiment.currentIndex].loops._phase.map(
-                                 phase => phase._label.value)
+                                 Globals.Proxies.main.experiment.currentIndex].loops._pd_phase_block.map(
+                                 phase => phase.id.value)
 
     property string calcSerieColor: EaStyle.Colors.chartForegrounds[0]
 

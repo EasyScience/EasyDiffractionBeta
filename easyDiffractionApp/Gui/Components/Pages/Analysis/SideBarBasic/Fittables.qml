@@ -212,7 +212,8 @@ Column {
             EaComponents.TableViewLabel {
                 width: EaStyle.Sizes.fontPixelSize * 5
                 text: Globals.Proxies.paramName(item, EaGlobals.Vars.paramNameFormat)
-                textFormat: EaGlobals.Vars.paramNameFormat === EaGlobals.Vars.PlainFullWithLabels ?
+                textFormat: EaGlobals.Vars.paramNameFormat === EaGlobals.Vars.PlainShortWithLabels ||
+                            EaGlobals.Vars.paramNameFormat === EaGlobals.Vars.PlainFullWithLabels ?
                                 Text.PlainText :
                                 Text.RichText
                 //clip: true
@@ -233,12 +234,12 @@ Column {
                     console.debug('')
                     console.debug("*** Editing (manual) 'value' field of fittable on Analysis page ***")
                     Globals.Proxies.main.fittables.editSilently(item.blockType,
-                                                        item.blockIndex,
-                                                        item.loopName,
-                                                        item.rowIndex,
-                                                        item.name,
-                                                        'value',
-                                                        text)
+                                                                item.blockIdx,
+                                                                item.category,
+                                                                item.rowIndex ?? -1,
+                                                                item.name,
+                                                                'value',
+                                                                text)
                     updateSliderLimits()
                     slider.value = Globals.Proxies.main_fittables_data[selectedParamIndex].value
 
@@ -264,12 +265,12 @@ Column {
                     console.debug("*** Editing 'min' field of fittable on Analysis page ***")
                     const value = (text === '' ? '-inf' : text)
                     Globals.Proxies.main.fittables.editSilently(item.blockType,
-                                                        item.blockIndex,
-                                                        item.loopName,
-                                                        item.rowIndex,
-                                                        item.name,
-                                                        'min',
-                                                        value)
+                                                                item.blockIdx,
+                                                                item.category,
+                                                                item.rowIndex ?? -1,
+                                                                item.name,
+                                                                'min',
+                                                                value)
                 }
             }
 
@@ -282,12 +283,12 @@ Column {
                     console.debug("*** Editing 'max' field of fittable on Analysis page ***")
                     const value = (text === '' ? 'inf' : text)
                     Globals.Proxies.main.fittables.editSilently(item.blockType,
-                                                        item.blockIndex,
-                                                        item.loopName,
-                                                        item.rowIndex,
-                                                        item.name,
-                                                        'max',
-                                                        value)
+                                                                item.blockIdx,
+                                                                item.category,
+                                                                item.rowIndex ?? -1,
+                                                                item.name,
+                                                                'max',
+                                                                value)
                 }
             }
 
@@ -299,12 +300,12 @@ Column {
                     console.debug('')
                     console.debug("*** Editing 'fit' field of fittable on Analysis page ***")
                     Globals.Proxies.main.fittables.editSilently(item.blockType,
-                                                        item.blockIndex,
-                                                        item.loopName,
-                                                        item.rowIndex,
-                                                        item.name,
-                                                        'fit',
-                                                        checked)
+                                                                item.blockIdx,
+                                                                item.category,
+                                                                item.rowIndex ?? -1,
+                                                                item.name,
+                                                                'fit',
+                                                                checked)
                 }
             }
         }
@@ -355,8 +356,8 @@ Column {
                     console.debug("*** Editing (slider) 'value' field of fittable on Analysis page ***")
                     const item = Globals.Proxies.main_fittables_data[selectedParamIndex]
                     Globals.Proxies.main.fittables.editSilently(item.blockType,
-                                                        item.blockIndex,
-                                                        item.loopName,
+                                                        item.blockIdx,
+                                                        item.category,
                                                         item.rowIndex,
                                                         item.name,
                                                         'value',

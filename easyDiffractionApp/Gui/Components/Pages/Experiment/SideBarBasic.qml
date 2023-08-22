@@ -62,7 +62,7 @@ EaComponents.SideBarColumn {
     }
 
     EaElements.GroupBox {
-        title: Globals.Proxies.experimentLoopTitle(qsTr('Associated phases'), '_phase')
+        title: Globals.Proxies.experimentLoopTitle(qsTr('Associated phases'), '_pd_phase_block')
         icon: 'layer-group'
         visible: Globals.Proxies.main.experiment.defined
 

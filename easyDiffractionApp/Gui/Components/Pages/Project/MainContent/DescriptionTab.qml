@@ -76,7 +76,7 @@ Rectangle {
 
             // Description
             Row {
-                property var parameter: Globals.Proxies.projectMainParam('_description')
+                property var parameter: Globals.Proxies.projectMainParam('_project', 'description')
                 spacing: innerSpacing
                 EaElements.Label {
                     width: nameColumnWidth
@@ -240,7 +240,7 @@ Rectangle {
                 Item { height: 1; width: nameColumnWidth }
                 Repeater {
                     id: modelImageRepeater
-                    model: Globals.Proxies.main.project.dataBlock.loops._model_cif_file
+                    model: Globals.Proxies.main.project.dataBlock.loops._model
                     Rectangle {
                         visible: childrenRect.height
                         height: childrenRect.height + 2 * border.width
@@ -256,7 +256,7 @@ Rectangle {
                             asynchronous: true
                             mipmap: true
                             source: {
-                                const cifFileName = modelImageRepeater.model[index]._name.value
+                                const cifFileName = modelImageRepeater.model[index].cif_file_name.value
                                 let split = cifFileName.split('.')
                                 split.pop()
                                 const baseFileName = split.join(".")
@@ -301,7 +301,7 @@ Rectangle {
                 Item { height: 1; width: nameColumnWidth }
                 Repeater {
                     id: experimentImageRepeater
-                    model: Globals.Proxies.main.project.dataBlock.loops._experiment_cif_file
+                    model: Globals.Proxies.main.project.dataBlock.loops._experiment
                     Rectangle {
                         visible: childrenRect.height
                         height: childrenRect.height + 2 * border.width
@@ -316,7 +316,7 @@ Rectangle {
                             mipmap: true
                             fillMode: Image.PreserveAspectFit
                             source: {
-                                const cifFileName = experimentImageRepeater.model[index]._name.value
+                                const cifFileName = experimentImageRepeater.model[index].cif_file_name.value
                                 let split = cifFileName.split('.')
                                 split.pop()
                                 const baseFileName = split.join(".")

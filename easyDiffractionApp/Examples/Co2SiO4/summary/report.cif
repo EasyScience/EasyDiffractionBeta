@@ -1,25 +1,25 @@
 data_co2sio4
 
-_cell_length_a 10.3089(0.0002)
-_cell_length_b 6.0039(0.0001)
-_cell_length_c 4.7867(0.0001)
-_cell_angle_alpha 90
-_cell_angle_beta 90
-_cell_angle_gamma 90
-_space_group_name_H-M_alt "P n m a"
-_space_group_IT_coordinate_system_code abc
+_cell.length_a 10.3089(0.0002)
+_cell.length_b 6.0039(0.0001)
+_cell.length_c 4.7867(0.0001)
+_cell.angle_alpha 90
+_cell.angle_beta 90
+_cell.angle_gamma 90
+_space_group.name_H-M_alt "P n m a"
+_space_group.IT_coordinate_system_code abc
 
 loop_
-_atom_site_label
-_atom_site_type_symbol
-_atom_site_fract_x
-_atom_site_fract_y
-_atom_site_fract_z
-_atom_site_occupancy
-_atom_site_adp_type
-_atom_site_B_iso_or_equiv
-_atom_site_multiplicity
-_atom_site_Wyckoff_symbol
+_atom_site.label
+_atom_site.type_symbol
+_atom_site.fract_x
+_atom_site.fract_y
+_atom_site.fract_z
+_atom_site.occupancy
+_atom_site.adp_type
+_atom_site.B_iso_or_equiv
+_atom_site.multiplicity
+_atom_site.Wyckoff_symbol
 Co1 Co 0 0 0 1 Biso 0.3 4 a 
 Co2 Co 0.279 0.25 0.985 1 Biso 0.3 4 c 
 Si Si 0.094 0.25 0.429 1 Biso 0.34 4 c 
@@ -29,30 +29,30 @@ O3 O 0.164 0.032 0.28 1 Biso 0.83 8 d
 
 data_d20
 
-_diffrn_radiation_probe neutron
-_diffrn_radiation_wavelength 1.87
-_pd_meas_2theta_offset 0.2879(0)
-_pd_instr_resolution_u 0.241
-_pd_instr_resolution_v -0.528
-_pd_instr_resolution_w 0.384
-_pd_instr_resolution_x 0
-_pd_instr_resolution_y 0.016
-_pd_meas_2theta_range_min 8.0953
-_pd_meas_2theta_range_max 150.0953
-_pd_meas_2theta_range_inc 0.05
-_pd_instr_reflex_asymmetry_p1 0
-_pd_instr_reflex_asymmetry_p2 0
-_pd_instr_reflex_asymmetry_p3 0
-_pd_instr_reflex_asymmetry_p4 0
+_diffrn_radiation.probe neutron
+_diffrn_radiation_wavelength.wavelength 1.87
+_pd_calib.2theta_offset 0.2879(0)
+_pd_instr.resolution_u 0.241
+_pd_instr.resolution_v -0.528
+_pd_instr.resolution_w 0.384
+_pd_instr.resolution_x 0
+_pd_instr.resolution_y 0.016
+_pd_meas.2theta_scan_range_min 8.0953
+_pd_meas.2theta_scan_range_max 150.0953
+_pd_meas.2theta_scan_range_inc 0.05
+_pd_instr.reflex_asymmetry_p1 0
+_pd_instr.reflex_asymmetry_p2 0
+_pd_instr.reflex_asymmetry_p3 0
+_pd_instr.reflex_asymmetry_p4 0
 
 loop_
-_phase_label
-_phase_scale
+_pd_phase_block.id
+_pd_phase_block.scale
 co2sio4 1.1921(0.004) 
 
 loop_
-_pd_background_2theta
-_pd_background_intensity
+_pd_background.line_segment_X
+_pd_background.line_segment_intensity
 8 609 
 9 581 
 10 563 

@@ -27,37 +27,37 @@ except ImportError:
 
 _DEFAULT_DATA_BLOCK_NO_MEAS = """data_pnd
 
-_diffrn_radiation_probe neutron
-_diffrn_radiation_wavelength 1.9
+_diffrn_radiation.probe neutron
+_diffrn_radiation_wavelength.value 1.9
 
-_pd_meas_2theta_offset 0.0
+_pd_calib.2theta_offset 0.0
 
-_pd_instr_resolution_u 0.04
-_pd_instr_resolution_v -0.05
-_pd_instr_resolution_w 0.06
-_pd_instr_resolution_x 0
-_pd_instr_resolution_y 0
+_pd_instr.resolution_u 0.04
+_pd_instr.resolution_v -0.05
+_pd_instr.resolution_w 0.06
+_pd_instr.resolution_x 0
+_pd_instr.resolution_y 0
 
-_pd_instr_reflex_asymmetry_p1 0
-_pd_instr_reflex_asymmetry_p2 0
-_pd_instr_reflex_asymmetry_p3 0
-_pd_instr_reflex_asymmetry_p4 0
+_pd_instr.reflex_asymmetry_p1 0
+_pd_instr.reflex_asymmetry_p2 0
+_pd_instr.reflex_asymmetry_p3 0
+_pd_instr.reflex_asymmetry_p4 0
 
 loop_
-_phase_label
-_phase_scale
+_pd_phase_block.id
+_pd_phase_block.scale
 ph 1.0
 
 loop_
-_pd_background_2theta
-_pd_background_intensity
+_pd_background.line_segment_X
+_pd_background.line_segment_intensity
 0 100
 180 100
 
 loop_
-_pd_meas_2theta
-_pd_meas_intensity
-_pd_meas_intensity_sigma
+_pd_meas.2theta_scan
+_pd_meas.intensity_total
+_pd_meas.intensity_total_su
 """
 
 _DEFAULT_DATA_BLOCK = _DEFAULT_DATA_BLOCK_NO_MEAS + """36.5 1    1
@@ -206,7 +206,7 @@ class Experiment(QObject):
         # Add/modify CryspyObj with ranges based on the measured data points in _pd_meas loop
         pd_meas_2theta_range_min = 0  # default value to be updated later
         pd_meas_2theta_range_max = 180  # default value to be updated later
-        defaultEdRangeCif = f'_pd_meas_2theta_range_min {pd_meas_2theta_range_min}\n_pd_meas_2theta_range_max {pd_meas_2theta_range_max}'
+        defaultEdRangeCif = f'_pd_meas.2theta_range_min {pd_meas_2theta_range_min}\n_pd_meas.2theta_range_max {pd_meas_2theta_range_max}'
         cryspyRangeCif = CryspyParser.edCifToCryspyCif(defaultEdRangeCif)
         cryspyRangeObj = str_to_globaln(cryspyRangeCif).items
         for dataBlock in cryspyExperimentsObj.items:
@@ -231,7 +231,7 @@ class Experiment(QObject):
                         del dataBlock.items[itemIdx]
             itemTypes = [type(item) for item in dataBlock.items]
             if cryspy.C_item_loop_classes.cl_1_phase.PhaseL not in itemTypes:
-                defaultEdModelsCif = 'loop_\n_phase_label\n_phase_scale'
+                defaultEdModelsCif = 'loop_\n_pd_phase_block.id\n_pd_phase_block.scale'
                 for modelName in loadedModelNames:
                     defaultEdModelsCif += f'\n{modelName} 1.0'
                 cryspyPhasesCif = CryspyParser.edCifToCryspyCif(defaultEdModelsCif)
@@ -347,42 +347,42 @@ class Experiment(QObject):
         #self.dataBlocksChanged.emit()
         console.debug("All experiments removed")
 
-    @Slot(int, str, str, 'QVariant')
-    def setMainParamWithFullUpdate(self, blockIndex, paramName, field, value):
-        changedIntern = self.editDataBlockMainParam(blockIndex, paramName, field, value)
+    @Slot(int, str, str, str, 'QVariant')
+    def setMainParamWithFullUpdate(self, blockIdx, category, name, field, value):
+        changedIntern = self.editDataBlockMainParam(blockIdx, category, name, field, value)
         if not changedIntern:
             return
         self.replaceExperiment()
 
-    @Slot(int, str, str, 'QVariant')
-    def setMainParam(self, blockIndex, paramName, field, value):
-        changedIntern = self.editDataBlockMainParam(blockIndex, paramName, field, value)
-        changedCryspy = self.editCryspyDictByMainParam(blockIndex, paramName, field, value)
+    @Slot(int, str, str, str, 'QVariant')
+    def setMainParam(self, blockIdx, category, name, field, value):
+        changedIntern = self.editDataBlockMainParam(blockIdx, category, name, field, value)
+        changedCryspy = self.editCryspyDictByMainParam(blockIdx, category, name, field, value)
         if changedIntern and changedCryspy:
             self.dataBlocksNoMeasChanged.emit()
 
     @Slot(int, str, str, int, str, 'QVariant')
-    def setLoopParamWithFullUpdate(self, blockIndex, loopName, paramName, rowIndex, field, value):
-        changedIntern = self.editDataBlockLoopParam(blockIndex, loopName, paramName, rowIndex, field, value)
+    def setLoopParamWithFullUpdate(self, blockIdx, category, name, rowIndex, field, value):
+        changedIntern = self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
         if not changedIntern:
             return
         self.replaceExperiment()
 
     @Slot(int, str, str, int, str, 'QVariant')
-    def setLoopParam(self, blockIndex, loopName, paramName, rowIndex, field, value):
-        changedIntern = self.editDataBlockLoopParam(blockIndex, loopName, paramName, rowIndex, field, value)
-        changedCryspy = self.editCryspyDictByLoopParam(blockIndex, loopName, paramName, rowIndex, field, value)
+    def setLoopParam(self, blockIdx, category, name, rowIndex, field, value):
+        changedIntern = self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
+        changedCryspy = self.editCryspyDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
         if changedIntern and changedCryspy:
             self.dataBlocksNoMeasChanged.emit()
 
     @Slot(str, int)
-    def removeLoopRow(self, loopName, rowIndex):
-        self.removeDataBlockLoopRow(loopName, rowIndex)
+    def removeLoopRow(self, category, rowIndex):
+        self.removeDataBlockLoopRow(category, rowIndex)
         self.replaceExperiment()
 
     @Slot(str)
-    def appendLoopRow(self, loopName):
-        self.appendDataBlockLoopRow(loopName)
+    def appendLoopRow(self, category):
+        self.appendDataBlockLoopRow(category)
         self.replaceExperiment()
 
     @Slot()
@@ -398,72 +398,72 @@ class Experiment(QObject):
         experiments = [block for block in cryspyObj.items if type(block) == cryspyExperimentType]
         return experiments
 
-    def removeDataBlockLoopRow(self, loopName, rowIndex):
+    def removeDataBlockLoopRow(self, category, rowIndex):
         block = 'experiment'
-        blockIndex = self._currentIndex
-        del self._dataBlocksNoMeas[blockIndex]['loops'][loopName][rowIndex]
+        blockIdx = self._currentIndex
+        del self._dataBlocksNoMeas[blockIdx]['loops'][category][rowIndex]
 
-        console.debug(f"Intern dict ▌ {block}[{blockIndex}].{loopName}[{rowIndex}] has been removed")
+        console.debug(f"Intern dict ▌ {block}[{blockIdx}].{category}[{rowIndex}] has been removed")
 
-    def appendDataBlockLoopRow(self, loopName):
+    def appendDataBlockLoopRow(self, category):
         block = 'experiment'
-        blockIndex = self._currentIndex
+        blockIdx = self._currentIndex
 
-        lastBkgPoint = self._dataBlocksNoMeas[blockIndex]['loops'][loopName][-1]
+        lastBkgPoint = self._dataBlocksNoMeas[blockIdx]['loops'][category][-1]
 
         newBkgPoint = copy.deepcopy(lastBkgPoint)
         newBkgPoint['_2theta']['value'] += 10
 
-        self._dataBlocksNoMeas[blockIndex]['loops'][loopName].append(newBkgPoint)
-        atomsCount = len(self._dataBlocksNoMeas[blockIndex]['loops'][loopName])
+        self._dataBlocksNoMeas[blockIdx]['loops'][category].append(newBkgPoint)
+        atomsCount = len(self._dataBlocksNoMeas[blockIdx]['loops'][category])
 
-        console.debug(f"Intern dict ▌ {block}[{blockIndex}].{loopName}[{atomsCount}] has been added")
+        console.debug(f"Intern dict ▌ {block}[{blockIdx}].{category}[{atomsCount}] has been added")
 
     def resetDataBlockBkgToDefault(self):
         block = 'experiment'
-        blockIndex = self._currentIndex
-        loopName = '_pd_background'
+        blockIdx = self._currentIndex
+        category = '_pd_background'
 
-        firstBkgPoint = copy.deepcopy(self._dataBlocksNoMeas[blockIndex]['loops'][loopName][0])  # copy of the 1st point
+        firstBkgPoint = copy.deepcopy(self._dataBlocksNoMeas[blockIdx]['loops'][category][0])  # copy of the 1st point
         firstBkgPoint['_2theta']['value'] = 0
         firstBkgPoint['_intensity']['value'] = 0
 
         lastBkgPoint = copy.deepcopy(firstBkgPoint)
         lastBkgPoint['_2theta']['value'] = 180
 
-        self._dataBlocksNoMeas[blockIndex]['loops'][loopName] = [firstBkgPoint, lastBkgPoint]
+        self._dataBlocksNoMeas[blockIdx]['loops'][category] = [firstBkgPoint, lastBkgPoint]
 
-        console.debug(f"Intern dict ▌ {block}[{blockIndex}].{loopName} has been reset to default values")
+        console.debug(f"Intern dict ▌ {block}[{blockIdx}].{category} has been reset to default values")
 
-    def editDataBlockMainParam(self, blockIndex, paramName, field, value):
+    def editDataBlockMainParam(self, blockIdx, category, name, field, value):
         block = 'experiment'
-        oldValue = self._dataBlocksNoMeas[blockIndex]['params'][paramName][field]
+        oldValue = self._dataBlocksNoMeas[blockIdx]['params'][category][name][field]
         if oldValue == value:
             return False
-        self._dataBlocksNoMeas[blockIndex]['params'][paramName][field] = value
+        self._dataBlocksNoMeas[blockIdx]['params'][category][name][field] = value
         if type(value) == float:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIndex}].{paramName}.{field}'))
+            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}.{name}.{field}'))
         else:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIndex}].{paramName}.{field}'))
+            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}.{name}.{field}'))
         return True
 
-    def editDataBlockLoopParam(self, blockIndex, loopName, paramName, rowIndex, field, value):
+    def editDataBlockLoopParam(self, blockIdx, category, name, rowIndex, field, value):
         block = 'experiment'
-        oldValue = self._dataBlocksNoMeas[blockIndex]['loops'][loopName][rowIndex][paramName][field]
+        oldValue = self._dataBlocksNoMeas[blockIdx]['loops'][category][rowIndex][name][field]
         if oldValue == value:
             return False
-        self._dataBlocksNoMeas[blockIndex]['loops'][loopName][rowIndex][paramName][field] = value
+        self._dataBlocksNoMeas[blockIdx]['loops'][category][rowIndex][name][field] = value
         if type(value) == float:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIndex}].{loopName}[{rowIndex}].{paramName}.{field}'))
+            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         else:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIndex}].{loopName}[{rowIndex}].{paramName}.{field}'))
+            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         return True
 
-    def editCryspyDictByMainParam(self, blockIndex, paramName, field, value):
+    def editCryspyDictByMainParam(self, blockIdx, category, name, field, value):
         if field != 'value' and field != 'fit':
             return True
 
-        path, value = self.cryspyDictPathByMainParam(blockIndex, paramName, value)
+        path, value = self.cryspyDictPathByMainParam(blockIdx, category, name, value)
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
@@ -475,11 +475,11 @@ class Experiment(QObject):
         console.debug(IO.formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
         return True
 
-    def editCryspyDictByLoopParam(self, blockIndex, loopName, paramName, rowIndex, field, value):
+    def editCryspyDictByLoopParam(self, blockIdx, category, name, rowIndex, field, value):
         if field != 'value' and field != 'fit':
             return True
 
-        path, value = self.cryspyDictPathByLoopParam(blockIndex, loopName, paramName, rowIndex, value)
+        path, value = self.cryspyDictPathByLoopParam(blockIdx, category, name, rowIndex, value)
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
@@ -491,80 +491,82 @@ class Experiment(QObject):
         console.debug(IO.formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
         return True
 
-    def cryspyDictPathByMainParam(self, blockIndex, paramName, value):
-        blockName = self._dataBlocksNoMeas[blockIndex]['name']['value']
+    def cryspyDictPathByMainParam(self, blockIdx, category, name, value):
+        blockName = self._dataBlocksNoMeas[blockIdx]['name']['value']
         path = ['','','']
         path[0] = f"pd_{blockName}"
 
-        # _diffrn_radiation
-        if paramName == '_diffrn_radiation_wavelength':
-            path[1] = 'wavelength'
-            path[2] = 0
+        # _diffrn_radiation_wavelength
+        if category == '_diffrn_radiation_wavelength':
+            if name == 'wavelength':
+                path[1] = 'wavelength'
+                path[2] = 0
 
         # _pd_meas_2theta_offset
-        elif paramName == '_pd_meas_2theta_offset':
-            path[1] = 'offset_ttheta'
-            path[2] = 0
-            value = np.deg2rad(value)
+        elif category == '_pd_calib':
+            if name == '2theta_offset':
+                path[1] = 'offset_ttheta'
+                path[2] = 0
+                value = np.deg2rad(value)
 
-        # _pd_instr_resolution
-        elif paramName == '_pd_instr_resolution_u':
-            path[1] = 'resolution_parameters'
-            path[2] = 0
-        elif paramName == '_pd_instr_resolution_v':
-            path[1] = 'resolution_parameters'
-            path[2] = 1
-        elif paramName == '_pd_instr_resolution_w':
-            path[1] = 'resolution_parameters'
-            path[2] = 2
-        elif paramName == '_pd_instr_resolution_x':
-            path[1] = 'resolution_parameters'
-            path[2] = 3
-        elif paramName == '_pd_instr_resolution_y':
-            path[1] = 'resolution_parameters'
-            path[2] = 4
-        elif paramName == '_pd_instr_resolution_z':
-            path[1] = 'resolution_parameters'
-            path[2] = 5
+        # _pd_instr
+        elif category == '_pd_instr':
+            if name == 'resolution_u':
+                path[1] = 'resolution_parameters'
+                path[2] = 0
+            elif name == 'resolution_v':
+                path[1] = 'resolution_parameters'
+                path[2] = 1
+            elif name == 'resolution_w':
+                path[1] = 'resolution_parameters'
+                path[2] = 2
+            elif name == 'resolution_x':
+                path[1] = 'resolution_parameters'
+                path[2] = 3
+            elif name == 'resolution_y':
+                path[1] = 'resolution_parameters'
+                path[2] = 4
+            elif name == 'resolution_z':
+                path[1] = 'resolution_parameters'
+                path[2] = 5
 
-        # _pd_instr_reflex_asymmetry
-        elif paramName == '_pd_instr_reflex_asymmetry_p1':
-            path[1] = 'asymmetry_parameters'
-            path[2] = 0
-        elif paramName == '_pd_instr_reflex_asymmetry_p2':
-            path[1] = 'asymmetry_parameters'
-            path[2] = 1
-        elif paramName == '_pd_instr_reflex_asymmetry_p3':
-            path[1] = 'asymmetry_parameters'
-            path[2] = 2
-        elif paramName == '_pd_instr_reflex_asymmetry_p4':
-            path[1] = 'asymmetry_parameters'
-            path[2] = 3
+            elif name == 'reflex_asymmetry_p1':
+                path[1] = 'asymmetry_parameters'
+                path[2] = 0
+            elif name == 'reflex_asymmetry_p2':
+                path[1] = 'asymmetry_parameters'
+                path[2] = 1
+            elif name == 'reflex_asymmetry_p3':
+                path[1] = 'asymmetry_parameters'
+                path[2] = 2
+            elif name == 'reflex_asymmetry_p4':
+                path[1] = 'asymmetry_parameters'
+                path[2] = 3
 
         # undefined
         else:
-            console.error(f"Undefined parameter name '{paramName}'")
+            console.error(f"Undefined parameter name '{category}{name}'")
 
         return path, value
 
-    def cryspyDictPathByLoopParam(self, blockIndex, loopName, paramName, rowIndex, value):
-        blockName = self._dataBlocksNoMeas[blockIndex]['name']['value']
+    def cryspyDictPathByLoopParam(self, blockIdx, category, name, rowIndex, value):
+        blockName = self._dataBlocksNoMeas[blockIdx]['name']['value']
         path = ['','','']
         path[0] = f"pd_{blockName}"
 
         # _pd_background
-        if loopName == '_pd_background':
-            if paramName == '_2theta':
+        if category == '_pd_background':
+            if name == 'line_segment_X':
                 path[1] = 'background_ttheta'
                 path[2] = rowIndex
                 value = np.deg2rad(value)
-            if paramName == '_intensity':
+            if name == 'line_segment_intensity':
                 path[1] = 'background_intensity'
                 path[2] = rowIndex
 
-        # _phase
-        if loopName == '_phase':
-            if paramName == '_scale':
+        # _pd_phase_block
+        if category == '_pd_phase_block':
+            if name == 'scale':
                 path[1] = 'phase_scale'
                 path[2] = rowIndex
 
@@ -576,68 +578,72 @@ class Experiment(QObject):
         # pd (powder diffraction) block
         if block.startswith('pd_'):
             blockName = block[3:]
-            loopName = None
-            paramName = None
-            rowIndex = None
+            category = None
+            name = None
+            rowIndex = -1
 
             # wavelength
             if group == 'wavelength':
-                paramName = '_diffrn_radiation_wavelength'
+                category = '_diffrn_radiation_wavelength'
+                name = 'wavelength'
 
             # offset_ttheta
             elif group == 'offset_ttheta':
-                paramName = '_pd_meas_2theta_offset'
+                category = '_pd_calib'
+                name = '2theta_offset'
 
             # resolution_parameters
             elif group == 'resolution_parameters':
+                category = '_pd_instr'
                 if idx[0] == 0:
-                    paramName = '_pd_instr_resolution_u'
+                    name = 'resolution_u'
                 elif idx[0] == 1:
-                    paramName = '_pd_instr_resolution_v'
+                    name = 'resolution_v'
                 elif idx[0] == 2:
-                    paramName = '_pd_instr_resolution_w'
+                    name = 'resolution_w'
                 elif idx[0] == 3:
-                    paramName = '_pd_instr_resolution_x'
+                    name = 'resolution_x'
                 elif idx[0] == 4:
-                    paramName = '_pd_instr_resolution_y'
+                    name = 'resolution_y'
                 elif idx[0] == 5:
-                    paramName = '_pd_instr_resolution_z'
+                    name = 'resolution_z'
 
             # asymmetry_parameters
             elif group == 'asymmetry_parameters':
+                category = '_pd_instr'
                 if idx[0] == 0:
-                    paramName = '_pd_instr_reflex_asymmetry_p1'
+                    name = 'reflex_asymmetry_p1'
                 elif idx[0] == 1:
-                    paramName = '_pd_instr_reflex_asymmetry_p2'
+                    name = 'reflex_asymmetry_p2'
                 elif idx[0] == 2:
-                    paramName = '_pd_instr_reflex_asymmetry_p3'
+                    name = 'reflex_asymmetry_p3'
                 elif idx[0] == 3:
-                    paramName = '_pd_instr_reflex_asymmetry_p4'
+                    name = 'reflex_asymmetry_p4'
 
             # background_ttheta
             elif group == 'background_ttheta':
-                loopName = '_pd_background'
-                paramName = '_2theta'
+                category = '_pd_background'
+                name = 'line_segment_X'
                 rowIndex = idx[0]
 
             # background_intensity
             elif group == 'background_intensity':
-                loopName = '_pd_background'
-                paramName = '_intensity'
+                category = '_pd_background'
+                name = 'line_segment_intensity'
                 rowIndex = idx[0]
 
             # phase_scale
             elif group == 'phase_scale':
-                loopName = '_phase'
-                paramName = '_scale'
+                category = '_pd_phase_block'
+                name = 'scale'
                 rowIndex = idx[0]
 
-            blockIndex = [block['name']['value'] for block in self._dataBlocksNoMeas].index(blockName)
+            blockIdx = [block['name']['value'] for block in self._dataBlocksNoMeas].index(blockName)
 
-            if loopName is None:
-                return self.dataBlocksNoMeas[blockIndex]['params'][paramName][field]
+            if rowIndex == -1:
+                return self.dataBlocksNoMeas[blockIdx]['params'][category][name][field]
             else:
-                return self.dataBlocksNoMeas[blockIndex]['loops'][loopName][rowIndex][paramName][field]
+                return self.dataBlocksNoMeas[blockIdx]['loops'][category][rowIndex][name][field]
 
         return None
 
@@ -648,9 +654,9 @@ class Experiment(QObject):
             # pd (powder diffraction) block
             if block.startswith('pd_'):
                 blockName = block[3:]
-                loopName = None
-                paramName = None
-                rowIndex = None
+                category = None
+                name = None
+                rowIndex = -1
                 value = param.value
                 error = 0
                 if param.stderr is not None:
@@ -658,142 +664,72 @@ class Experiment(QObject):
 
                 # wavelength
                 if group == 'wavelength':
-                    paramName = '_diffrn_radiation_wavelength'
+                    category = '_diffrn_radiation_wavelength'
+                    name = 'wavelength'
 
                 # offset_ttheta
                 elif group == 'offset_ttheta':
-                    paramName = '_pd_meas_2theta_offset'
+                    category = '_pd_calib'
+                    name = '2theta_offset'
                     value = np.rad2deg(value)
 
                 # resolution_parameters
                 elif group == 'resolution_parameters':
+                    category = '_pd_instr'
                     if idx[0] == 0:
-                        paramName = '_pd_instr_resolution_u'
+                        name = 'resolution_u'
                     elif idx[0] == 1:
-                        paramName = '_pd_instr_resolution_v'
+                        name = 'resolution_v'
                     elif idx[0] == 2:
-                        paramName = '_pd_instr_resolution_w'
+                        name = 'resolution_w'
                     elif idx[0] == 3:
-                        paramName = '_pd_instr_resolution_x'
+                        name = 'resolution_x'
                     elif idx[0] == 4:
-                        paramName = '_pd_instr_resolution_y'
+                        name = 'resolution_y'
                     elif idx[0] == 5:
-                        paramName = '_pd_instr_resolution_z'
+                        name = 'resolution_z'
 
                 # asymmetry_parameters
                 elif group == 'asymmetry_parameters':
+                    category = '_pd_instr'
                     if idx[0] == 0:
-                        paramName = '_pd_instr_reflex_asymmetry_p1'
+                        name = 'reflex_asymmetry_p1'
                     elif idx[0] == 1:
-                        paramName = '_pd_instr_reflex_asymmetry_p2'
+                        name = 'reflex_asymmetry_p2'
                     elif idx[0] == 2:
-                        paramName = '_pd_instr_reflex_asymmetry_p3'
+                        name = 'reflex_asymmetry_p3'
                     elif idx[0] == 3:
-                        paramName = '_pd_instr_reflex_asymmetry_p4'
+                        name = 'reflex_asymmetry_p4'
 
                 # background_ttheta
                 elif group == 'background_ttheta':
-                    loopName = '_pd_background'
-                    paramName = '_2theta'
+                    category = '_pd_background'
+                    name = 'line_segment_X'
                     rowIndex = idx[0]
                     value = np.rad2deg(value)
 
                 # background_intensity
                 elif group == 'background_intensity':
-                    loopName = '_pd_background'
-                    paramName = '_intensity'
+                    category = '_pd_background'
+                    name = 'line_segment_intensity'
                     rowIndex = idx[0]
 
                 # phase_scale
                 elif group == 'phase_scale':
-                    loopName = '_phase'
-                    paramName = '_scale'
+                    category = '_pd_phase_block'
+                    name = 'scale'
                     rowIndex = idx[0]
 
                 value = float(value)  # convert float64 to float (needed for QML access)
                 error = float(error)  # convert float64 to float (needed for QML access)
-                blockIndex = [block['name']['value'] for block in self._dataBlocksNoMeas].index(blockName)
+                blockIdx = [block['name']['value'] for block in self._dataBlocksNoMeas].index(blockName)
 
-                if loopName is None:
-                    self.editDataBlockMainParam(blockIndex, paramName, 'value', value)
-                    self.editDataBlockMainParam(blockIndex, paramName, 'error', error)
+                if rowIndex == -1:
+                    self.editDataBlockMainParam(blockIdx, category, name, 'value', value)
+                    self.editDataBlockMainParam(blockIdx, category, name, 'error', error)
                 else:
-                    self.editDataBlockLoopParam(blockIndex, loopName, paramName, rowIndex, 'value', value)
-                    self.editDataBlockLoopParam(blockIndex, loopName, paramName, rowIndex, 'error', error)
-
-    def editDataBlockByCryspyDictParams(self, params):
-        for param in params:
-            block, group, idx = Data.strToCryspyDictParamPath(param)
-
-            # pd (powder diffraction) block
-            if block.startswith('pd_'):
-                blockName = block[3:]
-                loopName = None
-                paramName = None
-                rowIndex = None
-                value = self._proxy.data._cryspyDict[block][group][idx]
-
-                # wavelength
-                if group == 'wavelength':
-                    paramName = '_diffrn_radiation_wavelength'
-
-                # offset_ttheta
-                elif group == 'offset_ttheta':
-                    paramName = '_pd_meas_2theta_offset'
-                    value = np.rad2deg(value)
-
-                # resolution_parameters
-                elif group == 'resolution_parameters':
-                    if idx[0] == 0:
-                        paramName = '_pd_instr_resolution_u'
-                    elif idx[0] == 1:
-                        paramName = '_pd_instr_resolution_v'
-                    elif idx[0] == 2:
-                        paramName = '_pd_instr_resolution_w'
-                    elif idx[0] == 3:
-                        paramName = '_pd_instr_resolution_x'
-                    elif idx[0] == 4:
-                        paramName = '_pd_instr_resolution_y'
-                    elif idx[0] == 5:
-                        paramName = '_pd_instr_resolution_z'
-
-                # asymmetry_parameters
-                elif group == 'asymmetry_parameters':
-                    if idx[0] == 0:
-                        paramName = '_pd_instr_reflex_asymmetry_p1'
-                    elif idx[0] == 1:
-                        paramName = '_pd_instr_reflex_asymmetry_p2'
-                    elif idx[0] == 2:
-                        paramName = '_pd_instr_reflex_asymmetry_p3'
-                    elif idx[0] == 3:
-                        paramName = '_pd_instr_reflex_asymmetry_p4'
-
-                # background_ttheta
-                elif group == 'background_ttheta':
-                    loopName = '_pd_background'
-                    paramName = '_2theta'
-                    rowIndex = idx[0]
-                    value = np.rad2deg(value)
-
-                # background_intensity
-                elif group == 'background_intensity':
-                    loopName = '_pd_background'
-                    paramName = '_intensity'
-                    rowIndex = idx[0]
-
-                # phase_scale
-                elif group == 'phase_scale':
-                    loopName = '_phase'
-                    paramName = '_scale'
-                    rowIndex = idx[0]
-
-                value = float(value)  # convert float64 to float (needed for QML access)
-                blockIndex = [block['name']['value'] for block in self._dataBlocksNoMeas].index(blockName)
-
-                if loopName is None:
-                    self.editDataBlockMainParam(blockIndex, paramName, 'value', value)
-                else:
-                    self.editDataBlockLoopParam(blockIndex, loopName, paramName, rowIndex, 'value', value)
+                    self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'value', value)
+                    self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', error)
 
     def runCryspyCalculations(self):
         result = rhochi_calc_chi_sq_by_dictionary(

@@ -22,9 +22,10 @@ _EMPTY_DATA = {
 
 _EMPTY_DESCRIPTION = dict(Parameter(
                         '.',
-                        name='_description',
-                        prettyName='Description',
-                        url='https://easydiffraction.org'
+                        category = '_project',
+                        name = 'description',
+                        prettyName = 'Description',
+                        url = 'https://easydiffraction.org'
                     ))
 _EXAMPLES = [
     {
@@ -70,7 +71,7 @@ _EXAMPLES = [
 ]
 
 _DEFAULT_CIF = """data_DefaultProject
-_description 'Default project description'
+_project.description 'Default project description'
 """
 
 
@@ -236,19 +237,20 @@ class Project(QObject):
 
         stream = QTextStream(file)
         edCif = stream.readAll()
+        cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
 
         starObj = PycifstarData()
-        starObj.take_from_string(edCif)
+        starObj.take_from_string(cryspyCif)
         self._dataBlock = CryspyParser.starObjToEdProject(starObj)
 
         self.location = os.path.dirname(fpath)
 
-        modelFileNames = [item['_name']['value'] for item in self._dataBlock['loops']['_model_cif_file']]
+        modelFileNames = [item['cif_file_name']['value'] for item in self._dataBlock['loops']['_model']]
         modelFilePaths = [os.path.join(self._location, self._dirNames['models'], fileName) for fileName in modelFileNames]
         self._proxy.model.loadModelsFromResources(modelFilePaths)
 
-        if '_experiment_cif_file' in self._dataBlock['loops']:
-            experimentFileNames = [item['_name']['value'] for item in self._dataBlock['loops']['_experiment_cif_file']]
+        if '_experiment' in self._dataBlock['loops']:
+            experimentFileNames = [item['cif_file_name']['value'] for item in self._dataBlock['loops']['_experiment']]
             experimentFilePaths = [os.path.join(self._location, self._dirNames['experiments'], fileName) for fileName in experimentFileNames]
             self._proxy.experiment.loadExperimentsFromResources(experimentFilePaths)
 
@@ -256,8 +258,8 @@ class Project(QObject):
         reportFilePath = os.path.join(self._location, self._dirNames['summary'], reportFileName)
         self._proxy.summary.loadReportFromResources(reportFilePath)
 
-        if '_description' not in self._dataBlock['params']:
-            self._dataBlock['params']['_description'] = _EMPTY_DESCRIPTION
+        if 'description' not in self._dataBlock['params']['_project']:
+            self._dataBlock['params']['_project']['description'] = _EMPTY_DESCRIPTION
 
         self.dataBlockChanged.emit()
         self.created = True
@@ -279,13 +281,13 @@ class Project(QObject):
 
         self.location = os.path.dirname(fpath)
 
-        modelFileNames = [item['_name']['value'] for item in self._dataBlock['loops']['_model_cif_file']]
+        modelFileNames = [item['cif_file_name']['value'] for item in self._dataBlock['loops']['_model']]
         modelFilePaths = [os.path.join(self._location, self._dirNames['models'], fileName) for fileName in modelFileNames]
         modelFilePaths = [QUrl.fromLocalFile(path) for path in modelFilePaths]
         self._proxy.model.loadModelsFromFiles(modelFilePaths)
 
-        if '_experiment_cif_file' in self._dataBlock['loops']:
-            experimentFileNames = [item['_name']['value'] for item in self._dataBlock['loops']['_experiment_cif_file']]
+        if '_experiment' in self._dataBlock['loops']:
+            experimentFileNames = [item['cif_file_name']['value'] for item in self._dataBlock['loops']['_experiment']]
             experimentFilePaths = [os.path.join(self._location, self._dirNames['experiments'], fileName) for fileName in experimentFileNames]
             experimentFilePaths = [QUrl.fromLocalFile(path) for path in experimentFilePaths]
             self._proxy.experiment.loadExperimentsFromFiles(experimentFilePaths)
@@ -295,8 +297,8 @@ class Project(QObject):
         reportFilePath = QUrl.fromLocalFile(reportFilePath)
         self._proxy.summary.loadReportFromFile(reportFilePath)
 
-        if '_description' not in self._dataBlock['params']:
-            self._dataBlock['params']['_description'] = _EMPTY_DESCRIPTION
+        if 'description' not in self._dataBlock['params']['_project']:
+            self._dataBlock['params']['_project']['description'] = _EMPTY_DESCRIPTION
 
         self.dataBlockChanged.emit()
         self.created = True

@@ -28,15 +28,14 @@ class Parameter(dict):
                 absDelta = None,
                 pctDelta = None,
                 units = '',
-                loopName = '',
-                prettyLoopName = '',
+                category = '',
+                prettyCategory = '',
                 rowName = '',
-                prettyRowName = '',
                 name = '',
                 prettyName = '',
-                title = '',
+                shortPrettyName = '',
                 icon = '',
-                groupIcon = '',
+                categoryIcon = '',
                 url = '',
                 cifDict = '',
                 optional = False,
@@ -56,15 +55,14 @@ class Parameter(dict):
         self['max'] = max
         self['absDelta'] = absDelta
         self['pctDelta'] = pctDelta
-        self['loopName'] = loopName
-        self['prettyLoopName'] = prettyLoopName
+        self['category'] = category
+        self['prettyCategory'] = prettyCategory
         self['rowName'] = rowName
-        self['prettyRowName'] = prettyRowName
         self['name'] = name
         self['prettyName'] = prettyName
-        self['title'] = title
+        self['shortPrettyName'] = shortPrettyName
         self['icon'] = icon
-        self['groupIcon'] = groupIcon
+        self['categoryIcon'] = categoryIcon
         self['url'] = url
         self['cifDict'] = cifDict
         self['parentIndex'] = 0
@@ -83,12 +81,12 @@ class CryspyParser:
         for item in data.items.items:
             out['items'][item.name] = item.value
         for loop in data.loops:
-            loopName = loop.prefix
-            out['loops'][loopName] = {}
+            category = loop.prefix
+            out['loops'][category] = {}
             for paramIdx, fullParamName in enumerate(loop.names):
-                paramName = fullParamName.replace(loopName, '')
+                paramName = fullParamName.replace(category, '')
                 paramValues = [values[paramIdx] for values in loop.values]
-                out['loops'][loopName][paramName] = paramValues
+                out['loops'][category][paramName] = paramValues
         return out
 
     @staticmethod
@@ -105,42 +103,48 @@ class CryspyParser:
             cif += f"data_{block['name']['value']}"
             cif += '\n\n'
         if 'params' in block:
-            for name, param in block['params'].items():
-                if param["optional"]:
-                    continue
-                value = param["value"]
-                if value is None:
-                    continue
-                # convert
-                if isinstance(value, float):
-                    value = f'{round(value, 4):.8g}'  # 3.0 -> "3", 3.012345 -> "3.0123"  # NEED FIX
-                elif isinstance(value, str) and ' ' in value:  # P n m a -> "P n m a"
-                    value = f'"{value}"'
-                # add brackets with error for free params
-                error = param["error"]
-                if error == 0:
-                    error = ''
-                else:
-                    error = f'{round(error, 4):.8g}'  # NEED FIX
-                if param["fit"]:
-                    cif += f'{name} {value}({error})'
-                else:
-                    cif += f'{name} {value}'
+            for category in block['params'].values():
+                for param in category.values():
+                    if param["optional"]:
+                        continue
+                    value = param["value"]
+                    if value is None:
+                        continue
+                    # convert
+                    if isinstance(value, float):
+                        value = f'{round(value, 4):.8g}'  # 3.0 -> "3", 3.012345 -> "3.0123"  # NEED FIX
+                    elif isinstance(value, str) and ' ' in value:  # P n m a -> "P n m a"
+                        value = f'"{value}"'
+                    # add brackets with error for free params
+                    error = param["error"]
+                    if error == 0:
+                        error = ''
+                    else:
+                        error = f'{round(error, 4):.8g}'  # NEED FIX
+                    if param["fit"]:
+                        cif += f'{param["category"]}.{param["name"]} {value}({error})'
+                    else:
+                        cif += f'{param["category"]}.{param["name"]} {value}'
+                    cif += '\n'
                 cif += '\n'
         if 'loops' in block:
-            #print(block['loops'].items())
-            for loopName, loop in block['loops'].items():
-                cif += '\n'
-                cif += 'loop_'
-                cif += '\n'
+            for categoryName, category in block['loops'].items():
+                cif += '\nloop_\n'
                 # loop header
-                for paramName in loop[0].keys():
-                    cif += f'{loopName}{paramName}\n'
+                row0 = category[0]
+                for param in row0.values():
+                    if param["optional"]:
+                        continue
+                    cif += f'{categoryName}.{param["name"]}\n'
                 # loop data
-                for loopItem in loop:
+                for row in category:
                     line = ''
-                    for param in loopItem.values():
+                    for param in row.values():
+                        if param["optional"]:
+                            continue
                         value = param["value"]
+                        if value is None:
+                            continue
                         # convert
                         if isinstance(value, float):
                             value = f'{round(value, 4):.8g}'  # 3.0 -> "3", 3.012345 -> "3.0123"  # NEED FIX
@@ -157,25 +161,52 @@ class CryspyParser:
                         else:
                             line += f'{value}'
                         line += ' '
-                    cif += line
-                    cif += '\n'
-                #cif += '\n'
+                    line = line.rstrip()
+                    cif += f'{line}\n'
         cif = cif.strip()
+        cif = cif.replace('\n\n\n', '\n\n')
         return cif
 
     @staticmethod
     def edCifToCryspyCif(edCif):
         cryspyCif = edCif
         edToCryspyNamesMap = {
-            '_diffrn_radiation_probe': '_setup_radiation',
-            '_diffrn_radiation_wavelength': '_setup_wavelength',
-            '_pd_meas_2theta_offset': '_setup_offset_2theta',
-            '_pd_meas_2theta_range_min': '_range_2theta_min',
-            '_pd_meas_2theta_range_max': '_range_2theta_max'
+            '_diffrn_radiation.probe': '_setup_radiation',
+            '_diffrn_radiation_wavelength.wavelength': '_setup_wavelength',
+
+            '_pd_calib.2theta_offset': '_setup_offset_2theta',
+
+            '_pd_instr.resolution_u': '_pd_instr_resolution_u',
+            '_pd_instr.resolution_v': '_pd_instr_resolution_v',
+            '_pd_instr.resolution_w': '_pd_instr_resolution_w',
+            '_pd_instr.resolution_x': '_pd_instr_resolution_x',
+            '_pd_instr.resolution_y': '_pd_instr_resolution_y',
+
+            '_pd_instr.reflex_asymmetry_p1': '_pd_instr_reflex_asymmetry_p1',
+            '_pd_instr.reflex_asymmetry_p2': '_pd_instr_reflex_asymmetry_p2',
+            '_pd_instr.reflex_asymmetry_p3': '_pd_instr_reflex_asymmetry_p3',
+            '_pd_instr.reflex_asymmetry_p4': '_pd_instr_reflex_asymmetry_p4',
+
+            '_pd_phase_block.id': '_phase_label',
+            '_pd_phase_block.scale': '_phase_scale',
+
+            '_pd_meas.2theta_range_min': '_range_2theta_min',
+            '_pd_meas.2theta_range_max': '_range_2theta_max',
+            '_pd_meas.2theta_scan': '_pd_meas_2theta',
+
+            '_pd_meas.intensity_total_su': '_pd_meas_intensity_sigma',  # before intensity_total!
+            '_pd_meas.intensity_total': '_pd_meas_intensity',
+
+            '_pd_background.line_segment_X': '_pd_background_2theta',
+            '_pd_background.line_segment_intensity': '_pd_background_intensity',
+
+            '_model.cif_file_name': '_model_cif_file_name',
+            '_experiment.cif_file_name': '_experiment_cif_file_name'
         }
         edToCryspyValuesMap = {
+            'x-ray': 'X-rays',
             'neutron': 'neutrons',
-            'x-ray': 'X-rays'
+            'neutronss': 'neutrons',
         }
         for edName, cryspyName in edToCryspyNamesMap.items():
             cryspyCif = cryspyCif.replace(edName, cryspyName)
@@ -185,84 +216,69 @@ class CryspyParser:
 
     @staticmethod
     def starObjToEdProject(starObj):
-        edProject = {'name': '',
-                     'params': {},
-                     'loops': {}}
+        edProject = {'name': '', 'params': {}, 'loops': {}}
+
+        # DATABLOCK ID
+
         edProject['name'] = dict(Parameter(
             starObj.name,
             icon = 'archive',
             url = 'https://docs.easydiffraction.org/app/project/dictionaries/',
         ))
 
+        # DATABLOCK SINGLES
+
         for param in starObj.items.items:
-            if param.name == '_description':
-                edProject['params'][param.name] = dict(Parameter(
+            if param.name == '_project.description':
+                category, name = param.name.split('.')
+                if category not in edProject['params']:
+                    edProject['params'][category] = {}
+                edProject['params'][category][name] = dict(Parameter(
                     param.value,
-                    name = param.name,
+                    category = category,
+                    name = name,
                     prettyName = 'Description',
                     url = 'https://docs.easydiffraction.org/app/project/dictionaries/',
                 ))
 
-        for loop in starObj.loops:
-            loopName = loop.prefix
+        # DATABLOCK TABLES
 
-            if loopName == '_model_cif_file':
+        for loop in starObj.loops:
+            category = loop.prefix
+
+            if category == '_model_cif_file':
                 edModels = []
                 for rowIdx, rowItems in enumerate(loop.values):
                     edModel = {}
                     for columnIdx, columnName in enumerate(loop.names):
-                        paramName = columnName.replace(loopName, '')
-                        #if paramName == '_dir_name':
-                        #    edModel[paramName] = dict(Parameter(
-                        #        rowItems[columnIdx],
-                        #        name=paramName,
-                        #        prettyName='Model directory',
-                        #        url='https://easydiffraction.org'
-                        #    ))
+                        paramName = columnName.replace(category, '')
                         if paramName == '_name':
-                            edModel[paramName] = dict(Parameter(
+                            edModel['cif_file_name'] = dict(Parameter(
                                 rowItems[columnIdx],
-                                name=paramName,
-                                prettyName='Model file',
-                                url='https://easydiffraction.org'
+                                category = '_model',
+                                name = 'cif_file_name',
+                                prettyName = 'Model file',
+                                url = 'https://easydiffraction.org'
                             ))
-                        #elif paramName == '_jpg_file_name':
-                        #    edModel[paramName] = dict(Parameter(
-                        #        rowItems[columnIdx],
-                        #        name=paramName,
-                        #        url='https://easydiffraction.org'
-                        #    ))
                     edModels.append(edModel)
-                edProject['loops'][loopName] = edModels
+                edProject['loops']['_model'] = edModels
 
-            elif loopName == '_experiment_cif_file':
+            elif category == '_experiment_cif_file':
                 edExperiments = []
                 for rowIdx, rowItems in enumerate(loop.values):
                     edExperiment = {}
                     for columnIdx, columnName in enumerate(loop.names):
-                        paramName = columnName.replace(loopName, '')
-                        #if paramName == '_dir_name':
-                        #    edExperiment[paramName] = dict(Parameter(
-                        #        rowItems[columnIdx],
-                        #        name=paramName,
-                        #        prettyName='Experiment directory',
-                        #        url='https://easydiffraction.org'
-                        #    ))
+                        paramName = columnName.replace(category, '')
                         if paramName == '_name':
-                            edExperiment[paramName] = dict(Parameter(
+                            edExperiment['cif_file_name'] = dict(Parameter(
                                 rowItems[columnIdx],
-                                name=paramName,
-                                prettyName='Experiment file',
-                                url='https://easydiffraction.org'
+                                category = '_experiment',
+                                name = 'cif_file_name',
+                                prettyName = 'Experiment file',
+                                url = 'https://easydiffraction.org'
                             ))
-                        #elif paramName == '_jpg_file_name':
-                        #    edExperiment[paramName] = dict(Parameter(
-                        #        rowItems[columnIdx],
-                        #        name=paramName,
-                        #        url='https://easydiffraction.org'
-                        #    ))
                     edExperiments.append(edExperiment)
-                edProject['loops'][loopName] = edExperiments
+                edProject['loops']['_experiment'] = edExperiments
 
         return edProject
 
@@ -276,10 +292,10 @@ class CryspyParser:
 
             if data_block_name in phase_names:
                 cryspy_phase = data_block.items
+                ed_phase = {'name': '', 'params': {}, 'loops': {}}
 
-                ed_phase = {'name': '',
-                            'params': {},
-                            'loops': {}}
+                # DATABLOCK ID
+
                 ed_phase['name'] = dict(Parameter(
                     data_block_name,
                     icon = 'layer-group',
@@ -287,306 +303,307 @@ class CryspyParser:
                 ))
 
                 for item in cryspy_phase:
-                    # Space group section
+
+                    # DATABLOCK SINGLES
+
+                    # Space group category
                     if type(item) == cryspy.C_item_loop_classes.cl_2_space_group.SpaceGroup:
-                        ed_phase['params']['_space_group_name_H-M_alt'] = dict(Parameter(
+                        if not '_space_group' in ed_phase['params']:
+                            ed_phase['params']['_space_group'] = {}
+                        ed_phase['params']['_space_group']['name_H-M_alt'] = dict(Parameter(
                             item.name_hm_alt,
-                            name = '_space_group_name_H-M_alt',
-                            title = 'name',
+                            category = '_space_group',
+                            name = 'name_H-M_alt',
+                            shortPrettyName = 'name',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_space_group/',
                             cifDict = 'core'
                         ))
-                        ed_phase['params']['_space_group_IT_coordinate_system_code'] = dict(Parameter(
+                        ed_phase['params']['_space_group']['IT_coordinate_system_code'] = dict(Parameter(
                             item.it_coordinate_system_code,
+                            category = '_space_group',
+                            name = 'IT_coordinate_system_code',
+                            shortPrettyName = 'code',
                             permittedValues = list(get_it_coordinate_system_codes_by_it_number(item.it_number)),
-                            name = '_space_group_IT_coordinate_system_code',
-                            title = 'code',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_space_group/',
                             cifDict = 'core'
                         ))
-                        ed_phase['params']['_space_group_crystal_system'] = dict(Parameter(
+                        ed_phase['params']['_space_group']['crystal_system'] = dict(Parameter(
                             item.crystal_system,
-                            name = '_space_group_crystal_system',
-                            title = 'crystal system',
+                            optional = True,
+                            category = '_space_group',
+                            name = 'crystal_system',
+                            shortPrettyName = 'crystal system',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_space_group/',
-                            cifDict = 'core',
-                            optional = True
+                            cifDict = 'core'
                         ))
-                        ed_phase['params']['_space_group_IT_number'] = dict(Parameter(
+                        ed_phase['params']['_space_group']['IT_number'] = dict(Parameter(
                             item.it_number,
-                            name = '_space_group_IT_number',
-                            title = 'number',
+                            optional = True,
+                            category = '_space_group',
+                            name = 'IT_number',
+                            shortPrettyName = 'number',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_space_group/',
-                            cifDict = 'core',
-                            optional = True
+                            cifDict = 'core'
                         ))
 
-                    # Cell section
+                    # Cell category
                     elif type(item) == cryspy.C_item_loop_classes.cl_1_cell.Cell:
-                        ed_phase['params']['_cell_length_a'] = dict(Parameter(
+                        if not '_cell' in ed_phase['params']:
+                            ed_phase['params']['_cell'] = {}
+                        ed_phase['params']['_cell']['length_a'] = dict(Parameter(
                             item.length_a,
-                            error = item.length_a_sigma,
-                            name = '_cell_length_a',
+                            error = item.length_a_sigma,  # NEED FIX: rename 'error' to 'su'
+                            category = '_cell',
+                            prettyCategory = 'cell',
+                            name = 'length_a',
                             prettyName = 'length a',
-                            title = 'a',
+                            shortPrettyName = 'a',  # NEED FIX: rename 'shortPrettyName' to 'shortName' ???
                             icon = 'ruler',
-                            groupIcon = 'cube',
+                            categoryIcon = 'cube',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_cell/',
                             cifDict = 'core',
                             enabled = not item.length_a_constraint,
-                            #min = 1,
-                            #max = 30,
                             absDelta = 0.1,
                             units = 'Å',
                             fittable = True,
                             fit = item.length_a_refinement
                         ))
-                        ed_phase['params']['_cell_length_b'] = dict(Parameter(
+                        ed_phase['params']['_cell']['length_b'] = dict(Parameter(
                             item.length_b,
                             error = item.length_b_sigma,
-                            name = '_cell_length_b',
+                            category = '_cell',
+                            prettyCategory = 'cell',
+                            name = 'length_b',
                             prettyName = 'length b',
-                            title = 'b',
+                            shortPrettyName = 'b',
                             icon = 'ruler',
-                            groupIcon = 'cube',
+                            categoryIcon = 'cube',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_cell/',
                             cifDict = 'core',
                             enabled = not item.length_b_constraint,
-                            #min = 1,
-                            #max = 30,
                             absDelta = 0.1,
                             units = 'Å',
                             fittable = True,
                             fit = item.length_b_refinement
                         ))
-                        ed_phase['params']['_cell_length_c'] = dict(Parameter(
+                        ed_phase['params']['_cell']['length_c'] = dict(Parameter(
                             item.length_c,
                             error = item.length_c_sigma,
-                            name = '_cell_length_c',
+                            category = '_cell',
+                            prettyCategory = 'cell',
+                            name = 'length_c',
                             prettyName = 'length c',
-                            title = 'c',
+                            shortPrettyName = 'c',
                             icon = 'ruler',
-                            groupIcon = 'cube',
+                            categoryIcon = 'cube',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_cell/',
                             cifDict = 'core',
                             enabled = not item.length_c_constraint,
-                            #min = 1,
-                            #max = 30,
                             absDelta = 0.1,
                             units = 'Å',
                             fittable = True,
                             fit = item.length_c_refinement
                         ))
-                        ed_phase['params']['_cell_angle_alpha'] = dict(Parameter(
+                        ed_phase['params']['_cell']['angle_alpha'] = dict(Parameter(
                             item.angle_alpha,
                             error = item.angle_alpha_sigma,
-                            name = '_cell_angle_alpha',
+                            category = '_cell',
+                            prettyCategory = 'cell',
+                            name = 'angle_alpha',
                             prettyName = 'angle α',
-                            title = 'α',
+                            shortPrettyName = 'α',
                             icon = 'ruler',
-                            groupIcon = 'less-than',
+                            categoryIcon = 'less-than',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_cell/',
                             cifDict = 'core',
                             enabled = not item.angle_alpha_constraint,
-                            #min = 0,
-                            #max = 180,
                             absDelta = 1.0,
                             units = '°',
                             fittable = True,
                             fit = item.angle_alpha_refinement
                         ))
-                        ed_phase['params']['_cell_angle_beta'] = dict(Parameter(
+                        ed_phase['params']['_cell']['angle_beta'] = dict(Parameter(
                             item.angle_beta,
                             error = item.angle_beta_sigma,
-                            name = '_cell_angle_beta',
+                            category = '_cell',
+                            prettyCategory = 'cell',
+                            name = 'angle_beta',
                             prettyName = 'angle β',
-                            title = 'β',
+                            shortPrettyName = 'β',
                             icon = 'ruler',
-                            groupIcon = 'less-than',
+                            categoryIcon = 'less-than',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_cell/',
                             cifDict = 'core',
                             enabled = not item.angle_alpha_constraint,
-                            #min = 0,
-                            #max = 180,
                             absDelta = 1.0,
                             units = '°',
                             fittable = True,
                             fit = item.angle_beta_refinement
                         ))
-                        ed_phase['params']['_cell_angle_gamma'] = dict(Parameter(
+                        ed_phase['params']['_cell']['angle_gamma'] = dict(Parameter(
                             item.angle_gamma,
                             error = item.angle_gamma_sigma,
-                            name = '_cell_angle_gamma',
+                            category = '_cell',
+                            prettyCategory = 'cell',
+                            name = 'angle_gamma',
                             prettyName = 'angle γ',
-                            title = 'γ',
+                            shortPrettyName = 'γ',
                             icon = 'ruler',
-                            groupIcon = 'less-than',
+                            categoryIcon = 'less-than',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_cell/',
                             cifDict = 'core',
                             enabled = not item.angle_alpha_constraint,
-                            #min = 0,
-                            #max = 180,
                             absDelta = 1.0,
                             units = '°',
                             fittable = True,
                             fit = item.angle_gamma_refinement
                         ))
 
-                    # Atoms section
+                    # DATABLOCK TABLES
+
+                    # Atom site category
                     elif type(item) == cryspy.C_item_loop_classes.cl_1_atom_site.AtomSiteL:
-                        ed_atoms = []
                         cryspy_atoms = item.items
+                        ed_atoms = []
                         for idx, cryspy_atom in enumerate(cryspy_atoms):
                             ed_atom = {}
-                            ed_atom['_label'] = dict(Parameter(
+                            ed_atom['label'] = dict(Parameter(
                                 cryspy_atom.label,
                                 idx = idx,
-                                loopName = '_atom_site',
-                                name = '_label',
-                                #prettyName = 'label',
-                                title = 'label',
+                                category = '_atom_site',
+                                name = 'label',
+                                shortPrettyName = 'label',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_atom_site/',
                                 cifDict = 'core'
                             ))
-                            ed_atom['_type_symbol'] = dict(Parameter(
+                            ed_atom['type_symbol'] = dict(Parameter(
                                 cryspy_atom.type_symbol,
                                 idx = idx,
-                                loopName = '_atom_site',
-                                name = '_type_symbol',
-                                #prettyName = 'type',
-                                title = 'type',
+                                category = '_atom_site',
+                                name = 'type_symbol',
+                                shortPrettyName = 'type',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_atom_site/',
                                 cifDict = 'core'
                             ))
-                            ed_atom['_fract_x'] = dict(Parameter(
+                            ed_atom['fract_x'] = dict(Parameter(
                                 cryspy_atom.fract_x,
                                 error = cryspy_atom.fract_x_sigma,
                                 idx = idx,
-                                loopName = '_atom_site',
-                                prettyLoopName = 'atom',
+                                category = '_atom_site',
+                                prettyCategory = 'atom',
                                 rowName = cryspy_atom.label,
-                                name = '_fract_x',
+                                name = 'fract_x',
                                 prettyName = 'fract x',
-                                title = 'x',
+                                shortPrettyName = 'x',
                                 icon = 'map-marker-alt',
-                                groupIcon = 'atom',
+                                categoryIcon = 'atom',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_atom_site/',
                                 cifDict = 'core',
                                 enabled = not cryspy_atom.fract_x_constraint,
-                                #min = 0,
-                                #max = 1,
                                 absDelta = 0.05,
                                 fittable = True,
                                 fit = cryspy_atom.fract_x_refinement
                             ))
-                            ed_atom['_fract_y'] = dict(Parameter(
+                            ed_atom['fract_y'] = dict(Parameter(
                                 cryspy_atom.fract_y,
                                 error = cryspy_atom.fract_y_sigma,
                                 idx = idx,
-                                loopName = '_atom_site',
-                                prettyLoopName = 'atom',
+                                category = '_atom_site',
+                                prettyCategory = 'atom',
                                 rowName = cryspy_atom.label,
-                                name = '_fract_y',
+                                name = 'fract_y',
                                 prettyName = 'fract y',
-                                title = 'y',
+                                shortPrettyName = 'y',
                                 icon = 'map-marker-alt',
-                                groupIcon = 'atom',
+                                categoryIcon = 'atom',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_atom_site/',
                                 cifDict = 'core',
                                 enabled = not cryspy_atom.fract_y_constraint,
-                                #min = 0,
-                                #max = 1,
                                 absDelta = 0.05,
                                 fittable = True,
                                 fit = cryspy_atom.fract_y_refinement
                             ))
-                            ed_atom['_fract_z'] = dict(Parameter(
+                            ed_atom['fract_z'] = dict(Parameter(
                                 cryspy_atom.fract_z,
                                 error = cryspy_atom.fract_z_sigma,
                                 idx = idx,
-                                loopName = '_atom_site',
-                                prettyLoopName = 'atom',
+                                category = '_atom_site',
+                                prettyCategory = 'atom',
                                 rowName = cryspy_atom.label,
-                                name = '_fract_z',
+                                name = 'fract_z',
                                 prettyName = 'fract z',
-                                title = 'z',
+                                shortPrettyName = 'z',
                                 icon = 'map-marker-alt',
-                                groupIcon = 'atom',
+                                categoryIcon = 'atom',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_atom_site/',
                                 cifDict = 'core',
                                 enabled = not cryspy_atom.fract_z_constraint,
-                                #min = 0,
-                                #max = 1,
                                 absDelta = 0.05,
                                 fittable = True,
                                 fit = cryspy_atom.fract_z_refinement
                             ))
-                            ed_atom['_occupancy'] = dict(Parameter(
+                            ed_atom['occupancy'] = dict(Parameter(
                                 cryspy_atom.occupancy,
                                 error = cryspy_atom.occupancy_sigma,
                                 idx = idx,
-                                loopName = '_atom_site',
-                                prettyLoopName = 'atom',
+                                category = '_atom_site',
+                                prettyCategory = 'atom',
                                 rowName = cryspy_atom.label,
-                                name = '_occupancy',
+                                name = 'occupancy',
                                 prettyName = 'occ',
-                                title = 'occ',
+                                shortPrettyName = 'occ',
                                 icon = 'fill',
-                                groupIcon = 'atom',
+                                categoryIcon = 'atom',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_atom_site/',
                                 cifDict = 'core',
                                 enabled = not cryspy_atom.occupancy_constraint,
-                                #min = 0,
-                                #max = 1,
                                 absDelta = 0.05,
                                 fittable = True,
                                 fit = cryspy_atom.occupancy_refinement
                             ))
-                            ed_atom['_adp_type'] = dict(Parameter(
+                            ed_atom['ADP_type'] = dict(Parameter(
                                 cryspy_atom.adp_type,
                                 idx = idx,
-                                loopName = '_atom_site',
-                                name = '_adp_type',
-                                #prettyName = 'type',
-                                title = 'type',
+                                category = '_atom_site',
+                                name = 'ADP_type',
+                                shortPrettyName = 'type',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_atom_site/',
                                 cifDict = 'core'
                             ))
-                            ed_atom['_B_iso_or_equiv'] = dict(Parameter(
+                            ed_atom['B_iso_or_equiv'] = dict(Parameter(
                                 cryspy_atom.b_iso_or_equiv,
                                 error = cryspy_atom.b_iso_or_equiv_sigma,
                                 idx = idx,
-                                loopName = '_atom_site',
-                                prettyLoopName = 'atom',
+                                category = '_atom_site',
+                                prettyCategory = 'atom',
                                 rowName = cryspy_atom.label,
-                                name = '_B_iso_or_equiv',
+                                name = 'B_iso_or_equiv',
                                 prettyName = 'Biso',
-                                title = 'iso',
+                                shortPrettyName = 'iso',
                                 icon = 'arrows-alt',
-                                groupIcon = 'atom',
+                                categoryIcon = 'atom',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_atom_site/',
                                 cifDict = 'core',
                                 enabled = not cryspy_atom.b_iso_or_equiv_constraint,
-                                #min = 0,
-                                #max = 1,
                                 absDelta = 0.1,
                                 units = 'Å²',
                                 fittable = True,
                                 fit = cryspy_atom.b_iso_or_equiv_refinement
                             ))
-                            ed_atom['_multiplicity'] = dict(Parameter(
+                            ed_atom['site_symmetry_multiplicity'] = dict(Parameter(
                                 cryspy_atom.multiplicity,
+                                optional = True,
                                 idx = idx,
-                                loopName = '_atom_site',
-                                name = '_multiplicity',
-                                #prettyName = '',
+                                category = '_atom_site',
+                                name = 'site_symmetry_multiplicity',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_atom_site/',
                                 cifDict = 'core'
                             ))
-                            ed_atom['_Wyckoff_symbol'] = dict(Parameter(
+                            ed_atom['Wyckoff_symbol'] = dict(Parameter(
                                 cryspy_atom.wyckoff_symbol,
-                                name = '_atom_site_Wyckoff_symbol',
-                                #prettyName = '',
+                                optional = True,
+                                category = '_atom_site',
+                                name = 'Wyckoff_symbol',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_atom_site/',
                                 cifDict = 'core'
                             ))
@@ -600,8 +617,8 @@ class CryspyParser:
     @staticmethod
     def cryspyObjAndDictToEdExperiments(cryspy_obj, cryspy_dict):
 
-        exp_substrings = ['pd_', 'data_'] # possible experiment prefixes
         experiment_names = []
+        exp_substrings = ['pd_', 'data_'] # possible experiment prefixes
         # get experiment names from cryspy_dict
         for key in cryspy_dict.keys():
             for substring in exp_substrings:
@@ -610,26 +627,23 @@ class CryspyParser:
                     experiment_names.append(key)
 
         ed_experiments_meas_only = []
-        ed_experiments = []
+        ed_experiments_no_meas = []
 
         for data_block in cryspy_obj.items:
             data_block_name = data_block.data_name
 
             if data_block_name in experiment_names:
                 cryspy_experiment = data_block.items
+                ed_experiment_no_meas = {'name': '', 'params': {}, 'loops': {}}
+                ed_experiment_meas_only = {'name': '', 'loops': {}}
 
-                ed_experiment = {'name': '',
-                                 'params': {},
-                                 'loops': {}}
+                # DATABLOCK ID
 
-                ed_experiment['name'] = dict(Parameter(
+                ed_experiment_no_meas['name'] = dict(Parameter(
                     data_block_name,
                     icon = 'microscope',
                     url = 'https://docs.easydiffraction.org/app/project/dictionaries/',
                 ))
-
-                ed_experiment_meas_only = {'name': '',
-                                           'loops': {}}
                 ed_experiment_meas_only['name'] = dict(Parameter(
                     data_block_name,
                     icon = 'microscope',
@@ -638,325 +652,360 @@ class CryspyParser:
 
                 for item in cryspy_experiment:
 
-                    # Ranges section
+                    # DATABLOCK SINGLES
+
+                    # Ranges category
                     if type(item) == cryspy.C_item_loop_classes.cl_1_range.Range:
-                        ed_experiment['params']['_pd_meas_2theta_range_min'] = dict(Parameter(
+                        ed_experiment_no_meas['params']['_pd_meas'] = {}
+                        ed_experiment_no_meas['params']['_pd_meas']['2theta_range_min'] = dict(Parameter(
                             item.ttheta_min,
-                            name = '_pd_meas_2theta_range_min',
+                            optional = True,
+                            category = '_pd_meas',
+                            name = '2theta_range_min',
                             prettyName = 'range min',
-                            title = 'min',
-                            icon = 'ruler',
-                            groupIcon = 'cube',
+                            shortPrettyName = 'min',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/',
                             cifDict = 'pd'
                         ))
-                        ed_experiment['params']['_pd_meas_2theta_range_max'] = dict(Parameter(
+                        ed_experiment_no_meas['params']['_pd_meas']['2theta_range_max'] = dict(Parameter(
                             item.ttheta_max,
-                            name = '_pd_meas_2theta_range_max',
+                            optional = True,
+                            category = '_pd_meas',
+                            name = '2theta_range_max',
                             prettyName = 'range max',
-                            title = 'max',
+                            shortPrettyName = 'max',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/',
                             cifDict = 'pd'
                         ))
-                        ed_experiment['params']['_pd_meas_2theta_range_inc'] = dict(Parameter(
+                        ed_experiment_no_meas['params']['_pd_meas']['2theta_range_inc'] = dict(Parameter(
                             0.1,  # default value to be updated later
-                            name = '_pd_meas_2theta_range_inc',
+                            optional = True,
+                            category = '_pd_meas',
+                            name = '2theta_range_inc',
                             prettyName = 'range inc',
-                            title = 'inc',
+                            shortPrettyName = 'inc',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/',
                             cifDict = 'pd'
                         ))
 
+                # Start from the beginnig after reading ranges
                 for item in cryspy_experiment:
 
-                    # Setup section
+                    # DATABLOCK SINGLES
+
+                    # Setup section (cryspy)
                     if type(item) == cryspy.C_item_loop_classes.cl_1_setup.Setup:
-                        ed_experiment['params']['_diffrn_radiation_probe'] = dict(Parameter(
-                            item.radiation.replace('neutrons', 'neutron').replace('X-rays', 'x-ray'),
+                        if not '_diffrn_radiation' in ed_experiment_no_meas['params']:
+                            ed_experiment_no_meas['params']['_diffrn_radiation'] = {}
+                        ed_experiment_no_meas['params']['_diffrn_radiation']['probe'] = dict(Parameter(
+                            item.radiation.replace('neutrons', 'neutron').replace('X-rays', 'x-ray'),  # NEED FIX
                             permittedValues = ['neutron', 'x-ray'],
-                            name = '_diffrn_radiation_probe',
-                            #prettyName = 'probe',
-                            title = 'probe',
-                            url = 'https://docs.easydiffraction.org/app/project/dictionaries/_diffrn_radiation/'
+                            category = '_diffrn_radiation',
+                            name = 'probe',
+                            shortPrettyName = 'probe',
+                            url = 'https://docs.easydiffraction.org/app/project/dictionaries/_diffrn_radiation/',
+                            cifDict = 'core'
                         ))
-                        ed_experiment['params']['_diffrn_radiation_wavelength'] = dict(Parameter(
+                        if not '_diffrn_radiation_wavelength' in ed_experiment_no_meas['params']:
+                            ed_experiment_no_meas['params']['_diffrn_radiation_wavelength'] = {}
+                        ed_experiment_no_meas['params']['_diffrn_radiation_wavelength']['wavelength'] = dict(Parameter(
                             item.wavelength,
                             error = item.wavelength_sigma,
-                            name = '_diffrn_radiation_wavelength',
+                            category = '_diffrn_radiation_wavelength',
+                            prettyCategory = 'radiation',
+                            name = 'wavelength',
                             prettyName = 'wavelength',
-                            title = 'wavelength',
+                            shortPrettyName = 'wavelength',
                             icon = 'radiation',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_diffrn_radiation/',
-                            #min = 0.5,
-                            #max = 2.5,
+                            cifDict = 'core',
                             absDelta = 0.01,
                             units = 'Å',
                             fittable = True,
                             fit = item.wavelength_refinement
                         ))
-                        ed_experiment['params']['_pd_meas_2theta_offset'] = dict(Parameter(
+                        if not '_pd_calib' in ed_experiment_no_meas['params']:
+                            ed_experiment_no_meas['params']['_pd_calib'] = {}
+                        ed_experiment_no_meas['params']['_pd_calib']['2theta_offset'] = dict(Parameter(
                             item.offset_ttheta,
                             error = item.offset_ttheta_sigma,
-                            name = '_pd_meas_2theta_offset',
+                            category = '_pd_calib',
+                            prettyCategory = 'calib',
+                            name = '2theta_offset',
                             prettyName = '2θ offset',
-                            title = 'offset',
+                            shortPrettyName = 'offset',
                             icon = 'arrows-alt-h',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_calib/',
-                            #min = -1,
-                            #max = 1,
+                            cifDict = 'pd',
                             absDelta = 0.2,
                             units = '°',
                             fittable = True,
                             fit = item.offset_ttheta_refinement
                         ))
 
-                    # Instrument resolution section
+                    # Instrument resolution section (cryspy)
                     elif type(item) == cryspy.C_item_loop_classes.cl_1_pd_instr_resolution.PdInstrResolution:
-                        ed_experiment['params']['_pd_instr_resolution_u'] = dict(Parameter(
+                        if not '_pd_instr' in ed_experiment_no_meas['params']:
+                            ed_experiment_no_meas['params']['_pd_instr'] = {}
+                        ed_experiment_no_meas['params']['_pd_instr']['resolution_u'] = dict(Parameter(
                             item.u,
                             error = item.u_sigma,
-                            name = '_pd_instr_resolution_u',
+                            category = '_pd_instr',
+                            prettyCategory = 'inst',
+                            name = 'resolution_u',
                             prettyName = 'resolution u',
-                            title = 'u',
+                            shortPrettyName = 'u',
                             icon = 'grip-lines-vertical',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                            #min = 0,
-                            #max = 1,
                             absDelta = 0.1,
                             fittable = True,
                             fit = item.u_refinement
                         ))
-                        ed_experiment['params']['_pd_instr_resolution_v'] = dict(Parameter(
+                        ed_experiment_no_meas['params']['_pd_instr']['resolution_v'] = dict(Parameter(
                             item.v,
                             error = item.v_sigma,
-                            name = '_pd_instr_resolution_v',
+                            category = '_pd_instr',
+                            prettyCategory = 'inst',
+                            name = 'resolution_v',
                             prettyName = 'resolution v',
-                            title = 'v',
+                            shortPrettyName = 'v',
                             icon = 'grip-lines-vertical',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                            #min = -1,
-                            #max = 0,
                             absDelta = 0.1,
                             fittable = True,
                             fit = item.v_refinement
                         ))
-                        ed_experiment['params']['_pd_instr_resolution_w'] = dict(Parameter(
+                        ed_experiment_no_meas['params']['_pd_instr']['resolution_w'] = dict(Parameter(
                             item.w,
                             error = item.w_sigma,
-                            name = '_pd_instr_resolution_w',
+                            category = '_pd_instr',
+                            prettyCategory = 'inst',
+                            name = 'resolution_w',
                             prettyName = 'resolution w',
-                            title = 'w',
+                            shortPrettyName = 'w',
                             icon = 'grip-lines-vertical',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                            #min = 0,
-                            #max = 1,
                             absDelta = 0.1,
                             fittable = True,
                             fit = item.w_refinement
                         ))
-                        ed_experiment['params']['_pd_instr_resolution_x'] = dict(Parameter(
+                        ed_experiment_no_meas['params']['_pd_instr']['resolution_x'] = dict(Parameter(
                             item.x,
                             error = item.x_sigma,
-                            name = '_pd_instr_resolution_x',
+                            category = '_pd_instr',
+                            prettyCategory = 'inst',
+                            name = 'resolution_x',
                             prettyName = 'resolution x',
-                            title = 'x',
+                            shortPrettyName = 'x',
                             icon = 'grip-lines-vertical',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                            #min = 0,
-                            #max = 1,
                             absDelta = 0.1,
                             fittable = True,
                             fit = item.x_refinement
                         ))
-                        ed_experiment['params']['_pd_instr_resolution_y'] = dict(Parameter(
+                        ed_experiment_no_meas['params']['_pd_instr']['resolution_y'] = dict(Parameter(
                             item.y,
                             error = item.y_sigma,
-                            name = '_pd_instr_resolution_y',
+                            category = '_pd_instr',
+                            prettyCategory = 'inst',
+                            name = 'resolution_y',
                             prettyName = 'resolution y',
-                            title = 'y',
+                            shortPrettyName = 'y',
                             icon = 'grip-lines-vertical',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                            #min = 0,
-                            #max = 1,
                             absDelta = 0.1,
                             fittable = True,
                             fit = item.y_refinement
                         ))
 
-                    # Peak assymetries section
+                    # Peak assymetries section (cryspy)
                     elif type(item) == cryspy.C_item_loop_classes.cl_1_pd_instr_reflex_asymmetry.PdInstrReflexAsymmetry:
-                        ed_experiment['params']['_pd_instr_reflex_asymmetry_p1'] = dict(Parameter(
+                        if not '_pd_instr' in ed_experiment_no_meas['params']:
+                            ed_experiment_no_meas['params']['_pd_instr'] = {}
+                        ed_experiment_no_meas['params']['_pd_instr']['reflex_asymmetry_p1'] = dict(Parameter(
                             item.p1,
                             error = item.p1_sigma,
-                            name = '_pd_instr_reflex_asymmetry_p1',
+                            category = '_pd_instr',
+                            prettyCategory = 'inst',
+                            name = 'reflex_asymmetry_p1',
                             prettyName = 'asymmetry p1',
-                            title = 'p1',
+                            shortPrettyName = 'p1',
                             icon = 'balance-scale-left',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
                             absDelta = 0.5,
                             fittable = True,
                             fit = item.p1_refinement
                         ))
-                        ed_experiment['params']['_pd_instr_reflex_asymmetry_p2'] = dict(Parameter(
+                        ed_experiment_no_meas['params']['_pd_instr']['reflex_asymmetry_p2'] = dict(Parameter(
                             item.p2,
                             error = item.p2_sigma,
-                            name = '_pd_instr_reflex_asymmetry_p2',
+                            category = '_pd_instr',
+                            prettyCategory = 'inst',
+                            name = 'reflex_asymmetry_p2',
                             prettyName = 'asymmetry p2',
-                            title = 'p2',
+                            shortPrettyName = 'p2',
                             icon = 'balance-scale-left',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
                             absDelta = 0.5,
                             fittable = True,
                             fit = item.p2_refinement
                         ))
-                        ed_experiment['params']['_pd_instr_reflex_asymmetry_p3'] = dict(Parameter(
+                        ed_experiment_no_meas['params']['_pd_instr']['reflex_asymmetry_p3'] = dict(Parameter(
                             item.p3,
                             error = item.p3_sigma,
-                            name = '_pd_instr_reflex_asymmetry_p3',
+                            category = '_pd_instr',
+                            prettyCategory = 'inst',
+                            name = 'reflex_asymmetry_p3',
                             prettyName = 'asymmetry p3',
-                            title = 'p3',
+                            shortPrettyName = 'p3',
                             icon = 'balance-scale-left',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
                             absDelta = 0.5,
                             fittable = True,
                             fit = item.p3_refinement
                         ))
-                        ed_experiment['params']['_pd_instr_reflex_asymmetry_p4'] = dict(Parameter(
+                        ed_experiment_no_meas['params']['_pd_instr']['reflex_asymmetry_p4'] = dict(Parameter(
                             item.p4,
                             error = item.p4_sigma,
-                            name = '_pd_instr_reflex_asymmetry_p4',
+                            category = '_pd_instr',
+                            prettyCategory = 'inst',
+                            name = 'reflex_asymmetry_p4',
                             prettyName = 'asymmetry p4',
-                            title = 'p4',
+                            shortPrettyName = 'p4',
                             icon = 'balance-scale-left',
                             url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
                             absDelta = 0.5,
                             fittable = True,
                             fit = item.p4_refinement))
 
-                    # Phases section
+                    # Phases section (cryspy)
                     elif type(item) == cryspy.C_item_loop_classes.cl_1_phase.PhaseL:
-                        ed_phases = []
                         cryspy_phases = item.items
-
+                        ed_phases = []
                         for idx, cryspy_phase in enumerate(cryspy_phases):
                             ed_phase = {}
-                            ed_phase['_label'] = dict(Parameter(
+                            ed_phase['id'] = dict(Parameter(
                                 cryspy_phase.label,
                                 idx = idx,
-                                loopName = '_phase',
-                                name = '_label',
-                                #prettyName = 'label',
-                                title = 'label',
+                                category = '_pd_phase_block',
+                                name = 'id',
+                                shortPrettyName = 'label',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_phase/',
+                                cifDict = 'pd'
                             ))
-                            ed_phase['_scale'] = dict(Parameter(
+                            ed_phase['scale'] = dict(Parameter(
                                 cryspy_phase.scale,
                                 error = cryspy_phase.scale_sigma,
                                 idx = idx,
-                                loopName = '_phase',
-                                prettyLoopName = 'phase',
+                                category = '_pd_phase_block',
+                                prettyCategory = 'phase',
                                 rowName = cryspy_phase.label,
-                                name = '_scale',
+                                name = 'scale',
                                 prettyName = 'scale',
-                                title = 'scale',
+                                shortPrettyName = 'scale',
                                 icon = 'weight',
-                                groupIcon = 'layer-group',
+                                categoryIcon = 'layer-group',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_phase/',
-                                #min = 0,
-                                #max = 1000,
+                                cifDict = 'pd',
                                 pctDelta = 25,
                                 fittable = True,
                                 fit = cryspy_phase.scale_refinement
                             ))
                             ed_phases.append(ed_phase)
+                        ed_experiment_no_meas['loops']['_pd_phase_block'] = ed_phases
 
-                        ed_experiment['loops']['_phase'] = ed_phases
-
-                    # Background section
+                    # Background section (cryspy)
                     elif type(item) == cryspy.C_item_loop_classes.cl_1_pd_background.PdBackgroundL:
-                        ed_bkg_points = []
                         cryspy_bkg_points = item.items
-
+                        ed_bkg_points = []
                         for idx, cryspy_bkg_point in enumerate(cryspy_bkg_points):
                             ed_bkg_point = {}
-                            ed_bkg_point['_2theta'] = dict(Parameter(
+                            ed_bkg_point['line_segment_X'] = dict(Parameter(
                                 cryspy_bkg_point.ttheta,
                                 idx = idx,
-                                loopName = '_pd_background',
-                                name = '_2theta',
+                                category = '_pd_background',
+                                name = 'line_segment_X',
                                 prettyName = '2θ',
-                                title = '2θ',
-                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/'
+                                shortPrettyName = '2θ',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                cifDict = 'pd'
                             ))
-                            ed_bkg_point['_intensity'] = dict(Parameter(
+                            ed_bkg_point['line_segment_intensity'] = dict(Parameter(
                                 cryspy_bkg_point.intensity,
                                 error = cryspy_bkg_point.intensity_sigma,
                                 idx = idx,
-                                loopName = '_pd_background',
-                                prettyLoopName = 'bkg',
-                                rowName = f'{cryspy_bkg_point.ttheta:g}deg',  # formatting float to str without trailing zeros
-                                prettyRowName = f'{cryspy_bkg_point.ttheta:g}°',
-                                name = '_intensity',
+                                category = '_pd_background',
+                                prettyCategory = 'bkg',
+                                rowName = f'{cryspy_bkg_point.ttheta:g}°',  # formatting float to str without trailing zeros
+                                name = 'line_segment_intensity',
                                 prettyName = 'intensity',
-                                title = 'Ibkg',
+                                shortPrettyName = 'Ibkg',
                                 icon = 'mountain',
-                                groupIcon = 'wave-square',
+                                categoryIcon = 'wave-square',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
-                                #min = 0,
-                                #max = 3000,
+                                cifDict = 'pd',
                                 pctDelta = 25,
                                 fittable = True,
                                 fit = cryspy_bkg_point.intensity_refinement
                             ))
+                            ed_bkg_point['X_coordinate'] = dict(Parameter(
+                                '2theta',
+                                idx = idx,
+                                category = '_pd_background',
+                                name = 'X_coordinate',
+                                prettyName = 'X coord',
+                                shortPrettyName = 'X coord',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                cifDict = 'pd'
+                            ))
                             ed_bkg_points.append(ed_bkg_point)
+                        ed_experiment_no_meas['loops']['_pd_background'] = ed_bkg_points
 
-                        ed_experiment['loops']['_pd_background'] = ed_bkg_points
-
-                    # Measured data section
+                    # Measured data section (cryspy)
                     elif type(item) == cryspy.C_item_loop_classes.cl_1_pd_meas.PdMeasL:
-                        ed_meas_points = []
                         cryspy_meas_points = item.items
+                        ed_meas_points = []
                         for idx, cryspy_meas_point in enumerate(cryspy_meas_points):
                             ed_meas_point = {}
-                            ed_meas_point['_2theta'] = dict(Parameter(
+                            ed_meas_point['2theta_scan'] = dict(Parameter(
                                 cryspy_meas_point.ttheta,
                                 idx = idx,
-                                loopName = '_pd_meas',
-                                name = '_2theta',
-                                #prettyName = '2θ',
-                                title = '2θ',
-                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_meas/'
+                                category = '_pd_meas',
+                                name = '2theta_scan',
+                                shortPrettyName = '2θ',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_meas/',
+                                cifDict = 'pd'
                             ))
-                            ed_meas_point['_intensity'] = dict(Parameter(
+                            ed_meas_point['intensity_total'] = dict(Parameter(
                                 cryspy_meas_point.intensity,
                                 idx = idx,
-                                loopName = '_pd_meas',
-                                name = '_intensity',
-                                #prettyName = 'I',
-                                title = 'I',
-                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_meas/'
+                                category = '_pd_meas',
+                                name = 'intensity_total',
+                                shortPrettyName = 'I',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_meas/',
+                                cifDict = 'pd'
                             ))
-                            ed_meas_point['_intensity_sigma'] = dict(Parameter(
+                            ed_meas_point['intensity_total_su'] = dict(Parameter(
                                 cryspy_meas_point.intensity_sigma,
                                 idx = idx,
-                                loopName = '_pd_meas',
-                                name = '_intensity_sigma',
-                                #prettyName = 'sI',
-                                title = 'sI',
-                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_meas/'
+                                category = '_pd_meas',
+                                name = 'intensity_total_su',
+                                shortPrettyName = 'sI',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_meas/',
+                                cifDict = 'pd'
                             ))
                             ed_meas_points.append(ed_meas_point)
                         ed_experiment_meas_only['loops']['_pd_meas'] = ed_meas_points
 
                         # Modify range_inc based on the measured data points in _pd_meas loop
-                        pd_meas_2theta_range_min = ed_meas_points[0]['_2theta']['value']
-                        pd_meas_2theta_range_max = ed_meas_points[-1]['_2theta']['value']
+                        pd_meas_2theta_range_min = ed_meas_points[0]['2theta_scan']['value']
+                        pd_meas_2theta_range_max = ed_meas_points[-1]['2theta_scan']['value']
                         pd_meas_2theta_range_inc = (pd_meas_2theta_range_max - pd_meas_2theta_range_min) / (len(ed_meas_points) - 1)
-                        ed_experiment['params']['_pd_meas_2theta_range_inc']['value'] = pd_meas_2theta_range_inc
+                        ed_experiment_no_meas['params']['_pd_meas']['2theta_range_inc']['value'] = pd_meas_2theta_range_inc
 
             if ed_experiment_meas_only is not None:
                 ed_experiments_meas_only.append(ed_experiment_meas_only)
-            if ed_experiment is not None:
-                ed_experiments.append(ed_experiment)
+            if ed_experiment_no_meas is not None:
+                ed_experiments_no_meas.append(ed_experiment_no_meas)
 
-        return ed_experiments_meas_only, ed_experiments
+        return ed_experiments_meas_only, ed_experiments_no_meas

@@ -14,25 +14,25 @@ import Gui.Globals as Globals
 EaElements.GroupRow {
 
     EaElements.ParamTextField {
-        parameter: Globals.Proxies.experimentMainParam('_pd_instr_reflex_asymmetry_p1')
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'reflex_asymmetry_p1')
         onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
         fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
-        parameter: Globals.Proxies.experimentMainParam('_pd_instr_reflex_asymmetry_p2')
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'reflex_asymmetry_p2')
         onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
         fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
-        parameter: Globals.Proxies.experimentMainParam('_pd_instr_reflex_asymmetry_p3')
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'reflex_asymmetry_p3')
         onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
         fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
-        parameter: Globals.Proxies.experimentMainParam('_pd_instr_reflex_asymmetry_p4')
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'reflex_asymmetry_p4')
         onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
         fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }

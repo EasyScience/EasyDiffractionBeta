@@ -588,22 +588,22 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
 
     // Project
 
-    function projectMainParam(name) {
+    function projectMainParam(category, name) {
         if (!main.project.created) {
             return { 'value': '', 'prettyName': '' }
         }
-        const param = main.project.dataBlock.params[name]
+        const param = main.project.dataBlock.params[category][name]
         if (typeof param === 'undefined') {
             return { 'value': '', 'prettyName': '' }
         }
-        return main.project.dataBlock.params[name]
+        return param
     }
 
-    function projectLoopParam(loopName, paramName, rowIndex) {
+    function projectLoopParam(category, name, rowIndex) {
         if (!main.project.created) {
             return {}
         }
-        return main.project.dataBlock.loops[loopName][rowIndex][paramName]
+        return main.project.dataBlock.loops[category][rowIndex][name]
     }
 
     function setProjectMainParam(param, field, value) {
@@ -644,67 +644,67 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
         return `${title} (${count})`
     }
 
-    function modelLoopTitle(title, loopName) {
+    function modelLoopTitle(title, category) {
         if (!main.model.defined) {
             return title
         }
-        const idx = main.model.currentIndex
-        const count = main.model.dataBlocks[idx].loops[loopName].length
+        const blockIdx = main.model.currentIndex
+        const count = main.model.dataBlocks[blockIdx].loops[category].length
         return `${title} (${count})`
     }
 
-    function modelMainParam(name) {
+    function modelMainParam(category, name) {
         if (!main.model.defined) {
             return {}
         }
-        const idx = main.model.currentIndex
-        return main.model.dataBlocks[idx].params[name]
+        const blockIdx = main.model.currentIndex
+        return main.model.dataBlocks[blockIdx].params[category][name]
     }
 
-    function modelLoopParam(loopName, paramName, rowIndex, blockIndex = main.model.currentIndex) {
+    function modelLoopParam(category, name, rowIndex, blockIdx = main.model.currentIndex) {
         if (!main.model.defined) {
             return {}
         }
-        return main.model.dataBlocks[blockIndex].loops[loopName][rowIndex][paramName]
+        return main.model.dataBlocks[blockIdx].loops[category][rowIndex][name]
     }
 
     function setModelMainParamWithFullUpdate(param, field, value) {
-        const idx = main.model.currentIndex
-        console.debug(`*** Editing (full update) model no. ${idx + 1} main param ${param.name} '${field}' to ${value} ***`)
-        main.model.setMainParamWithFullUpdate(idx, param.name, field, value)
+        const blockIdx = main.model.currentIndex
+        console.debug(`*** Editing (full update) model no. ${blockIdx + 1} param ${param.category}.${param.name} '${field}' to ${value} ***`)
+        main.model.setMainParamWithFullUpdate(blockIdx, param.category, param.name, field, value)
     }
 
     function setModelMainParam(param, field, value) {
-        const idx = main.model.currentIndex
-        console.debug(`*** Editing model no. ${idx + 1} main param ${param.name} '${field}' to ${value} ***`)
-        main.model.setMainParam(idx, param.name, field, value)
+        const blockIdx = main.model.currentIndex
+        console.debug(`*** Editing model no. ${blockIdx + 1} param ${param.category}.${param.name} '${field}' to ${value} ***`)
+        main.model.setMainParam(blockIdx, param.category, param.name, field, value)
     }
 
     function setModelLoopParamWithFullUpdate(param, field, value) {
-        const idx = main.model.currentIndex
-        console.debug(`*** Editing (full update) model no. ${idx + 1} loop param ${param.loopName}${param.name}[${param.idx}] '${field}' to ${value} ***`)
-        main.model.setLoopParamWithFullUpdate(idx, param.loopName, param.name, param.idx, field, value)
+        const blockIdx = main.model.currentIndex
+        console.debug(`*** Editing (full update) model no. ${blockIdx + 1} param ${param.category}.${param.name}[${param.idx}] '${field}' to ${value} ***`)
+        main.model.setLoopParamWithFullUpdate(blockIdx, param.category, param.name, param.idx, field, value)
     }
 
     function setModelLoopParam(param, field, value) {
-        const idx = main.model.currentIndex
-        console.debug(`*** Editing model no. ${idx + 1} loop param ${param.loopName}${param.name}[${param.idx}] '${field}' to ${value} ***`)
-        main.model.setLoopParam(idx, param.loopName, param.name, param.idx, field, value)
+        const blockIdx = main.model.currentIndex
+        console.debug(`*** Editing model no. ${blockIdx + 1} param ${param.category}.${param.name}[${param.idx}] '${field}' to ${value} ***`)
+        main.model.setLoopParam(blockIdx, param.category, param.name, param.idx, field, value)
     }
 
-    function removeModelLoopRow(loopName, idx) {
-        console.debug(`*** Removing model loop row ${loopName}[${idx}] ***`)
-        main.model.removeLoopRow(loopName, idx)
+    function removeModelLoopRow(category, blockIdx) {
+        console.debug(`*** Removing model loop row ${category}[${blockIdx}] ***`)
+        main.model.removeLoopRow(category, blockIdx)
     }
 
-    function appendModelLoopRow(loopName) {
-        console.debug(`*** Appending model loop row ${loopName} ***`)
-        main.model.appendLoopRow(loopName)
+    function appendModelLoopRow(category) {
+        console.debug(`*** Appending model loop row ${category} ***`)
+        main.model.appendLoopRow(category)
     }
 
-    function duplicateModelLoopRow(loopName, idx) {
-        console.debug(`*** Duplicating model loop row ${loopName}[${idx}] ***`)
-        main.model.duplicateLoopRow(loopName, idx)
+    function duplicateModelLoopRow(category, blockIdx) {
+        console.debug(`*** Duplicating model loop row ${category}[${blockIdx}] ***`)
+        main.model.duplicateLoopRow(category, blockIdx)
     }
 
     // Experiment
@@ -717,69 +717,66 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
         return `${title} (${count})`
     }
 
-    function experimentLoopTitle(title, loopName) {
+    function experimentLoopTitle(title, category) {
         if (!main.experiment.defined) {
             return title
         }
-        const idx = main.experiment.currentIndex
-        const count = main.experiment.dataBlocksNoMeas[idx].loops[loopName].length
+        const blockIdx = main.experiment.currentIndex
+        const count = main.experiment.dataBlocksNoMeas[blockIdx].loops[category].length
         return `${title} (${count})`
     }
 
-    function experimentMainParam(name) {
+    function experimentMainParam(category, name) {
         if (!main.experiment.defined) {
             return {}
         }
-        const idx = main.experiment.currentIndex
-        return main.experiment.dataBlocksNoMeas[idx].params[name]
+        const blockIdx = main.experiment.currentIndex
+        return main.experiment.dataBlocksNoMeas[blockIdx].params[category][name]
     }
 
-    function experimentLoopParam(loopName, paramName, rowIndex) {
+    function experimentLoopParam(category, name, rowIndex) {
         if (!main.experiment.defined) {
             return {}
         }
-        const idx = main.experiment.currentIndex
-        return main.experiment.dataBlocksNoMeas[idx].loops[loopName][rowIndex][paramName]
+        const blockIdx = main.experiment.currentIndex
+        return main.experiment.dataBlocksNoMeas[blockIdx].loops[category][rowIndex][name]
     }
 
     function setExperimentMainParamWithFullUpdate(param, field, value) {
-        const idx = main.experiment.currentIndex
-        console.debug(`*** Editing (full update) experiment no. ${idx + 1} main param ${param.name} '${field}' to ${value} ***`)
-        main.experiment.setMainParamWithFullUpdate(idx, param.name, field, value)
+        const blockIdx = main.experiment.currentIndex
+        console.debug(`*** Editing (full update) experiment no. ${blockIdx + 1} param ${param.category}.${param.name} '${field}' to ${value} ***`)
+        main.experiment.setMainParamWithFullUpdate(blockIdx, param.category, param.name, field, value)
     }
 
     function setExperimentMainParam(param, field, value) {
-        const idx = main.experiment.currentIndex
-        console.debug(`*** Editing experiment no. ${idx + 1} main param ${param.name} '${field}' to ${value} ***`)
-        main.experiment.setMainParam(idx, param.name, field, value)
+        const blockIdx = main.experiment.currentIndex
+        console.debug(`*** Editing experiment no. ${blockIdx + 1} param ${param.category}.${param.name} '${field}' to ${value} ***`)
+        main.experiment.setMainParam(blockIdx, param.category, param.name, field, value)
     }
 
     function setExperimentLoopParamWithFullUpdate(param, field, value) {
-        const idx = main.experiment.currentIndex
-        console.debug(`*** Editing (full update) experiment no. ${idx + 1} loop param ${param.loopName}${param.name}[${param.idx}] '${field}' to ${value} ***`)
-        main.experiment.setLoopParamWithFullUpdate(idx, param.loopName, param.name, param.idx, field, value)
+        const blockIdx = main.experiment.currentIndex
+        console.debug(`*** Editing (full update) experiment no. ${blockIdx + 1} param ${param.category}.${param.name}[${param.idx}] '${field}' to ${value} ***`)
+        main.experiment.setLoopParamWithFullUpdate(blockIdx, param.category, param.name, param.idx, field, value)
     }
 
     function setExperimentLoopParam(param, field, value) {
-        const idx = main.experiment.currentIndex
-        console.debug(`*** Editing experiment no. ${idx + 1} loop param ${param.loopName}${param.name}[${param.idx}] '${field}' to ${value} ***`)
-        main.experiment.setLoopParam(idx, param.loopName, param.name, param.idx, field, value)
+        const blockIdx = main.experiment.currentIndex
+        console.debug(`*** Editing experiment no. ${blockIdx + 1} param ${param.category}.${param.name}[${param.idx}] '${field}' to ${value} ***`)
+        main.experiment.setLoopParam(blockIdx, param.category, param.name, param.idx, field, value)
     }
 
-    function removeExperimentLoopRow(loopName, idx) {
-        console.debug(`*** Removing experiment loop row ${loopName}[${idx}] ***`)
-        main.experiment.removeLoopRow(loopName, idx)
+    function removeExperimentLoopRow(category, blockIdx) {
+        console.debug(`*** Removing experiment loop row ${category}[${blockIdx}] ***`)
+        main.experiment.removeLoopRow(category, blockIdx)
     }
 
-    function appendExperimentLoopRow(loopName) {
-        console.debug(`*** Appending experiment loop row ${loopName} ***`)
-        main.experiment.appendLoopRow(loopName)
+    function appendExperimentLoopRow(category) {
+        console.debug(`*** Appending experiment loop row ${category} ***`)
+        main.experiment.appendLoopRow(category)
     }
 
     function paramName(param, format) {
-
-        //console.info(JSON.stringify(param))
-
         const textFont = `'${EaStyle.Fonts.fontFamily}'`
         const iconFont = `'${EaStyle.Fonts.iconsFamily}'`
         const textColor = `'${EaStyle.Colors.themeForeground}'`
@@ -787,87 +784,82 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
 
         let blockIconColor = iconColor
         if (param.blockType === "model") {
-            blockIconColor = `'${EaStyle.Colors.models[param.blockIndex]}'`
+            blockIconColor = `'${EaStyle.Colors.models[param.blockIdx]}'`
         } else if (param.blockType === "experiment") {
             blockIconColor = `'${EaStyle.Colors.chartForegroundsExtra[2]}'`
         }
 
-        let groupIconColor = iconColor
-        if (param.loopName === "_atom_site") {
-            groupIconColor = `'${main.model.atomData(
-                        modelLoopParam('_atom_site', '_type_symbol', param.rowIndex, param.blockIndex).value, 'color'
+        let categoryIconColor = iconColor
+        if (param.category === "_atom_site") {
+            categoryIconColor = `'${main.model.atomData(
+                        modelLoopParam('_atom_site', 'type_symbol', param.rowIndex, param.blockIdx).value, 'color'
                         )}'`
-        } else if (param.loopName === "_phase") {
-            groupIconColor = `'${EaStyle.Colors.models[param.rowIndex]}'`
-        }
-
-        let prettyRowName = param.rowName
-        if (param.prettyRowName) {
-            prettyRowName = param.prettyRowName
+        } else if (param.category === "_pd_phase_block") {
+            categoryIconColor = `'${EaStyle.Colors.models[param.rowIndex]}'`
         }
 
         const blockTypeHtml =       `<font color=${blockIconColor} face=${textFont}>${param.blockType}</font>`
         const blockIconHtml =       `<font color=${blockIconColor} face=${iconFont}>${param.blockIcon}</font>`
-        const blockIndexHtml =      `<font color=${blockIconColor} face=${textFont}>${param.blockIndex + 1}</font>`
+        const blockIdxHtml =        `<font color=${blockIconColor} face=${textFont}>${param.blockIdx + 1}</font>`
         const blockNameHtml =       `<font color=${blockIconColor} face=${textFont}>${param.blockName}</font>`
 
-        const groupIconHtml =       `<font color=${groupIconColor} face=${iconFont}>${param.groupIcon}</font>`
-        const prettyloopNameHtml =  `<font color=${groupIconColor} face=${textFont}>${param.prettyLoopName}</font>`
-        const loopNameHtml =        `<font color=${groupIconColor} face=${textFont}>${param.loopName}</font>`
-        const rowIndexHtml =        `<font color=${groupIconColor} face=${textFont}>${param.rowIndex + 1}</font>`
-        const rowNameHtml =         `<font color=${groupIconColor} face=${textFont}>${param.rowName}</font>`
-        const rowPrettyNameHtml =   `<font color=${groupIconColor} face=${textFont}>${prettyRowName}</font>`
+        const categoryIconHtml =    `<font color=${categoryIconColor} face=${iconFont}>${param.categoryIcon}</font>`
+        const prettycategoryHtml =  `<font color=${categoryIconColor} face=${textFont}>${param.prettyCategory}</font>`
+        const categoryHtml =        `<font color=${categoryIconColor} face=${textFont}>${param.category}</font>`
+        const rowIndexHtml =        `<font color=${categoryIconColor} face=${textFont}>${param.rowIndex + 1}</font>`
+        const rowNameHtml =         `<font color=${categoryIconColor} face=${textFont}>${param.rowName}</font>`
 
         const paramIconHtml =       `<font color=${iconColor}      face=${iconFont}>${param.icon}</font>`
         const paramPrettyNameHtml = `<font color=${textColor}      face=${textFont}><b>${param.prettyName}</b></font>`
         const paramNameHtml =       `<font color=${textColor}      face=${textFont}><b>${param.name}</b></font>`
-        const paramTitleHtml =      `<font color=${textColor}      face=${textFont}><b>${param.title}</b></font>`
+        const paramShortPrettyName =`<font color=${textColor}      face=${textFont}><b>${param.shortPrettyName}</b></font>`
 
         let name = ''
         let _ = ''
 
-
-
         if (format === EaGlobals.Vars.ShortestWithIconsAndPrettyLabels) {
             _ = '&nbsp;&nbsp;'
-            name = `${blockIconHtml}${_}${groupIconHtml}`
-            if (param.loopName) name += `${_}${rowPrettyNameHtml}${_}${paramIconHtml}${_}${paramTitleHtml}`
-            else name += `${_}${paramIconHtml}${_}${paramTitleHtml}`
+            name = `${blockIconHtml}`
+            if (param.categoryIcon !== '') name += `${_}${categoryIconHtml}`  // NEED FIX: Use 'undefined' as for rowName?
+            if (typeof param.rowName !== 'undefined') name += `${_}${rowNameHtml}`
+            name += `${_}${paramIconHtml}${_}${paramShortPrettyName}`
+        /*
         } else if (format === EaGlobals.Vars.ReducedWithIconsAndPrettyLabels) {
             _ = '&nbsp;&nbsp;'
-            name = `${blockIconHtml}${_}${blockNameHtml}${_}${groupIconHtml}`
-            if (param.loopName) name += `${_}${rowPrettyNameHtml}${_}${paramIconHtml}${_}${paramPrettyNameHtml}`
+            name = `${blockIconHtml}${_}${blockNameHtml}${_}${categoryIconHtml}`
+            if (param.category) name += `${_}${rowNameHtml}${_}${paramIconHtml}${_}${paramPrettyNameHtml}`
             else name += `${_}${paramIconHtml}${_}${paramPrettyNameHtml}`
         } else if (format === EaGlobals.Vars.FullWithIconsAndPrettyLabels) {
             _ = '&nbsp;&nbsp;'
-            name = `${blockIconHtml}${_}${blockTypeHtml}${_}${blockNameHtml}${_}${groupIconHtml}`
-            if (param.loopName) name += `${_}${prettyloopNameHtml}${_}${rowPrettyNameHtml}${_}${paramIconHtml}${_}${paramPrettyNameHtml}`
+            name = `${blockIconHtml}${_}${blockTypeHtml}${_}${blockNameHtml}${_}${categoryIconHtml}`
+            if (param.category) name += `${_}${prettycategoryHtml}${_}${rowNameHtml}${_}${paramIconHtml}${_}${paramPrettyNameHtml}`
             else name += `${_}${paramIconHtml}${_}${paramPrettyNameHtml}`
         } else if (format === EaGlobals.Vars.FullWithPrettyLabels) {
             _ = '&nbsp;&nbsp;'
             name = `${blockTypeHtml}${_}${blockNameHtml}`
-            if (param.loopName) name += `${_}${prettyloopNameHtml}${_}${rowPrettyNameHtml}${_}${paramPrettyNameHtml}`
+            if (param.category) name += `${_}${prettycategoryHtml}${_}${rowNameHtml}${_}${paramPrettyNameHtml}`
             else name += `${_}${paramPrettyNameHtml}`
         } else if (format === EaGlobals.Vars.FullWithLabels) {
             _ = '.'
             name = `${blockTypeHtml}[${blockNameHtml}]`
-            if (param.loopName) name += `${_}${loopNameHtml}${paramNameHtml}[${rowNameHtml}]`
+            if (param.category) name += `${_}${categoryHtml}${paramNameHtml}[${rowNameHtml}]`
             else name += `${_}${paramNameHtml}`
         } else if (format === EaGlobals.Vars.FullWithIndices) {
             _ = '.'
-            name = `${blockTypeHtml}[${blockIndexHtml}]`
-            if (param.loopName) name += `${_}${loopNameHtml}${paramNameHtml}[${rowIndexHtml}]`
+            name = `${blockTypeHtml}[${blockIdxHtml}]`
+            if (param.category) name += `${_}${categoryHtml}${paramNameHtml}[${rowIndexHtml}]`
             else name += `${_}${paramNameHtml}`
+        */
+        } else if (format === EaGlobals.Vars.PlainShortWithLabels) {
+            _ = '  '
+            name = `${param.blockName}${_}${param.prettyCategory}.${param.shortPrettyName}`
+            if (typeof param.rowName !== 'undefined') name += `${_}${param.rowName}`
         } else if (format === EaGlobals.Vars.PlainFullWithLabels) {
-            _ = '.'
-            name = `${param.blockType}[${param.blockName}]`
-            if (param.loopName) name += `${_}${param.loopName}${param.name}[${param.rowName}]`
-            else name += `${_}${param.name}`
+            _ = '  '
+            name = `${param.blockName}${_}${param.category}.${param.name}`
+            if (typeof param.rowName !== 'undefined') name += `${_}${param.rowName}`
         }
-
-        //console.info(name)
         return name
     }
-
 
 }

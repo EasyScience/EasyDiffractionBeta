@@ -207,9 +207,6 @@ class Worker(QObject):
         self._proxy.fitting.chiSqSignificantlyChanged.emit()
 
         # Update internal dicts with the best params
-        #names = [Data.cryspyDictParamPathToStr(name) for name in parameter_names_free]
-        #self._proxy.experiment.editDataBlockByCryspyDictParams(names)
-        #self._proxy.model.editDataBlockByCryspyDictParams(names)
         self._proxy.experiment.editDataBlockByLmfitParams(result.params)
         self._proxy.model.editDataBlockByLmfitParams(result.params)
 

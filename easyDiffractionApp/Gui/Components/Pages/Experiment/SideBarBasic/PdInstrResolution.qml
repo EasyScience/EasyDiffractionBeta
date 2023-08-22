@@ -14,31 +14,31 @@ import Gui.Globals as Globals
 EaElements.GroupRow {
 
     EaElements.ParamTextField {
-        parameter: Globals.Proxies.experimentMainParam('_pd_instr_resolution_u')
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'resolution_u')
         onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
         fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
-        parameter: Globals.Proxies.experimentMainParam('_pd_instr_resolution_v')
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'resolution_v')
         onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
         fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
-        parameter: Globals.Proxies.experimentMainParam('_pd_instr_resolution_w')
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'resolution_w')
         onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
         fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
-        parameter: Globals.Proxies.experimentMainParam('_pd_instr_resolution_x')
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'resolution_x')
         onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
         fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
-        parameter: Globals.Proxies.experimentMainParam('_pd_instr_resolution_y')
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'resolution_y')
         onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
         fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }

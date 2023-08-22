@@ -1,2 +1,2 @@
 data_DefaultProject
-_description 'Default project description'
+_project.description 'Default project description'

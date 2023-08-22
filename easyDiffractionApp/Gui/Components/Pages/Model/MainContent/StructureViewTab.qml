@@ -18,13 +18,13 @@ Rectangle {
     id: container
 
     property real cellLengthA: typeof Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex] !== 'undefined' ?
-        Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex].params['_cell_length_a']['value'] :
+        Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex].params['_cell']['length_a']['value'] :
         10.0  // NEED FIX
     property real cellLengthB: typeof Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex] !== 'undefined' ?
-        Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex].params['_cell_length_b']['value'] :
+        Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex].params['_cell']['length_b']['value'] :
         10.0  // NEED FIX
     property real cellLengthC: typeof Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex] !== 'undefined' ?
-        Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex].params['_cell_length_c']['value'] :
+        Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex].params['_cell']['length_c']['value'] :
         10.0  // NEED FIX
 
     property real scaleCoeff: defaultScaleCoeff
@@ -211,7 +211,7 @@ Rectangle {
                     materials: [ DefaultMaterial { diffuseColor: atoms.model[index].color } ]
                 }
 
-                onModelChanged: saveImgTimer.restart()
+                onModelChanged: if (Globals.Proxies.main.project.created) saveImgTimer.restart()
             }
             // Atoms
         }

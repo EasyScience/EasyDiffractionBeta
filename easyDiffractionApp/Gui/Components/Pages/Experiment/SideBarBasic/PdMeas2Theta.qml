@@ -15,21 +15,21 @@ EaElements.GroupRow {
 
     EaElements.ParamTextField {
         enabled: false
-        parameter: Globals.Proxies.experimentMainParam('_pd_meas_2theta_range_min')
+        parameter: Globals.Proxies.experimentMainParam('_pd_meas', '2theta_range_min')
     }
 
     EaElements.ParamTextField {
         enabled: false
-        parameter: Globals.Proxies.experimentMainParam('_pd_meas_2theta_range_max')
+        parameter: Globals.Proxies.experimentMainParam('_pd_meas', '2theta_range_max')
     }
 
     EaElements.ParamTextField {
         enabled: false
-        parameter: Globals.Proxies.experimentMainParam('_pd_meas_2theta_range_inc')
+        parameter: Globals.Proxies.experimentMainParam('_pd_meas', '2theta_range_inc')
     }
 
     EaElements.ParamTextField {
-        parameter: Globals.Proxies.experimentMainParam('_pd_meas_2theta_offset')
+        parameter: Globals.Proxies.experimentMainParam('_pd_calib', '2theta_offset')
         onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
         fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }

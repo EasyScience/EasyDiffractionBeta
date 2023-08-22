@@ -265,47 +265,47 @@ class Model(QObject):
         #self.dataBlocksChanged.emit()
         console.debug("All models removed")
 
-    @Slot(int, str, str, 'QVariant')
-    def setMainParamWithFullUpdate(self, blockIndex, paramName, field, value):
-        changedIntern = self.editDataBlockMainParam(blockIndex, paramName, field, value)
+    @Slot(int, str, str, str, 'QVariant')
+    def setMainParamWithFullUpdate(self, blockIdx, category, name, field, value):
+        changedIntern = self.editDataBlockMainParam(blockIdx, category, name, field, value)
         if not changedIntern:
             return
         self.replaceModel()
 
-    @Slot(int, str, str, 'QVariant')
-    def setMainParam(self, blockIndex, paramName, field, value):
-        changedIntern = self.editDataBlockMainParam(blockIndex, paramName, field, value)
-        changedCryspy = self.editCryspyDictByMainParam(blockIndex, paramName, field, value)
+    @Slot(int, str, str, str, 'QVariant')
+    def setMainParam(self, blockIdx, category, name, field, value):
+        changedIntern = self.editDataBlockMainParam(blockIdx, category, name, field, value)
+        changedCryspy = self.editCryspyDictByMainParam(blockIdx, category, name, field, value)
         if changedIntern and changedCryspy:
             self.dataBlocksChanged.emit()
 
     @Slot(int, str, str, int, str, 'QVariant')
-    def setLoopParamWithFullUpdate(self, blockIndex, loopName, paramName, rowIndex, field, value):
-        changedIntern = self.editDataBlockLoopParam(blockIndex, loopName, paramName, rowIndex, field, value)
+    def setLoopParamWithFullUpdate(self, blockIdx, category, name, rowIndex, field, value):
+        changedIntern = self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
         if not changedIntern:
             return
         self.replaceModel()
 
     @Slot(int, str, str, int, str, 'QVariant')
-    def setLoopParam(self, blockIndex, loopName, paramName, rowIndex, field, value):
-        changedIntern = self.editDataBlockLoopParam(blockIndex, loopName, paramName, rowIndex, field, value)
-        changedCryspy = self.editCryspyDictByLoopParam(blockIndex, loopName, paramName, rowIndex, field, value)
+    def setLoopParam(self, blockIdx, category, name, rowIndex, field, value):
+        changedIntern = self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
+        changedCryspy = self.editCryspyDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
         if changedIntern and changedCryspy:
             self.dataBlocksChanged.emit()
 
     @Slot(str, int)
-    def removeLoopRow(self, loopName, rowIndex):
-        self.removeDataBlockLoopRow(loopName, rowIndex)
+    def removeLoopRow(self, category, rowIndex):
+        self.removeDataBlockLoopRow(category, rowIndex)
         self.replaceModel()
 
     @Slot(str)
-    def appendLoopRow(self, loopName):
-        self.appendDataBlockLoopRow(loopName)
+    def appendLoopRow(self, category):
+        self.appendDataBlockLoopRow(category)
         self.replaceModel()
 
     @Slot(str, int)
-    def duplicateLoopRow(self, loopName, idx):
-        self.duplicateDataBlockLoopRow(loopName, idx)
+    def duplicateLoopRow(self, category, idx):
+        self.duplicateDataBlockLoopRow(category, idx)
         self.replaceModel()
 
     # Private methods
@@ -325,18 +325,18 @@ class Model(QObject):
     def createIsotopesNames(self):
         return [isotope[1] for isotope in list(DATABASE['Isotopes'].keys())]
 
-    def removeDataBlockLoopRow(self, loopName, rowIndex):
+    def removeDataBlockLoopRow(self, category, rowIndex):
         block = 'model'
-        blockIndex = self._currentIndex
-        del self._dataBlocks[blockIndex]['loops'][loopName][rowIndex]
+        blockIdx = self._currentIndex
+        del self._dataBlocks[blockIdx]['loops'][category][rowIndex]
 
-        console.debug(IO.formatMsg('sub', 'Intern dict', 'removed', f'{block}[{blockIndex}].{loopName}[{rowIndex}]'))
+        console.debug(IO.formatMsg('sub', 'Intern dict', 'removed', f'{block}[{blockIdx}].{category}[{rowIndex}]'))
 
-    def appendDataBlockLoopRow(self, loopName):
+    def appendDataBlockLoopRow(self, category):
         block = 'model'
-        blockIndex = self._currentIndex
+        blockIdx = self._currentIndex
 
-        lastAtom = self._dataBlocks[blockIndex]['loops'][loopName][-1]
+        lastAtom = self._dataBlocks[blockIdx]['loops'][category][-1]
 
         newAtom = copy.deepcopy(lastAtom)
         newAtom['_label']['value'] = random.choice(self.isotopesNames)
@@ -347,51 +347,51 @@ class Model(QObject):
         newAtom['_occupancy']['value'] = 1
         newAtom['_B_iso_or_equiv']['value'] = 0
 
-        self._dataBlocks[blockIndex]['loops'][loopName].append(newAtom)
-        atomsCount = len(self._dataBlocks[blockIndex]['loops'][loopName])
+        self._dataBlocks[blockIdx]['loops'][category].append(newAtom)
+        atomsCount = len(self._dataBlocks[blockIdx]['loops'][category])
 
-        console.debug(IO.formatMsg('sub', 'Intern dict', 'added', f'{block}[{blockIndex}].{loopName}[{atomsCount}]'))
+        console.debug(IO.formatMsg('sub', 'Intern dict', 'added', f'{block}[{blockIdx}].{category}[{atomsCount}]'))
 
-    def duplicateDataBlockLoopRow(self, loopName, idx):
+    def duplicateDataBlockLoopRow(self, category, idx):
         block = 'model'
-        blockIndex = self._currentIndex
+        blockIdx = self._currentIndex
 
-        lastAtom = self._dataBlocks[blockIndex]['loops'][loopName][idx]
+        lastAtom = self._dataBlocks[blockIdx]['loops'][category][idx]
 
-        self._dataBlocks[blockIndex]['loops'][loopName].append(lastAtom)
-        atomsCount = len(self._dataBlocks[blockIndex]['loops'][loopName])
+        self._dataBlocks[blockIdx]['loops'][category].append(lastAtom)
+        atomsCount = len(self._dataBlocks[blockIdx]['loops'][category])
 
-        console.debug(IO.formatMsg('sub', 'Intern dict', 'added', f'{block}[{blockIndex}].{loopName}[{atomsCount}]'))
+        console.debug(IO.formatMsg('sub', 'Intern dict', 'added', f'{block}[{blockIdx}].{category}[{atomsCount}]'))
 
-    def editDataBlockMainParam(self, blockIndex, paramName, field, value):
+    def editDataBlockMainParam(self, blockIdx, category, name, field, value):
         blockType = 'model'
-        oldValue = self._dataBlocks[blockIndex]['params'][paramName][field]
+        oldValue = self._dataBlocks[blockIdx]['params'][category][name][field]
         if oldValue == value:
             return False
-        self._dataBlocks[blockIndex]['params'][paramName][field] = value
+        self._dataBlocks[blockIdx]['params'][category][name][field] = value
         if type(value) == float:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{blockType}[{blockIndex}].{paramName}.{field}'))
+            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{blockType}[{blockIdx}].{category}.{name}.{field}'))
         else:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{blockType}[{blockIndex}].{paramName}.{field}'))
+            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{blockType}[{blockIdx}].{category}.{name}.{field}'))
         return True
 
-    def editDataBlockLoopParam(self, blockIndex, loopName, paramName, rowIndex, field, value):
+    def editDataBlockLoopParam(self, blockIdx, category, name, rowIndex, field, value):
         block = 'model'
-        oldValue = self._dataBlocks[blockIndex]['loops'][loopName][rowIndex][paramName][field]
+        oldValue = self._dataBlocks[blockIdx]['loops'][category][rowIndex][name][field]
         if oldValue == value:
             return False
-        self._dataBlocks[blockIndex]['loops'][loopName][rowIndex][paramName][field] = value
+        self._dataBlocks[blockIdx]['loops'][category][rowIndex][name][field] = value
         if type(value) == float:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIndex}].{loopName}[{rowIndex}].{paramName}.{field}'))
+            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         else:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIndex}].{loopName}[{rowIndex}].{paramName}.{field}'))
+            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         return True
 
-    def editCryspyDictByMainParam(self, blockIndex, paramName, field, value):
+    def editCryspyDictByMainParam(self, blockIdx, category, name, field, value):
         if field != 'value' and field != 'fit':
             return True
 
-        path, value = self.cryspyDictPathByMainParam(blockIndex, paramName, value)
+        path, value = self.cryspyDictPathByMainParam(blockIdx, category, name, value)
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
@@ -403,11 +403,11 @@ class Model(QObject):
         console.debug(IO.formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
         return True
 
-    def editCryspyDictByLoopParam(self, blockIndex, loopName, paramName, rowIndex, field, value):
+    def editCryspyDictByLoopParam(self, blockIdx, category, name, rowIndex, field, value):
         if field != 'value' and field != 'fit':
             return True
 
-        path, value = self.cryspyDictPathByLoopParam(blockIndex, loopName, paramName, rowIndex, value)
+        path, value = self.cryspyDictPathByLoopParam(blockIdx, category, name, rowIndex, value)
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
@@ -419,62 +419,67 @@ class Model(QObject):
         console.debug(IO.formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
         return True
 
-    def cryspyDictPathByMainParam(self, blockIndex, paramName, value):
-        blockName = self._dataBlocks[blockIndex]['name']['value']
+    def cryspyDictPathByMainParam(self, blockIdx, category, name, value):
+        blockName = self._dataBlocks[blockIdx]['name']['value']
         path = ['','','']
         path[0] = f"crystal_{blockName}"
 
         # _cell
-        if paramName == '_cell_length_a':
-            path[1] = 'unit_cell_parameters'
-            path[2] = 0
-        elif paramName == '_cell_length_b':
-            path[1] = 'unit_cell_parameters'
-            path[2] = 1
-        elif paramName == '_cell_length_c':
-            path[1] = 'unit_cell_parameters'
-            path[2] = 2
-        elif paramName == '_cell_angle_alpha':
-            path[1] = 'unit_cell_parameters'
-            path[2] = 3
-            value = np.deg2rad(value)
-        elif paramName == '_cell_angle_beta':
-            path[1] = 'unit_cell_parameters'
-            path[2] = 4
-            value = np.deg2rad(value)
-        elif paramName == '_cell_angle_gamma':
-            path[1] = 'unit_cell_parameters'
-            path[2] = 5
-            value = np.deg2rad(value)
+        if category == '_cell':
+            if name == 'length_a':
+                path[1] = 'unit_cell_parameters'
+                path[2] = 0
+            elif name == 'length_b':
+                path[1] = 'unit_cell_parameters'
+                path[2] = 1
+            elif name == 'length_c':
+                path[1] = 'unit_cell_parameters'
+                path[2] = 2
+            elif name == 'angle_alpha':
+                path[1] = 'unit_cell_parameters'
+                path[2] = 3
+                value = np.deg2rad(value)
+            elif name == 'angle_beta':
+                path[1] = 'unit_cell_parameters'
+                path[2] = 4
+                value = np.deg2rad(value)
+            elif name == 'angle_gamma':
+                path[1] = 'unit_cell_parameters'
+                path[2] = 5
+                value = np.deg2rad(value)
 
         # undefined
         else:
-            console.error(f"Undefined parameter name '{paramName}'")
+            console.error(f"Undefined name '{category}.{name}'")
 
         return path, value
 
-    def cryspyDictPathByLoopParam(self, blockIndex, loopName, paramName, rowIndex, value):
-        blockName = self._dataBlocks[blockIndex]['name']['value']
+    def cryspyDictPathByLoopParam(self, blockIdx, category, name, rowIndex, value):
+        blockName = self._dataBlocks[blockIdx]['name']['value']
         path = ['','','']
         path[0] = f"crystal_{blockName}"
 
         # _atom_site
-        if loopName == '_atom_site':
-            if paramName == '_fract_x':
+        if category == '_atom_site':
+            if name == 'fract_x':
                 path[1] = 'atom_fract_xyz'
                 path[2] = (0, rowIndex)
-            elif paramName == '_fract_y':
+            elif name == 'fract_y':
                 path[1] = 'atom_fract_xyz'
                 path[2] = (1, rowIndex)
-            elif paramName == '_fract_z':
+            elif name == 'fract_z':
                 path[1] = 'atom_fract_xyz'
                 path[2] = (2, rowIndex)
-            elif paramName == '_occupancy':
+            elif name == 'occupancy':
                 path[1] = 'atom_occupancy'
                 path[2] = rowIndex
-            elif paramName == '_B_iso_or_equiv':
+            elif name == 'B_iso_or_equiv':
                 path[1] = 'atom_b_iso'
                 path[2] = rowIndex
+
+        # undefined
+        else:
+            console.error(f"Undefined name '{category}.{name}'")
 
         return path, value
 
@@ -484,54 +489,55 @@ class Model(QObject):
         # crystal block
         if block.startswith('crystal_'):
             blockName = block[8:]
-            loopName = None
-            paramName = None
-            rowIndex = None
+            category = None
+            name = None
+            rowIndex = -1
 
             # unit_cell_parameters
             if group == 'unit_cell_parameters':
+                category = '_cell'
                 if idx[0] == 0:
-                    paramName = '_cell_length_a'
+                    name = 'length_a'
                 elif idx[0] == 1:
-                    paramName = '_cell_length_b'
+                    name = 'length_b'
                 elif idx[0] == 2:
-                    paramName = '_cell_length_c'
+                    name = 'length_c'
                 elif idx[0] == 3:
-                    paramName = '_cell_angle_alpha'
+                    name = 'angle_alpha'
                 elif idx[0] == 4:
-                    paramName = '_cell_angle_beta'
+                    name = 'angle_beta'
                 elif idx[0] == 5:
-                    paramName = '_cell_angle_gamma'
+                    name = 'angle_gamma'
 
             # atom_fract_xyz
             elif group == 'atom_fract_xyz':
-                loopName = '_atom_site'
+                category = '_atom_site'
                 rowIndex = idx[1]
                 if idx[0] == 0:
-                    paramName = '_fract_x'
+                    name = 'fract_x'
                 elif idx[0] == 1:
-                    paramName = '_fract_y'
+                    name = 'fract_y'
                 elif idx[0] == 2:
-                    paramName = '_fract_z'
+                    name = 'fract_z'
 
             # atom_occupancy
             elif group == 'atom_occupancy':
-                loopName = '_atom_site'
+                category = '_atom_site'
                 rowIndex = idx[0]
-                paramName = '_occupancy'
+                name = 'occupancy'
 
             # b_iso_or_equiv
             elif group == 'atom_b_iso':
-                loopName = '_atom_site'
+                category = '_atom_site'
                 rowIndex = idx[0]
-                paramName = '_B_iso_or_equiv'
+                name = 'B_iso_or_equiv'
 
-            blockIndex = [block['name']['value'] for block in self._dataBlocks].index(blockName)
+            blockIdx = [block['name']['value'] for block in self._dataBlocks].index(blockName)
 
-            if loopName is None:
-                return self.dataBlocks[blockIndex]['params'][paramName][field]
+            if rowIndex == -1:
+                return self.dataBlocks[blockIdx]['params'][category][name][field]
             else:
-                return self.dataBlocks[blockIndex]['loops'][loopName][rowIndex][paramName][field]
+                return self.dataBlocks[blockIdx]['loops'][category][rowIndex][name][field]
 
         return None
 
@@ -542,9 +548,9 @@ class Model(QObject):
             # crystal block
             if block.startswith('crystal_'):
                 blockName = block[8:]
-                loopName = None
-                paramName = None
-                rowIndex = None
+                category = None
+                name = None
+                rowIndex = -1
                 value = param.value
                 error = 0
                 if param.stderr is not None:
@@ -552,116 +558,56 @@ class Model(QObject):
 
                 # unit_cell_parameters
                 if group == 'unit_cell_parameters':
+                    category = '_cell'
                     if idx[0] == 0:
-                        paramName = '_cell_length_a'
+                        name = 'length_a'
                     elif idx[0] == 1:
-                        paramName = '_cell_length_b'
+                        name = 'length_b'
                     elif idx[0] == 2:
-                        paramName = '_cell_length_c'
+                        name = 'length_c'
                     elif idx[0] == 3:
-                        paramName = '_cell_angle_alpha'
+                        name = 'angle_alpha'
                         value = np.rad2deg(value)
                     elif idx[0] == 4:
-                        paramName = '_cell_angle_beta'
+                        name = 'angle_beta'
                         value = np.rad2deg(value)
                     elif idx[0] == 5:
-                        paramName = '_cell_angle_gamma'
+                        name = 'angle_gamma'
                         value = np.rad2deg(value)
 
                 # atom_fract_xyz
                 elif group == 'atom_fract_xyz':
-                    loopName = '_atom_site'
+                    category = '_atom_site'
                     rowIndex = idx[1]
                     if idx[0] == 0:
-                        paramName = '_fract_x'
+                        name = 'fract_x'
                     elif idx[0] == 1:
-                        paramName = '_fract_y'
+                        name = 'fract_y'
                     elif idx[0] == 2:
-                        paramName = '_fract_z'
+                        name = 'fract_z'
 
                 # atom_occupancy
                 elif group == 'atom_occupancy':
-                    loopName = '_atom_site'
+                    category = '_atom_site'
                     rowIndex = idx[0]
-                    paramName = '_occupancy'
+                    name = 'occupancy'
 
                 # b_iso_or_equiv
                 elif group == 'atom_b_iso':
-                    loopName = '_atom_site'
+                    category = '_atom_site'
                     rowIndex = idx[0]
-                    paramName = '_B_iso_or_equiv'
+                    name = 'B_iso_or_equiv'
 
                 value = float(value)  # convert float64 to float (needed for QML access)
                 error = float(error)  # convert float64 to float (needed for QML access)
-                blockIndex = [block['name']['value'] for block in self._dataBlocks].index(blockName)
+                blockIdx = [block['name']['value'] for block in self._dataBlocks].index(blockName)
 
-                if loopName is None:
-                    self.editDataBlockMainParam(blockIndex, paramName, 'value', value)
-                    self.editDataBlockMainParam(blockIndex, paramName, 'error', error)
+                if rowIndex == -1:
+                    self.editDataBlockMainParam(blockIdx, category, name, 'value', value)
+                    self.editDataBlockMainParam(blockIdx, category, name, 'error', error)
                 else:
-                    self.editDataBlockLoopParam(blockIndex, loopName, paramName, rowIndex, 'value', value)
-                    self.editDataBlockLoopParam(blockIndex, loopName, paramName, rowIndex, 'error', error)
-
-    def editDataBlockByCryspyDictParams(self, params):
-        for param in params:
-            block, group, idx = Data.strToCryspyDictParamPath(param)
-
-            # crystal block
-            if block.startswith('crystal_'):
-                blockName = block[8:]
-                loopName = None
-                paramName = None
-                rowIndex = None
-                value = self._proxy.data._cryspyDict[block][group][idx]
-
-                # unit_cell_parameters
-                if group == 'unit_cell_parameters':
-                    if idx[0] == 0:
-                        paramName = '_cell_length_a'
-                    elif idx[0] == 1:
-                        paramName = '_cell_length_b'
-                    elif idx[0] == 2:
-                        paramName = '_cell_length_c'
-                    elif idx[0] == 3:
-                        paramName = '_cell_angle_alpha'
-                        value = np.rad2deg(value)
-                    elif idx[0] == 4:
-                        paramName = '_cell_angle_beta'
-                        value = np.rad2deg(value)
-                    elif idx[0] == 5:
-                        paramName = '_cell_angle_gamma'
-                        value = np.rad2deg(value)
-
-                # atom_fract_xyz
-                elif group == 'atom_fract_xyz':
-                    loopName = '_atom_site'
-                    rowIndex = idx[1]
-                    if idx[0] == 0:
-                        paramName = '_fract_x'
-                    elif idx[0] == 1:
-                        paramName = '_fract_y'
-                    elif idx[0] == 2:
-                        paramName = '_fract_z'
-
-                # atom_occupancy
-                elif group == 'atom_occupancy':
-                    loopName = '_atom_site'
-                    rowIndex = idx[0]
-                    paramName = '_occupancy'
-
-                # b_iso_or_equiv
-                elif group == 'atom_b_iso':
-                    loopName = '_atom_site'
-                    rowIndex = idx[0]
-                    paramName = '_B_iso_or_equiv'
-
-                value = float(value)  # convert float64 to float (needed for QML access)
-                blockIndex = [block['name']['value'] for block in self._dataBlocks].index(blockName)
-
-                if loopName is None:
-                    self.editDataBlockMainParam(blockIndex, paramName, 'value', value)
-                else:
-                    self.editDataBlockLoopParam(blockIndex, loopName, paramName, rowIndex, 'value', value)
+                    self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'value', value)
+                    self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', error)
 
     def setDataBlocksCif(self):
         self._dataBlocksCif = [[CryspyParser.dataBlockToCif(block)] for block in self._dataBlocks]
@@ -675,9 +621,9 @@ class Model(QObject):
 
     def setCurrentModelStructViewCellModel(self):
         params = self._dataBlocks[self._currentIndex]['params']
-        a = params['_cell_length_a']['value']
-        b = params['_cell_length_b']['value']
-        c = params['_cell_length_c']['value']
+        a = params['_cell']['length_a']['value']
+        b = params['_cell']['length_b']['value']
+        c = params['_cell']['length_c']['value']
         self._structViewCellModel = [
             # x
             { "x": 0,     "y":-0.5*b, "z":-0.5*c, "rotx": 0, "roty": 0,  "rotz":-90, "len": a },
@@ -700,9 +646,9 @@ class Model(QObject):
 
     def setCurrentModelStructViewAxesModel(self):
         params = self._dataBlocks[self._currentIndex]['params']
-        a = params['_cell_length_a']['value']
-        b = params['_cell_length_b']['value']
-        c = params['_cell_length_c']['value']
+        a = params['_cell']['length_a']['value']
+        b = params['_cell']['length_b']['value']
+        c = params['_cell']['length_c']['value']
         self._structViewAxesModel = [
             {"x": 0.5, "y": 0,   "z": 0,   "rotx": 0, "roty":  0, "rotz": -90, "len": a},
             {"x": 0,   "y": 0.5, "z": 0,   "rotx": 0, "roty":  0, "rotz":   0, "len": b},
@@ -719,10 +665,10 @@ class Model(QObject):
         atoms = self._dataBlocks[self._currentIndex]['loops']['_atom_site']
         # Add all atoms in the cell, including those in equivalent positions
         for atom in atoms:
-            symbol = atom['_type_symbol']['value']
-            xUnique = atom['_fract_x']['value']
-            yUnique = atom['_fract_y']['value']
-            zUnique = atom['_fract_z']['value']
+            symbol = atom['type_symbol']['value']
+            xUnique = atom['fract_x']['value']
+            yUnique = atom['fract_y']['value']
+            zUnique = atom['fract_z']['value']
             xArray, yArray, zArray, _ = spaceGroup.calc_xyz_mult(xUnique, yUnique, zUnique)
             for x, y, z in zip(xArray, yArray, zArray):
                 structViewModel.add((

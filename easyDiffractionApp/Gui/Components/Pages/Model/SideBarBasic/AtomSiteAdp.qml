@@ -45,7 +45,7 @@ EaElements.GroupColumn {
                 flexibleWidth: true
                 horizontalAlignment: Text.AlignLeft
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', '_label', 0).title ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'label', 0).shortPrettyName ?? ''  // NEED FIX
            }
 
             EaComponents.TableViewLabel {
@@ -53,7 +53,7 @@ EaElements.GroupColumn {
                 width: EaStyle.Sizes.fontPixelSize * 2.0
                 horizontalAlignment: Text.AlignLeft
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', '_adp_type', 0).title ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'ADP_type', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
@@ -61,7 +61,7 @@ EaElements.GroupColumn {
                 width: EaStyle.Sizes.fontPixelSize * 3.9
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', '_B_iso_or_equiv', 0).title ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'B_iso_or_equiv', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
@@ -124,17 +124,17 @@ EaElements.GroupColumn {
 
             EaComponents.TableViewParameter {
                 enabled: false
-                parameter: Globals.Proxies.modelLoopParam('_atom_site', '_label', index)
+                parameter: Globals.Proxies.modelLoopParam('_atom_site', 'label', index)
             }
 
             EaComponents.TableViewParameter {
                 enabled: false
-                parameter: Globals.Proxies.modelLoopParam('_atom_site', '_adp_type', index)
+                parameter: Globals.Proxies.modelLoopParam('_atom_site', 'ADP_type', index)
             }
 
             EaComponents.TableViewParameter {
                 id: iso
-                parameter: Globals.Proxies.modelLoopParam('_atom_site', '_B_iso_or_equiv', index)
+                parameter: Globals.Proxies.modelLoopParam('_atom_site', 'B_iso_or_equiv', index)
                 onEditingFinished: Globals.Proxies.setModelLoopParam(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fit', fitCheckBox.checked)
             }

@@ -108,40 +108,40 @@ class Fittables(QObject):
         return self._experimentParamsCount
 
     @Slot(str, int, str, int, str, str, float)
-    def edit(self, blockType, blockIndex, loopName, rowIndex, paramName, field, value):
-        if loopName == '':
-            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIndex}].{paramName}.{field} to {value}'))
+    def edit(self, blockType, blockIdx, category, rowIndex, name, field, value):
+        if rowIndex == -1:
+            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{name}.{field} to {value}'))
             if blockType == 'experiment':
-                self._proxy.experiment.setMainParam(blockIndex, paramName, field, value)
+                self._proxy.experiment.setMainParam(blockIdx, name, field, value)
             elif blockType == 'model':
-                self._proxy.model.setMainParam(blockIndex, paramName, field, value)
+                self._proxy.model.setMainParam(blockIdx, name, field, value)
         else:
-            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIndex}].{loopName}[{rowIndex}].{paramName}.{field} to {value}'))
+            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
             if blockType == 'experiment':
-                self._proxy.experiment.setLoopParam(blockIndex, loopName, paramName, rowIndex, field, value)
+                self._proxy.experiment.setLoopParam(blockIdx, category, name, rowIndex, field, value)
             elif blockType == 'model':
-                self._proxy.model.setLoopParam(blockIndex, loopName, paramName, rowIndex, field, value)
+                self._proxy.model.setLoopParam(blockIdx, category, name, rowIndex, field, value)
 
     @Slot(str, int, str, int, str, str, float)
-    def editSilently(self, blockType, blockIndex, loopName, rowIndex, paramName, field, value):  # NED FIX: Move to connections
+    def editSilently(self, blockType, blockIdx, category, rowIndex, name, field, value):  # NEED FIX: Move to connections
         changedIntern = False
         changedCryspy = False
-        if loopName == '':
-            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIndex}].{paramName}.{field} to {value}'))
+        if rowIndex == -1:
+            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
             if blockType == 'experiment':
-                changedIntern = self._proxy.experiment.editDataBlockMainParam(blockIndex, paramName, field, value)
-                changedCryspy = self._proxy.experiment.editCryspyDictByMainParam(blockIndex, paramName, field, value)
+                changedIntern = self._proxy.experiment.editDataBlockMainParam(blockIdx, category, name, field, value)
+                changedCryspy = self._proxy.experiment.editCryspyDictByMainParam(blockIdx, category, name, field, value)
             elif blockType == 'model':
-                changedIntern = self._proxy.model.editDataBlockMainParam(blockIndex, paramName, field, value)
-                changedCryspy = self._proxy.model.editCryspyDictByMainParam(blockIndex, paramName, field, value)
+                changedIntern = self._proxy.model.editDataBlockMainParam(blockIdx, category, name, field, value)
+                changedCryspy = self._proxy.model.editCryspyDictByMainParam(blockIdx, category, name, field, value)
         else:
-            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIndex}].{loopName}[{rowIndex}].{paramName}.{field} to {value}'))
+            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
             if blockType == 'experiment':
-                changedIntern = self._proxy.experiment.editDataBlockLoopParam(blockIndex, loopName, paramName, rowIndex, field, value)
-                changedCryspy = self._proxy.experiment.editCryspyDictByLoopParam(blockIndex, loopName, paramName, rowIndex, field, value)
+                changedIntern = self._proxy.experiment.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
+                changedCryspy = self._proxy.experiment.editCryspyDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
             elif blockType == 'model':
-                changedIntern = self._proxy.model.editDataBlockLoopParam(blockIndex, loopName, paramName, rowIndex, field, value)
-                changedCryspy = self._proxy.model.editCryspyDictByLoopParam(blockIndex, loopName, paramName, rowIndex, field, value)
+                changedIntern = self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
+                changedCryspy = self._proxy.model.editCryspyDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
         if changedIntern and changedCryspy:
             if blockType == 'model':
                 self.modelChangedSilently.emit()
@@ -159,73 +159,75 @@ class Fittables(QObject):
         for i in range(len(self._proxy.model.dataBlocks)):
             block = self._proxy.model.dataBlocks[i]
 
-            # Model main params
-            for paramName, paramContent in block['params'].items():
-                if paramContent['fittable']:
-                    fittable = {}
-                    fittable['blockType'] = 'model'
-                    fittable['blockIndex'] = i
-                    fittable['blockName'] = block['name']['value']
-                    fittable['blockIcon'] = block['name']['icon']
-                    fittable['name'] = paramContent['name']
-                    fittable['prettyName'] = paramContent['prettyName']
-                    fittable['title'] = paramContent['title']
-                    fittable['icon'] = paramContent['icon']
-                    fittable['groupIcon'] = paramContent['groupIcon']
-                    fittable['enabled'] = paramContent['enabled']
-                    fittable['value'] = paramContent['value']
-                    fittable['error'] = paramContent['error']
-                    fittable['min'] = paramContent['min']
-                    fittable['max'] = paramContent['max']
-                    fittable['units'] = paramContent['units']
-                    fittable['fit'] = paramContent['fit']
+            # Model singles
+            for categoryContent in block['params'].values():
+                for paramName, paramContent in categoryContent.items():
+                    if paramContent['fittable']:
+                        fittable = {}
+                        fittable['blockType'] = 'model'
+                        fittable['blockIdx'] = i
+                        fittable['blockName'] = block['name']['value']
+                        fittable['blockIcon'] = block['name']['icon']
+                        fittable['category'] = paramContent['category']
+                        fittable['prettyCategory'] = paramContent['prettyCategory']
+                        fittable['name'] = paramContent['name']
+                        fittable['prettyName'] = paramContent['prettyName']
+                        fittable['shortPrettyName'] = paramContent['shortPrettyName']
+                        fittable['icon'] = paramContent['icon']
+                        fittable['categoryIcon'] = paramContent['categoryIcon']
+                        fittable['enabled'] = paramContent['enabled']
+                        fittable['value'] = paramContent['value']
+                        fittable['error'] = paramContent['error']
+                        fittable['min'] = paramContent['min']
+                        fittable['max'] = paramContent['max']
+                        fittable['units'] = paramContent['units']
+                        fittable['fit'] = paramContent['fit']
 
-                    absDelta = paramContent['absDelta']
-                    pctDelta = paramContent['pctDelta']
-                    if absDelta is not None:
-                        fittable['from'] = max(fittable['value'] - absDelta, fittable['min'])
-                        fittable['to'] = min(fittable['value'] + absDelta, fittable['max'])
-                    elif pctDelta is not None:
-                        fittable['from'] = max(fittable['value'] * (100 - pctDelta) / 100, fittable['min'])
-                        fittable['to'] = min(fittable['value'] * (100 + pctDelta) / 100, fittable['max'])
+                        absDelta = paramContent['absDelta']
+                        pctDelta = paramContent['pctDelta']
+                        if absDelta is not None:
+                            fittable['from'] = max(fittable['value'] - absDelta, fittable['min'])
+                            fittable['to'] = min(fittable['value'] + absDelta, fittable['max'])
+                        elif pctDelta is not None:
+                            fittable['from'] = max(fittable['value'] * (100 - pctDelta) / 100, fittable['min'])
+                            fittable['to'] = min(fittable['value'] * (100 + pctDelta) / 100, fittable['max'])
 
-                    fullName = f"{fittable['blockType']}.{fittable['blockName']}.{fittable['name'][1:]}"
-                    if fittable['enabled']:
-                        _modelParamsCount += 1
-                        if fittable['fit']:
-                            _freeParamsCount += 1
-                        else:
-                            _fixedParamsCount += 1
-                        if self.nameFilterCriteria in fullName:
-                            if self.variabilityFilterCriteria == 'free' and fittable['fit']:
-                                _data.append(fittable)
-                            elif self.variabilityFilterCriteria == 'fixed' and not fittable['fit']:
-                                _data.append(fittable)
-                            elif self.variabilityFilterCriteria == 'all':
-                                _data.append(fittable)
-                            elif self.variabilityFilterCriteria == '':
-                                _data.append(fittable)
+                        fullName = f"{fittable['blockType']}.{fittable['blockName']}.{fittable['category']}.{fittable['name']}"
+                        if fittable['enabled']:
+                            _modelParamsCount += 1
+                            if fittable['fit']:
+                                _freeParamsCount += 1
+                            else:
+                                _fixedParamsCount += 1
+                            if self.nameFilterCriteria in fullName:
+                                if self.variabilityFilterCriteria == 'free' and fittable['fit']:
+                                    _data.append(fittable)
+                                elif self.variabilityFilterCriteria == 'fixed' and not fittable['fit']:
+                                    _data.append(fittable)
+                                elif self.variabilityFilterCriteria == 'all':
+                                    _data.append(fittable)
+                                elif self.variabilityFilterCriteria == '':
+                                    _data.append(fittable)
 
-            # Model loop params
-            for loopName, loopContent in block['loops'].items():
-                for rowIndex, param in enumerate(loopContent):
+            # Model tables
+            for category, loopRows in block['loops'].items():
+                for rowIndex, param in enumerate(loopRows):
                     for paramName, paramContent in param.items():
                         if paramContent['fittable']:
                             fittable = {}
                             fittable['blockType'] = 'model'
-                            fittable['blockIndex'] = i
+                            fittable['blockIdx'] = i
                             fittable['blockName'] = block['name']['value']
                             fittable['blockIcon'] = block['name']['icon']
-                            fittable['loopName'] = loopName
-                            fittable['prettyLoopName'] = paramContent['prettyLoopName']
+                            fittable['category'] = category  # paramContent['category'] ???
+                            fittable['prettyCategory'] = paramContent['prettyCategory']
                             fittable['rowName'] = paramContent['rowName']
-                            fittable['prettyRowName'] = paramContent['prettyRowName']
                             fittable['rowIndex'] = rowIndex
                             fittable['name'] = paramContent['name']
                             fittable['prettyName'] = paramContent['prettyName']
-                            fittable['title'] = paramContent['title']
+                            fittable['shortPrettyName'] = paramContent['shortPrettyName']
                             fittable['icon'] = paramContent['icon']
-                            fittable['groupIcon'] = paramContent['groupIcon']
+                            fittable['categoryIcon'] = paramContent['categoryIcon']
                             fittable['enabled'] = paramContent['enabled']
                             fittable['value'] = paramContent['value']
                             fittable['error'] = paramContent['error']
@@ -243,7 +245,7 @@ class Fittables(QObject):
                                 fittable['from'] = max(fittable['value'] * (100 - pctDelta) / 100, fittable['min'])
                                 fittable['to'] = min(fittable['value'] * (100 + pctDelta) / 100, fittable['max'])
 
-                            fullName = f"{fittable['blockType']}.{fittable['blockName']}.{fittable['loopName'][1:]}.{fittable['rowName']}.{fittable['name'][1:]}"
+                            fullName = f"{fittable['blockType']}.{fittable['blockName']}.{fittable['category']}.{fittable['rowName']}.{fittable['name']}"
                             if fittable['enabled']:
                                 _modelParamsCount += 1
                                 if fittable['fit']:
@@ -264,73 +266,75 @@ class Fittables(QObject):
         for i in range(len(self._proxy.experiment.dataBlocksNoMeas)):
             block = self._proxy.experiment.dataBlocksNoMeas[i]
 
-            # Experiment main params
-            for paramName, paramContent in block['params'].items():
-                if paramContent['fittable']:
-                    fittable = {}
-                    fittable['blockType'] = 'experiment'
-                    fittable['blockIndex'] = i
-                    fittable['blockName'] = block['name']['value']
-                    fittable['blockIcon'] = block['name']['icon']
-                    fittable['name'] = paramContent['name']
-                    fittable['prettyName'] = paramContent['prettyName']
-                    fittable['title'] = paramContent['title']
-                    fittable['icon'] = paramContent['icon']
-                    fittable['groupIcon'] = paramContent['groupIcon']
-                    fittable['enabled'] = paramContent['enabled']
-                    fittable['value'] = paramContent['value']
-                    fittable['error'] = paramContent['error']
-                    fittable['min'] = paramContent['min']
-                    fittable['max'] = paramContent['max']
-                    fittable['units'] = paramContent['units']
-                    fittable['fit'] = paramContent['fit']
+            # Experiment singles
+            for categoryContent in block['params'].values():
+                for paramName, paramContent in categoryContent.items():
+                    if paramContent['fittable']:
+                        fittable = {}
+                        fittable['blockType'] = 'experiment'
+                        fittable['blockIdx'] = i
+                        fittable['blockName'] = block['name']['value']
+                        fittable['blockIcon'] = block['name']['icon']
+                        fittable['category'] = paramContent['category']
+                        fittable['prettyCategory'] = paramContent['prettyCategory']
+                        fittable['name'] = paramContent['name']
+                        fittable['prettyName'] = paramContent['prettyName']
+                        fittable['shortPrettyName'] = paramContent['shortPrettyName']
+                        fittable['icon'] = paramContent['icon']
+                        fittable['categoryIcon'] = paramContent['categoryIcon']
+                        fittable['enabled'] = paramContent['enabled']
+                        fittable['value'] = paramContent['value']
+                        fittable['error'] = paramContent['error']
+                        fittable['min'] = paramContent['min']
+                        fittable['max'] = paramContent['max']
+                        fittable['units'] = paramContent['units']
+                        fittable['fit'] = paramContent['fit']
 
-                    absDelta = paramContent['absDelta']
-                    pctDelta = paramContent['pctDelta']
-                    if absDelta is not None:
-                        fittable['from'] = max(fittable['value'] - absDelta, fittable['min'])
-                        fittable['to'] = min(fittable['value'] + absDelta, fittable['max'])
-                    elif pctDelta is not None:
-                        fittable['from'] = max(fittable['value'] * (100 - pctDelta) / 100, fittable['min'])
-                        fittable['to'] = min(fittable['value'] * (100 + pctDelta) / 100, fittable['max'])
+                        absDelta = paramContent['absDelta']
+                        pctDelta = paramContent['pctDelta']
+                        if absDelta is not None:
+                            fittable['from'] = max(fittable['value'] - absDelta, fittable['min'])
+                            fittable['to'] = min(fittable['value'] + absDelta, fittable['max'])
+                        elif pctDelta is not None:
+                            fittable['from'] = max(fittable['value'] * (100 - pctDelta) / 100, fittable['min'])
+                            fittable['to'] = min(fittable['value'] * (100 + pctDelta) / 100, fittable['max'])
 
-                    fullName = f"{fittable['blockType']}.{fittable['blockName']}.{fittable['name'][1:]}"
-                    if fittable['enabled']:
-                        _experimentParamsCount += 1
-                        if fittable['fit']:
-                            _freeParamsCount += 1
-                        else:
-                            _fixedParamsCount += 1
-                        if self.nameFilterCriteria in fullName:
-                            if self.variabilityFilterCriteria == 'free' and fittable['fit']:
-                                _data.append(fittable)
-                            elif self.variabilityFilterCriteria == 'fixed' and not fittable['fit']:
-                                _data.append(fittable)
-                            elif self.variabilityFilterCriteria == 'all':
-                                _data.append(fittable)
-                            elif self.variabilityFilterCriteria == '':
-                                _data.append(fittable)
+                        fullName = f"{fittable['blockType']}.{fittable['blockName']}.{fittable['category']}.{fittable['name']}"
+                        if fittable['enabled']:
+                            _experimentParamsCount += 1
+                            if fittable['fit']:
+                                _freeParamsCount += 1
+                            else:
+                                _fixedParamsCount += 1
+                            if self.nameFilterCriteria in fullName:
+                                if self.variabilityFilterCriteria == 'free' and fittable['fit']:
+                                    _data.append(fittable)
+                                elif self.variabilityFilterCriteria == 'fixed' and not fittable['fit']:
+                                    _data.append(fittable)
+                                elif self.variabilityFilterCriteria == 'all':
+                                    _data.append(fittable)
+                                elif self.variabilityFilterCriteria == '':
+                                    _data.append(fittable)
 
-            # Experiment loop params
-            for loopName, loopContent in block['loops'].items():
-                for rowIndex, param in enumerate(loopContent):
+            # Experiment tables
+            for category, loopRows in block['loops'].items():
+                for rowIndex, param in enumerate(loopRows):
                     for paramName, paramContent in param.items():
                         if paramContent['fittable']:
                             fittable = {}
                             fittable['blockType'] = 'experiment'
-                            fittable['blockIndex'] = i
+                            fittable['blockIdx'] = i
                             fittable['blockName'] = block['name']['value']
                             fittable['blockIcon'] = block['name']['icon']
-                            fittable['loopName'] = loopName
-                            fittable['prettyLoopName'] = paramContent['prettyLoopName']
+                            fittable['category'] = category
+                            fittable['prettyCategory'] = paramContent['prettyCategory']
                             fittable['rowName'] = paramContent['rowName']
                             fittable['rowIndex'] = rowIndex
-                            fittable['prettyRowName'] = paramContent['prettyRowName']
                             fittable['name'] = paramContent['name']
                             fittable['prettyName'] = paramContent['prettyName']
-                            fittable['title'] = paramContent['title']
+                            fittable['shortPrettyName'] = paramContent['shortPrettyName']
                             fittable['icon'] = paramContent['icon']
-                            fittable['groupIcon'] = paramContent['groupIcon']
+                            fittable['categoryIcon'] = paramContent['categoryIcon']
                             fittable['enabled'] = paramContent['enabled']
                             fittable['value'] = paramContent['value']
                             fittable['error'] = paramContent['error']
@@ -348,7 +352,7 @@ class Fittables(QObject):
                                 fittable['from'] = max(fittable['value'] * (100 - pctDelta) / 100, fittable['min'])
                                 fittable['to'] = min(fittable['value'] * (100 + pctDelta) / 100, fittable['max'])
 
-                            fullName = f"{fittable['blockType']}.{fittable['blockName']}.{fittable['loopName'][1:]}.{fittable['rowName']}.{fittable['name'][1:]}"
+                            fullName = f"{fittable['blockType']}.{fittable['blockName']}.{fittable['category']}.{fittable['rowName']}.{fittable['name']}"
                             if fittable['enabled']:
                                 _experimentParamsCount += 1
                                 if fittable['fit']:

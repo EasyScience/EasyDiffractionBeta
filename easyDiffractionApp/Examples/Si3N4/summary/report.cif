@@ -1,25 +1,25 @@
 data_pbso4
 
-_cell_length_a 7.6261(0.1458)
-_cell_length_b 4.8543(0.0928)
-_cell_length_c 6.2586(0.1196)
-_cell_angle_alpha 90
-_cell_angle_beta 90
-_cell_angle_gamma 90
-_space_group_name_H-M_alt "P n m a"
-_space_group_IT_coordinate_system_code abc
+_cell.length_a 7.6261(0.1458)
+_cell.length_b 4.8543(0.0928)
+_cell.length_c 6.2586(0.1196)
+_cell.angle_alpha 90
+_cell.angle_beta 90
+_cell.angle_gamma 90
+_space_group.name_H-M_alt "P n m a"
+_space_group.IT_coordinate_system_code abc
 
 loop_
-_atom_site_label
-_atom_site_type_symbol
-_atom_site_fract_x
-_atom_site_fract_y
-_atom_site_fract_z
-_atom_site_occupancy
-_atom_site_adp_type
-_atom_site_B_iso_or_equiv
-_atom_site_multiplicity
-_atom_site_Wyckoff_symbol
+_atom_site.label
+_atom_site.type_symbol
+_atom_site.fract_x
+_atom_site.fract_y
+_atom_site.fract_z
+_atom_site.occupancy
+_atom_site.adp_type
+_atom_site.B_iso_or_equiv
+_atom_site.multiplicity
+_atom_site.Wyckoff_symbol
 Pb Pb 0.1875(0.0001) 0.25 0.1674(0.0002) 1 Biso 0.8752(0.0406) 4 c 
 S S 0.0646(0.0003) 0.25 0.6839(0.0004) 1 Biso -0.1099(0.0365) 4 c 
 O1 O 0.9081(0.0002) 0.25 0.5953(0.0002) 1 Biso 1.5033(0.0703) 4 c 
@@ -28,30 +28,30 @@ O3 O 0.0811(0.0001) 0.027(0.0002) 0.8086(0.0002) 1 Biso 0.8178(0.0383) 8 d
 
 data_d1a
 
-_diffrn_radiation_probe neutron
-_diffrn_radiation_wavelength 1.7199(0.0329)
-_pd_meas_2theta_offset -0.1147(0.0001)
-_pd_instr_resolution_u 0.137(0.0036)
-_pd_instr_resolution_v -0.4091(0.0075)
-_pd_instr_resolution_w 0.3458(0.004)
-_pd_instr_resolution_x 0
-_pd_instr_resolution_y 0.139
-_pd_meas_2theta_range_min 10
-_pd_meas_2theta_range_max 155.45
-_pd_meas_2theta_range_inc 0.05
-_pd_instr_reflex_asymmetry_p1 -0.2623(0.023)
-_pd_instr_reflex_asymmetry_p2 -0.0128(0.0037)
-_pd_instr_reflex_asymmetry_p3 -0.093(0.0607)
-_pd_instr_reflex_asymmetry_p4 -0.0729(0.0102)
+_diffrn_radiation.probe neutron
+_diffrn_radiation_wavelength.wavelength 1.7199(0.0329)
+_pd_calib.2theta_offset -0.1147(0.0001)
+_pd_instr.resolution_u 0.137(0.0036)
+_pd_instr.resolution_v -0.4091(0.0075)
+_pd_instr.resolution_w 0.3458(0.004)
+_pd_instr.resolution_x 0
+_pd_instr.resolution_y 0.139
+_pd_meas.2theta_scan_range_min 10
+_pd_meas.2theta_scan_range_max 155.45
+_pd_meas.2theta_scan_range_inc 0.05
+_pd_instr.reflex_asymmetry_p1 -0.2623(0.023)
+_pd_instr.reflex_asymmetry_p2 -0.0128(0.0037)
+_pd_instr.reflex_asymmetry_p3 -0.093(0.0607)
+_pd_instr.reflex_asymmetry_p4 -0.0729(0.0102)
 
 loop_
-_phase_label
-_phase_scale
+_pd_phase_block.id
+_pd_phase_block.scale
 pbso4 1.449(0.0057) 
 
 loop_
-_pd_background_2theta
-_pd_background_intensity
+_pd_background.line_segment_X
+_pd_background.line_segment_intensity
 11 204.2208(4.1066) 
 15 193.3887(2.9657) 
 20 193.6802(1.901) 

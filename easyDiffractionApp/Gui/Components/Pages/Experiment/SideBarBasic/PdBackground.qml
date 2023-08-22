@@ -40,23 +40,25 @@ EaElements.GroupColumn {
                 width: EaStyle.Sizes.fontPixelSize * 4.0
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.experimentLoopParam('_pd_background', '_2theta', 0).title ?? ''  // NEED FIX
+                text: Globals.Proxies.experimentLoopParam('_pd_background', 'line_segment_X', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
                 width: EaStyle.Sizes.fontPixelSize * 5.0
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.experimentLoopParam('_pd_background', '_intensity', 0).title ?? ''  // NEED FIX
+                text: Globals.Proxies.experimentLoopParam('_pd_background', 'line_segment_intensity', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
                 flexibleWidth: true
+                horizontalAlignment: Text.AlignLeft
+                color: EaStyle.Colors.themeForegroundMinor
+                text: Globals.Proxies.experimentLoopParam('_pd_background', 'X_coordinate', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
                 width: EaStyle.Sizes.tableRowHeight
-                //text: qsTr("del.")
             }
 
         }
@@ -71,18 +73,20 @@ EaElements.GroupColumn {
             }
 
             EaComponents.TableViewParameter {
-                parameter: Globals.Proxies.experimentLoopParam('_pd_background', '_2theta', index)
+                parameter: Globals.Proxies.experimentLoopParam('_pd_background', 'line_segment_X', index)
+                onEditingFinished: Globals.Proxies.setExperimentLoopParam(parameter, 'value', Number(text))
+            }
+
+            EaComponents.TableViewParameter {
+                parameter: Globals.Proxies.experimentLoopParam('_pd_background', 'line_segment_intensity', index)
                 onEditingFinished: Globals.Proxies.setExperimentLoopParam(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setExperimentLoopParam(parameter, 'fit', fitCheckBox.checked)
             }
 
             EaComponents.TableViewParameter {
-                parameter: Globals.Proxies.experimentLoopParam('_pd_background', '_intensity', index)
-                onEditingFinished: Globals.Proxies.setExperimentLoopParam(parameter, 'value', Number(text))
-                fitCheckBox.onToggled: Globals.Proxies.setExperimentLoopParam(parameter, 'fit', fitCheckBox.checked)
+                enabled: false
+                parameter: Globals.Proxies.experimentLoopParam('_pd_background', 'X_coordinate', index)
             }
-
-            EaComponents.TableViewLabel {}
 
             EaComponents.TableViewButton {
                 enabled: tableView.model.length > 2

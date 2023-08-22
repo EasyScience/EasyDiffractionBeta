@@ -1,44 +1,44 @@
 data_hrpt
 
-_diffrn_radiation_probe neutron
-_diffrn_radiation_wavelength 1.494
-_pd_meas_2theta_offset 0.6225(1)
-_pd_instr_resolution_u 0.0834
-_pd_instr_resolution_v -0.1168
-_pd_instr_resolution_w 0.123
-_pd_instr_resolution_x 0
-_pd_instr_resolution_y 0.0797
-_pd_meas_2theta_range_min 10
-_pd_meas_2theta_range_max 164.85
-_pd_meas_2theta_range_inc 0.05
-_pd_instr_reflex_asymmetry_p1 0
-_pd_instr_reflex_asymmetry_p2 0
-_pd_instr_reflex_asymmetry_p3 0
-_pd_instr_reflex_asymmetry_p4 0
+_diffrn_radiation.probe neutron
+_diffrn_radiation_wavelength.wavelength 1.494
+
+_pd_calib.2theta_offset 0.6225(1)
+
+_pd_instr.resolution_u 0.0834
+_pd_instr.resolution_v -0.1168
+_pd_instr.resolution_w 0.123
+_pd_instr.resolution_x 0
+_pd_instr.resolution_y 0.0797
+_pd_instr.reflex_asymmetry_p1 0
+_pd_instr.reflex_asymmetry_p2 0
+_pd_instr.reflex_asymmetry_p3 0
+_pd_instr.reflex_asymmetry_p4 0
 
 loop_
-_phase_label
-_phase_scale
+_pd_phase_block.id
+_pd_phase_block.scale
 lbco 9.0976(1)
 
 loop_
-_pd_background_2theta
-_pd_background_intensity
-10 174.3
-20 159.8
-30 167.9
-50 166.1
-70 172.3
-90 171.1
-110 172.4
-130 182.5
-150 173
-165 171.1
+_pd_background.line_segment_X
+_pd_background.line_segment_intensity
+_pd_background.X_coordinate
+10 174.3 2theta
+20 159.8 2theta
+30 167.9 2theta
+50 166.1 2theta
+70 172.3 2theta
+90 171.1 2theta
+110 172.4 2theta
+130 182.5 2theta
+150 173 2theta
+165 171.1 2theta
 
 loop_
-_pd_meas_2theta
-_pd_meas_intensity
-_pd_meas_intensity_sigma
+_pd_meas.2theta_scan
+_pd_meas.intensity_total
+_pd_meas.intensity_total_su
 10 167 12.6
 10.05 157 12.5
 10.1 187 13.3

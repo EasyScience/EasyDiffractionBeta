@@ -49,7 +49,7 @@ EaElements.GroupColumn {
                 flexibleWidth: true
                 horizontalAlignment: Text.AlignLeft
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', '_label', 0).title ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'label', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
@@ -60,7 +60,7 @@ EaElements.GroupColumn {
                 width: EaStyle.Sizes.fontPixelSize * 3.0
                 horizontalAlignment: Text.AlignLeft
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', '_type_symbol', 0).title ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'type_symbol', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
@@ -68,21 +68,21 @@ EaElements.GroupColumn {
                 width: EaStyle.Sizes.fontPixelSize * 4.8
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', '_fract_x', 0).title ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'fract_x', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
                 width: fractXLabel.width
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', '_fract_y', 0).title ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'fract_y', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
                 width: fractXLabel.width
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', '_fract_z', 0).title ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'fract_z', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
@@ -96,7 +96,7 @@ EaElements.GroupColumn {
                 width: fractXLabel.width
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', '_occupancy', 0).title ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'occupancy', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
@@ -116,7 +116,7 @@ EaElements.GroupColumn {
             }
 
             EaComponents.TableViewParameter {
-                parameter: Globals.Proxies.modelLoopParam('_atom_site', '_label', index)
+                parameter: Globals.Proxies.modelLoopParam('_atom_site', 'label', index)
                 onEditingFinished: Globals.Proxies.setModelLoopParamWithFullUpdate(parameter, 'value', text)
             }
 
@@ -125,42 +125,42 @@ EaElements.GroupColumn {
                 backgroundColor: "transparent"
                 borderColor: "transparent"
                 iconColor: Globals.Proxies.main.model.atomData(
-                               Globals.Proxies.modelLoopParam('_atom_site', '_type_symbol', index).value,
+                               Globals.Proxies.modelLoopParam('_atom_site', 'type_symbol', index).value,
                                'color')
             }
 
             EaComponents.TableViewParameter {
-                parameter: Globals.Proxies.modelLoopParam('_atom_site', '_type_symbol', index)
+                parameter: Globals.Proxies.modelLoopParam('_atom_site', 'type_symbol', index)
                 onEditingFinished: Globals.Proxies.setModelLoopParamWithFullUpdate(parameter, 'value', text)
                 warned: !Globals.Proxies.main.model.isotopesNames.includes(text)
             }
 
             EaComponents.TableViewParameter {
-                parameter: Globals.Proxies.modelLoopParam('_atom_site', '_fract_x', index)
+                parameter: Globals.Proxies.modelLoopParam('_atom_site', 'fract_x', index)
                 onEditingFinished: Globals.Proxies.setModelLoopParamWithFullUpdate(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fit', fitCheckBox.checked)
             }
 
             EaComponents.TableViewParameter {
-                parameter: Globals.Proxies.modelLoopParam('_atom_site', '_fract_y', index)
+                parameter: Globals.Proxies.modelLoopParam('_atom_site', 'fract_y', index)
                 onEditingFinished: Globals.Proxies.setModelLoopParamWithFullUpdate(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fit', fitCheckBox.checked)
             }
 
             EaComponents.TableViewParameter {
-                parameter: Globals.Proxies.modelLoopParam('_atom_site', '_fract_z', index)
+                parameter: Globals.Proxies.modelLoopParam('_atom_site', 'fract_z', index)
                 onEditingFinished: Globals.Proxies.setModelLoopParamWithFullUpdate(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fit', fitCheckBox.checked)
             }
 
             EaComponents.TableViewParameter {
                 enabled: false
-                text: Globals.Proxies.modelLoopParam('_atom_site', '_multiplicity', index).value +
-                      Globals.Proxies.modelLoopParam('_atom_site', '_Wyckoff_symbol', index).value
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'site_symmetry_multiplicity', index).value +
+                      Globals.Proxies.modelLoopParam('_atom_site', 'Wyckoff_symbol', index).value
             }
 
             EaComponents.TableViewParameter {
-                parameter: Globals.Proxies.modelLoopParam('_atom_site', '_occupancy', index)
+                parameter: Globals.Proxies.modelLoopParam('_atom_site', 'occupancy', index)
                 onEditingFinished: Globals.Proxies.setModelLoopParam(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fit', fitCheckBox.checked)
             }
