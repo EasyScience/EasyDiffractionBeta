@@ -82,7 +82,7 @@ EaElements.GroupColumn {
                 fitCheckBox.onToggled: Globals.Proxies.setExperimentLoopParam(parameter, 'fit', fitCheckBox.checked)
             }
 
-            EaComponents.TableViewLabel {}
+            // EaComponents.TableViewLabel {}
 
             EaComponents.TableViewButton {
                 enabled: tableView.model.length > 2
