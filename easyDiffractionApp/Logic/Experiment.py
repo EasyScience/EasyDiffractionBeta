@@ -204,18 +204,18 @@ class Experiment(QObject):
         cryspyExperimentsObj = str_to_globaln(cryspyCif)
 
         # Add/modify CryspyObj with ranges based on the measured data points in _pd_meas loop
-        pd_meas_2theta_range_min = 0  # default value to be updated later
-        pd_meas_2theta_range_max = 180  # default value to be updated later
-        defaultEdRangeCif = f'_pd_meas.2theta_range_min {pd_meas_2theta_range_min}\n_pd_meas.2theta_range_max {pd_meas_2theta_range_max}'
+        range_min = 0  # default value to be updated later
+        range_max = 180  # default value to be updated later
+        defaultEdRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
         cryspyRangeCif = CryspyParser.edCifToCryspyCif(defaultEdRangeCif)
         cryspyRangeObj = str_to_globaln(cryspyRangeCif).items
         for dataBlock in cryspyExperimentsObj.items:
             for item in dataBlock.items:
                 if type(item) == cryspy.C_item_loop_classes.cl_1_pd_meas.PdMeasL:
-                    pd_meas_2theta_range_min = item.items[0].ttheta
-                    pd_meas_2theta_range_max = item.items[-1].ttheta
-                    cryspyRangeObj[0].ttheta_min = pd_meas_2theta_range_min
-                    cryspyRangeObj[0].ttheta_max = pd_meas_2theta_range_max
+                    range_min = item.items[0].ttheta
+                    range_max = item.items[-1].ttheta
+                    cryspyRangeObj[0].ttheta_min = range_min
+                    cryspyRangeObj[0].ttheta_max = range_max
             dataBlock.add_items(cryspyRangeObj)
 
         # Add/modify CryspyObj with phases based on the already loaded phases
