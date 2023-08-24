@@ -412,7 +412,7 @@ class Experiment(QObject):
         lastBkgPoint = self._dataBlocksNoMeas[blockIdx]['loops'][category][-1]
 
         newBkgPoint = copy.deepcopy(lastBkgPoint)
-        newBkgPoint['_2theta']['value'] += 10
+        newBkgPoint['line_segment_X']['value'] += 10
 
         self._dataBlocksNoMeas[blockIdx]['loops'][category].append(newBkgPoint)
         atomsCount = len(self._dataBlocksNoMeas[blockIdx]['loops'][category])
@@ -425,11 +425,11 @@ class Experiment(QObject):
         category = '_pd_background'
 
         firstBkgPoint = copy.deepcopy(self._dataBlocksNoMeas[blockIdx]['loops'][category][0])  # copy of the 1st point
-        firstBkgPoint['_2theta']['value'] = 0
-        firstBkgPoint['_intensity']['value'] = 0
+        firstBkgPoint['line_segment_X']['value'] = 0
+        firstBkgPoint['line_segment_intensity']['value'] = 0
 
         lastBkgPoint = copy.deepcopy(firstBkgPoint)
-        lastBkgPoint['_2theta']['value'] = 180
+        lastBkgPoint['line_segment_X']['value'] = 180
 
         self._dataBlocksNoMeas[blockIdx]['loops'][category] = [firstBkgPoint, lastBkgPoint]
 
