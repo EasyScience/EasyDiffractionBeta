@@ -5,7 +5,7 @@ description: |
 adopt-info: build-application
 grade: stable
 confinement: strict
-base: core20
+base: core-base
 icon: snap/gui/ed_logo.svg
 architectures:
     - build-on: [amd64]
