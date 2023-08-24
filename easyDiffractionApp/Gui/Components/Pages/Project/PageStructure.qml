@@ -17,7 +17,7 @@ import Gui.Components as Components
 EaComponents.ContentPage {
     defaultInfo: Globals.Proxies.main.project.created ?
                      "" :
-                     qsTr("No project created / opened")
+                     qsTr("No project defined")
 
     mainView: EaComponents.MainContent {
         tabs: [
