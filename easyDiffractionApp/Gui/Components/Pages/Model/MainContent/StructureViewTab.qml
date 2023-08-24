@@ -463,7 +463,7 @@ Rectangle {
     function saveImg() {
         if (Globals.Proxies.main.project.location) {
             const modelCurrenIndex = Globals.Proxies.main.model.currentIndex
-            const cifFileName = Globals.Proxies.main.project.dataBlock.loops._model_cif_file[modelCurrenIndex]._name.value
+            const cifFileName = Globals.Proxies.main.project.dataBlock.loops._model[modelCurrenIndex].cif_file_name.value
             let split = cifFileName.split('.')
             split.pop()
             const baseFileName = split.join(".")

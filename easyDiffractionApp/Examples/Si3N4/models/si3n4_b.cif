@@ -17,7 +17,7 @@ _atom_site.fract_x
 _atom_site.fract_y
 _atom_site.fract_z
 _atom_site.occupancy
-_atom_site.adp_type
+_atom_site.ADP_type
 _atom_site.B_iso_or_equiv
 Si Si 0.1752 0.7698 0.25 1 Biso 0.003
 N1 N 0.3313 0.0312 0.25 1 Biso 0.0066

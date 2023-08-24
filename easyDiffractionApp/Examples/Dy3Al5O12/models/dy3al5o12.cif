@@ -17,7 +17,7 @@ _atom_site.fract_x
 _atom_site.fract_y
 _atom_site.fract_z
 _atom_site.occupancy
-_atom_site.adp_type
+_atom_site.ADP_type
 _atom_site.B_iso_or_equiv
 Dy Dy 0.125 0 0.25 1 Biso 0
 Al1 Al 0.375 0 0.25 1 Biso 0

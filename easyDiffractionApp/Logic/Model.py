@@ -339,13 +339,13 @@ class Model(QObject):
         lastAtom = self._dataBlocks[blockIdx]['loops'][category][-1]
 
         newAtom = copy.deepcopy(lastAtom)
-        newAtom['_label']['value'] = random.choice(self.isotopesNames)
-        newAtom['_type_symbol']['value'] = newAtom['_label']['value']
-        newAtom['_fract_x']['value'] = random.uniform(0, 1)
-        newAtom['_fract_y']['value'] = random.uniform(0, 1)
-        newAtom['_fract_z']['value'] = random.uniform(0, 1)
-        newAtom['_occupancy']['value'] = 1
-        newAtom['_B_iso_or_equiv']['value'] = 0
+        newAtom['label']['value'] = random.choice(self.isotopesNames)
+        newAtom['type_symbol']['value'] = newAtom['label']['value']
+        newAtom['fract_x']['value'] = random.uniform(0, 1)
+        newAtom['fract_y']['value'] = random.uniform(0, 1)
+        newAtom['fract_z']['value'] = random.uniform(0, 1)
+        newAtom['occupancy']['value'] = 1
+        newAtom['B_iso_or_equiv']['value'] = 0
 
         self._dataBlocks[blockIdx]['loops'][category].append(newAtom)
         atomsCount = len(self._dataBlocks[blockIdx]['loops'][category])

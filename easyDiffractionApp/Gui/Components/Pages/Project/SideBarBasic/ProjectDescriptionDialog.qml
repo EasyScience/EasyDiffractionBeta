@@ -17,14 +17,14 @@ EaComponents.ProjectDescriptionDialog {
 
     onAccepted: {
         Globals.Proxies.main.project.setName(projectName)
-        Globals.Proxies.main.project.setMainParam('_description', 'value', projectDescription ? projectDescription : '.')
+        Globals.Proxies.main.project.setMainParam('_project', 'description', 'value', projectDescription ? projectDescription : '.')
         Globals.Proxies.main.project.location = projectLocation
         Globals.Proxies.main.project.create()
     }
 
     Component.onCompleted: {
         projectName = Globals.Proxies.main.project.dataBlock.name.value
-        projectDescription = Globals.Proxies.main.project.dataBlock.params['_description'].value
+        projectDescription = Globals.Proxies.main.project.dataBlock.params._project.description.value
         projectLocation = Globals.Proxies.main.project.location
     }
 }

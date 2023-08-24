@@ -608,7 +608,7 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
 
     function setProjectMainParam(param, field, value) {
         console.debug(`*** Editing project main param ${param.name} '${field}' to ${value} ***`)
-        main.project.setMainParam(param.name, field, value)
+        main.project.setMainParam(param.category, param.name, field, value)
     }
 
     function resetAll() {

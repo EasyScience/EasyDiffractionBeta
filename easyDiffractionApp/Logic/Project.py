@@ -316,21 +316,21 @@ class Project(QObject):
     def setModels(self):
         names = [f"{block['name']['value']}" for block in self._proxy.model.dataBlocks]
         oldNames = []
-        if '_model_cif_file' in self._dataBlock['loops']:
-            oldNames = [os.path.splitext(item['_name']['value'])[0] for item in self._dataBlock['loops']['_model_cif_file']]
+        if '_model' in self._dataBlock['loops']:
+            oldNames = [os.path.splitext(item['cif_file_name']['value'])[0] for item in self._dataBlock['loops']['_model']]
         if oldNames == names:
             return
 
-        self._dataBlock['loops']['_model_cif_file'] = []
+        self._dataBlock['loops']['_model'] = []
         for name in names:
             edModel = {}
-            edModel['_name'] = dict(Parameter(
+            edModel['cif_file_name'] = dict(Parameter(
                 f'{name}.cif',
-                name='_name',
+                name='cif_file_name',
                 prettyName='Model file(s)',
                 url='https://easydiffraction.org'
             ))
-            self._dataBlock['loops']['_model_cif_file'].append(edModel)
+            self._dataBlock['loops']['_model'].append(edModel)
 
         console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldNames} → {names}'))
         self.dataBlockChanged.emit()
@@ -338,41 +338,41 @@ class Project(QObject):
     def setExperiments(self):
         names = [f"{block['name']['value']}" for block in self._proxy.experiment.dataBlocksNoMeas]
         oldNames = []
-        if '_experiment_cif_file' in self._dataBlock['loops']:
-            oldNames = [os.path.splitext(item['_name']['value'])[0] for item in self._dataBlock['loops']['_experiment_cif_file']]
+        if '_experiment' in self._dataBlock['loops']:
+            oldNames = [os.path.splitext(item['cif_file_name']['value'])[0] for item in self._dataBlock['loops']['_experiment']]
         if oldNames == names:
             return
 
-        self._dataBlock['loops']['_experiment_cif_file'] = []
+        self._dataBlock['loops']['_experiment'] = []
         for name in names:
             edExperiment = {}
-            edExperiment['_name'] = dict(Parameter(
+            edExperiment['cif_file_name'] = dict(Parameter(
                 f'{name}.cif',
-                name='_name',
+                name='cif_file_name',
                 prettyName='Experiment file(s)',
                 url='https://easydiffraction.org'
             ))
-            self._dataBlock['loops']['_experiment_cif_file'].append(edExperiment)
+            self._dataBlock['loops']['_experiment'].append(edExperiment)
 
         console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldNames} → {names}'))
         self.dataBlockChanged.emit()
 
-    @Slot(str, str, 'QVariant')
-    def setMainParam(self, paramName, field, value):
-        changedIntern = self.editDataBlockMainParam(paramName, field, value)
+    @Slot(str, str, str, 'QVariant')
+    def setMainParam(self, category, name, field, value):
+        changedIntern = self.editDataBlockMainParam(category, name, field, value)
         if changedIntern:
             self.dataBlockChanged.emit()
 
-    def editDataBlockMainParam(self, paramName, field, value):
+    def editDataBlockMainParam(self, category, name, field, value):
         blockType = 'project'
-        oldValue = self._dataBlock['params'][paramName][field]
+        oldValue = self._dataBlock['params'][category][name][field]
         if oldValue == value:
             return False
-        self._dataBlock['params'][paramName][field] = value
+        self._dataBlock['params'][category][name][field] = value
         if type(value) == float:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{blockType}.{paramName}.{field}'))
+            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{blockType}.{category}.{name}.{field}'))
         else:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{blockType}.{paramName}.{field}'))
+            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{blockType}.{category}.{name}.{field}'))
         return True
 
     @Slot()
@@ -400,7 +400,7 @@ class Project(QObject):
             console.debug(IO.formatMsg('sub', f'saved to: {projectFilePath}'))
 
         if self._proxy.model.defined:
-            modelFileNames = [item['_name']['value'] for item in self._dataBlock['loops']['_model_cif_file']]
+            modelFileNames = [item['cif_file_name']['value'] for item in self._dataBlock['loops']['_model']]
             modelFilePaths = [os.path.join(projectDirPath, self._dirNames['models'], fileName) for fileName in modelFileNames]
             for (modelFilePath, dataBlockCif) in zip(modelFilePaths, self._proxy.model.dataBlocksCif):
                 dataBlockCif = dataBlockCif[0]
@@ -410,7 +410,7 @@ class Project(QObject):
                     console.debug(IO.formatMsg('sub', f'saved to: {modelFilePath}'))
 
         if self._proxy.experiment.defined:
-            experimentFileNames = [item['_name']['value'] for item in self._dataBlock['loops']['_experiment_cif_file']]
+            experimentFileNames = [item['cif_file_name']['value'] for item in self._dataBlock['loops']['_experiment']]
             experimentFilePaths = [os.path.join(projectDirPath, self._dirNames['experiments'], fileName) for fileName in experimentFileNames]
             for (experimentFilePath, dataBlockCifNoMeas, dataBlockCifMeasOnly) in zip(experimentFilePaths, self._proxy.experiment.dataBlocksCifNoMeas, self._proxy.experiment.dataBlocksCifMeasOnly):
                 os.makedirs(os.path.dirname(experimentFilePath), exist_ok=True)

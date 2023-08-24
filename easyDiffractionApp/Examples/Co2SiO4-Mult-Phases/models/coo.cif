@@ -17,7 +17,7 @@ _atom_site.fract_x
 _atom_site.fract_y
 _atom_site.fract_z
 _atom_site.occupancy
-_atom_site.adp_type
+_atom_site.ADP_type
 _atom_site.B_iso_or_equiv
 Co Co 0 0 0 1 Biso 0.509
 O O 0.5 0.5 0.5 1 Biso 0.67

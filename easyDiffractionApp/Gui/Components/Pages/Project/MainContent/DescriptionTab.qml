@@ -220,14 +220,14 @@ Rectangle {
                 EaElements.Label {
                     width: nameColumnWidth
                     font.bold: true
-                    text: typeof Globals.Proxies.main.project.dataBlock.loops._model_cif_file === 'undefined' ?
+                    text: typeof Globals.Proxies.main.project.dataBlock.loops._model === 'undefined' ?
                               '' :
-                              Globals.Proxies.main.project.dataBlock.loops._model_cif_file[0]._name.prettyName
+                              Globals.Proxies.main.project.dataBlock.loops._model[0].cif_file_name.prettyName
                 }
                 EaElements.Label {
-                    text: typeof Globals.Proxies.main.project.dataBlock.loops._model_cif_file === 'undefined' ?
+                    text: typeof Globals.Proxies.main.project.dataBlock.loops._model === 'undefined' ?
                               '' :
-                              Globals.Proxies.main.project.dataBlock.loops._model_cif_file.map(item => item._name.value).join(',  ')
+                              Globals.Proxies.main.project.dataBlock.loops._model.map(item => item.cif_file_name.value).join(',  ')
 
                 }
             }
@@ -281,14 +281,14 @@ Rectangle {
                 EaElements.Label {
                     width: nameColumnWidth
                     font.bold: true
-                    text: typeof Globals.Proxies.main.project.dataBlock.loops._experiment_cif_file === 'undefined' ?
+                    text: typeof Globals.Proxies.main.project.dataBlock.loops._experiment === 'undefined' ?
                               '' :
-                              Globals.Proxies.main.project.dataBlock.loops._experiment_cif_file[0]._name.prettyName
+                              Globals.Proxies.main.project.dataBlock.loops._experiment[0].cif_file_name.prettyName
                 }
                 EaElements.Label {
-                    text: typeof Globals.Proxies.main.project.dataBlock.loops._experiment_cif_file === 'undefined' ?
+                    text: typeof Globals.Proxies.main.project.dataBlock.loops._experiment === 'undefined' ?
                               '' :
-                              Globals.Proxies.main.project.dataBlock.loops._experiment_cif_file.map(item => item._name.value).join(',  ')
+                              Globals.Proxies.main.project.dataBlock.loops._experiment.map(item => item.cif_file_name.value).join(',  ')
 
                 }
             }

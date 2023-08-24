@@ -17,7 +17,7 @@ _atom_site.fract_x
 _atom_site.fract_y
 _atom_site.fract_z
 _atom_site.occupancy
-_atom_site.adp_type
+_atom_site.ADP_type
 _atom_site.B_iso_or_equiv
 Pb Pb 0.1876 0.25 0.167 1 Biso 1.3729
 S S 0.0654 0.25 0.684 1 Biso 0.3777

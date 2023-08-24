@@ -28,7 +28,7 @@ except ImportError:
 _DEFAULT_DATA_BLOCK_NO_MEAS = """data_pnd
 
 _diffrn_radiation.probe neutron
-_diffrn_radiation_wavelength.value 1.9
+_diffrn_radiation_wavelength.wavelength 1.9
 
 _pd_calib.2theta_offset 0.0
 

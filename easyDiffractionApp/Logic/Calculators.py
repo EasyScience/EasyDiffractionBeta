@@ -251,8 +251,7 @@ class CryspyParser:
                 for rowIdx, rowItems in enumerate(loop.values):
                     edModel = {}
                     for columnIdx, columnName in enumerate(loop.names):
-                        paramName = columnName.replace(category, '')
-                        if paramName == '_name':
+                        if columnName.replace('.', '_')  == '_model_cif_file_name':  # NEED FIX
                             edModel['cif_file_name'] = dict(Parameter(
                                 rowItems[columnIdx],
                                 category = '_model',
@@ -268,8 +267,7 @@ class CryspyParser:
                 for rowIdx, rowItems in enumerate(loop.values):
                     edExperiment = {}
                     for columnIdx, columnName in enumerate(loop.names):
-                        paramName = columnName.replace(category, '')
-                        if paramName == '_name':
+                        if columnName.replace('.', '_') == '_experiment_cif_file_name':  # NEED FIX
                             edExperiment['cif_file_name'] = dict(Parameter(
                                 rowItems[columnIdx],
                                 category = '_experiment',

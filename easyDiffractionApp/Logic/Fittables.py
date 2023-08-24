@@ -110,11 +110,11 @@ class Fittables(QObject):
     @Slot(str, int, str, int, str, str, float)
     def edit(self, blockType, blockIdx, category, rowIndex, name, field, value):
         if rowIndex == -1:
-            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{name}.{field} to {value}'))
+            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
             if blockType == 'experiment':
-                self._proxy.experiment.setMainParam(blockIdx, name, field, value)
+                self._proxy.experiment.setMainParam(blockIdx, category, name, field, value)
             elif blockType == 'model':
-                self._proxy.model.setMainParam(blockIdx, name, field, value)
+                self._proxy.model.setMainParam(blockIdx, category, name, field, value)
         else:
             console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
             if blockType == 'experiment':
