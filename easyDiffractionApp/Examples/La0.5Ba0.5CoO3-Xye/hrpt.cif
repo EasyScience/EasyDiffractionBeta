@@ -24,8 +24,9 @@ lbco 1.0
 loop_
 _pd_background.line_segment_X
 _pd_background.line_segment_intensity
-10 100
-165 100
+_pd_background.X_coordinate
+10 100 2theta
+165 100 2theta
 
 loop_
 _pd_meas.2theta_scan

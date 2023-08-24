@@ -6,6 +6,7 @@ _cell.length_c 4.263
 _cell.angle_alpha 90
 _cell.angle_beta 90
 _cell.angle_gamma 90
+
 _space_group.name_H-M_alt "F m -3 m"
 _space_group.IT_coordinate_system_code 1
 
@@ -18,7 +19,5 @@ _atom_site.fract_z
 _atom_site.occupancy
 _atom_site.adp_type
 _atom_site.B_iso_or_equiv
-_atom_site.multiplicity
-_atom_site.Wyckoff_symbol
-Co Co 0 0 0 1 Biso 0.509 4 a 
-O O 0.5 0.5 0.5 1 Biso 0.67 4 b
+Co Co 0 0 0 1 Biso 0.509
+O O 0.5 0.5 0.5 1 Biso 0.67

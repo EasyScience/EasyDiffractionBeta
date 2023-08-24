@@ -2,15 +2,15 @@ data_3t2
 
 _diffrn_radiation.probe neutron
 _diffrn_radiation_wavelength.wavelength 1.2251
+
 _pd_calib.2theta_offset 0.0
+
 _pd_instr.resolution_u   0.2949
 _pd_instr.resolution_v  -0.4089
 _pd_instr.resolution_w   0.1918
 _pd_instr.resolution_x   0.0
 _pd_instr.resolution_y   0.1073
-_pd_meas.2theta_scan_range_min 5.0
-_pd_meas.2theta_scan_range_max 125.0
-_pd_meas.2theta_scan_range_inc 0.05
+
 _pd_instr.reflex_asymmetry_p1 0
 _pd_instr.reflex_asymmetry_p2 0
 _pd_instr.reflex_asymmetry_p3 0
@@ -25,20 +25,21 @@ si3n4_b  0.5
 loop_
 _pd_background.line_segment_X
 _pd_background.line_segment_intensity
-  5.0  176.6800
-  6.0  165.4120
-  7.0  161.9670
-  9.0  149.8840
- 10.0  153.1100
- 12.0  142.9130
- 15.0  144.3960
- 25.0  130.0080
- 45.0  131.5490
- 70.0  137.7860
- 77.0  134.0414
- 85.0  138.5790
-105.0  148.3900
-125.0  157.5050
+_pd_background.X_coordinate
+  5.0  176.6800 2theta
+  6.0  165.4120 2theta
+  7.0  161.9670 2theta
+  9.0  149.8840 2theta
+ 10.0  153.1100 2theta
+ 12.0  142.9130 2theta
+ 15.0  144.3960 2theta
+ 25.0  130.0080 2theta
+ 45.0  131.5490 2theta
+ 70.0  137.7860 2theta
+ 77.0  134.0414 2theta
+ 85.0  138.5790 2theta
+105.0  148.3900 2theta
+125.0  157.5050 2theta
 
 loop_
 _pd_meas.2theta_scan

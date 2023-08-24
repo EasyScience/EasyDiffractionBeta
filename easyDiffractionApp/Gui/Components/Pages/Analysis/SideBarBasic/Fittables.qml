@@ -356,12 +356,12 @@ Column {
                     console.debug("*** Editing (slider) 'value' field of fittable on Analysis page ***")
                     const item = Globals.Proxies.main_fittables_data[selectedParamIndex]
                     Globals.Proxies.main.fittables.editSilently(item.blockType,
-                                                        item.blockIdx,
-                                                        item.category,
-                                                        item.rowIndex,
-                                                        item.name,
-                                                        'value',
-                                                        value.toString())
+                                                                item.blockIdx,
+                                                                item.category,
+                                                                item.rowIndex ?? -1,
+                                                                item.name,
+                                                                'value',
+                                                                value.toString())
             }
 
             onPressedChanged: {

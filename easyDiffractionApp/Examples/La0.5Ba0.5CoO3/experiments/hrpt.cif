@@ -10,6 +10,7 @@ _pd_instr.resolution_v -0.1168
 _pd_instr.resolution_w 0.123
 _pd_instr.resolution_x 0
 _pd_instr.resolution_y 0.0797
+
 _pd_instr.reflex_asymmetry_p1 0
 _pd_instr.reflex_asymmetry_p2 0
 _pd_instr.reflex_asymmetry_p3 0

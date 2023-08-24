@@ -4,17 +4,8 @@ _project.description "neutrons, powder, constant wavelength, D20@ILL, 2 phases"
 
 loop_
 _model.cif_file_name
-co2sio4.cif 
-coo.cif 
-
-loop_
-_experiment.cif_file_name
-d20.cif 
-
-loop_
-_model.cif_file_name
-co2sio4.cif 
-coo.cif 
+co2sio4.cif
+coo.cif
 
 loop_
 _experiment.cif_file_name

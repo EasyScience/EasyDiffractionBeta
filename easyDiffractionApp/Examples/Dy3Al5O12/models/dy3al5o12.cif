@@ -1,6 +1,6 @@
 data_dy3al5o12
 
-_cell.length_a 11.8997(0.0011)
+_cell.length_a 11.8997(11)
 _cell.length_b 11.8997
 _cell.length_c 11.8997
 _cell.angle_alpha 90
@@ -22,4 +22,4 @@ _atom_site.B_iso_or_equiv
 Dy Dy 0.125 0 0.25 1 Biso 0
 Al1 Al 0.375 0 0.25 1 Biso 0
 Al2 Al 0 0 0 1 Biso 0
-O O 0.0301(0.0004) 0.0499(0.0006) 0.648(0.0008) 1 Biso 0
+O O 0.0301(4) 0.0499(6) 0.648(8) 1 Biso 0
