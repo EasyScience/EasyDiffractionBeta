@@ -27,15 +27,15 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "Development Status :: 4 - Beta"
 ]
-requires-python = ">=3.10,<3.11"
+requires-python = ">=3.8,<3.11"
 dependencies = [
-    'numpy>=1.24.2',
-    'lmfit>=1.2',
-    'orjson>=3.9',
-    'jsbeautifier>=1.14',
-    'toml>=0.10',
-    'bumps>=0.9',
-    'darkdetect>=0.8',
+    'numpy',
+    'lmfit',
+    'orjson',
+    'jsbeautifier',
+    'toml',
+    'bumps',
+    'darkdetect',
     'urllib',
     'cryspy @ git+https://github.com/ikibalin/cryspy.git@beta',
     'EasyApp @ git+https://github.com/easyscience/EasyApp.git@new-easy-app2'
