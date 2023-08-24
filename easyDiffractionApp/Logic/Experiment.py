@@ -264,7 +264,7 @@ class Experiment(QObject):
             console.debug(IO.formatMsg('sub', 'No experiment(s)', '', 'to intern dataset', 'added'))
 
     @Slot(str)
-    def replaceExperiment(self, edCif=''):
+    def replaceExperiment(self, edCifNoMeas=''):
         console.debug("Cryspy obj and dict need to be replaced")
 
         currentDataBlock = self.dataBlocksNoMeas[self.currentIndex]
@@ -273,21 +273,26 @@ class Experiment(QObject):
         cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
         cryspyObjBlockIdx = cryspyObjBlockNames.index(currentExperimentName)
 
-        if not edCif:
-            edCif = CryspyParser.dataBlockToCif(currentDataBlock)
+        if not edCifNoMeas:
+            edCifNoMeas = CryspyParser.dataBlockToCif(currentDataBlock)
+
+        range_min = currentDataBlock['params']['_pd_meas']['2theta_range_min']['value']
+        range_max = currentDataBlock['params']['_pd_meas']['2theta_range_max']['value']
+        edRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
+        edCifNoMeas += '\n\n' + edRangeCif
+
+        edCifMeasOnly = CryspyParser.dataBlockToCif(self.dataBlocksMeasOnly[self.currentIndex],
+                                                    includeBlockName=False)
+
+        edCif = edCifNoMeas + '\n\n' + edCifMeasOnly
+
         cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
         cryspyExperimentsObj = str_to_globaln(cryspyCif)
         cryspyExperimentsDict = cryspyExperimentsObj.get_dictionary()
 
-        # experiment block name may have different prefixes, but always connected with '_' to the experiment name
-        cryspyDictBlockName = None
-        for exp in cryspyExperimentsDict:
-            if currentExperimentName in exp:
-                cryspyDictBlockName = exp
-                break
-        if cryspyDictBlockName is None:
-            console.error(f"Block '{cryspyDictBlockName}' not found in cryspy dictionary")
-            return
+        # Powder diffraction experiment always has 'pd_' prefix if recognized by CrysPy
+        # Had to add edCifMeasOnly loop to the input CIF in order to allow CrysPy to do this
+        cryspyDictBlockName = f'pd_{currentExperimentName}'
 
         _, edExperimentsNoMeas = CryspyParser.cryspyObjAndDictToEdExperiments(cryspyExperimentsObj,
                                                                               cryspyExperimentsDict)
