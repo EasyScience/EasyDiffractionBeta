@@ -30,7 +30,7 @@ classifiers = [
 requires-python = ">=3.8,<3.11"
 dependencies = [
     'numpy>=1.24.2',
-    'EasyApp @ git+https://github.com/easyscience/EasyApp.git@new-easy-app'
+    'EasyApp @ git+https://github.com/easyscience/EasyApp.git@new-easy-app2'
 ]
 
 # CUSTOM CONFIG
