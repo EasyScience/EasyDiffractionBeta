@@ -14,8 +14,7 @@ architectures:
 apps:
     easydiffraction:
         command: easy-diffraction-wrapper
-        #extensions: [gnome-3-38]
-        extensions: [gnome]
+        extensions: [gnome-3-38]
         plugs: [network, x11, pulseaudio, opengl, home, ssh-keys, removable-media, shmem]
         environment:
           PYTHONPATH: $PYTHONPATH:$SNAP
