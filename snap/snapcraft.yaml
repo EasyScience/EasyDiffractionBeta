@@ -52,6 +52,9 @@ parts:
             - libxcb-util1
             - libxcb-xfixes0 # To show graphs
             - gir1.2-xapp-1.0 # Failed to load module "xapp-gtk3-module"
+            - libxcb-cursor0
+            - libpulse-mainloop-glib0
+            - libegl1-mesa
 
         build-packages:
             - python3.8-venv
