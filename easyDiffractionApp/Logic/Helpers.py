@@ -8,7 +8,7 @@ import os
 import pathlib
 import sys
 import time
-from urllib.parse import urlparse
+#from urllib.parse import urlparse
 
 from PySide6.QtCore import Qt, QObject, QCoreApplication, Signal, Slot, Property
 from PySide6.QtGui import QStyleHints
@@ -128,12 +128,12 @@ class IO:
         :return URI filename: platform specific URI
         """
         return fpath  # NEED FIX: Check on different platforms
-        filename = urlparse(fpath).path
-        if not sys.platform.startswith("win"):
-            return filename
-        if filename[0] == '/':
-            filename = filename[1:].replace('/', os.path.sep)
-        return filename
+        # filename = urlparse(fpath).path
+        # if not sys.platform.startswith("win"):
+        #     return filename
+        # if filename[0] == '/':
+        #     filename = filename[1:].replace('/', os.path.sep)
+        # return filename
 
     @staticmethod
     def formatMsg(type, *args):

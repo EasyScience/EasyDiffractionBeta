@@ -35,7 +35,6 @@ dependencies = [
     'jsbeautifier',
     'toml',
     'darkdetect',
-    'urllib',
     'cryspy @ git+https://github.com/ikibalin/cryspy.git@beta',
     'EasyApp @ git+https://github.com/easyscience/EasyApp.git@new-easy-app2'
 ]
