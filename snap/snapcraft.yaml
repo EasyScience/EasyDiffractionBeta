@@ -5,7 +5,7 @@ description: |
 adopt-info: build-application
 grade: stable
 confinement: strict
-base: core22
+base: core20
 icon: snap/gui/ed_logo.svg
 architectures:
     - build-on: [amd64]
@@ -20,9 +20,6 @@ apps:
         environment:
           PYTHONPATH: $PYTHONPATH:$SNAP
           DISABLE_WAYLAND: 1
-
-# Temporarily use snaps from edge
-build-snaps: [gnome-42-2204-sdk/latest/edge, gnome-42-2204/latest/edge]
 
 parts:
     get-source:
@@ -74,13 +71,13 @@ parts:
             # Work around a bug in snapcraft python plugin / gnome 3.38 extension
             # https://forum.snapcraft.io/t/build-a-snap-with-any-version-of-python-i-want/10420/8
 
-            rm -rf $SNAPCRAFT_PART_INSTALL/usr/lib/python3.9/distutils
-            cp -r /usr/lib/python3.9/distutils $SNAPCRAFT_PART_INSTALL/usr/lib/python3.9/distutils
-            mkdir -p $SNAPCRAFT_PART_INSTALL/usr/include/
-            cp -r /usr/include/python3.9 $SNAPCRAFT_PART_INSTALL/usr/include/python3.9
-            mkdir -p $SNAPCRAFT_PART_INSTALL/bin
-            ln -s /usr/bin/python3.9 $SNAPCRAFT_PART_INSTALL/bin/python3.9
-            # ln -sf ../usr/lib/libsnapcraft-preload.so $SNAPCRAFT_PART_INSTALL/lib/libsnapcraft-preload.so
+            # rm -rf $SNAPCRAFT_PART_INSTALL/usr/lib/python3.9/distutils
+            # cp -r /usr/lib/python3.9/distutils $SNAPCRAFT_PART_INSTALL/usr/lib/python3.9/distutils
+            # mkdir -p $SNAPCRAFT_PART_INSTALL/usr/include/
+            # cp -r /usr/include/python3.9 $SNAPCRAFT_PART_INSTALL/usr/include/python3.9
+            # mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+            # ln -s /usr/bin/python3.9 $SNAPCRAFT_PART_INSTALL/bin/python3.9
+            # # ln -sf ../usr/lib/libsnapcraft-preload.so $SNAPCRAFT_PART_INSTALL/lib/libsnapcraft-preload.so
 
             snapcraftctl build
 
