@@ -14,11 +14,15 @@ architectures:
 apps:
     easydiffraction:
         command: easy-diffraction-wrapper
-        extensions: [gnome-3-38]
+        #extensions: [gnome-3-38]
+        extensions: [gnome]
         plugs: [network, x11, pulseaudio, opengl, home, ssh-keys, removable-media, shmem]
         environment:
           PYTHONPATH: $PYTHONPATH:$SNAP
           DISABLE_WAYLAND: 1
+
+# Temporarily use snaps from edge
+build-snaps: [gnome-42-2204-sdk/latest/edge, gnome-42-2204/latest/edge]
 
 parts:
     get-source:
