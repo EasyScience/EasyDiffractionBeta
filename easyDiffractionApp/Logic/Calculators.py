@@ -112,7 +112,7 @@ class CryspyParser:
                         continue
                     # convert
                     if isinstance(value, float):
-                        value = f'{round(value, 4):.8g}'  # 3.0 -> "3", 3.012345 -> "3.0123"  # NEED FIX
+                        value = f'{round(value, 6):.10g}'  # 3.0 -> "3", 3.012345 -> "3.0123"  # NEED FIX
                     elif isinstance(value, str) and ' ' in value:  # P n m a -> "P n m a"
                         value = f'"{value}"'
                     # add brackets with error for free params
@@ -120,7 +120,10 @@ class CryspyParser:
                     if error == 0:
                         error = ''
                     else:
-                        error = f'{round(error, 4):.8g}'  # NEED FIX
+                        if param["error"] > 1:
+                            error = f'{round(error, 6):.10g}'
+                        else:
+                            error = f'{round(error, 6):.17f}'.rstrip('0').lstrip('0').lstrip('.').lstrip('0')  # NEED FIX
                     if param["fit"]:
                         cif += f'{param["category"]}.{param["name"]} {value}({error})'
                     else:
@@ -147,7 +150,7 @@ class CryspyParser:
                             continue
                         # convert
                         if isinstance(value, float):
-                            value = f'{round(value, 4):.8g}'  # 3.0 -> "3", 3.012345 -> "3.0123"  # NEED FIX
+                            value = f'{round(value, 6):.10g}'  # 3.0 -> "3", 3.012345 -> "3.0123"  # NEED FIX
                         elif isinstance(value, str) and ' ' in value:  # P n m a -> "P n m a"
                             value = f'"{value}"'
                         # add brackets with error for free params
@@ -155,7 +158,10 @@ class CryspyParser:
                         if error == 0:
                             error = ''
                         else:
-                            error = f'{round(error, 4):.8g}'  # NEED FIX
+                            if param["error"] > 1:
+                                error = f'{round(error, 6):.10g}'
+                            else:
+                                error = f'{round(error, 6):.17f}'.rstrip('0').lstrip('0').lstrip('.').lstrip('0')  # NEED FIX
                         if param["fit"]:
                             line += f'{value}({error})'
                         else:
