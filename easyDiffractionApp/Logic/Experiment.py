@@ -204,18 +204,18 @@ class Experiment(QObject):
         cryspyExperimentsObj = str_to_globaln(cryspyCif)
 
         # Add/modify CryspyObj with ranges based on the measured data points in _pd_meas loop
-        pd_meas_2theta_range_min = 0  # default value to be updated later
-        pd_meas_2theta_range_max = 180  # default value to be updated later
-        defaultEdRangeCif = f'_pd_meas.2theta_range_min {pd_meas_2theta_range_min}\n_pd_meas.2theta_range_max {pd_meas_2theta_range_max}'
+        range_min = 0  # default value to be updated later
+        range_max = 180  # default value to be updated later
+        defaultEdRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
         cryspyRangeCif = CryspyParser.edCifToCryspyCif(defaultEdRangeCif)
         cryspyRangeObj = str_to_globaln(cryspyRangeCif).items
         for dataBlock in cryspyExperimentsObj.items:
             for item in dataBlock.items:
                 if type(item) == cryspy.C_item_loop_classes.cl_1_pd_meas.PdMeasL:
-                    pd_meas_2theta_range_min = item.items[0].ttheta
-                    pd_meas_2theta_range_max = item.items[-1].ttheta
-                    cryspyRangeObj[0].ttheta_min = pd_meas_2theta_range_min
-                    cryspyRangeObj[0].ttheta_max = pd_meas_2theta_range_max
+                    range_min = item.items[0].ttheta
+                    range_max = item.items[-1].ttheta
+                    cryspyRangeObj[0].ttheta_min = range_min
+                    cryspyRangeObj[0].ttheta_max = range_max
             dataBlock.add_items(cryspyRangeObj)
 
         # Add/modify CryspyObj with phases based on the already loaded phases
@@ -264,7 +264,7 @@ class Experiment(QObject):
             console.debug(IO.formatMsg('sub', 'No experiment(s)', '', 'to intern dataset', 'added'))
 
     @Slot(str)
-    def replaceExperiment(self, edCif=''):
+    def replaceExperiment(self, edCifNoMeas=''):
         console.debug("Cryspy obj and dict need to be replaced")
 
         currentDataBlock = self.dataBlocksNoMeas[self.currentIndex]
@@ -273,21 +273,26 @@ class Experiment(QObject):
         cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
         cryspyObjBlockIdx = cryspyObjBlockNames.index(currentExperimentName)
 
-        if not edCif:
-            edCif = CryspyParser.dataBlockToCif(currentDataBlock)
+        if not edCifNoMeas:
+            edCifNoMeas = CryspyParser.dataBlockToCif(currentDataBlock)
+
+        range_min = currentDataBlock['params']['_pd_meas']['2theta_range_min']['value']
+        range_max = currentDataBlock['params']['_pd_meas']['2theta_range_max']['value']
+        edRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
+        edCifNoMeas += '\n\n' + edRangeCif
+
+        edCifMeasOnly = CryspyParser.dataBlockToCif(self.dataBlocksMeasOnly[self.currentIndex],
+                                                    includeBlockName=False)
+
+        edCif = edCifNoMeas + '\n\n' + edCifMeasOnly
+
         cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
         cryspyExperimentsObj = str_to_globaln(cryspyCif)
         cryspyExperimentsDict = cryspyExperimentsObj.get_dictionary()
 
-        # experiment block name may have different prefixes, but always connected with '_' to the experiment name
-        cryspyDictBlockName = None
-        for exp in cryspyExperimentsDict:
-            if currentExperimentName in exp:
-                cryspyDictBlockName = exp
-                break
-        if cryspyDictBlockName is None:
-            console.error(f"Block '{cryspyDictBlockName}' not found in cryspy dictionary")
-            return
+        # Powder diffraction experiment always has 'pd_' prefix if recognized by CrysPy
+        # Had to add edCifMeasOnly loop to the input CIF in order to allow CrysPy to do this
+        cryspyDictBlockName = f'pd_{currentExperimentName}'
 
         _, edExperimentsNoMeas = CryspyParser.cryspyObjAndDictToEdExperiments(cryspyExperimentsObj,
                                                                               cryspyExperimentsDict)
@@ -412,7 +417,7 @@ class Experiment(QObject):
         lastBkgPoint = self._dataBlocksNoMeas[blockIdx]['loops'][category][-1]
 
         newBkgPoint = copy.deepcopy(lastBkgPoint)
-        newBkgPoint['_2theta']['value'] += 10
+        newBkgPoint['line_segment_X']['value'] += 10
 
         self._dataBlocksNoMeas[blockIdx]['loops'][category].append(newBkgPoint)
         atomsCount = len(self._dataBlocksNoMeas[blockIdx]['loops'][category])
@@ -425,11 +430,11 @@ class Experiment(QObject):
         category = '_pd_background'
 
         firstBkgPoint = copy.deepcopy(self._dataBlocksNoMeas[blockIdx]['loops'][category][0])  # copy of the 1st point
-        firstBkgPoint['_2theta']['value'] = 0
-        firstBkgPoint['_intensity']['value'] = 0
+        firstBkgPoint['line_segment_X']['value'] = 0
+        firstBkgPoint['line_segment_intensity']['value'] = 0
 
         lastBkgPoint = copy.deepcopy(firstBkgPoint)
-        lastBkgPoint['_2theta']['value'] = 180
+        lastBkgPoint['line_segment_X']['value'] = 180
 
         self._dataBlocksNoMeas[blockIdx]['loops'][category] = [firstBkgPoint, lastBkgPoint]
 

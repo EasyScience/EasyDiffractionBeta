@@ -132,6 +132,7 @@ Item {
                 spacing: EaStyle.Sizes.fontPixelSize
 
                 EaElements.Button {
+                    enabled: false
                     text: qsTr("Tutorial") + " 1: " + qsTr("App interface")
                     onClicked: {
                         console.debug(`Clicking '${text}' button: ${this}`)
@@ -142,10 +143,12 @@ Item {
                     text: qsTr("Tutorial") + " 2: " + qsTr("Basic usage")
                     onClicked: {
                         console.debug(`Clicking '${text}' button: ${this}`)
-                        tutorialsController.runBasicUsageTutorial()
+                        //tutorialsController.runBasicUsageTutorial()
+                        tutorialsController.runAdvancedUsageTutorial()
                     }
                 }
                 EaElements.Button {
+                    enabled: false
                     text: qsTr("Tutorial") + " 3: " + qsTr("Advanced usage")
                     onClicked: {
                         console.debug(`Clicking '${text}' button: ${this}`)

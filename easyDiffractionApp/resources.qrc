@@ -172,5 +172,16 @@
         <file>Examples/Si3N4/models/si3n4_b_light.png</file>
         <file>Examples/Si3N4/summary/report.cif</file>
         <file>Examples/Si3N4/project.cif</file>
+        <file>Examples/La0.5Ba0.5CoO3-Mult-Phases/experiments/hrpt.cif</file>
+        <file>Examples/La0.5Ba0.5CoO3-Mult-Phases/experiments/hrpt_dark.png</file>
+        <file>Examples/La0.5Ba0.5CoO3-Mult-Phases/experiments/hrpt_light.png</file>
+        <file>Examples/La0.5Ba0.5CoO3-Mult-Phases/models/coo.cif</file>
+        <file>Examples/La0.5Ba0.5CoO3-Mult-Phases/models/coo_dark.png</file>
+        <file>Examples/La0.5Ba0.5CoO3-Mult-Phases/models/coo_light.png</file>
+        <file>Examples/La0.5Ba0.5CoO3-Mult-Phases/models/lbco.cif</file>
+        <file>Examples/La0.5Ba0.5CoO3-Mult-Phases/models/lbco_dark.png</file>
+        <file>Examples/La0.5Ba0.5CoO3-Mult-Phases/models/lbco_light.png</file>
+        <file>Examples/La0.5Ba0.5CoO3-Mult-Phases/summary/report.cif</file>
+        <file>Examples/La0.5Ba0.5CoO3-Mult-Phases/project.cif</file>
     </qresource>
 </RCC>
