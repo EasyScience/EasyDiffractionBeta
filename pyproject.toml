@@ -34,7 +34,6 @@ dependencies = [
     'orjson',
     'jsbeautifier',
     'toml',
-    'bumps',
     'darkdetect',
     'urllib',
     'cryspy @ git+https://github.com/ikibalin/cryspy.git@beta',
