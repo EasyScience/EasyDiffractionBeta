@@ -40,6 +40,11 @@ _EXAMPLES = [
          'path': ':/Examples/La0.5Ba0.5CoO3-Raw/project.cif'
 
       },
+      {
+          'name': 'La0.5Ba0.5CoO3-Mult-Phases',
+          'description': 'neutrons, powder, constant wavelength, HRPT@PSI, 2 phases',
+          'path': ':/Examples/La0.5Ba0.5CoO3-Mult-Phases/project.cif'
+      },
     {
         'name': 'Co2SiO4',
         'description': 'neutrons, powder, constant wavelength, D20@ILL',
@@ -58,11 +63,11 @@ _EXAMPLES = [
         'path': ':/Examples/PbSO4/project.cif'
 
      },
-     {
-         'name': 'Co2SiO4-Mult-Phases',
-         'description': 'neutrons, powder, constant wavelength, D20@ILL, 2 phases',
-         'path': ':/Examples/Co2SiO4-Mult-Phases/project.cif'
-     },
+     #{
+     #    'name': 'Co2SiO4-Mult-Phases',
+     #    'description': 'neutrons, powder, constant wavelength, D20@ILL, 2 phases',
+     #    'path': ':/Examples/Co2SiO4-Mult-Phases/project.cif'
+     #},
      #{
      #    'name': 'Si3N4',
      #    'description': 'neutrons, powder, constant wavelength, multi-phase, 3T2@LLB',
