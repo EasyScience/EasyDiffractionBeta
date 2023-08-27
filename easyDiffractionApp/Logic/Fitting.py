@@ -171,7 +171,7 @@ class Worker(QObject):
                                 iter_cb=callbackFunc,
                                 tol=tol)
 
-        #lmfit.report_fit(result)
+        lmfit.report_fit(result)
 
         # Optimization status
         if result.success:  # NEED FIX: Move to connections. Pass names via signal.emit(names)
