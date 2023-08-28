@@ -29,12 +29,14 @@ classifiers = [
 ]
 requires-python = ">=3.8,<3.11"
 dependencies = [
+    # those are mostly required by snapcraft
     'numpy',
     'lmfit',
     'orjson',
     'jsbeautifier',
     'toml',
     'darkdetect',
+    'numdifftools',
     'cryspy @ git+https://github.com/ikibalin/cryspy.git@beta',
     'EasyApp @ git+https://github.com/easyscience/EasyApp.git@new-easy-app2'
 ]
