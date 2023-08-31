@@ -1,8 +1,8 @@
 data_pbso4
 
-_cell.length_a 8.4693(1)
-_cell.length_b 5.3910(1)
-_cell.length_c 6.9506(1)
+_cell.length_a 8.4693
+_cell.length_b 5.3910
+_cell.length_c 6.9506
 _cell.angle_alpha 90
 _cell.angle_beta 90
 _cell.angle_gamma 90

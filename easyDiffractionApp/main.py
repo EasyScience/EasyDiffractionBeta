@@ -64,16 +64,22 @@ if __name__ == '__main__':
     engine.load(resourcePaths.splashScreenQml)
     console.debug('Splash screen QML component loaded')
 
+    from Logic.PyProxy import PyProxy
+    pyproxy = PyProxy()
+    engine.rootContext().setContextProperty('pyProxy', pyproxy)
+    
     if not engine.rootObjects():
         sys.exit(-1)
     console.debug('QML engine has root component')
 
-    from Logic.Helpers import PyProxyWorker
-    from PySide6.QtCore import QThreadPool
-    worker = PyProxyWorker(engine)
-    worker.pyProxyExposedToQml.connect(lambda: engine.load(resourcePaths.mainQml))
-    threadpool = QThreadPool.globalInstance()
-    threadpool.start(worker.exposePyProxyToQml)
+    #from Logic.Helpers import PyProxyWorker
+    #from PySide6.QtCore import QThreadPool
+    #worker = PyProxyWorker(engine)
+    #worker.pyProxyExposedToQml.connect(lambda: engine.load(resourcePaths.mainQml))
+    #threadpool = QThreadPool.globalInstance()
+    #threadpool.start(worker.exposePyProxyToQml)
+
+    engine.load(resourcePaths.mainQml)
     console.debug('PyProxy object is creating in a separate thread and exposing to QML')
 
     console.debug('Application event loop is about to start')

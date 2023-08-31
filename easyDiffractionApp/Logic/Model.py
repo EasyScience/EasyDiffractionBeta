@@ -10,6 +10,9 @@ from PySide6.QtCore import QObject, Signal, Slot, Property, QThreadPool
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 from PySide6.QtQml import QJSValue
 
+from easyDiffractionLib import Phases, Phase, Lattice, Site, SpaceGroup
+from easyCrystallography.Components.AtomicDisplacement import AtomicDisplacement
+
 from EasyApp.Logic.Logging import console
 from Logic.Helpers import IO
 from Logic.Calculators import CryspyParser
@@ -84,6 +87,8 @@ class Model(QObject):
         self._spaceGroupNames = self.createSpaceGroupNames()
         self._isotopesNames = self.createIsotopesNames()
 
+        self.phases = Phases()
+
     # QML accessible properties
 
     @Property('QVariant', constant=True)
@@ -139,6 +144,27 @@ class Model(QObject):
     def structViewAxesModel(self):
         return self._structViewAxesModel
 
+    def addDefaultPhase(self):
+        default_phase = self._defaultPhase()
+        r = re.compile('(.+[^0-9])\d*$')
+        known_phases = [r.findall(s)[0] for s in self.phases.phase_names]  # Strip out any 1, 2, 3 etc we may have added
+        if default_phase.name in known_phases:
+            idx = known_phases.count(default_phase.name)
+            default_phase.name = default_phase.name + str(idx)
+        # print('Disabling scale')
+        default_phase.scale.fixed = True
+        self.phases.append(default_phase)
+
+    # @staticmethod
+    def _defaultPhase(self):
+        space_group = SpaceGroup('F d -3:2')
+        cell = Lattice(5.0, 3.0, 4.0, 90, 90, 90)
+        adp = AtomicDisplacement("Uiso")
+        atom = Site(label='O', specie='O', fract_x=0.0, fract_y=0.0, fract_z=0.0, adp=adp)#, interface=self._interface)
+        phase = Phase('Test', spacegroup=space_group, cell=cell)#, interface=self._interface)
+        phase.add_atom(atom)
+        return phase
+    
     # QML accessible methods
 
     @Slot(str, str, result=str)
@@ -152,6 +178,7 @@ class Model(QObject):
     def addDefaultModel(self):
         console.debug("Adding default model(s)")
         self.loadModelsFromEdCif(_DEFAULT_CIF_BLOCK)
+        self.addDefaultPhase()
 
     @Slot('QVariant')
     def loadModelsFromResources(self, fpaths):
@@ -178,6 +205,9 @@ class Model(QObject):
             with open(fpath, 'r') as file:
                 edCif = file.read()
             self.loadModelsFromEdCif(edCif)
+
+            phase = Phases.from_cif_file(fpath)
+            self.phases.append(phase)
 
     @Slot(str)
     def loadModelsFromEdCif(self, edCif):
@@ -311,6 +341,7 @@ class Model(QObject):
     # Private methods
 
     def cryspyObjCrystals(self):
+        print("\ncryspyObjCrystals\n")
         cryspyObj = self._proxy.data._cryspyObj
         cryspyModelType = cryspy.E_data_classes.cl_1_crystal.Crystal
         models = [block for block in cryspyObj.items if type(block) == cryspyModelType]
@@ -333,6 +364,7 @@ class Model(QObject):
         console.debug(IO.formatMsg('sub', 'Intern dict', 'removed', f'{block}[{blockIdx}].{category}[{rowIndex}]'))
 
     def appendDataBlockLoopRow(self, category):
+        print("\nappendDataBlockLoopRow\n")
         block = 'model'
         blockIdx = self._currentIndex
 
@@ -658,11 +690,14 @@ class Model(QObject):
         self.structViewAxesModelChanged.emit()
 
     def setCurrentModelStructViewAtomsModel(self):
+        print("\nsetCurrentModelStructViewAtomsModel\n")
         structViewModel = set()
         currentModelIndex = self._proxy.model.currentIndex
         models = self.cryspyObjCrystals()
         spaceGroup = [sg for sg in models[currentModelIndex].items if type(sg) == cryspy.C_item_loop_classes.cl_2_space_group.SpaceGroup][0]
         atoms = self._dataBlocks[self._currentIndex]['loops']['_atom_site']
+
+        
         # Add all atoms in the cell, including those in equivalent positions
         for atom in atoms:
             symbol = atom['type_symbol']['value']
