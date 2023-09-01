@@ -5,7 +5,8 @@
 from PySide6.QtCore import QObject, Signal, Slot, Property
 
 from EasyApp.Logic.Logging import console
-from Logic.Helpers import Converter, IO
+from Logic.Helpers import Converter
+from easyDiffractionLib.io.Helpers import formatMsg
 
 _EMPTY_DATA = [
     {
@@ -110,13 +111,13 @@ class Fittables(QObject):
     @Slot(str, int, str, int, str, str, float)
     def edit(self, blockType, blockIdx, category, rowIndex, name, field, value):
         if rowIndex == -1:
-            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
+            console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
             if blockType == 'experiment':
                 self._proxy.experiment.setMainParam(blockIdx, category, name, field, value)
             elif blockType == 'model':
                 self._proxy.model.setMainParam(blockIdx, category, name, field, value)
         else:
-            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
+            console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
             if blockType == 'experiment':
                 self._proxy.experiment.setLoopParam(blockIdx, category, name, rowIndex, field, value)
             elif blockType == 'model':
@@ -127,7 +128,7 @@ class Fittables(QObject):
         changedIntern = False
         changedCryspy = False
         if rowIndex == -1:
-            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
+            console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
             if blockType == 'experiment':
                 self._proxy.experiment.editDataBlockMainParam(blockIdx, category, name, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.experiment.editDataBlockMainParam(blockIdx, category, name, field, value)
@@ -137,7 +138,7 @@ class Fittables(QObject):
                 changedIntern = self._proxy.model.editDataBlockMainParam(blockIdx, category, name, field, value)
                 changedCryspy = self._proxy.model.editCryspyDictByMainParam(blockIdx, category, name, field, value)
         else:
-            console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
+            console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
             if blockType == 'experiment':
                 self._proxy.experiment.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.experiment.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
@@ -375,7 +376,7 @@ class Fittables(QObject):
 
         if True:  # len(_data):
             self._data = _data
-            console.debug(IO.formatMsg('sub', 'Fittables changed'))
+            console.debug(formatMsg('sub', 'Fittables changed'))
             self.dataChanged.emit()
             self._freeParamsCount = _freeParamsCount
             self._fixedParamsCount = _fixedParamsCount

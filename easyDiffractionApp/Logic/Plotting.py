@@ -8,7 +8,8 @@ from PySide6.QtGui import QImage, QBrush
 from PySide6 import QtCharts
 
 from EasyApp.Logic.Logging import console
-from Logic.Helpers import Converter, IO #, WebEngine
+from Logic.Helpers import Converter #, WebEngine
+from easyDiffractionLib.io.Helpers import formatMsg
 
 
 _LIBS_1D = ['QtCharts', 'Plotly']
@@ -91,10 +92,10 @@ class Plotting(QObject):
         #    return
         if ref.name():  # braggSeries
             self._chartRefs['QtCharts'][page][serie][ref.name()] = ref
-            console.debug(IO.formatMsg('sub', f'{serie} with name {ref.name()} on {page}: {ref}'))
+            console.debug(formatMsg('sub', f'{serie} with name {ref.name()} on {page}: {ref}'))
         else:  # other series
             self._chartRefs['QtCharts'][page][serie] = ref
-            console.debug(IO.formatMsg('sub', f'{serie} on {page}: {ref}'))
+            console.debug(formatMsg('sub', f'{serie} on {page}: {ref}'))
         self.chartRefsChanged.emit()
 
     @Slot(str, 'QVariant')
@@ -194,7 +195,7 @@ class Plotting(QObject):
             yMeasArray = np.empty(0)
         measSerie = self._chartRefs['QtCharts']['experimentPage']['measSerie']
         measSerie.replaceNp(xArray, yMeasArray)
-        console.debug(IO.formatMsg('sub', 'Meas curve', f'{xArray.size} points', 'on experiment page', 'replaced'))
+        console.debug(formatMsg('sub', 'Meas curve', f'{xArray.size} points', 'on experiment page', 'replaced'))
 
     def qtchartsReplaceBackgroundOnExperimentChartAndRedraw(self):
         index = self._proxy.experiment.currentIndex
@@ -206,7 +207,7 @@ class Plotting(QObject):
             yBkgArray = np.empty(0)
         bkgSerie = self._chartRefs['QtCharts']['experimentPage']['bkgSerie']
         bkgSerie.replaceNp(xArray, yBkgArray)
-        console.debug(IO.formatMsg('sub', 'Bkg curve', f'{xArray.size} points', 'on experiment page', 'replaced'))
+        console.debug(formatMsg('sub', 'Bkg curve', f'{xArray.size} points', 'on experiment page', 'replaced'))
 
     # QtCharts: Analysis
 
@@ -220,7 +221,7 @@ class Plotting(QObject):
             yMeasArray = np.empty(0)
         measSerie = self._chartRefs['QtCharts']['analysisPage']['measSerie']
         measSerie.replaceNp(xArray, yMeasArray)
-        console.debug(IO.formatMsg('sub', 'Meas curve', f'{xArray.size} points', 'on analysis page', 'replaced'))
+        console.debug(formatMsg('sub', 'Meas curve', f'{xArray.size} points', 'on analysis page', 'replaced'))
 
     def qtchartsReplaceBackgroundOnAnalysisChartAndRedraw(self):
         index = self._proxy.experiment.currentIndex
@@ -232,7 +233,7 @@ class Plotting(QObject):
             yBkgArray = np.empty(0)
         bkgSerie = self._chartRefs['QtCharts']['analysisPage']['bkgSerie']
         bkgSerie.replaceNp(xArray, yBkgArray)
-        console.debug(IO.formatMsg('sub', 'Bkg curve', f'{xArray.size} points', 'on analysis page', 'replaced'))
+        console.debug(formatMsg('sub', 'Bkg curve', f'{xArray.size} points', 'on analysis page', 'replaced'))
 
     def qtchartsReplaceTotalCalculatedOnAnalysisChartAndRedraw(self):
         index = self._proxy.experiment.currentIndex
@@ -244,7 +245,7 @@ class Plotting(QObject):
             yCalcTotalArray = np.empty(0)
         calcSerie = self._chartRefs['QtCharts']['analysisPage']['totalCalcSerie']
         calcSerie.replaceNp(xArray, yCalcTotalArray)
-        console.debug(IO.formatMsg('sub', 'Calc (total) curve', f'{xArray.size} points', 'on analysis page', 'replaced'))
+        console.debug(formatMsg('sub', 'Calc (total) curve', f'{xArray.size} points', 'on analysis page', 'replaced'))
 
     def qtchartsReplaceResidualOnAnalysisChartAndRedraw(self):
         index = self._proxy.experiment.currentIndex
@@ -256,7 +257,7 @@ class Plotting(QObject):
             yResidArray = np.empty(0)
         residSerie = self._chartRefs['QtCharts']['analysisPage']['residSerie']
         residSerie.replaceNp(xArray, yResidArray)
-        console.debug(IO.formatMsg('sub', 'Resid curve', f'{xArray.size} points', 'on analysis page', 'replaced'))
+        console.debug(formatMsg('sub', 'Resid curve', f'{xArray.size} points', 'on analysis page', 'replaced'))
 
     def qtchartsReplaceBraggOnAnalysisChartAndRedraw(self):
         index = self._proxy.experiment.currentIndex
@@ -267,7 +268,7 @@ class Plotting(QObject):
                 yBraggArray = np.full_like(xBraggArray, -phaseIdx * 0.5)
                 braggSerie = self._chartRefs['QtCharts']['analysisPage']['braggSeries'][phaseName]
                 braggSerie.replaceNp(xBraggArray, yBraggArray)
-                console.debug(IO.formatMsg('sub', f'Bragg peaks {phaseName}', f'{xBraggArray.size} points', 'on analysis page', 'replaced'))
+                console.debug(formatMsg('sub', f'Bragg peaks {phaseName}', f'{xBraggArray.size} points', 'on analysis page', 'replaced'))
         except IndexError:
             pass
 

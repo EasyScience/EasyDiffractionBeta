@@ -9,9 +9,10 @@ from pycifstar.data import Data as PycifstarData
 from PySide6.QtCore import QObject, Signal, Slot, Property, QUrl
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 
+from easyDiffractionLib.io.cryspy_parser import CryspyParser, Parameter
+from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
 from EasyApp.Logic.Logging import console
-from Logic.Helpers import IO
-from Logic.Calculators import Parameter, CryspyParser
+
 
 
 _EMPTY_DATA = {
@@ -223,7 +224,7 @@ class Project(QObject):
     @Slot('QVariant')
     def loadProject(self, fpath):
         fpath = fpath.toLocalFile()
-        fpath = IO.generalizePath(fpath)
+        fpath = generalizePath(fpath)
 
         if fpath in self._recent:
             self._recent.remove(fpath)
@@ -315,7 +316,7 @@ class Project(QObject):
         if oldValue == value:
             return
         self._dataBlock['name']['value'] = value
-        console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', 'project.name'))
+        console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', 'project.name'))
         self.dataBlockChanged.emit()
 
     def setModels(self):
@@ -337,7 +338,7 @@ class Project(QObject):
             ))
             self._dataBlock['loops']['_model'].append(edModel)
 
-        console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldNames} → {names}'))
+        console.debug(formatMsg('sub', 'Intern dict', f'{oldNames} → {names}'))
         self.dataBlockChanged.emit()
 
     def setExperiments(self):
@@ -359,7 +360,7 @@ class Project(QObject):
             ))
             self._dataBlock['loops']['_experiment'].append(edExperiment)
 
-        console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldNames} → {names}'))
+        console.debug(formatMsg('sub', 'Intern dict', f'{oldNames} → {names}'))
         self.dataBlockChanged.emit()
 
     @Slot(str, str, str, 'QVariant')
@@ -375,9 +376,9 @@ class Project(QObject):
             return False
         self._dataBlock['params'][category][name][field] = value
         if type(value) == float:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{blockType}.{category}.{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{blockType}.{category}.{name}.{field}'))
         else:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{blockType}.{category}.{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{blockType}.{category}.{name}.{field}'))
         return True
 
     @Slot()
@@ -394,7 +395,7 @@ class Project(QObject):
 
     @Slot()
     def save(self):
-        console.debug(IO.formatMsg('main', 'Saving project...'))
+        console.debug(formatMsg('main', 'Saving project...'))
 
         projectDirPath = self.location
         projectFileName = 'project.cif'
@@ -402,7 +403,7 @@ class Project(QObject):
         os.makedirs(projectDirPath, exist_ok=True)
         with open(projectFilePath, 'w') as file:
             file.write(self.dataBlockCif)
-            console.debug(IO.formatMsg('sub', f'saved to: {projectFilePath}'))
+            console.debug(formatMsg('sub', f'saved to: {projectFilePath}'))
 
         if self._proxy.model.defined:
             modelFileNames = [item['cif_file_name']['value'] for item in self._dataBlock['loops']['_model']]
@@ -412,7 +413,7 @@ class Project(QObject):
                 os.makedirs(os.path.dirname(modelFilePath), exist_ok=True)
                 with open(modelFilePath, 'w') as file:
                     file.write(dataBlockCif)
-                    console.debug(IO.formatMsg('sub', f'saved to: {modelFilePath}'))
+                    console.debug(formatMsg('sub', f'saved to: {modelFilePath}'))
 
         if self._proxy.experiment.defined:
             experimentFileNames = [item['cif_file_name']['value'] for item in self._dataBlock['loops']['_experiment']]
@@ -422,7 +423,7 @@ class Project(QObject):
                 dataBlockCif = dataBlockCifNoMeas + '\n\n' + dataBlockCifMeasOnly
                 with open(experimentFilePath, 'w') as file:
                     file.write(dataBlockCif)
-                    console.debug(IO.formatMsg('sub', f'saved to: {experimentFilePath}'))
+                    console.debug(formatMsg('sub', f'saved to: {experimentFilePath}'))
 
         if self._proxy.summary.isCreated:
             fileName = 'report.cif'
@@ -431,11 +432,11 @@ class Project(QObject):
             with open(reportFilePath, 'w') as file:
                 dataBlockCif = self._proxy.summary.dataBlocksCif
                 file.write(dataBlockCif)
-                console.debug(IO.formatMsg('sub', f'saved to: {reportFilePath}'))
+                console.debug(formatMsg('sub', f'saved to: {reportFilePath}'))
 
         self.needSave = False
 
     def setDataBlockCif(self):
         self._dataBlockCif = CryspyParser.dataBlockToCif(self._dataBlock)
-        console.debug(IO.formatMsg('sub', 'Project', '', 'to CIF string', 'converted'))
+        console.debug(formatMsg('sub', 'Project', '', 'to CIF string', 'converted'))
         self.dataBlockCifChanged.emit()

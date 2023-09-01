@@ -12,10 +12,10 @@ from PySide6.QtQml import QJSValue
 
 from easyDiffractionLib import Phases, Phase, Lattice, Site, SpaceGroup
 from easyCrystallography.Components.AtomicDisplacement import AtomicDisplacement
-
+from easyDiffractionLib.io.cryspy_parser import CryspyParser
+from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
 from EasyApp.Logic.Logging import console
-from Logic.Helpers import IO
-from Logic.Calculators import CryspyParser
+
 from Logic.Tables import PERIODIC_TABLE
 from Logic.Data import Data
 
@@ -108,7 +108,7 @@ class Model(QObject):
         if self._defined == newValue:
             return
         self._defined = newValue
-        console.debug(IO.formatMsg('main', f'Model defined: {newValue}'))
+        console.debug(formatMsg('main', f'Model defined: {newValue}'))
 
         self.definedChanged.emit()
 
@@ -200,16 +200,16 @@ class Model(QObject):
             fpaths = fpaths.toVariant()
         for fpath in fpaths:
             fpath = fpath.toLocalFile()
-            fpath = IO.generalizePath(fpath)
+            fpath = generalizePath(fpath)
             console.debug(f"Loading model(s) from: {fpath}")
             with open(fpath, 'r') as file:
                 edCif = file.read()
             self.loadModelsFromEdCif(edCif)
 
             phase = Phases.from_cif_file(fpath)
-            self.phases.append(phase)
+            self.phases.append(phase[0])
 
-    @Slot(str)
+    # @Slot(str)
     def loadModelsFromEdCif(self, edCif):
         cryspyObj = self._proxy.data._cryspyObj
         cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
@@ -231,12 +231,12 @@ class Model(QObject):
             if not self.defined:
                 self.defined = bool(len(self.dataBlocks))
 
-            console.debug(IO.formatMsg('sub', f'{len(edModels)} model(s)', '', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', f'{len(edModels)} model(s)', '', 'to intern dataset', 'added'))
 
             self.dataBlocksChanged.emit()
 
         else:
-            console.debug(IO.formatMsg('sub', 'No model(s)', '', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', 'No model(s)', '', 'to intern dataset', 'added'))
 
     @Slot(str)
     def replaceModel(self, edCif=''):
@@ -361,7 +361,7 @@ class Model(QObject):
         blockIdx = self._currentIndex
         del self._dataBlocks[blockIdx]['loops'][category][rowIndex]
 
-        console.debug(IO.formatMsg('sub', 'Intern dict', 'removed', f'{block}[{blockIdx}].{category}[{rowIndex}]'))
+        console.debug(formatMsg('sub', 'Intern dict', 'removed', f'{block}[{blockIdx}].{category}[{rowIndex}]'))
 
     def appendDataBlockLoopRow(self, category):
         print("\nappendDataBlockLoopRow\n")
@@ -382,7 +382,7 @@ class Model(QObject):
         self._dataBlocks[blockIdx]['loops'][category].append(newAtom)
         atomsCount = len(self._dataBlocks[blockIdx]['loops'][category])
 
-        console.debug(IO.formatMsg('sub', 'Intern dict', 'added', f'{block}[{blockIdx}].{category}[{atomsCount}]'))
+        console.debug(formatMsg('sub', 'Intern dict', 'added', f'{block}[{blockIdx}].{category}[{atomsCount}]'))
 
     def duplicateDataBlockLoopRow(self, category, idx):
         block = 'model'
@@ -393,7 +393,7 @@ class Model(QObject):
         self._dataBlocks[blockIdx]['loops'][category].append(lastAtom)
         atomsCount = len(self._dataBlocks[blockIdx]['loops'][category])
 
-        console.debug(IO.formatMsg('sub', 'Intern dict', 'added', f'{block}[{blockIdx}].{category}[{atomsCount}]'))
+        console.debug(formatMsg('sub', 'Intern dict', 'added', f'{block}[{blockIdx}].{category}[{atomsCount}]'))
 
     def editDataBlockMainParam(self, blockIdx, category, name, field, value):
         blockType = 'model'
@@ -402,9 +402,9 @@ class Model(QObject):
             return False
         self._dataBlocks[blockIdx]['params'][category][name][field] = value
         if type(value) == float:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{blockType}[{blockIdx}].{category}.{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{blockType}[{blockIdx}].{category}.{name}.{field}'))
         else:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{blockType}[{blockIdx}].{category}.{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{blockType}[{blockIdx}].{category}.{name}.{field}'))
         return True
 
     def editDataBlockLoopParam(self, blockIdx, category, name, rowIndex, field, value):
@@ -414,9 +414,9 @@ class Model(QObject):
             return False
         self._dataBlocks[blockIdx]['loops'][category][rowIndex][name][field] = value
         if type(value) == float:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         else:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         return True
 
     def editCryspyDictByMainParam(self, blockIdx, category, name, field, value):
@@ -432,7 +432,7 @@ class Model(QObject):
             return False
         self._proxy.data._cryspyDict[path[0]][path[1]][path[2]] = value
 
-        console.debug(IO.formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
+        console.debug(formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
         return True
 
     def editCryspyDictByLoopParam(self, blockIdx, category, name, rowIndex, field, value):
@@ -448,7 +448,7 @@ class Model(QObject):
             return False
         self._proxy.data._cryspyDict[path[0]][path[1]][path[2]] = value
 
-        console.debug(IO.formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
+        console.debug(formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
         return True
 
     def cryspyDictPathByMainParam(self, blockIdx, category, name, value):
@@ -643,7 +643,7 @@ class Model(QObject):
 
     def setDataBlocksCif(self):
         self._dataBlocksCif = [[CryspyParser.dataBlockToCif(block)] for block in self._dataBlocks]
-        console.debug(IO.formatMsg('sub', f'{len(self._dataBlocksCif)} model(s)', '', 'to CIF string', 'converted'))
+        console.debug(formatMsg('sub', f'{len(self._dataBlocksCif)} model(s)', '', 'to CIF string', 'converted'))
         self.dataBlocksCifChanged.emit()
 
     def updateCurrentModelStructView(self):
@@ -745,7 +745,7 @@ class Model(QObject):
         # Create dict from set for GUI
         self._structViewAtomsModel = [{'x':x, 'y':y, 'z':z, 'diameter':diameter, 'color':color}
                                       for x, y, z, diameter, color in structViewModel]
-        console.debug(IO.formatMsg('sub', f'{len(atoms)} atom(s)', f'model no. {self._currentIndex + 1}', 'for structure view', 'defined'))
+        console.debug(formatMsg('sub', f'{len(atoms)} atom(s)', f'model no. {self._currentIndex + 1}', 'for structure view', 'defined'))
         self.structViewAtomsModelChanged.emit()
 
 
@@ -774,4 +774,4 @@ class StructureViewUpdater(QObject):
 
     def update(self):
         self._threadpool.start(self._worker.run)
-        console.debug(IO.formatMsg('main', '---------------'))
+        console.debug(formatMsg('main', '---------------'))

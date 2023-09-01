@@ -7,7 +7,7 @@ from PySide6.QtCore import QObject, Signal, Slot, Property
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 
 from EasyApp.Logic.Logging import console
-from Logic.Helpers import IO
+from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
 
 try:
     import cryspy
@@ -73,7 +73,7 @@ class Summary(QObject):
                             dataBlockPeakCif = subBlock.to_cif()
                             dataBlocksCifList.append(dataBlockPeakCif)
 
-        console.debug(IO.formatMsg('sub', f'{len(dataBlocksCifList)} item(s)', '', 'to CIF string', 'converted'))
+        console.debug(formatMsg('sub', f'{len(dataBlocksCifList)} item(s)', '', 'to CIF string', 'converted'))
         self._dataBlocksCif = '\n\n'.join(dataBlocksCifList)
         self.dataBlocksCifChanged.emit()
 
@@ -91,7 +91,7 @@ class Summary(QObject):
 
     def loadReportFromFile(self, fpath):
         fpath = fpath.toLocalFile()
-        fpath = IO.generalizePath(fpath)
+        fpath = generalizePath(fpath)
         console.debug(f"Loading report from: {fpath}")
         if not os.path.isfile(fpath):
             console.error(f"File not found: {fpath}")

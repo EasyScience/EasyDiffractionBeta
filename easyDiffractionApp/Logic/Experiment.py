@@ -9,9 +9,9 @@ from PySide6.QtCore import QObject, Signal, Slot, Property
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 from PySide6.QtQml import QJSValue
 
+from easyDiffractionLib.io.cryspy_parser import CryspyParser
+from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
 from EasyApp.Logic.Logging import console
-from Logic.Helpers import IO
-from Logic.Calculators import CryspyParser
 from Logic.Data import Data
 
 try:
@@ -124,7 +124,7 @@ class Experiment(QObject):
         if self._defined == newValue:
             return
         self._defined = newValue
-        console.debug(IO.formatMsg('main', f'Experiment defined: {newValue}'))
+        console.debug(formatMsg('main', f'Experiment defined: {newValue}'))
         self.definedChanged.emit()
 
     @Property(int, notify=currentIndexChanged)
@@ -188,7 +188,7 @@ class Experiment(QObject):
             fpaths = fpaths.toVariant()
         for fpath in fpaths:
             fpath = fpath.toLocalFile()
-            fpath = IO.generalizePath(fpath)
+            fpath = generalizePath(fpath)
             _, fext = os.path.splitext(fpath)
             console.debug(f"Loading experiment(s) from: {fpath}")
             with open(fpath, 'r') as file:
@@ -256,12 +256,12 @@ class Experiment(QObject):
             if not self.defined:
                 self.defined = bool(len(self.dataBlocksNoMeas))
 
-            console.debug(IO.formatMsg('sub', f'{len(edExperimentsMeasOnly)} experiment(s)', 'meas data only', 'to intern dataset', 'added'))
-            console.debug(IO.formatMsg('sub', f'{len(edExperimentsNoMeas)} experiment(s)', 'without meas data', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', f'{len(edExperimentsMeasOnly)} experiment(s)', 'meas data only', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', f'{len(edExperimentsNoMeas)} experiment(s)', 'without meas data', 'to intern dataset', 'added'))
 
             self.dataBlocksChanged.emit()
         else:
-            console.debug(IO.formatMsg('sub', 'No experiment(s)', '', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', 'No experiment(s)', '', 'to intern dataset', 'added'))
 
     @Slot(str)
     def replaceExperiment(self, edCifNoMeas=''):
@@ -447,9 +447,9 @@ class Experiment(QObject):
             return False
         self._dataBlocksNoMeas[blockIdx]['params'][category][name][field] = value
         if type(value) == float:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}.{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}.{name}.{field}'))
         else:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}.{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}.{name}.{field}'))
         return True
 
     def editDataBlockLoopParam(self, blockIdx, category, name, rowIndex, field, value):
@@ -459,9 +459,9 @@ class Experiment(QObject):
             return False
         self._dataBlocksNoMeas[blockIdx]['loops'][category][rowIndex][name][field] = value
         if type(value) == float:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         else:
-            console.debug(IO.formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         return True
 
     def editCryspyDictByMainParam(self, blockIdx, category, name, field, value):
@@ -477,7 +477,7 @@ class Experiment(QObject):
             return False
         self._proxy.data._cryspyDict[path[0]][path[1]][path[2]] = value
 
-        console.debug(IO.formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
+        console.debug(formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
         return True
 
     def editCryspyDictByLoopParam(self, blockIdx, category, name, rowIndex, field, value):
@@ -493,7 +493,7 @@ class Experiment(QObject):
             return False
         self._proxy.data._cryspyDict[path[0]][path[1]][path[2]] = value
 
-        console.debug(IO.formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
+        console.debug(formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
         return True
 
     def cryspyDictPathByMainParam(self, blockIdx, category, name, value):
@@ -743,7 +743,7 @@ class Experiment(QObject):
             flag_use_precalculated_data=False,
             flag_calc_analytical_derivatives=False)
 
-        console.debug(IO.formatMsg('sub', 'Cryspy calculations', 'finished'))
+        console.debug(formatMsg('sub', 'Cryspy calculations', 'finished'))
 
         chiSq = result[0]
         self._proxy.fitting._pointsCount = result[1]
@@ -835,81 +835,81 @@ class Experiment(QObject):
     def setXArray(self, xArray, idx):
         try:
             self._xArrays[idx] = xArray
-            console.debug(IO.formatMsg('sub', 'X', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
+            console.debug(formatMsg('sub', 'X', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
         except IndexError:
             self._xArrays.append(xArray)
-            console.debug(IO.formatMsg('sub', 'X', f'experiment no. {len(self._xArrays)}', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', 'X', f'experiment no. {len(self._xArrays)}', 'to intern dataset', 'added'))
 
     def setYMeasArray(self, yMeasArray, idx):
         try:
             self._yMeasArrays[idx] = yMeasArray
-            console.debug(IO.formatMsg('sub', 'Y-meas', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
+            console.debug(formatMsg('sub', 'Y-meas', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
         except IndexError:
             self._yMeasArrays.append(yMeasArray)
-            console.debug(IO.formatMsg('sub', 'Y-meas', f'experiment no. {len(self._yMeasArrays)}', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', 'Y-meas', f'experiment no. {len(self._yMeasArrays)}', 'to intern dataset', 'added'))
         self.yMeasArraysChanged.emit()
 
     def setSYMeasArray(self, syMeasArray, idx):
         try:
             self._syMeasArrays[idx] = syMeasArray
-            console.debug(IO.formatMsg('sub', 'sY-meas', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
+            console.debug(formatMsg('sub', 'sY-meas', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
         except IndexError:
             self._syMeasArrays.append(syMeasArray)
-            console.debug(IO.formatMsg('sub', 'sY-meas', f'experiment no. {len(self._syMeasArrays)}', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', 'sY-meas', f'experiment no. {len(self._syMeasArrays)}', 'to intern dataset', 'added'))
 
     def setYBkgArray(self, yBkgArray, idx):
         try:
             self._yBkgArrays[idx] = yBkgArray
-            console.debug(IO.formatMsg('sub', 'Y-bkg (inter)', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
+            console.debug(formatMsg('sub', 'Y-bkg (inter)', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
         except IndexError:
             self._yBkgArrays.append(yBkgArray)
-            console.debug(IO.formatMsg('sub', 'Y-bkg (inter)', f'experiment no. {len(self._yBkgArrays)}', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', 'Y-bkg (inter)', f'experiment no. {len(self._yBkgArrays)}', 'to intern dataset', 'added'))
         self.yBkgArraysChanged.emit()
 
     def setYCalcTotalArray(self, yCalcTotalArray, idx):
         try:
             self._yCalcTotalArrays[idx] = yCalcTotalArray
-            console.debug(IO.formatMsg('sub', 'Y-calc (total)', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
+            console.debug(formatMsg('sub', 'Y-calc (total)', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
         except IndexError:
             self._yCalcTotalArrays.append(yCalcTotalArray)
-            console.debug(IO.formatMsg('sub', 'Y-calc (total)', f'experiment no. {len(self._yCalcTotalArrays)}', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', 'Y-calc (total)', f'experiment no. {len(self._yCalcTotalArrays)}', 'to intern dataset', 'added'))
         self.yCalcTotalArraysChanged.emit()
 
     def setYResidArray(self, yResidArray, idx):
         try:
             self._yResidArrays[idx] = yResidArray
-            console.debug(IO.formatMsg('sub', 'Y-resid (meas-calc)', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
+            console.debug(formatMsg('sub', 'Y-resid (meas-calc)', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
         except IndexError:
             self._yResidArrays.append(yResidArray)
-            console.debug(IO.formatMsg('sub', 'Y-resid (meas-calc)', f'experiment no. {len(self._yResidArrays)}', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', 'Y-resid (meas-calc)', f'experiment no. {len(self._yResidArrays)}', 'to intern dataset', 'added'))
         self.yResidArraysChanged.emit()
 
     def setXBraggDict(self, xBraggDict, idx):
         try:
             self._xBraggDicts[idx] = xBraggDict
-            console.debug(IO.formatMsg('sub', 'X-Bragg (peaks)', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
+            console.debug(formatMsg('sub', 'X-Bragg (peaks)', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
         except IndexError:
             self._xBraggDicts.append(xBraggDict)
-            console.debug(IO.formatMsg('sub', 'X-Bragg (peaks)', f'experiment no. {len(self._xBraggDicts)}', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', 'X-Bragg (peaks)', f'experiment no. {len(self._xBraggDicts)}', 'to intern dataset', 'added'))
         self.xBraggDictsChanged.emit()
 
     def setChartRanges(self, ranges, idx):
         try:
             self._chartRanges[idx] = ranges
-            console.debug(IO.formatMsg('sub', 'Chart ranges', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
+            console.debug(formatMsg('sub', 'Chart ranges', f'experiment no. {idx + 1}', 'in intern dataset', 'replaced'))
         except IndexError:
             self._chartRanges.append(ranges)
-            console.debug(IO.formatMsg('sub', 'Chart ranges', f'experiment no. {len(self._chartRanges)}', 'to intern dataset', 'added'))
+            console.debug(formatMsg('sub', 'Chart ranges', f'experiment no. {len(self._chartRanges)}', 'to intern dataset', 'added'))
         self.chartRangesChanged.emit()
 
     def setDataBlocksCifNoMeas(self):
         self._dataBlocksCifNoMeas = [CryspyParser.dataBlockToCif(block) for block in self._dataBlocksNoMeas]
-        console.debug(IO.formatMsg('sub', f'{len(self._dataBlocksCifNoMeas)} experiment(s)', 'without meas data', 'to CIF string', 'converted'))
+        console.debug(formatMsg('sub', f'{len(self._dataBlocksCifNoMeas)} experiment(s)', 'without meas data', 'to CIF string', 'converted'))
         self.dataBlocksCifNoMeasChanged.emit()
 
     def setDataBlocksCifMeasOnly(self):
         self._dataBlocksCifMeasOnly = [CryspyParser.dataBlockToCif(block, includeBlockName=False) for block in self._dataBlocksMeasOnly]
-        console.debug(IO.formatMsg('sub', f'{len(self._dataBlocksCifMeasOnly)} experiment(s)', 'meas data only', 'to CIF string', 'converted'))
+        console.debug(formatMsg('sub', f'{len(self._dataBlocksCifMeasOnly)} experiment(s)', 'meas data only', 'to CIF string', 'converted'))
         self.dataBlocksCifMeasOnlyChanged.emit()
 
     def setDataBlocksCif(self):
@@ -920,5 +920,5 @@ class Experiment(QObject):
         cifMeasOnlyReduced = [f'\n{block}' for block in cifMeasOnlyReduced]
         cifMeasOnlyReduced = [block.rstrip() for block in cifMeasOnlyReduced]
         self._dataBlocksCif = [[noMeas, measOnlyReduced] for (noMeas, measOnlyReduced) in zip(self._dataBlocksCifNoMeas, cifMeasOnlyReduced)]
-        console.debug(IO.formatMsg('sub', f'{len(self._dataBlocksCif)} experiment(s)', 'simplified meas data', 'to CIF string', 'converted'))
+        console.debug(formatMsg('sub', f'{len(self._dataBlocksCif)} experiment(s)', 'simplified meas data', 'to CIF string', 'converted'))
         self.dataBlocksCifChanged.emit()

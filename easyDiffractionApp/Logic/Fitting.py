@@ -10,7 +10,7 @@ import numpy as np
 from PySide6.QtCore import QObject, Signal, Slot, Property, QThreadPool
 
 from EasyApp.Logic.Logging import console
-from Logic.Helpers import IO
+from easyDiffractionLib.io.Helpers import formatMsg
 from Logic.Data import Data
 
 try:
@@ -50,7 +50,7 @@ class Worker(QObject):
             #pointsCount = resid.size
             #freeParamsCount = len(params.valuesdict())
             self._proxy.fitting.chiSq = chiSq / (self._proxy.fitting._pointsCount - self._proxy.fitting._freeParamsCount)
-            console.info(IO.formatMsg('main', f'Iteration: {iter:5d}', f'Reduced Chi2: {self._proxy.fitting.chiSq:16g}'))
+            console.info(formatMsg('main', f'Iteration: {iter:5d}', f'Reduced Chi2: {self._proxy.fitting.chiSq:16g}'))
 
             # Check if fitting termination is requested
             if self._needCancel:

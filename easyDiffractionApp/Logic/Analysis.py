@@ -5,7 +5,7 @@
 from PySide6.QtCore import QObject, Signal, Slot, Property
 
 from EasyApp.Logic.Logging import console
-from Logic.Helpers import IO
+from easyDiffractionLib.io.Helpers import formatMsg
 
 
 class Analysis(QObject):
@@ -27,7 +27,7 @@ class Analysis(QObject):
         if self._defined == newValue:
             return
         self._defined = newValue
-        console.debug(IO.formatMsg('main', f'Analysis defined: {newValue}'))
+        console.debug(formatMsg('main', f'Analysis defined: {newValue}'))
         self.definedChanged.emit()
 
     @Slot()
