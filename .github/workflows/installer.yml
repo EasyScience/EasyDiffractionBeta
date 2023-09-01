@@ -62,6 +62,7 @@ jobs:
           python -m pip install pyinstaller requests dephell_licenses
           python -m pip install git+https://github.com/ikibalin/cryspy.git@beta
           python -m pip install git+https://github.com/easyscience/EasyApp.git@new-easy-app2
+          python -m pip install git+https://github.com/easyscience/easyDiffractionLib.git@beta
 
       #- name: Create python resources file
       #  run: pyside6-rcc $GITHUB_REPOSITORY/resources.qrc -o $GITHUB_REPOSITORY/resources.py
