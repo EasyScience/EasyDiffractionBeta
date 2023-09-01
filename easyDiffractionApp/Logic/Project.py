@@ -5,7 +5,7 @@
 import os
 import time
 from pathlib import Path
-from pycifstar.data import Data as PycifstarData
+from gemmi import cif
 from PySide6.QtCore import QObject, Signal, Slot, Property, QUrl
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 
@@ -205,9 +205,8 @@ class Project(QObject):
         return self._dirNames
 
     def createDataBlockFromCif(self, edCif):
-        starObj = PycifstarData()
-        starObj.take_from_string(edCif)
-        dataBlock = CryspyParser.starObjToEdProject(starObj)
+        block = cif.read_string(edCif).sole_block()
+        dataBlock = CryspyParser.gemmiObjToEdProject(block)
         return dataBlock
 
     @Slot('QVariant')
@@ -245,9 +244,9 @@ class Project(QObject):
         edCif = stream.readAll()
         cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
 
-        starObj = PycifstarData()
-        starObj.take_from_string(cryspyCif)
-        self._dataBlock = CryspyParser.starObjToEdProject(starObj)
+        block = cif.read_string(edCif).sole_block()
+        self._dataBlock = CryspyParser.gemmiObjToEdProject(block)
+
 
         self.location = os.path.dirname(fpath)
 
@@ -276,9 +275,8 @@ class Project(QObject):
         with open(fpath, 'r') as file:
             edCif = file.read()
 
-        starObj = PycifstarData()
-        starObj.take_from_string(edCif)
-        self._dataBlock = CryspyParser.starObjToEdProject(starObj)
+        block = cif.read_string(edCif).sole_block()
+        self._dataBlock = CryspyParser.gemmiObjToEdProject(block)
 
         st = os.stat(fpath)
         fmt = "%d %b %Y %H:%M"
