@@ -19,7 +19,15 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
             readonly property string contactUrl: 'https://easydiffraction.org/#contact'
         }
         readonly property var ci: QtObject {
-            property var app: QtObject {}
+            property var app: QtObject {
+                property var info: QtObject {
+                    readonly property string branch_name: 'master'
+                    readonly property string branch_url: ''
+                    readonly property string commit_sha_short: ''
+                    readonly property string commit_url: ''
+                    readonly property string build_date: '27 Aug 2023'
+                }
+            }
         }
     }
 
@@ -84,4 +92,5 @@ ${name} is developed by ESS DMSC`
         //return `https://raw.githubusercontent.com/easyscience/easyDiffractionApp/${branch}/${file}` // NEED FIX
         return `https://raw.githubusercontent.com/easyscience/easyDiffractionApp/master/${file}` // NEED FIX
     }
+
 }
