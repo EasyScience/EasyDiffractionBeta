@@ -20,6 +20,7 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
     property var main: typeof pyProxy !== 'undefined' && pyProxy !== null ?
                                          pyProxy:
                                          qmlProxy
+    onMainChanged: console.debug(`Globals.proxies.main changed to ${main}`)
 
     //readonly property var main_model_dataBlocks: main.model.dataBlocks
     //readonly property var main_experiment_dataBlocks: main.experiment.dataBlocks

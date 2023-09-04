@@ -238,23 +238,24 @@ class BackendHelpers(QObject):
 
 
 class PyProxyWorker(QObject):
-    pyProxyExposedToQml = Signal()
+    createdAndMovedToMainThread = Signal()
 
-    def __init__(self, engine, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self._engine = engine
+        self.proxy = None
 
-    def exposePyProxyToQml(self):
+    def createAndMoveToMainThread(self):
         from Logic.PyProxy import PyProxy
-        time.sleep(0.5)
-        console.debug('Slept for 0.5s to allow splash screen to start')
-        mainThread = QCoreApplication.instance().thread()
-        proxy = PyProxy()
-        console.debug('PyProxy object created')
-        proxy.moveToThread(mainThread)
-        self._engine.rootContext().setContextProperty('pyProxy', proxy)
-        self.pyProxyExposedToQml.emit()
-        console.debug('PyProxy object exposed to QML')
+        #time.sleep(0.5)
+        #console.debug('Slept for 0.5s to allow splash screen to start')
+        #mainThread = QCoreApplication.instance().thread()
+        mainThread = QApplication.instance().thread()
+        console.debug(f'Main thread id:{id(mainThread)} found')
+        self.proxy = PyProxy()
+        console.debug(f'PyProxy object id:{id(self.proxy)} created')
+        self.proxy.moveToThread(mainThread)
+        console.debug(f'PyProxy object id:{id(self.proxy)} moved to main thread id:{id(self.proxy.thread())}')
+        self.createdAndMovedToMainThread.emit()
 
 
 class TranslationsHandler(QObject):
