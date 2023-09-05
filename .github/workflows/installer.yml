@@ -57,7 +57,6 @@ jobs:
       - name: Install Python dependences
         run: |
           python -m pip install numpy lmfit numdifftools
-          python -m pip install lmfit numdifftools
           python -m pip install orjson jsbeautifier
           python -m pip install pyinstaller requests dephell_licenses
           python -m pip install git+https://github.com/ikibalin/cryspy.git@beta
