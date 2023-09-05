@@ -234,8 +234,8 @@ EaElements.RemoteController {
 
         rc.mouseClick(Globals.Refs.app.analysisPage.startFittingButton)
 
-        console.debug('Waiting 80 secons for minimization step to be finished')
-        rc.wait(80000)
+        console.debug('Waiting 120 secons for minimization step to be finished')
+        rc.wait(120000)
         //rc.mouseClick(Globals.Refs.app.analysisPage.startFittingButton)
         //rc.wait(3000)
 
