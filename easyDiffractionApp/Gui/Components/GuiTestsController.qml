@@ -19,11 +19,14 @@ EaElements.RemoteController {
 
     property int exitCode: 0
     property var res: []
+    property string savedLoggingLevel
 
     Timer {
         running: true
         interval: 1000
         onTriggered: {
+            savedLoggingLevel = EaGlobals.Vars.loggingLevel
+            EaGlobals.Vars.loggingLevel = "Debug"
             runBasicGuiTest()
             processTestResults()
         }
@@ -36,6 +39,7 @@ EaElements.RemoteController {
         onTriggered: {
             console.debug(`Starting forced exit timer`)
             console.debug(`Calling python exit app helper from within QML with code ${exitCode}`)
+            EaGlobals.Vars.loggingLevel = savedLoggingLevel
             Globals.Proxies.main.backendHelpers.exitApp(exitCode)
         }
     }
