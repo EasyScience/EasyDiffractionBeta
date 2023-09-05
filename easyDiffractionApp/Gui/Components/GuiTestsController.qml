@@ -192,7 +192,7 @@ EaElements.RemoteController {
         rc.mouseClick(Globals.Refs.app.experimentPage.importDataFromLocalDriveButton)
         rc.wait(2000)
 
-        res.push( rc.compare(Globals.Refs.app.experimentPage.importDataFromLocalDriveButton.enabled, true) )
+        res.push( rc.compare(Globals.Refs.app.experimentPage.importDataFromLocalDriveButton.enabled, false) )
         res.push( rc.compare(Globals.Refs.app.experimentPage.addDefaultExperimentDataButton.enabled, false) )
         res.push( rc.compare(Globals.Refs.app.experimentPage.continueButton.text, 'Continue') )
 
