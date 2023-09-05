@@ -6,8 +6,16 @@ pragma Singleton
 
 import QtQuick
 
+import EasyApp.Gui.Style as EaStyle
+
 
 QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS > Reset Code Model"
+
+    // System color scheme
+    property int systemColorScheme: typeof pySystemColorScheme !== 'undefined' && pySystemColorScheme !== null ?
+                                        pySystemColorScheme :
+                                        EaStyle.Colors.systemColorScheme
+    onSystemColorSchemeChanged: EaStyle.Colors.systemColorScheme = systemColorScheme
 
     // Non-standard modes
     property bool isDebugMode: false

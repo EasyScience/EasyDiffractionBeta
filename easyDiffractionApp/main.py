@@ -51,6 +51,11 @@ if __name__ == '__main__':
     engine.rootContext().setContextProperty('pyTranslator', translationsHandler.translator)
     console.debug('Translator object exposed to QML')
 
+    from Logic.Helpers import ColorSchemeHandler
+    colorSchemeHandler = ColorSchemeHandler()
+    engine.rootContext().setContextProperty('pySystemColorScheme', colorSchemeHandler.systemColorScheme)
+    console.debug('System color scheme object exposed to QML')
+
     from Logic.Helpers import PersistentSettingsHandler
     settingsHandler = PersistentSettingsHandler()
     engine.rootContext().setContextProperty('pySettingsPath', settingsHandler.path)

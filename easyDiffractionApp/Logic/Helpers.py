@@ -185,7 +185,7 @@ class Application(QApplication):  # QGuiApplication crashes when using in combin
         self.setOrganizationDomain('easyscience.software')
 
 
-class BackendHelpers(QObject):
+class ColorSchemeHandler(QObject):
     systemColorSchemeChanged = Signal()
 
     def __init__(self, parent=None):
