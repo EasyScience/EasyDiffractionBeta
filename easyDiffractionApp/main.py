@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
 # SPDX-License-Identifier: BSD-3-Clause
-# © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+# © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 # Import logger from EasyApp module
 import sys
@@ -51,6 +51,11 @@ if __name__ == '__main__':
     engine.rootContext().setContextProperty('pyTranslator', translationsHandler.translator)
     console.debug('Translator object exposed to QML')
 
+    from Logic.Helpers import ColorSchemeHandler
+    colorSchemeHandler = ColorSchemeHandler()
+    engine.rootContext().setContextProperty('pySystemColorScheme', colorSchemeHandler.systemColorScheme)
+    console.debug('System color scheme object exposed to QML')
+
     from Logic.Helpers import PersistentSettingsHandler
     settingsHandler = PersistentSettingsHandler()
     engine.rootContext().setContextProperty('pySettingsPath', settingsHandler.path)
@@ -62,7 +67,7 @@ if __name__ == '__main__':
     console.debug('pyIsTestMode object exposed to QML')
 
     engine.load(resourcePaths.splashScreenQml)
-    console.debug('Splash screen QML component loaded')
+    console.debug(f'Splash screen QML component loaded: {resourcePaths.splashScreenQml}')
 
     if not engine.rootObjects():
         sys.exit(-1)
@@ -70,11 +75,16 @@ if __name__ == '__main__':
 
     from Logic.Helpers import PyProxyWorker
     from PySide6.QtCore import QThreadPool
-    worker = PyProxyWorker(engine)
-    worker.pyProxyExposedToQml.connect(lambda: engine.load(resourcePaths.mainQml))
+    worker = PyProxyWorker()
+    worker.createdAndMovedToMainThread.connect(lambda: (
+            engine.rootContext().setContextProperty('pyProxy', worker.proxy),
+            console.debug(f'PyProxy object id:{id(worker.proxy)} exposed to QML'),
+            engine.load(resourcePaths.mainQml),
+            console.debug(f'Main QML component loaded: {resourcePaths.mainQml}')
+        ))
     threadpool = QThreadPool.globalInstance()
-    threadpool.start(worker.exposePyProxyToQml)
-    console.debug('PyProxy object is creating in a separate thread and exposing to QML')
+    console.debug('PyProxy object is creating and exposing to QML')
+    threadpool.start(worker.createAndMoveToMainThread)
 
     console.debug('Application event loop is about to start')
     exitCode = app.exec()

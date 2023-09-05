@@ -1,13 +1,21 @@
-// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
+// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors <support@easydiffraction.org>
 // SPDX-License-Identifier: BSD-3-Clause
-// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 pragma Singleton
 
 import QtQuick
 
+import EasyApp.Gui.Style as EaStyle
+
 
 QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS > Reset Code Model"
+
+    // System color scheme
+    property int systemColorScheme: typeof pySystemColorScheme !== 'undefined' && pySystemColorScheme !== null ?
+                                        pySystemColorScheme :
+                                        EaStyle.Colors.systemColorScheme
+    onSystemColorSchemeChanged: EaStyle.Colors.systemColorScheme = systemColorScheme
 
     // Non-standard modes
     property bool isDebugMode: false

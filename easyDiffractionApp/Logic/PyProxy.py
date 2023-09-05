@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
 # SPDX-License-Identifier: BSD-3-Clause
-# © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+# © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 from PySide6.QtCore import QObject, Property
 
@@ -16,7 +16,6 @@ from Logic.Fittables import Fittables
 from Logic.Summary import Summary
 from Logic.Status import Status
 from Logic.Plotting import Plotting
-from Logic.Helpers import BackendHelpers
 
 
 class PyProxy(QObject):
@@ -34,7 +33,6 @@ class PyProxy(QObject):
         self._status = Status(self)
         self._plotting = Plotting(self)
         self._connections = Connections(self)
-        self._backendHelpers = BackendHelpers(self)
 
     @Property('QVariant', constant=True)
     def logger(self):
@@ -83,7 +81,3 @@ class PyProxy(QObject):
     @Property('QVariant', constant=True)
     def plotting(self):
         return self._plotting
-
-    @Property('QVariant', constant=True)
-    def backendHelpers(self):
-        return self._backendHelpers

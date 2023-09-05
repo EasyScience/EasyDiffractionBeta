@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
 # SPDX-License-Identifier: BSD-3-Clause
-# © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+# © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import numpy as np
+from uncertainties import ufloat
 from pycifstar.global_ import Global
 
 from EasyApp.Logic.Logging import console
@@ -99,74 +100,84 @@ class CryspyParser:
     @staticmethod
     def dataBlockToCif(block, includeBlockName=True):
         cif = ''
+
         if includeBlockName:
             cif += f"data_{block['name']['value']}"
             cif += '\n\n'
+
         if 'params' in block:
             for category in block['params'].values():
                 for param in category.values():
                     if param["optional"]:
                         continue
+
                     value = param["value"]
                     if value is None:
                         continue
-                    # convert
-                    if isinstance(value, float):
-                        value = f'{round(value, 6):.10g}'  # 3.0 -> "3", 3.012345 -> "3.0123"  # NEED FIX
-                    elif isinstance(value, str) and ' ' in value:  # P n m a -> "P n m a"
-                        value = f'"{value}"'
-                    # add brackets with error for free params
-                    error = param["error"]
-                    if error == 0:
-                        error = ''
-                    else:
-                        if param["error"] > 1:
-                            error = f'{round(error, 6):.10g}'
+
+                    if isinstance(value, float):  # If parameter is of float type
+                        if param["fit"]:
+                            error = param["error"]
+                            if error == 0:
+                                paramStr = f'{value}()' # Adds empty brackets for standard uncertainty for free params
+                            else:
+                                paramStr = f'{ufloat(value, error):.3uS}'  # Adds brackets with standard uncertainty for free params
                         else:
-                            error = f'{round(error, 6):.17f}'.rstrip('0').lstrip('0').lstrip('.').lstrip('0')  # NEED FIX
-                    if param["fit"]:
-                        cif += f'{param["category"]}.{param["name"]} {value}({error})'
+                            paramStr = f'{value}'
+                    elif isinstance(value, str):  # If parameter is of string type
+                        if ' ' in value:  # Adds quotes to text with spaces, e.g. P n m a -> "P n m a"
+                            paramStr = f'"{value}"'
+                        else:
+                            paramStr = f'{value}'
                     else:
-                        cif += f'{param["category"]}.{param["name"]} {value}'
+                        console.error(f'Unsupported parameter type {type(value)} for {value}')
+                        continue
+
+                    cif += f'{param["category"]}.{param["name"]} {paramStr}'
                     cif += '\n'
                 cif += '\n'
+
         if 'loops' in block:
             for categoryName, category in block['loops'].items():
                 cif += '\nloop_\n'
+
                 # loop header
                 row0 = category[0]
                 for param in row0.values():
                     if param["optional"]:
                         continue
                     cif += f'{categoryName}.{param["name"]}\n'
+
                 # loop data
                 for row in category:
                     line = ''
                     for param in row.values():
                         if param["optional"]:
                             continue
+
                         value = param["value"]
                         if value is None:
-                            continue
-                        # convert
-                        if isinstance(value, float):
-                            value = f'{round(value, 6):.10g}'  # 3.0 -> "3", 3.012345 -> "3.0123"  # NEED FIX
-                        elif isinstance(value, str) and ' ' in value:  # P n m a -> "P n m a"
-                            value = f'"{value}"'
-                        # add brackets with error for free params
-                        error = param["error"]
-                        if error == 0:
-                            error = ''
-                        else:
-                            if param["error"] > 1:
-                                error = f'{round(error, 6):.10g}'
+                            continue                        
+
+                        if isinstance(value, float):  # If parameter is of float type
+                            if param["fit"]:
+                                error = param["error"]
+                                if error == 0:
+                                    paramStr = f'{value}()' # Adds empty brackets for standard uncertainty for free params
+                                else:
+                                    paramStr = f'{ufloat(value, error):.3uS}'  # Adds brackets with standard uncertainty for free params
                             else:
-                                error = f'{round(error, 6):.17f}'.rstrip('0').lstrip('0').lstrip('.').lstrip('0')  # NEED FIX
-                        if param["fit"]:
-                            line += f'{value}({error})'
+                                paramStr = f'{value}'
+                        elif isinstance(value, str):  # If parameter is of string type
+                            if ' ' in value:  # Adds quotes to text with spaces, e.g. P n m a -> "P n m a"
+                                paramStr = f'"{value}"'
+                            else:
+                                paramStr = f'{value}'
                         else:
-                            line += f'{value}'
-                        line += ' '
+                            console.error(f'Unsupported parameter type {type(value)} for {value}')
+                            continue
+
+                        line += paramStr + ' '
                     line = line.rstrip()
                     cif += f'{line}\n'
         cif = cif.strip()
