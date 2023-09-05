@@ -137,7 +137,7 @@ class IO:
 
     @staticmethod
     def formatMsg(type, *args):
-        types = {'main': '•', 'sub': ' ◦'}
+        types = {'main': '*', 'sub': '  -'}
         mark = types[type]
         widths = [22,21,20,10]
         widths[0] -= len(mark)
