@@ -21,8 +21,6 @@ except ImportError:
     console.error('No CrysPy module found')
 
 
-SCALE = 1
-
 class Worker(QObject):
     finished = Signal()
 
