@@ -92,6 +92,7 @@ Column {
             }
 
             EaComponents.TableViewButton {
+                enabled: false
                 fontIcon: "minus-circle"
                 ToolTip.text: qsTr("Remove this dataset")
                 onClicked: Globals.Proxies.main.experiment.removeExperiment(index)
@@ -108,7 +109,7 @@ Column {
         spacing: EaStyle.Sizes.fontPixelSize
 
         EaElements.SideBarButton {
-            //enabled: !Globals.Proxies.main.experiment.defined
+            enabled: !Globals.Proxies.main.experiment.defined
             fontIcon: "upload"
             text: qsTr("Load experiment(s) from file(s)")
             onClicked: {

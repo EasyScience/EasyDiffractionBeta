@@ -208,6 +208,12 @@ class ColorSchemeHandler(QObject):
         console.debug(f"New system color scheme: {self._systemColorScheme}")
         self.systemColorSchemeChanged.emit()
 
+
+class BackendHelpers(QObject):
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
     @Slot(int)
     def exitApp(self, exitCode):
         console.debug(f'Force exiting application with code {exitCode}')
