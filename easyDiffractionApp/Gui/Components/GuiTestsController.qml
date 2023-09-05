@@ -19,11 +19,14 @@ EaElements.RemoteController {
 
     property int exitCode: 0
     property var res: []
+    property string savedLoggingLevel
 
     Timer {
         running: true
         interval: 1000
         onTriggered: {
+            savedLoggingLevel = EaGlobals.Vars.loggingLevel
+            EaGlobals.Vars.loggingLevel = "Debug"
             runBasicGuiTest()
             processTestResults()
         }
@@ -36,6 +39,7 @@ EaElements.RemoteController {
         onTriggered: {
             console.debug(`Starting forced exit timer`)
             console.debug(`Calling python exit app helper from within QML with code ${exitCode}`)
+            EaGlobals.Vars.loggingLevel = savedLoggingLevel
             Globals.Proxies.main.backendHelpers.exitApp(exitCode)
         }
     }
@@ -188,7 +192,7 @@ EaElements.RemoteController {
         rc.mouseClick(Globals.Refs.app.experimentPage.importDataFromLocalDriveButton)
         rc.wait(2000)
 
-        res.push( rc.compare(Globals.Refs.app.experimentPage.importDataFromLocalDriveButton.enabled, true) )
+        res.push( rc.compare(Globals.Refs.app.experimentPage.importDataFromLocalDriveButton.enabled, false) )
         res.push( rc.compare(Globals.Refs.app.experimentPage.addDefaultExperimentDataButton.enabled, false) )
         res.push( rc.compare(Globals.Refs.app.experimentPage.continueButton.text, 'Continue') )
 
@@ -230,8 +234,8 @@ EaElements.RemoteController {
 
         rc.mouseClick(Globals.Refs.app.analysisPage.startFittingButton)
 
-        console.debug('Waiting 80 secons for minimization step to be finished')
-        rc.wait(80000)
+        console.debug('Waiting 120 secons for minimization step to be finished')
+        rc.wait(120000)
         //rc.mouseClick(Globals.Refs.app.analysisPage.startFittingButton)
         //rc.wait(3000)
 

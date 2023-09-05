@@ -137,7 +137,7 @@ class IO:
 
     @staticmethod
     def formatMsg(type, *args):
-        types = {'main': '•', 'sub': ' ◦'}
+        types = {'main': '*', 'sub': '  -'}
         mark = types[type]
         widths = [22,21,20,10]
         widths[0] -= len(mark)
@@ -207,6 +207,12 @@ class ColorSchemeHandler(QObject):
         self._systemColorScheme = self.schemes[self._styleHints.colorScheme()]
         console.debug(f"New system color scheme: {self._systemColorScheme}")
         self.systemColorSchemeChanged.emit()
+
+
+class BackendHelpers(QObject):
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
     @Slot(int)
     def exitApp(self, exitCode):
