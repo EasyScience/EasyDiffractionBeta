@@ -4,6 +4,7 @@
 
 import os
 import copy
+from io import StringIO
 import numpy as np
 from PySide6.QtCore import QObject, Signal, Slot, Property
 from PySide6.QtCore import QFile, QTextStream, QIODevice
@@ -186,16 +187,43 @@ class Experiment(QObject):
     def loadExperimentsFromFiles(self, fpaths):
         if type(fpaths) == QJSValue:
             fpaths = fpaths.toVariant()
+
         for fpath in fpaths:
             fpath = fpath.toLocalFile()
             fpath = IO.generalizePath(fpath)
             _, fext = os.path.splitext(fpath)
             console.debug(f"Loading experiment(s) from: {fpath}")
-            with open(fpath, 'r') as file:
-                fileContent = file.read()
-            if fext == '.xye':
-                fileContent = _DEFAULT_DATA_BLOCK_NO_MEAS + fileContent
-            self.loadExperimentsFromEdCif(fileContent)
+
+            # Try loading data file
+            try:
+                data = np.loadtxt(fpath, unpack=True)
+            except Exception as exception:
+                console.error(f"Failed to load data from file {fpath} with exception {exception}")
+                return
+
+            # Extarct measured data and calculate standard uncertanty if needed
+            if data.shape[0] == 3:
+                ttheta, intensity, intensity_su = data
+            elif data.shape[0] == 2:
+                ttheta, intensity = data
+                intensity_su = np.sqrt(intensity)
+            else:
+                console.error(f"Failed to load data from file {fpath}. Supported number of collumns: 2 or 3")
+                return
+
+            # Convert data from numpy arrays to string
+            sio = StringIO()
+            np.savetxt(sio, np.c_[ttheta, intensity, intensity_su], fmt='%10.6f')
+            procData = sio.getvalue()
+
+            # Add default CIF instrumental block and measured data header
+            if fext == '.xye' or fext == '.xys' or fext == '.xy':
+                procData = _DEFAULT_DATA_BLOCK_NO_MEAS + procData
+            else:
+                console.error(f"Unsupported file extension {fext} of {fpath}")
+                return
+
+            self.loadExperimentsFromEdCif(procData)
 
     @Slot(str)
     def loadExperimentsFromEdCif(self, edCif):

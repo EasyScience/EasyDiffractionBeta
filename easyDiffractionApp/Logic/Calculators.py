@@ -157,7 +157,7 @@ class CryspyParser:
 
                         value = param["value"]
                         if value is None:
-                            continue                        
+                            continue
 
                         if isinstance(value, float):  # If parameter is of float type
                             if param["fit"]:
@@ -577,7 +577,7 @@ class CryspyParser:
                                 fit = cryspy_atom.occupancy_refinement
                             ))
                             ed_atom['ADP_type'] = dict(Parameter(
-                                cryspy_atom.adp_type,
+                                'Biso',  # cryspy_atom.adp_type,
                                 idx = idx,
                                 category = '_atom_site',
                                 name = 'ADP_type',
@@ -585,9 +585,17 @@ class CryspyParser:
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_atom_site/',
                                 cifDict = 'core'
                             ))
+                            b_iso_or_equiv = 0.0
+                            b_iso_or_equiv_sigma = 0.0
+                            if hasattr(cryspy_atom, 'b_iso_or_equiv'):
+                                b_iso_or_equiv = cryspy_atom.b_iso_or_equiv
+                                b_iso_or_equiv_sigma = cryspy_atom.b_iso_or_equiv_sigma
+                            if hasattr(cryspy_atom, 'u_iso_or_equiv'):
+                                b_iso_or_equiv = round(cryspy_atom.u_iso_or_equiv * 8 * np.pi**2, 4)
+                                b_iso_or_equiv_sigma = round(cryspy_atom.u_iso_or_equiv_sigma * 8 * np.pi**2, 4)
                             ed_atom['B_iso_or_equiv'] = dict(Parameter(
-                                cryspy_atom.b_iso_or_equiv,
-                                error = cryspy_atom.b_iso_or_equiv_sigma,
+                                b_iso_or_equiv,
+                                error = b_iso_or_equiv_sigma,
                                 idx = idx,
                                 category = '_atom_site',
                                 prettyCategory = 'atom',

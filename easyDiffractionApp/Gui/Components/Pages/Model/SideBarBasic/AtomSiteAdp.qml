@@ -124,11 +124,13 @@ EaElements.GroupColumn {
 
             EaComponents.TableViewParameter {
                 enabled: false
+                color: EaStyle.Colors.themeForegroundMinor
                 parameter: Globals.Proxies.modelLoopParam('_atom_site', 'label', index)
             }
 
             EaComponents.TableViewParameter {
                 enabled: false
+                color: EaStyle.Colors.themeForegroundMinor
                 parameter: Globals.Proxies.modelLoopParam('_atom_site', 'ADP_type', index)
             }
 
@@ -141,32 +143,32 @@ EaElements.GroupColumn {
 
             EaComponents.TableViewParameter {
                 enabled: false
-                text: iso.text
+                text: '' //iso.text
             }
 
             EaComponents.TableViewParameter {
                 enabled: false
-                text: iso.text
+                text: '' //iso.text
             }
 
             EaComponents.TableViewParameter {
                 enabled: false
-                text: iso.text
+                text: '' //iso.text
             }
 
             EaComponents.TableViewParameter {
                 enabled: false
-                text: '0'
+                text: '' //'0'
             }
 
             EaComponents.TableViewParameter {
                 enabled: false
-                text: '0'
+                text: '' //'0'
             }
 
             EaComponents.TableViewParameter {
                 enabled: false
-                text: '0'
+                text: '' //'0'
             }
 
             // Temporary fix for right margin

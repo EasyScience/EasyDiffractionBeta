@@ -296,7 +296,7 @@ Rectangle {
             borderColor: EaStyle.Colors.chartAxis
             fontIcon: "search-plus"
             ToolTip.text: qsTr("Zoom in")
-            onClicked: scaleCoeff += 1
+            onClicked: scaleCoeff += 3
         }
 
         EaElements.TabButton {
@@ -307,7 +307,7 @@ Rectangle {
             borderColor: EaStyle.Colors.chartAxis
             fontIcon: "search-minus"
             ToolTip.text: qsTr("Zoom out")
-            onClicked: cameraOrthographicFront.z -= 10 //scaleCoeff -= 1
+            onClicked: scaleCoeff -= 3  // cameraOrthographicFront.z -= 10
         }
 
         EaElements.TabButton {
