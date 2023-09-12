@@ -2,10 +2,10 @@ name: Build Installer
 
 on:
   push:
-    tags-ignore:
+    branches:
       - "**"
   pull_request:
-    tags-ignore:
+    branches:
       - "**"
 
 jobs:

@@ -2,10 +2,10 @@ name: Build Snap Image
 
 on:
   push:
-    tags-ignore:
+    branches:
       - "**"
   pull_request:
-    tags-ignore:
+    branches:
       - "**"
 
 jobs:
