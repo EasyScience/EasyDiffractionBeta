@@ -186,7 +186,10 @@ class CryspyParser:
 
     @staticmethod
     def edCifToCryspyCif(edCif):
-        cryspyCif = edCif
+        rawToEdNamesCif = {
+            '_atom_site_thermal_displace_type': '_atom_site.ADP_type',
+            'H1+': 'H'
+        }
         edToCryspyNamesMap = {
             '_diffrn_radiation.probe': '_setup_radiation',
             '_diffrn_radiation_wavelength.wavelength': '_setup_wavelength',
@@ -225,6 +228,9 @@ class CryspyParser:
             'neutron': 'neutrons',
             'neutronss': 'neutrons',
         }
+        cryspyCif = edCif
+        for rawName, edName in rawToEdNamesCif.items():
+            cryspyCif = cryspyCif.replace(rawName, edName)
         for edName, cryspyName in edToCryspyNamesMap.items():
             cryspyCif = cryspyCif.replace(edName, cryspyName)
         for edValue, cryspyValue in edToCryspyValuesMap.items():
