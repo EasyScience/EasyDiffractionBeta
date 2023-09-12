@@ -1,6 +1,12 @@
 name: Build Snap Image
 
-on: [push, pull_request]
+on:
+  push:
+    tags-ignore:
+      - "**"
+  pull_request:
+    tags-ignore:
+      - "**"
 
 jobs:
   build_snap:
@@ -55,7 +61,7 @@ jobs:
       - name: Get snap filename
         run: |
           echo "SNAP_FILENAME=$(ls *.snap)" >> $GITHUB_ENV
-  
+
       - name: Publish Develop Branch to snapcraft beta
         #  if: steps.branch-name.outputs.current_branch == 'develop'
         if: steps.branch-name.outputs.current_branch == 'master' # temporarily master will produce beta
@@ -65,7 +71,7 @@ jobs:
         with:
           snap: ${{ env.SNAP_FILENAME }}
           release: beta
-          
+
       - name: Publish Main Branch to snapcraft stable
         if: steps.branch-name.outputs.current_branch == 'main'
         uses: snapcore/action-publish@v1
