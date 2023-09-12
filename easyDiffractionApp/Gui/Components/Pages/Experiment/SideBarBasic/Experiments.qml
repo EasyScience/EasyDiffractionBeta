@@ -145,7 +145,7 @@ Column {
     FileDialog{
         id: openCifFileDialog
         fileMode: FileDialog.OpenFiles
-        nameFilters: [ "CIF files (*.cif)", "ASCII data files (*.xye)"]
+        nameFilters: [ "CIF files (*.cif)", "ASCII data files - 3 columns (*.xye *.xys)", "ASCII data files - 2 columns (*.xy)"]
         onAccepted: {
             console.debug('*** Loading experiment(s) from file(s) ***')
             Globals.Proxies.main.experiment.loadExperimentsFromFiles(selectedFiles)
