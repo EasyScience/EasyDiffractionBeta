@@ -153,6 +153,14 @@
         <file>Examples/La0.5Ba0.5CoO3-Raw/project.cif</file>
         <file>Examples/La0.5Ba0.5CoO3-Xye/hrpt.cif</file>
         <file>Examples/La0.5Ba0.5CoO3-Xye/hrpt.xye</file>
+        <file>Examples/LaMnO3/experiments/3t2.cif</file>
+        <file>Examples/LaMnO3/experiments/3t2_dark.png</file>
+        <file>Examples/LaMnO3/experiments/3t2_light.png</file>
+        <file>Examples/LaMnO3/models/lmo.cif</file>
+        <file>Examples/LaMnO3/models/lmo_dark.png</file>
+        <file>Examples/LaMnO3/models/lmo_light.png</file>
+        <file>Examples/LaMnO3/summary/report.cif</file>
+        <file>Examples/LaMnO3/project.cif</file>
         <file>Examples/PbSO4/experiments/d1a.cif</file>
         <file>Examples/PbSO4/experiments/d1a_dark.png</file>
         <file>Examples/PbSO4/experiments/d1a_light.png</file>

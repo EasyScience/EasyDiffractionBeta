@@ -63,6 +63,11 @@ _EXAMPLES = [
         'path': ':/Examples/PbSO4/project.cif'
 
      },
+     {
+        'name': 'LaMnO3',
+        'description': 'neutrons, powder, constant wavelength, 3T2@LLB',
+        'path': ':/Examples/LaMnO3/project.cif'
+     },
      #{
      #    'name': 'Co2SiO4-Mult-Phases',
      #    'description': 'neutrons, powder, constant wavelength, D20@ILL, 2 phases',

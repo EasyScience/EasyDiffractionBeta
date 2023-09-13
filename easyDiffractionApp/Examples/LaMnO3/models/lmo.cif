@@ -1,0 +1,25 @@
+data_lmo
+
+_cell.length_a 5.5368623(807)
+_cell.length_b 5.7474517(884)
+_cell.length_c 7.693164(114)
+_cell.angle_alpha 90.0
+_cell.angle_beta 90.0
+_cell.angle_gamma 90.0
+
+_space_group.name_H-M_alt "P n m a"
+_space_group.IT_coordinate_system_code cab
+
+loop_
+_atom_site.label
+_atom_site.type_symbol
+_atom_site.fract_x
+_atom_site.fract_y
+_atom_site.fract_z
+_atom_site.occupancy
+_atom_site.ADP_type
+_atom_site.B_iso_or_equiv
+La La 0.9924720001733065 0.048845000881678716 0.25 1.0 Biso 0.2906
+Mn Mn 0.5 0.0 0.0 1.0 Biso 0.1658
+O1 O 0.0743619999537262 0.48730900009876266 0.25 1.0 Biso 0.438
+O2 O 0.7257829999607026 0.306773999947812 0.03854 1.0 Biso 0.3592
