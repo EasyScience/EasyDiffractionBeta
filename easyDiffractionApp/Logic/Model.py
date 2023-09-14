@@ -16,20 +16,15 @@ from easyDiffractionLib.io.cryspy_parser import CryspyParser
 from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
 from EasyApp.Logic.Logging import console
 
-from Logic.Tables import PERIODIC_TABLE
+from Logic.Tables import PERIODIC_TABLE # TODO CHANGE THIS TO PERIODICTABLE
+import periodictable as pt
 from Logic.Data import Data
+from easyCrystallography.Symmetry.tools import SpacegroupInfo
 
 try:
     import cryspy
     from cryspy.H_functions_global.function_1_cryspy_objects import \
         str_to_globaln
-    from cryspy.A_functions_base.database import DATABASE
-    from cryspy.A_functions_base.function_2_space_group import \
-        REFERENCE_TABLE_IT_COORDINATE_SYSTEM_CODE_NAME_HM_EXTENDED, \
-        REFERENCE_TABLE_IT_NUMBER_NAME_HM_FULL, \
-        ACCESIBLE_NAME_HM_SHORT
-    from cryspy.procedure_rhochi.rhochi_by_dictionary import \
-        rhochi_calc_chi_sq_by_dictionary
     console.debug('CrysPy module imported')
 except ImportError:
     console.error('No CrysPy module found')
@@ -166,12 +161,18 @@ class Model(QObject):
         return phase
     
     # QML accessible methods
-
     @Slot(str, str, result=str)
     def atomData(self, typeSymbol, key):
         if typeSymbol == '':
             return ''
         typeSymbol = re.sub(r'[0-9]', '', typeSymbol)  # '162Dy' -> 'Dy'
+        try:
+            callable = getattr(pt, typeSymbol)
+            r = getattr(callable, key)
+            return r
+        except AttributeError:
+            pass
+            # passing the color check to the internal database
         return PERIODIC_TABLE[typeSymbol][key]
 
     @Slot()
@@ -202,12 +203,11 @@ class Model(QObject):
             fpath = fpath.toLocalFile()
             fpath = generalizePath(fpath)
             console.debug(f"Loading model(s) from: {fpath}")
+            phase = Phases.from_cif_file(fpath)
+            self.phases.append(phase[0])
             with open(fpath, 'r') as file:
                 edCif = file.read()
             self.loadModelsFromEdCif(edCif)
-
-            phase = Phases.from_cif_file(fpath)
-            self.phases.append(phase[0])
 
     # @Slot(str)
     def loadModelsFromEdCif(self, edCif):
@@ -348,13 +348,18 @@ class Model(QObject):
         return models
 
     def createSpaceGroupNames(self):
-        namesShort = ACCESIBLE_NAME_HM_SHORT
-        namesFull = tuple((name[1] for name in REFERENCE_TABLE_IT_NUMBER_NAME_HM_FULL))
-        namesExtended = tuple((name[2] for name in REFERENCE_TABLE_IT_COORDINATE_SYSTEM_CODE_NAME_HM_EXTENDED))
-        return list(set(namesShort + namesFull + namesExtended))
+        all_system_names = SpacegroupInfo.get_all_systems()
+        names = []
+        for system in all_system_names:
+            numbers = SpacegroupInfo.get_ints_from_system(system)
+            names.extend([SpacegroupInfo.get_symbol_from_int_number(n) for n in numbers])
+        return names
 
     def createIsotopesNames(self):
-        return [isotope[1] for isotope in list(DATABASE['Isotopes'].keys())]
+        elements = pt.elements
+        isotopes = [element.symbol for element in elements][1:] # skip 'n'
+        isotopes.extend([str(iso) + element.symbol for element in elements for iso in element.isotopes][1:]) # skip '1n'
+        return isotopes
 
     def removeDataBlockLoopRow(self, category, rowIndex):
         block = 'model'
@@ -710,7 +715,7 @@ class Model(QObject):
                     float(x),
                     float(y),
                     float(z),
-                    self.atomData(symbol, 'covalentRadius'),
+                    self.atomData(symbol, 'covalent_radius'),
                     self.atomData(symbol, 'color')
                 ))
         # Add those atoms, which have 0 in xyz to be translated into 1
@@ -748,6 +753,17 @@ class Model(QObject):
         console.debug(formatMsg('sub', f'{len(atoms)} atom(s)', f'model no. {self._currentIndex + 1}', 'for structure view', 'defined'))
         self.structViewAtomsModelChanged.emit()
 
+    def phaseToModel(self, phase):
+        '''
+        Convert the current phase to ED model representation
+        '''
+        pass
+
+    def jobToModel(self, job):
+        '''
+        Convert the current job to ED model representation
+        '''
+        pass
 
 class StructureViewWorker(QObject):
     finished = Signal()
