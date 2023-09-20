@@ -187,7 +187,11 @@ class CryspyParser:
     @staticmethod
     def edCifToCryspyCif(edCif):
         rawToEdNamesCif = {
+            '_symmetry_space_group_name_H-M': '_space_group.name_H-M_alt',
             '_atom_site_thermal_displace_type': '_atom_site.ADP_type',
+            '_atom_site_adp_type': '_atom_site.ADP_type',
+            '_atom_site_U_iso_or_equiv': '_atom_site.U_iso_or_equiv',
+            #'data_global': '',
             'H1+': 'H'
         }
         edToCryspyNamesMap = {

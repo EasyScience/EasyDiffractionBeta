@@ -4,7 +4,6 @@
 
 import copy
 import lmfit
-
 import numpy as np
 
 from PySide6.QtCore import QObject, Signal, Slot, Property, QThreadPool
@@ -35,79 +34,85 @@ class Worker(QObject):
 
         #self._paramsInit = lmfit.Parameters()
         self._paramsFinal = lmfit.Parameters()
+        self._paramsBest = lmfit.Parameters()
 
-        self._gofPrevIter = None
-        self._gofLastIter = None
+        self._gofPrevIter = np.inf
+        self._gofLastIter = np.inf
+        self._gofBest = np.inf
 
-        #QThread.setTerminationEnabled()
+        self._fitIteration = 0
 
-    def run(self):
+        #QThread.setTerminationEnabled()  # Not needed for Lmfit
 
-        def callbackFunc(params, iter, resid, *args, **kws):
-            chiSq = np.sum(np.square(resid))
-            #pointsCount = resid.size
-            #freeParamsCount = len(params.valuesdict())
-            self._proxy.fitting.chiSq = chiSq / (self._proxy.fitting._pointsCount - self._proxy.fitting._freeParamsCount)
-            console.info(IO.formatMsg('main', f'Iteration: {iter:5d}', f'Reduced Chi2: {self._proxy.fitting.chiSq:16g}'))
+    def callbackFunc(self, params, iter, resid, *args, **kws):
+        # Calc reduced Chi2 == goodness-of-fit (GOF)
+        chiSq = np.sum(np.square(resid))
+        self._proxy.fitting.chiSq = chiSq / (self._proxy.fitting._pointsCount - self._proxy.fitting._freeParamsCount)
+        console.info(IO.formatMsg('main', f'Iteration: {iter:5d}', f'Reduced Chi2: {self._proxy.fitting.chiSq:16g}'))
 
-            # Check if fitting termination is requested
-            if self._needCancel:
-                self._needCancel = False
-                #self._proxy.data._cryspyDict = copy.deepcopy(self._cryspyDictInitial)
-                console.error('Terminating the execution of the optimization thread')
-                #QThread.terminate()  # Not needed for Lmfit
-                return True  # Cancel minimization and return back to after lmfit.minimize
+        # Calc goodness-of-fit (GOF) value shift between iterations
+        gofStart = self._proxy.fitting.chiSqStart
+        if iter == -1:
+            self._gofPrevIter = self._proxy.fitting.chiSqStart
+        self._gofLastIter = self._proxy.fitting.chiSq
+        gofShift = abs(self._gofLastIter - self._gofPrevIter)
+        self._gofPrevIter = self._gofLastIter
 
-            # Update iteration number in the status bar
-            self._proxy.status.fitIteration = f'{iter}'
+        # Save best goodness-of-fit (GOF) and params
+        if self._gofLastIter < self._gofBest:
+            self._gofBest = self._gofLastIter
+            self._paramsBest = copy.deepcopy(params)
 
-            # Calc goodness-of-fit (GOF) value shift between iterations
-            gofStart = self._proxy.fitting.chiSqStart
-            if iter == 1:
-                self._gofPrevIter = self._proxy.fitting.chiSqStart
-            self._gofLastIter = self._proxy.fitting.chiSq
-            gofShift = abs(self._gofLastIter - self._gofPrevIter)
-            self._gofPrevIter = self._gofLastIter
-            # Update goodness-of-fit (GOF) value updated in the status bar
-            if iter == 1 or gofShift > 0.01:
-                self._proxy.status.goodnessOfFit = f'{gofStart:0.2f} → {self._gofLastIter:0.2f}'  # NEED move to connection
-                self._proxy.fitting.chiSqSignificantlyChanged.emit()
+        # Update goodness-of-fit (GOF) value in the status bar
+        if iter == -1 or gofShift > 0.0099:
+            self._proxy.status.goodnessOfFit = f'{gofStart:0.2f} → {self._gofLastIter:0.2f}'  # NEED move to connection
+            self._proxy.fitting.chiSqSignificantlyChanged.emit()
 
-            return False  # Continue minimization
+        # Update iteration number in the status bar
+        self._proxy.status.fitIteration = f'{iter}'
 
-        def residFunc(params):
+        # Check if fitting termination is requested
+        if self._needCancel:
+            self._needCancel = False
+            console.error('Terminating the execution of the optimization thread')
+            #QThread.terminate()  # Not needed for Lmfit
+            return True  # Cancel minimization and return back to after lmfit.minimize
 
-            # Update CrysPy dict from Lmfit params
-            for param in params:
-                block, group, idx = Data.strToCryspyDictParamPath(param)
-                self._proxy.data._cryspyDict[block][group][idx] = params[param].value
+        return  # Continue minimization
 
-            # Calculate diffraction pattern
-            rhochi_calc_chi_sq_by_dictionary(
-                self._proxy.data._cryspyDict,
-                dict_in_out=self._proxy.data._cryspyInOutDict,
-                flag_use_precalculated_data=self._cryspyUsePrecalculatedData,
-                flag_calc_analytical_derivatives=self._cryspyCalcAnalyticalDerivatives)
+    def residFunc(self, params):
+        # Update CrysPy dict from Lmfit params during minimization
+        for param in params:
+            block, group, idx = Data.strToCryspyDictParamPath(param)
+            self._proxy.data._cryspyDict[block][group][idx] = params[param].value
 
-            # Total residual
-            totalResid = np.empty(0)
-            for dataBlock in self._proxy.experiment.dataBlocksNoMeas:
-                ed_name = dataBlock['name']['value']
-                cryspy_name = f'pd_{ed_name}'
-                cryspyInOutDict = self._proxy.data._cryspyInOutDict
+        # Calculate diffraction pattern based on updated CrysPy dict
+        rhochi_calc_chi_sq_by_dictionary(
+            self._proxy.data._cryspyDict,
+            dict_in_out=self._proxy.data._cryspyInOutDict,
+            flag_use_precalculated_data=self._cryspyUsePrecalculatedData,
+            flag_calc_analytical_derivatives=self._cryspyCalcAnalyticalDerivatives)
 
-                y_meas_array = cryspyInOutDict[cryspy_name]['signal_exp'][0]
-                sy_meas_array = cryspyInOutDict[cryspy_name]['signal_exp'][1]
-                y_bkg_array = cryspyInOutDict[cryspy_name]['signal_background']
-                y_calc_all_phases_array = cryspyInOutDict[cryspy_name]['signal_plus'] + \
-                                          cryspyInOutDict[cryspy_name]['signal_minus']
-                y_calc_all_phases_array_with_bkg = y_calc_all_phases_array + y_bkg_array
+        # Create total residual array
+        totalResid = np.empty(0)
+        for dataBlock in self._proxy.experiment.dataBlocksNoMeas:
+            ed_name = dataBlock['name']['value']
+            cryspy_name = f'pd_{ed_name}'
+            cryspyInOutDict = self._proxy.data._cryspyInOutDict
 
-                resid = (y_calc_all_phases_array_with_bkg - y_meas_array) / sy_meas_array
-                totalResid = np.append(totalResid, resid)
+            y_meas_array = cryspyInOutDict[cryspy_name]['signal_exp'][0]
+            sy_meas_array = cryspyInOutDict[cryspy_name]['signal_exp'][1]
+            y_bkg_array = cryspyInOutDict[cryspy_name]['signal_background']
+            y_calc_all_phases_array = cryspyInOutDict[cryspy_name]['signal_plus'] + \
+                                      cryspyInOutDict[cryspy_name]['signal_minus']
+            y_calc_all_phases_array_with_bkg = y_calc_all_phases_array + y_bkg_array
 
-            return totalResid
+            resid = (y_calc_all_phases_array_with_bkg - y_meas_array) / sy_meas_array
+            totalResid = np.append(totalResid, resid)
 
+        return totalResid
+
+    def runLmfit(self):
         self._proxy.fitting._freezeChiSqStart = True
 
         # Save initial state of cryspyDict if cancel fit is requested
@@ -134,7 +139,7 @@ class Worker(QObject):
         # Reduced chi-squared goodness-of-fit (GOF)
         self._proxy.fitting.chiSq = chiSq / (self._proxy.fitting._pointsCount - self._proxy.fitting._freeParamsCount)
 
-        # Create lmfit parameters to be varied
+        # Create lmfit parameters to be optimized
         freeParamValuesStart = [self._proxy.data._cryspyDict[way[0]][way[1]][way[2]] for way in freeParamNames]
         paramsLmfit = lmfit.Parameters()
         for cryspyParamPath, val in zip(freeParamNames, freeParamValuesStart):
@@ -154,28 +159,24 @@ class Worker(QObject):
         # Minimization: lmfit.minimize
         self._proxy.fitting.chiSqStart = self._proxy.fitting.chiSq
         self._cryspyUsePrecalculatedData = True
-        method = 'BFGS'
-        tol = 1e+3
-        method = 'L-BFGS-B'
-        tol = 1e-2
-        method = self._proxy.fitting.minimizerMethod
-        tol = self._proxy.fitting.minimizerTol
-        reduce_fcn = None  # None : sum-of-squares of residual (default) = (r*r).sum()
-        result = lmfit.minimize(residFunc,
+        result = lmfit.minimize(self.residFunc,
                                 paramsLmfit,
-                                args=(),
-                                method=method,
-                                reduce_fcn=reduce_fcn,
-                                iter_cb=callbackFunc,
-                                tol=tol)
-
+                                method=self._proxy.fitting.minimizerMethod,
+                                iter_cb=self.callbackFunc,
+                                nan_policy='propagate',
+                                max_nfev=self._proxy.fitting.minimizerMaxIter,
+                                ftol=self._proxy.fitting.minimizerTol,
+                                xtol=self._proxy.fitting.minimizerTol)
         lmfit.report_fit(result)
 
         # Optimization status
         if result.success:  # NEED FIX: Move to connections. Pass names via signal.emit(names)
             console.info('Optimization successfully finished')
+            paramsBest = result.params
             self._proxy.status.fitStatus = 'Success'
         else:
+            console.info('Optimization unsuccessfully finished')
+            paramsBest = self._paramsBest
             if result.aborted:
                 console.info('Optimization aborted')
                 self._proxy.status.fitStatus = 'Aborted'
@@ -183,13 +184,16 @@ class Worker(QObject):
             else:
                 console.info('Optimization failed')
                 self._proxy.status.fitStatus = 'Failure'
-                ## Restore cryspyDict from the state before minimization started
-                #self._proxy.data._cryspyDict = copy.deepcopy(self._cryspyDictInitial)
+
+        # /Users/as/Development/GitHub/easyScience/EasyDiffractionBeta/.venv_3.11/lib/python3.11/site-packages/cryspy/A_functions_base/powder_diffraction_const_wavelength.py:161: RuntimeWarning: invalid value encountered in power
+        #  res = numpy.power(hh, 0.2)
+        # /Users/as/Development/GitHub/easyScience/EasyDiffractionBeta/.venv_3.11/lib/python3.11/site-packages/cryspy/A_functions_base/powder_diffraction_const_wavelength.py:165: RuntimeWarning: invalid value encountered in power
+        #  c_help = -0.2*numpy.power(hh, -0.8)
 
         # Update CrysPy dict with the best params after minimization finished/aborted/failed
-        for param in result.params:
+        for param in paramsBest:
             block, group, idx = Data.strToCryspyDictParamPath(param)
-            self._proxy.data._cryspyDict[block][group][idx] = result.params[param].value
+            self._proxy.data._cryspyDict[block][group][idx] = paramsBest[param].value
 
         # Calculate optimal chi2
         self._cryspyUsePrecalculatedData = False
@@ -205,8 +209,8 @@ class Worker(QObject):
         self._proxy.fitting.chiSqSignificantlyChanged.emit()
 
         # Update internal dicts with the best params
-        self._proxy.experiment.editDataBlockByLmfitParams(result.params)
-        self._proxy.model.editDataBlockByLmfitParams(result.params)
+        self._proxy.experiment.editDataBlockByLmfitParams(paramsBest)
+        self._proxy.model.editDataBlockByLmfitParams(paramsBest)
 
         # Finishing
         self._proxy.fitting._freezeChiSqStart = False
@@ -221,6 +225,7 @@ class Fitting(QObject):
     chiSqChanged = Signal()
     chiSqSignificantlyChanged = Signal()
     minimizerMethodChanged = Signal()
+    minimizerMaxIterChanged = Signal()
     minimizerTolChanged = Signal()
 
     def __init__(self, parent):
@@ -237,8 +242,9 @@ class Fitting(QObject):
         self._pointsCount = None
         self._freeParamsCount = 0
 
-        self._minimizerMethod = 'BFGS'
-        self._minimizerTol = 1e+3
+        self._minimizerMethod = 'leastsq'
+        self._minimizerMaxIter = 200
+        self._minimizerTol = 1e-4
 
         self._worker.finished.connect(self.setIsFittingNowToFalse)
         self._worker.finished.connect(self.fitFinished)
@@ -253,6 +259,17 @@ class Fitting(QObject):
             return
         self._minimizerMethod = newValue
         self.minimizerMethodChanged.emit()
+
+    @Property(int, notify=minimizerMaxIterChanged)
+    def minimizerMaxIter(self):
+        return self._minimizerMaxIter
+
+    @minimizerMaxIter.setter
+    def minimizerMaxIter(self, newValue):
+        if self._minimizerMaxIter == newValue:
+            return
+        self._minimizerMaxIter = newValue
+        self.minimizerMaxIterChanged.emit()
 
     @Property(float, notify=minimizerTolChanged)
     def minimizerTol(self):
@@ -313,7 +330,7 @@ class Fitting(QObject):
             if self._proxy.fittables._freeParamsCount > 0:
                 self.isFittingNow = True
                 #self._worker.run()
-                self._threadpool.start(self._worker.run)
+                self._threadpool.start(self._worker.runLmfit)
                 console.debug('Minimization process has been started in a separate thread')
             else:
                 self._proxy.status.fitStatus = 'No free params'
