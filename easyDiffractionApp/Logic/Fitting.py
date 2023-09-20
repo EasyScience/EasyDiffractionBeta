@@ -243,7 +243,7 @@ class Fitting(QObject):
         self._freeParamsCount = 0
 
         self._minimizerMethod = 'leastsq'
-        self._minimizerMaxIter = 200
+        self._minimizerMaxIter = 500
         self._minimizerTol = 1e-4
 
         self._worker.finished.connect(self.setIsFittingNowToFalse)
