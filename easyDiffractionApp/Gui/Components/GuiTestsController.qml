@@ -224,7 +224,7 @@ EaElements.RemoteController {
         res.push( rc.compare(Globals.Refs.app.analysisPage.continueButton.enabled, false) )
 
         res.push( rc.compare(Globals.Proxies.main.status.calculator, 'CrysPy') )
-        res.push( rc.compare(Globals.Proxies.main.status.minimizer, 'Lmfit (BFGS)') )
+        res.push( rc.compare(Globals.Proxies.main.status.minimizer, 'Lmfit (leastsq)') )
 
         rc.wait(2000)
 

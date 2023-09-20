@@ -8,6 +8,7 @@ import os
 import pathlib
 import sys
 import time
+import decimal
 #from urllib.parse import urlparse
 
 from PySide6.QtCore import Qt, QObject, QCoreApplication, Signal, Slot, Property
@@ -241,6 +242,16 @@ class BackendHelpers(QObject):
         if sys.platform.startswith("win") and furi[0] == '/':
             furi = furi[1:].replace('/', os.path.sep)
         return furi
+
+    @Slot(float, int, result=str)
+    def toPrecision(self, x, n):
+        return str(decimal.Context(prec=n).create_decimal_from_float(x))
+
+    @Slot(float, float, int, result=str)
+    def toOtherPrecision(self, x, s, n):
+        xStr = f'{x}'
+        sStr = self.toPrecision(s, n)
+        return str(decimal.Decimal(xStr).quantize(decimal.Decimal(sStr)))
 
 
 class PyProxyWorker(QObject):

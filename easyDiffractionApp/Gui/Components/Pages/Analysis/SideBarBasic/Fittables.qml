@@ -226,9 +226,12 @@ Column {
                 selected: //index === tableView.currentIndex ||
                           index === selectedParamIndex
                 fit: item.fit
-                text: EaLogic.Utils.toErrSinglePrecision(item.value, item.error).length <= 8 ?
-                          EaLogic.Utils.toErrSinglePrecision(item.value, item.error) :
-                          EaLogic.Utils.toDefaultPrecision(item.value)
+                text: item.error === 0 ?
+                          EaLogic.Utils.toDefaultPrecision(item.value) :
+                          Globals.Proxies.main.backendHelpers.toOtherPrecision(item.value, item.error, 1)
+                      //EaLogic.Utils.toErrSinglePrecision(item.value, item.error).length <= 8 ?
+                      //    EaLogic.Utils.toErrSinglePrecision(item.value, item.error) :
+                      //    EaLogic.Utils.toDefaultPrecision(item.value)
                 onEditingFinished: {
                     focus = false
                     console.debug('')
@@ -253,7 +256,9 @@ Column {
 
             EaComponents.TableViewLabel {
                 elide: Text.ElideNone
-                text: EaLogic.Utils.toSinglePrecision(item.error)
+                text: item.error === 0 ?
+                          '' :
+                          Globals.Proxies.main.backendHelpers.toPrecision(item.error, 1)  // EaLogic.Utils.toSinglePrecision(item.error)
             }
 
             EaComponents.TableViewParameter {
@@ -327,10 +332,12 @@ Column {
             text: {
                 const value = Globals.Proxies.main_fittables_data[selectedParamIndex].value
                 const error = Globals.Proxies.main_fittables_data[selectedParamIndex].error
-                return EaLogic.Utils.toErrSinglePrecision(value, error).length <= 8 ?
-                            EaLogic.Utils.toErrSinglePrecision(slider.from, error) :
-                            EaLogic.Utils.toDefaultPrecision(slider.from)
-
+                //return EaLogic.Utils.toErrSinglePrecision(value, error).length <= 8 ?
+                //            EaLogic.Utils.toErrSinglePrecision(slider.from, error) :
+                //            EaLogic.Utils.toDefaultPrecision(slider.from)
+                return error === 0 ?
+                            EaLogic.Utils.toDefaultPrecision(slider.from) :
+                            Globals.Proxies.main.backendHelpers.toOtherPrecision(slider.from, error, 1)
             }
         }
 
@@ -346,9 +353,12 @@ Column {
             toolTipText: {
                 const value = Globals.Proxies.main_fittables_data[selectedParamIndex].value
                 const error = Globals.Proxies.main_fittables_data[selectedParamIndex].error
-                return EaLogic.Utils.toErrSinglePrecision(value, error).length <= 8 ?
-                            EaLogic.Utils.toErrSinglePrecision(value, error) :
-                            EaLogic.Utils.toDefaultPrecision(value)
+                //return EaLogic.Utils.toErrSinglePrecision(value, error).length <= 8 ?
+                //            EaLogic.Utils.toErrSinglePrecision(value, error) :
+                //            EaLogic.Utils.toDefaultPrecision(value)
+                return error === 0 ?
+                            EaLogic.Utils.toDefaultPrecision(value) :
+                            Globals.Proxies.main.backendHelpers.toOtherPrecision(value, error, 1)
             }
 
             onMoved: {
@@ -379,10 +389,12 @@ Column {
             text: {
                 const value = Globals.Proxies.main_fittables_data[selectedParamIndex].value
                 const error = Globals.Proxies.main_fittables_data[selectedParamIndex].error
-                return EaLogic.Utils.toErrSinglePrecision(value, error).length <= 8 ?
-                            EaLogic.Utils.toErrSinglePrecision(slider.to, error) :
-                            EaLogic.Utils.toDefaultPrecision(slider.to)
-
+                //return EaLogic.Utils.toErrSinglePrecision(value, error).length <= 8 ?
+                //            EaLogic.Utils.toErrSinglePrecision(slider.to, error) :
+                //            EaLogic.Utils.toDefaultPrecision(slider.to)
+                return error === 0 ?
+                            EaLogic.Utils.toDefaultPrecision(slider.to) :
+                            Globals.Proxies.main.backendHelpers.toOtherPrecision(slider.to, error, 1)
             }
         }
 
