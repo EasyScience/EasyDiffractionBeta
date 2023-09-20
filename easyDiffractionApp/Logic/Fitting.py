@@ -212,6 +212,9 @@ class Worker(QObject):
         self._proxy.experiment.editDataBlockByLmfitParams(paramsBest)
         self._proxy.model.editDataBlockByLmfitParams(paramsBest)
 
+        # Update models considering that symmetry constraints applied
+        self._proxy.model.replaceAllModels()
+
         # Finishing
         self._proxy.fitting._freezeChiSqStart = False
         self.finished.emit()
@@ -244,7 +247,7 @@ class Fitting(QObject):
 
         self._minimizerMethod = 'leastsq'
         self._minimizerMaxIter = 500
-        self._minimizerTol = 1e-4
+        self._minimizerTol = 1e-5
 
         self._worker.finished.connect(self.setIsFittingNowToFalse)
         self._worker.finished.connect(self.fitFinished)

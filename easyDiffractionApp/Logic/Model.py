@@ -209,10 +209,13 @@ class Model(QObject):
             console.debug(IO.formatMsg('sub', 'No model(s)', '', 'to intern dataset', 'added'))
 
     @Slot(str)
-    def replaceModel(self, edCif=''):
+    def replaceModel(self, edCif='', idx=None):
         console.debug("Cryspy obj and dict need to be replaced")
 
-        currentDataBlock = self.dataBlocks[self.currentIndex]
+        if idx is None:
+            idx = self.currentIndex
+
+        currentDataBlock = self.dataBlocks[idx]
         currentModelName = currentDataBlock['name']['value']
 
         cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
@@ -229,10 +232,14 @@ class Model(QObject):
 
         self._proxy.data._cryspyObj.items[cryspyObjBlockIdx] = cryspyModelsObj.items[0]
         self._proxy.data._cryspyDict[cryspyDictBlockName] = cryspyModelsDict[cryspyDictBlockName]
-        self._dataBlocks[self.currentIndex] = edModels[0]
+        self._dataBlocks[idx] = edModels[0]
 
-        console.debug(f"Model data block '{currentModelName}' (no. {self.currentIndex + 1}) has been replaced")
+        console.debug(f"Model data block '{currentModelName}' (no. {idx + 1}) has been replaced")
         self.dataBlocksChanged.emit()
+
+    def replaceAllModels(self):
+        for idx in range(len(self.dataBlocks)):
+            self.replaceModel(idx=idx)
 
     @Slot(int)
     def removeModel(self, index):
