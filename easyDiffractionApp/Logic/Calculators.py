@@ -121,7 +121,7 @@ class CryspyParser:
                             if error == 0:
                                 paramStr = f'{value}()' # Adds empty brackets for standard uncertainty for free params
                             else:
-                                paramStr = f'{ufloat(value, error):.3uS}'  # Adds brackets with standard uncertainty for free params
+                                paramStr = f'{ufloat(value, error):.<3uS}'  # Adds brackets with standard uncertainty for free params
                         else:
                             paramStr = f'{value}'
                     elif isinstance(value, str):  # If parameter is of string type
@@ -165,7 +165,7 @@ class CryspyParser:
                                 if error == 0:
                                     paramStr = f'{value}()' # Adds empty brackets for standard uncertainty for free params
                                 else:
-                                    paramStr = f'{ufloat(value, error):.3uS}'  # Adds brackets with standard uncertainty for free params
+                                    paramStr = f'{ufloat(value, error):.<3uS}'  # Adds brackets with standard uncertainty for free params
                             else:
                                 paramStr = f'{value}'
                         elif isinstance(value, str):  # If parameter is of string type
