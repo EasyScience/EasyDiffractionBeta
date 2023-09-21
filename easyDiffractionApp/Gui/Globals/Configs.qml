@@ -25,7 +25,7 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
                     readonly property string branch_url: ''
                     readonly property string commit_sha_short: ''
                     readonly property string commit_url: ''
-                    readonly property string build_date: '20 Sep 2023'
+                    readonly property string build_date: '22 Sep 2023'
                 }
             }
         }
