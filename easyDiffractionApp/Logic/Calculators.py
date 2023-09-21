@@ -159,7 +159,7 @@ class CryspyParser:
                         if value is None:
                             continue
 
-                        if isinstance(value, float):  # If parameter is of float type
+                        if isinstance(value, float) or isinstance(value, int):  # If parameter is number
                             if param["fit"]:
                                 error = param["error"]
                                 if error == 0:
@@ -195,6 +195,8 @@ class CryspyParser:
             'H1+': 'H'
         }
         edToCryspyNamesMap = {
+            '_atom_site.site_symmetry_multiplicity': '_atom_site_multiplicity',
+
             '_diffrn_radiation.probe': '_setup_radiation',
             '_diffrn_radiation_wavelength.wavelength': '_setup_wavelength',
 

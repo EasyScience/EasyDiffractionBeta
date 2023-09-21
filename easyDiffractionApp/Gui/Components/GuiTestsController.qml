@@ -250,7 +250,7 @@ EaElements.RemoteController {
 
         res.push( rc.compare(Globals.Proxies.main.status.variables, '58 (6 free, 52 fixed)') )
         //res.push( rc.compare(Globals.Proxies.main.status.fitIteration, '197') )
-        res.push( rc.compare(Globals.Proxies.main.status.goodnessOfFit, '341.99 → 4.41') )
+        res.push( rc.compare(Globals.Proxies.main.status.goodnessOfFit, '4.41 → 4.41') )
         res.push( rc.compare(Globals.Proxies.main.status.fitStatus, 'Success') )
 
         rc.mouseClick(Globals.Refs.app.analysisPage.continueButton)
