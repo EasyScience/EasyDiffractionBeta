@@ -13,6 +13,7 @@ from Logic.Helpers import IO
 from Logic.Data import Data
 
 try:
+    import cryspy
     from cryspy.procedure_rhochi.rhochi_by_dictionary import \
         rhochi_calc_chi_sq_by_dictionary
     console.debug('CrysPy module imported')
@@ -128,11 +129,36 @@ class Worker(QObject):
             flag_use_precalculated_data=self._cryspyUsePrecalculatedData,
             flag_calc_analytical_derivatives=self._cryspyCalcAnalyticalDerivatives)
 
+        # Reduce the number of free parameters from CrysPy
+        # Namely, atomic coordinates y and z if they are constrained to be == coordinate x
+        freeParamNamesReduced = []
+        cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
+        for param in freeParamNames:
+            addParam = True
+            rawBlockName, groupName, pathIndices = param
+            if groupName == 'atom_fract_xyz':
+                blockName = rawBlockName.replace('crystal_', '')
+                cryspyObjBlockIdx = cryspyObjBlockNames.index(blockName)
+                cryspyObjBlock = self._proxy.data._cryspyObj.items[cryspyObjBlockIdx]
+                for category in cryspyObjBlock.items:
+                    if type(category) == cryspy.C_item_loop_classes.cl_1_atom_site.AtomSiteL:
+                        cryspyAtoms = category.items
+                        for atomIdx, cryspyAtom in enumerate(cryspyAtoms):
+                            if atomIdx == pathIndices[1]:
+                                if pathIndices[0] == 1 and cryspyAtom.fract_y_constraint == True and cryspyAtom.fract_y_refinement == False:
+                                    addParam = False
+                                    break
+                                elif pathIndices[0] == 2 and cryspyAtom.fract_z_constraint == True and cryspyAtom.fract_z_refinement == False:
+                                    addParam = False
+                                    break
+            if addParam:
+                freeParamNamesReduced.append(param)
+
         # Number of measured data points
         self._proxy.fitting._pointsCount = pointsCount
 
         # Number of free parameters
-        self._proxy.fitting._freeParamsCount = len(freeParamNames)
+        self._proxy.fitting._freeParamsCount = len(freeParamNamesReduced)
         if self._proxy.fitting._freeParamsCount != self._proxy.fittables._freeParamsCount:
             console.error(f'Number of free parameters differs. Expected {self._proxy.fittables._freeParamsCount}, got {self._proxy.fitting._freeParamsCount}')
 
@@ -140,9 +166,9 @@ class Worker(QObject):
         self._proxy.fitting.chiSq = chiSq / (self._proxy.fitting._pointsCount - self._proxy.fitting._freeParamsCount)
 
         # Create lmfit parameters to be optimized
-        freeParamValuesStart = [self._proxy.data._cryspyDict[way[0]][way[1]][way[2]] for way in freeParamNames]
+        freeParamValuesStart = [self._proxy.data._cryspyDict[way[0]][way[1]][way[2]] for way in freeParamNamesReduced]
         paramsLmfit = lmfit.Parameters()
-        for cryspyParamPath, val in zip(freeParamNames, freeParamValuesStart):
+        for cryspyParamPath, val in zip(freeParamNamesReduced, freeParamValuesStart):
             lmfitParamName = Data.cryspyDictParamPathToStr(cryspyParamPath)  # Only ascii letters and numbers allowed for lmfit.Parameters()???
             left = self._proxy.model.paramValueByFieldAndCrypyParamPath('min', cryspyParamPath)
             if left is None:
