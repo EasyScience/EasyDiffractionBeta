@@ -106,6 +106,7 @@ Rectangle {
             //onClicked: forceActiveFocus()
             onClicked: {
                 Globals.Proxies.main.model.replaceModel(listView.firstDelegateRef.text)
+                listView.firstDelegateRef.text = listView.model[0]
                 forceActiveFocus()
             }
         }

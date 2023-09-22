@@ -98,7 +98,7 @@ class Project(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._proxy = parent
-
+        self._recent = []
         self.resetAll()
 
     @Slot()
@@ -108,7 +108,6 @@ class Project(QObject):
         self._examples = _EXAMPLES
         self._created = False
         self._needSave = False
-        self._recent = []
         self._isExample = False
 
         self._location = str(Path.home())
