@@ -27,8 +27,7 @@ EaElements.RemoteController {
         onTriggered: {
             savedLoggingLevel = EaGlobals.Vars.loggingLevel
             EaGlobals.Vars.loggingLevel = "Debug"
-            runBasicGuiTest()
-            processTestResults()
+            startGuiTest()
         }
     }
 
@@ -44,54 +43,36 @@ EaElements.RemoteController {
         }
     }
 
-    // Tests
-
-    function processTestResults() {
-        let okTests = 0
-        let failedTests = 0
-
-        console.info("============================ GUI TEST REPORT START =============================")
-
-        for (let i in res) {
-            if (res[i].startsWith('FAIL')) {
-                exitCode = 1
-                failedTests += 1
-                console.error(res[i])
-            } else {
-                okTests +=1
-            }
+    Timer {
+        running: Globals.Proxies.main.status.fitStatus
+        interval: 3000
+        onTriggered: {
+            finishGuiTest()
+            processTestResults()
         }
-
-        console.info("--------------------------------------------------------------------------------")
-        console.info(`${res.length} total, ${res.length - failedTests} passed, ${failedTests} failed`)
-        console.info("============================= GUI TEST REPORT END ==============================")
-
-        console.debug(`Exiting application from QML with code ${exitCode}`)
-        //applicationWindow.close()
-        //Qt.callLater(Qt.exit, exitCode)  // Doesn't work on GH Windows if running app via `python main.py`
-        Qt.exit(exitCode)  // Doesn't work on GH Windows if running app via `python main.py`
-
-        // Start timer to force python exit if normal way above doesn't work
-        exitTimer.start()
     }
+
+    // Tests
 
     function saveImage(dirName, fileName) {
         saveScreenshot(parent, `${dirName}/${fileName}`)
     }
 
-    function runBasicGuiTest() {
-        // Set up testing process
+    function startGuiTest() {
+        console.debug('Start basic suit of GUI tests (step 1 of 2)')
 
-        console.debug('Run basic suit of GUI tests')
+        /////////////////////////
+        // Set up testing process
+        /////////////////////////
 
         //const saveImagesDir = '../.tests/GuiTests/BasicGuiTest/ActualImages'
 
         rc.posToCenter()
         rc.showPointer()
 
-
-
+        ////////////
         // Home Page
+        ////////////
 
         //saveImage(saveImagesDir, 'HomePage.png')
 
@@ -108,9 +89,9 @@ EaElements.RemoteController {
         rc.mouseClick(Globals.Refs.app.homePage.startButton)
         //rc.wait(2000)
 
-
-
+        ///////////////
         // Project Page
+        ///////////////
 
         //saveImage(saveImagesDir, 'ProjectPage.png')
 
@@ -129,10 +110,9 @@ EaElements.RemoteController {
         rc.mouseClick(Globals.Refs.app.projectPage.continueButton)
         //rc.wait(2000)
 
-
-
-
+        /////////////
         // Model Page
+        /////////////
 
         //saveImage(saveImagesDir, 'ModelPage.png')
 
@@ -162,16 +142,17 @@ EaElements.RemoteController {
         //res.push( rc.compare(parseFloat(Globals.Refs.app.modelPage.widthParameter.text), Tests.NoProjectCreated.expected.model[0].params.width.value) )
         //res.push( rc.compare(parseFloat(Globals.Refs.app.modelPage.scaleParameter.text), Tests.NoProjectCreated.expected.model[0].params.scale.value) )
 
-//        res.push( rc.compare(Globals.Refs.app.modelPage.plotView.xData, Globals.Tests.expected.created.experiment.xData) )
-//        res.push( rc.compare(Globals.Refs.app.modelPage.plotView.calculatedYData, Globals.Tests.expected.created.model.yData) )
+        //res.push( rc.compare(Globals.Refs.app.modelPage.plotView.xData, Globals.Tests.expected.created.experiment.xData) )
+        //res.push( rc.compare(Globals.Refs.app.modelPage.plotView.calculatedYData, Globals.Tests.expected.created.model.yData) )
 
         res.push( rc.compare(Globals.Proxies.main.status.phaseCount, '2') )
 
         rc.mouseClick(Globals.Refs.app.modelPage.continueButton)
         //rc.wait(2000)
 
-
+        //////////////////
         // Experiment page
+        //////////////////
 
         //saveImage(saveImagesDir, 'ExperimentPage.png')
 
@@ -196,18 +177,17 @@ EaElements.RemoteController {
         res.push( rc.compare(Globals.Refs.app.experimentPage.addDefaultExperimentDataButton.enabled, false) )
         res.push( rc.compare(Globals.Refs.app.experimentPage.continueButton.text, 'Continue') )
 
-//        res.push( rc.compare(Globals.Refs.app.modelPage.plotView.xData, Globals.Tests.expected.created.experiment.xData) )
-//        res.push( rc.compare(Globals.Refs.app.experimentPage.plotView.measuredYData, Globals.Tests.expected.created.experiment.yData) )
+        //res.push( rc.compare(Globals.Refs.app.modelPage.plotView.xData, Globals.Tests.expected.created.experiment.xData) )
+        //res.push( rc.compare(Globals.Refs.app.experimentPage.plotView.measuredYData, Globals.Tests.expected.created.experiment.yData) )
 
         res.push( rc.compare(Globals.Proxies.main.status.experimentsCount, '1') )
 
         rc.mouseClick(Globals.Refs.app.experimentPage.continueButton)
         //rc.wait(2000)
 
-
-
-
+        ////////////////
         // Analysis page
+        ////////////////
 
         //saveImage(saveImagesDir, 'AnalysisPage.png')
 
@@ -228,46 +208,80 @@ EaElements.RemoteController {
 
         rc.wait(2000)
 
-//        res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.xData, Globals.Tests.expected.created.experiment.xData) )
-//        res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.measuredYData, Globals.Tests.expected.created.experiment.yData) )
-//        res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.calculatedYData, Globals.Tests.expected.created.model.yData) )
+        //res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.xData, Globals.Tests.expected.created.experiment.xData) )
+        //res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.measuredYData, Globals.Tests.expected.created.experiment.yData) )
+        //res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.calculatedYData, Globals.Tests.expected.created.model.yData) )
 
         rc.mouseClick(Globals.Refs.app.analysisPage.startFittingButton)
+    }
 
-        console.debug('Waiting 120 secons for minimization step to be finished')
-        rc.wait(120000)
-        //rc.mouseClick(Globals.Refs.app.analysisPage.startFittingButton)
-        //rc.wait(3000)
+    function finishGuiTest() {
+        console.debug('Finish basic suit of GUI tests (step 2 of 2)')
 
-//        res.push( rc.compare(Globals.Refs.app.modelPage.slopeParameter.text, Globals.Tests.expected.fitted.model.parameters.slope.value) )
-//        res.push( rc.compare(Globals.Refs.app.modelPage.yInterceptParameter.text, Globals.Tests.expected.fitted.model.parameters.yIntercept.value) )
+        ////////////////
+        // Analysis page
+        ////////////////
 
-//        res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.xData, Globals.Tests.expected.created.experiment.xData) )
-//        res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.measuredYData, Globals.Tests.expected.created.experiment.yData) )
-//        res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.calculatedYData, Globals.Tests.expected.fitted.model.yData) )
+        //res.push( rc.compare(Globals.Refs.app.modelPage.slopeParameter.text, Globals.Tests.expected.fitted.model.parameters.slope.value) )
+        //res.push( rc.compare(Globals.Refs.app.modelPage.yInterceptParameter.text, Globals.Tests.expected.fitted.model.parameters.yIntercept.value) )
+
+        //res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.xData, Globals.Tests.expected.created.experiment.xData) )
+        //res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.measuredYData, Globals.Tests.expected.created.experiment.yData) )
+        //res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.calculatedYData, Globals.Tests.expected.fitted.model.yData) )
 
         rc.mouseClick(Globals.Refs.app.analysisPage.fitStatusDialogOkButton)
 
         res.push( rc.compare(Globals.Proxies.main.status.variables, '58 (6 free, 52 fixed)') )
         //res.push( rc.compare(Globals.Proxies.main.status.fitIteration, '197') )
-        res.push( rc.compare(Globals.Proxies.main.status.goodnessOfFit, '4.41 → 4.41') )
+        res.push( rc.compare(Globals.Proxies.main.status.goodnessOfFit, '341.99 → 4.41') )
         res.push( rc.compare(Globals.Proxies.main.status.fitStatus, 'Success') )
 
         rc.mouseClick(Globals.Refs.app.analysisPage.continueButton)
         //rc.wait(2000)
 
-
-
+        ///////////////
         // Summary page
+        ///////////////
 
         //saveImage(saveImagesDir, 'SummaryPage.png')
 
+        ///////////////////////////
         // Complete testing process
+        ///////////////////////////
 
-//        rc.mouseClick(Globals.Refs.app.appbar.resetStateButton)
+        //rc.mouseClick(Globals.Refs.app.appbar.resetStateButton)
         rc.wait(2000)
 
         rc.hidePointer()
+    }
+
+    function processTestResults() {
+        let okTests = 0
+        let failedTests = 0
+
+        console.info("============================ GUI TEST REPORT START =============================")
+
+        for (let i in res) {
+            if (res[i].startsWith('FAIL')) {
+                exitCode = 1
+                failedTests += 1
+                console.error(res[i])
+            } else {
+                okTests +=1
+            }
+        }
+
+        console.info("--------------------------------------------------------------------------------")
+        console.info(`${res.length} total, ${res.length - failedTests} passed, ${failedTests} failed`)
+        console.info("============================= GUI TEST REPORT END ==============================")
+
+        console.debug(`Exiting application from QML with code ${exitCode}`)
+        //applicationWindow.close()
+        //Qt.callLater(Qt.exit, exitCode)  // Doesn't work on GH Windows if running app via `python main.py`
+        Qt.exit(exitCode)  // Doesn't work on GH Windows if running app via `python main.py`
+
+        // Start timer to force python exit if normal way above doesn't work
+        exitTimer.start()
     }
 
 }
