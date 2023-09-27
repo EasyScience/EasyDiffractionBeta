@@ -54,7 +54,7 @@ class Connections(QObject):
         self._proxy.project.setExperiments()
 
     def onProjectDataBlockChanged(self):
-        self._proxy.status.project = self._proxy.project.dataBlock['name']['value']
+        self._proxy.status.project = self._proxy.project.dataBlock['name']
         console.debug(formatMsg('main', '(Re)converting project data block to CIF...'))
         self._proxy.project.setDataBlockCif()
         self._proxy.project.setNeedSaveToTrue()

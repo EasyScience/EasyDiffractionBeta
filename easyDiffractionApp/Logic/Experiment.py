@@ -219,7 +219,7 @@ class Experiment(QObject):
             dataBlock.add_items(cryspyRangeObj)
 
         # Add/modify CryspyObj with phases based on the already loaded phases
-        loadedModelNames = [block['name']['value'] for block in self._proxy.model.dataBlocks]
+        loadedModelNames = [block['name'] for block in self._proxy.model.dataBlocks]
         for dataBlock in cryspyExperimentsObj.items:
             for itemIdx, item in enumerate(dataBlock.items):
                 if type(item) == cryspy.C_item_loop_classes.cl_1_phase.PhaseL:
@@ -268,7 +268,7 @@ class Experiment(QObject):
         console.debug("Cryspy obj and dict need to be replaced")
 
         currentDataBlock = self.dataBlocksNoMeas[self.currentIndex]
-        currentExperimentName = currentDataBlock['name']['value']
+        currentExperimentName = currentDataBlock['name']
 
         cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
         cryspyObjBlockIdx = cryspyObjBlockNames.index(currentExperimentName)

@@ -18,13 +18,13 @@ Rectangle {
     id: container
 
     property real cellLengthA: typeof Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex] !== 'undefined' ?
-        Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex].params['_cell']['length_a']['value'] :
+        Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex].params['_cell']['length_a'].raw_value :
         10.0  // NEED FIX
     property real cellLengthB: typeof Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex] !== 'undefined' ?
-        Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex].params['_cell']['length_b']['value'] :
+        Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex].params['_cell']['length_b'].raw_value :
         10.0  // NEED FIX
     property real cellLengthC: typeof Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex] !== 'undefined' ?
-        Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex].params['_cell']['length_c']['value'] :
+        Globals.Proxies.main.model.dataBlocks[Globals.Proxies.main.model.currentIndex].params['_cell']['length_c'].raw_value :
         10.0  // NEED FIX
 
     property real scaleCoeff: defaultScaleCoeff

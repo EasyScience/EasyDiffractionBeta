@@ -220,30 +220,69 @@ class Model(QObject):
         modelsCountAfter = len(self.cryspyObjCrystals())
         success = modelsCountAfter - modelsCountBefore
 
-        if success:
-            cryspyModelsDict = cryspyModelsObj.get_dictionary()
-            edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
+        # convert phase into dataBlocks
+        dataBlocks = self.phaseToBlocks(self.phases)
+        self._dataBlocks = dataBlocks
+        self.defined = bool(len(self._dataBlocks))
+        self._currentIndex = len(self._dataBlocks) - 1
+        self.dataBlocksChanged.emit()
 
-            self._proxy.data._cryspyDict.update(cryspyModelsDict)
-            self._dataBlocks += edModels
+        # if success:
+        #     cryspyModelsDict = cryspyModelsObj.get_dictionary()
+        #     edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
 
-            self._currentIndex = len(self.dataBlocks) - 1
-            if not self.defined:
-                self.defined = bool(len(self.dataBlocks))
+        #     self._proxy.data._cryspyDict.update(cryspyModelsDict)
+        #     self._dataBlocks += edModels
 
-            console.debug(formatMsg('sub', f'{len(edModels)} model(s)', '', 'to intern dataset', 'added'))
+        #     self._currentIndex = len(self.dataBlocks) - 1
+        #     if not self.defined:
+        #         self.defined = bool(len(self.dataBlocks))
 
-            self.dataBlocksChanged.emit()
+        #     console.debug(formatMsg('sub', f'{len(edModels)} model(s)', '', 'to intern dataset', 'added'))
 
-        else:
-            console.debug(formatMsg('sub', 'No model(s)', '', 'to intern dataset', 'added'))
+        #     self.dataBlocksChanged.emit()
 
+        # else:
+        #     console.debug(formatMsg('sub', 'No model(s)', '', 'to intern dataset', 'added'))
+
+    def phaseToBlocks(self, phases):
+        phase = phases[0]
+        blocks = {'name': '', 'params': {}, 'loops': {}}
+        blocks['name'] = phase.name
+        blocks['params']['_cell'] = {}
+        blocks['params']['_cell']['length_a'] = phase.cell.length_a
+        blocks['params']['_cell']['length_b'] = phase.cell.length_b
+        blocks['params']['_cell']['length_c'] = phase.cell.length_c
+        blocks['params']['_cell']['angle_alpha'] = phase.cell.angle_alpha
+        blocks['params']['_cell']['angle_beta'] = phase.cell.angle_beta
+        blocks['params']['_cell']['angle_gamma'] = phase.cell.angle_gamma
+        blocks['params']['_space_group'] = {}
+        blocks['params']['_space_group']['name_H-M_alt'] = phase.spacegroup.space_group_HM_name
+        blocks['params']['_space_group']['crystal_system'] = phase.spacegroup.crystal_system
+        blocks['params']['_space_group']['IT_number'] = phase.spacegroup.int_number
+
+        blocks['loops']['_atom_site'] = []
+        for atom in phase.atoms:
+            atomDict = {}
+            atomDict['label'] = atom.label
+            atomDict['type_symbol'] = atom.specie.symbol
+            atomDict['fract_x'] = atom.fract_x
+            atomDict['fract_y'] = atom.fract_y
+            atomDict['fract_z'] = atom.fract_z
+            atomDict['occupancy'] = atom.occupancy
+            if hasattr(atom, 'adp') and isinstance(atom.adp, AtomicDisplacement) and (atom.adp.type == 'Uiso'):
+                atomDict['B_iso_or_equiv'] = atom.adp.Uiso
+            blocks['loops']['_atom_site'].append(atomDict)
+
+        pass # debug breakpoint
+        return [blocks]
+        
     @Slot(str)
     def replaceModel(self, edCif=''):
         console.debug("Cryspy obj and dict need to be replaced")
 
         currentDataBlock = self.dataBlocks[self.currentIndex]
-        currentModelName = currentDataBlock['name']['value']
+        currentModelName = currentDataBlock['name']
 
         cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
         cryspyObjBlockIdx = cryspyObjBlockNames.index(currentModelName)
@@ -269,7 +308,7 @@ class Model(QObject):
         console.debug(f"Removing model no. {index + 1}")
 
         currentDataBlock = self.dataBlocks[index]
-        currentModelName = currentDataBlock['name']['value']
+        currentModelName = currentDataBlock['name']
 
         cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
         cryspyObjBlockIdx = cryspyObjBlockNames.index(currentModelName)
@@ -376,13 +415,13 @@ class Model(QObject):
         lastAtom = self._dataBlocks[blockIdx]['loops'][category][-1]
 
         newAtom = copy.deepcopy(lastAtom)
-        newAtom['label']['value'] = random.choice(self.isotopesNames)
-        newAtom['type_symbol']['value'] = newAtom['label']['value']
-        newAtom['fract_x']['value'] = random.uniform(0, 1)
-        newAtom['fract_y']['value'] = random.uniform(0, 1)
-        newAtom['fract_z']['value'] = random.uniform(0, 1)
-        newAtom['occupancy']['value'] = 1
-        newAtom['B_iso_or_equiv']['value'] = 0
+        newAtom['label'] = random.choice(self.isotopesNames)
+        newAtom['type_symbol'] = newAtom['label'].raw_value
+        newAtom['fract_x'] = random.uniform(0, 1)
+        newAtom['fract_y'] = random.uniform(0, 1)
+        newAtom['fract_z'] = random.uniform(0, 1)
+        newAtom['occupancy'] = 1
+        newAtom['B_iso_or_equiv'] = 0
 
         self._dataBlocks[blockIdx]['loops'][category].append(newAtom)
         atomsCount = len(self._dataBlocks[blockIdx]['loops'][category])
@@ -457,7 +496,7 @@ class Model(QObject):
         return True
 
     def cryspyDictPathByMainParam(self, blockIdx, category, name, value):
-        blockName = self._dataBlocks[blockIdx]['name']['value']
+        blockName = self._dataBlocks[blockIdx]['name']
         path = ['','','']
         path[0] = f"crystal_{blockName}"
 
@@ -492,7 +531,7 @@ class Model(QObject):
         return path, value
 
     def cryspyDictPathByLoopParam(self, blockIdx, category, name, rowIndex, value):
-        blockName = self._dataBlocks[blockIdx]['name']['value']
+        blockName = self._dataBlocks[blockIdx]['name']
         path = ['','','']
         path[0] = f"crystal_{blockName}"
 
@@ -569,7 +608,7 @@ class Model(QObject):
                 rowIndex = idx[0]
                 name = 'B_iso_or_equiv'
 
-            blockIdx = [block['name']['value'] for block in self._dataBlocks].index(blockName)
+            blockIdx = [block['name'] for block in self._dataBlocks].index(blockName)
 
             if rowIndex == -1:
                 return self.dataBlocks[blockIdx]['params'][category][name][field]
@@ -637,7 +676,7 @@ class Model(QObject):
 
                 value = float(value)  # convert float64 to float (needed for QML access)
                 error = float(error)  # convert float64 to float (needed for QML access)
-                blockIdx = [block['name']['value'] for block in self._dataBlocks].index(blockName)
+                blockIdx = [block['name'] for block in self._dataBlocks].index(blockName)
 
                 if rowIndex == -1:
                     self.editDataBlockMainParam(blockIdx, category, name, 'value', value)
@@ -658,9 +697,9 @@ class Model(QObject):
 
     def setCurrentModelStructViewCellModel(self):
         params = self._dataBlocks[self._currentIndex]['params']
-        a = params['_cell']['length_a']['value']
-        b = params['_cell']['length_b']['value']
-        c = params['_cell']['length_c']['value']
+        a = params['_cell']['length_a'].raw_value
+        b = params['_cell']['length_b'].raw_value
+        c = params['_cell']['length_c'].raw_value
         self._structViewCellModel = [
             # x
             { "x": 0,     "y":-0.5*b, "z":-0.5*c, "rotx": 0, "roty": 0,  "rotz":-90, "len": a },
@@ -683,9 +722,9 @@ class Model(QObject):
 
     def setCurrentModelStructViewAxesModel(self):
         params = self._dataBlocks[self._currentIndex]['params']
-        a = params['_cell']['length_a']['value']
-        b = params['_cell']['length_b']['value']
-        c = params['_cell']['length_c']['value']
+        a = params['_cell']['length_a'].raw_value
+        b = params['_cell']['length_b'].raw_value
+        c = params['_cell']['length_c'].raw_value
         self._structViewAxesModel = [
             {"x": 0.5, "y": 0,   "z": 0,   "rotx": 0, "roty":  0, "rotz": -90, "len": a},
             {"x": 0,   "y": 0.5, "z": 0,   "rotx": 0, "roty":  0, "rotz":   0, "len": b},
@@ -705,10 +744,10 @@ class Model(QObject):
         
         # Add all atoms in the cell, including those in equivalent positions
         for atom in atoms:
-            symbol = atom['type_symbol']['value']
-            xUnique = atom['fract_x']['value']
-            yUnique = atom['fract_y']['value']
-            zUnique = atom['fract_z']['value']
+            symbol = atom['type_symbol']
+            xUnique = atom['fract_x'].raw_value
+            yUnique = atom['fract_y'].raw_value
+            zUnique = atom['fract_z'].raw_value
             xArray, yArray, zArray, _ = spaceGroup.calc_xyz_mult(xUnique, yUnique, zUnique)
             for x, y, z in zip(xArray, yArray, zArray):
                 structViewModel.add((
