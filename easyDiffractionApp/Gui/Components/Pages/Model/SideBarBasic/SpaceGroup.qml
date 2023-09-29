@@ -15,7 +15,12 @@ EaElements.GroupRow {
 
     EaElements.ParamTextField {
         readOnly: true
-        parameter: Globals.Proxies.modelMainParam('_space_group', 'crystal_system')
+        parameter: {
+            console.error(` *** SPACE GROUP ***`);
+            console.error(` *** spaceGroup ${Globals.Proxies.modelMainParam('_space_group', 'crystal_system-M_alt')}`);
+
+            Globals.Proxies.modelMainParam('_space_group', 'crystal_system')
+        }
     }
 
     EaElements.ParamTextField {

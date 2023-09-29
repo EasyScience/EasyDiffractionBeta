@@ -220,6 +220,9 @@ class Model(QObject):
         modelsCountAfter = len(self.cryspyObjCrystals())
         success = modelsCountAfter - modelsCountBefore
 
+        cryspyModelsDict = cryspyModelsObj.get_dictionary()
+        edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
+
         # convert phase into dataBlocks
         dataBlocks = self.phaseToBlocks(self.phases)
         self._dataBlocks = dataBlocks

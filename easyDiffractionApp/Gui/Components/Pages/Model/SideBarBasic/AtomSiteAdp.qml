@@ -45,7 +45,7 @@ EaElements.GroupColumn {
                 flexibleWidth: true
                 horizontalAlignment: Text.AlignLeft
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', 'label', 0).shortPrettyName ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'label', 0).display_name ?? ''  // NEED FIX
            }
 
             EaComponents.TableViewLabel {
@@ -53,7 +53,7 @@ EaElements.GroupColumn {
                 width: EaStyle.Sizes.fontPixelSize * 2.0
                 horizontalAlignment: Text.AlignLeft
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', 'ADP_type', 0).shortPrettyName ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'ADP_type', 0).display_name ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
@@ -61,7 +61,7 @@ EaElements.GroupColumn {
                 width: EaStyle.Sizes.fontPixelSize * 3.9
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', 'B_iso_or_equiv', 0).shortPrettyName ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'B_iso_or_equiv', 0).display_name ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
@@ -135,8 +135,8 @@ EaElements.GroupColumn {
             EaComponents.TableViewParameter {
                 id: iso
                 parameter: Globals.Proxies.modelLoopParam('_atom_site', 'B_iso_or_equiv', index)
-                onEditingFinished: Globals.Proxies.setModelLoopParam(parameter, 'value', Number(text))
-                fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fit', fitCheckBox.checked)
+                onEditingFinished: Globals.Proxies.setModelLoopParam(parameter, 'raw_value', Number(text))
+                fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fixed', fitCheckBox.checked)
             }
 
             EaComponents.TableViewParameter {

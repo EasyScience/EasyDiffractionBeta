@@ -590,11 +590,11 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
 
     function projectMainParam(category, name) {
         if (!main.project.created) {
-            return { 'value': '', 'prettyName': '' }
+            return { 'value': '', 'display_name': '' }
         }
         const param = main.project.dataBlock.params[category][name]
         if (typeof param === 'undefined') {
-            return { 'value': '', 'prettyName': '' }
+            return { 'value': '', 'display_name': '' }
         }
         return param
     }
@@ -649,15 +649,20 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
             return title
         }
         const blockIdx = main.model.currentIndex
+        //console.error(`MODEL LOOP TITLE`)
+        //console.error(`*** Model name: categorY: ${category} ***`)
         const count = main.model.dataBlocks[blockIdx].loops[category].length
+        //console.error(`*** Model name: title: ${title},  count: ${count} ***`)
         return `${title} (${count})`
     }
 
     function modelMainParam(category, name) {
         if (!main.model.defined) {
+            console.debug(`***  Model not defined ***`)
             return {}
         }
         const blockIdx = main.model.currentIndex
+        console.debug(`***  Model name: ${main.model.dataBlocks[blockIdx].params[category][name]} ***`)
         return main.model.dataBlocks[blockIdx].params[category][name]
     }
 
@@ -665,12 +670,13 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
         if (!main.model.defined) {
             return {}
         }
+        //console.error(`*** Model loop param: category: ${category}, name: ${name}, row: ${rowIndex} ***`)
         return main.model.dataBlocks[blockIdx].loops[category][rowIndex][name]
     }
 
     function setModelMainParamWithFullUpdate(param, field, value) {
         const blockIdx = main.model.currentIndex
-        console.debug(`*** Editing (full update) model no. ${blockIdx + 1} param ${param.category}.${param.name} '${field}' to ${value} ***`)
+        //console.debug(`*** Editing (full update) model no. ${blockIdx + 1} param ${param.category}.${param.name} '${field}' to ${value} ***`)
         main.model.setMainParamWithFullUpdate(blockIdx, param.category, param.name, field, value)
     }
 

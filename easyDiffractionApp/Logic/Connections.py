@@ -81,7 +81,8 @@ class Connections(QObject):
         console.debug(formatMsg('main', 'Updating structure view for the current model...'))
         self._proxy.model.updateCurrentModelStructView()
         console.debug(formatMsg('main', '(Re)converting model data blocks to CIF...'))
-        self._proxy.model.setDataBlocksCif()
+        ### self._proxy.model.setDataBlocksCif() <-- needs uncommenting and fixing for cryspy to work.
+        # related changes need to be finished in cryspy_parser in the Library, dataBlockToCif() method
 
         # Experiment page
         if self._proxy.experiment.defined:

@@ -81,7 +81,7 @@ Rectangle {
                 EaElements.Label {
                     width: nameColumnWidth
                     font.bold: true
-                    text: parent.parameter.prettyName
+                    text: parent.parameter.display_name
                 }
                 EaElements.TextInput {
                     text: parent.parameter.value
@@ -89,9 +89,9 @@ Rectangle {
                     onAccepted: focus = false
                     onEditingFinished: {
                         if (text) {
-                            Globals.Proxies.setProjectMainParam(parent.parameter, 'value', text)
+                            Globals.Proxies.setProjectMainParam(parent.parameter, 'raw_value', text)
                         } else {
-                            text = parent.parameter.value
+                            text = parent.parameter.raw_value
                         }
                     }
                 }
@@ -222,7 +222,7 @@ Rectangle {
                     font.bold: true
                     text: typeof Globals.Proxies.main.project.dataBlock.loops._model === 'undefined' ?
                               '' :
-                              Globals.Proxies.main.project.dataBlock.loops._model[0].cif_file_name.prettyName
+                              Globals.Proxies.main.project.dataBlock.loops._model[0].cif_file_name.display_name
                 }
                 EaElements.Label {
                     text: typeof Globals.Proxies.main.project.dataBlock.loops._model === 'undefined' ?

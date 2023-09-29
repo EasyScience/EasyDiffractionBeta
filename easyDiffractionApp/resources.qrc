@@ -98,7 +98,6 @@
         <file>Gui/Tests/qmldir</file>
         <file>Gui/main.qml</file>
         <file>Logic/Analysis.py</file>
-        <file>Logic/Calculators.py</file>
         <file>Logic/Connections.py</file>
         <file>Logic/Data.py</file>
         <file>Logic/Experiment.py</file>
