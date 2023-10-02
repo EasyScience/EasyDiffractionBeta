@@ -49,7 +49,7 @@ EaElements.GroupColumn {
                 flexibleWidth: true
                 horizontalAlignment: Text.AlignLeft
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', 'label', 0).display_name ?? ''
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'label', 0).shortPrettyName ?? ''
             }
 
             EaComponents.TableViewLabel {
@@ -60,7 +60,7 @@ EaElements.GroupColumn {
                 width: EaStyle.Sizes.fontPixelSize * 3.0
                 horizontalAlignment: Text.AlignLeft
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', 'type_symbol', 0) ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'type_symbol', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
@@ -68,21 +68,21 @@ EaElements.GroupColumn {
                 width: EaStyle.Sizes.fontPixelSize * 4.8
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', 'fract_x', 0).display_name ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'fract_x', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
                 width: fractXLabel.width
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', 'fract_y', 0).display_name ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'fract_y', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
                 width: fractXLabel.width
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', 'fract_z', 0).display_name ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'fract_z', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
@@ -96,7 +96,7 @@ EaElements.GroupColumn {
                 width: fractXLabel.width
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', 'occupancy', 0).display_name ?? ''  // NEED FIX
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'occupancy', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {

@@ -249,31 +249,87 @@ class Model(QObject):
         #     console.debug(formatMsg('sub', 'No model(s)', '', 'to intern dataset', 'added'))
 
     def phaseToBlocks(self, phases):
+        """
+        The Phase object needs casting into EDA centric dictionary.
+        Most of the fields are present in the Phase object, but some need to be added manually.
+        Most notably, `shortPrettyName` is added to each parameter
+        Some fields which are simple types in the Phase object are converted to dictionaries as well.
+        """
         phase = phases[0]
         blocks = {'name': '', 'params': {}, 'loops': {}}
         blocks['name'] = phase.name
-        blocks['params']['_cell'] = {}
-        blocks['params']['_cell']['length_a'] = self.fromParameterObject(phase.cell.length_a)
-        blocks['params']['_cell']['length_b'] = self.fromParameterObject(phase.cell.length_b)
-        blocks['params']['_cell']['length_c'] = self.fromParameterObject(phase.cell.length_c)
-        blocks['params']['_cell']['angle_alpha'] = self.fromParameterObject(phase.cell.angle_alpha)
-        blocks['params']['_cell']['angle_beta'] = self.fromParameterObject(phase.cell.angle_beta)
-        blocks['params']['_cell']['angle_gamma'] = self.fromParameterObject(phase.cell.angle_gamma)
-        blocks['params']['_space_group'] = {}
-        # name_H-M_alt is a Descriptor object
-        blocks['params']['_space_group']['name_H-M_alt'] = self.fromDescriptorObject(phase.spacegroup.space_group_HM_name)
-        blocks['params']['_space_group']['crystal_system'] = phase.spacegroup.crystal_system # string
-        blocks['params']['_space_group']['IT_number'] = phase.spacegroup.int_number # int
+        ###### CELL
+        category = '_cell'
+        blocks['params'][category] = {}
+        name = 'length_a'
+        blocks['params'][category][name] = self.fromParameterObject(phase.cell.length_a)
+        blocks['params'][category][name]['shortPrettyName'] = "a"
+        blocks['params'][category][name]['category'] = category
+        blocks['params'][category][name]['name'] = name
+        blocks['params'][category][name]['units'] = 'Å'
+        name = 'length_b'
+        blocks['params'][category][name] = self.fromParameterObject(phase.cell.length_b)
+        blocks['params'][category][name]['shortPrettyName'] = "b"
+        blocks['params'][category][name]['category'] = category
+        blocks['params'][category][name]['name'] = name
+        blocks['params'][category][name]['units'] = 'Å'
+        name = 'length_c'
+        blocks['params'][category][name] = self.fromParameterObject(phase.cell.length_c)
+        blocks['params'][category][name]['shortPrettyName'] = "c"
+        blocks['params'][category][name]['category'] = category
+        blocks['params'][category][name]['name'] = name
+        blocks['params'][category][name]['units'] = 'Å'
+        name = 'angle_alpha'
+        blocks['params'][category][name] = self.fromParameterObject(phase.cell.angle_alpha)
+        blocks['params'][category][name]['shortPrettyName'] = "α"
+        blocks['params'][category][name]['category'] = category
+        blocks['params'][category][name]['units'] = '°'
+        name = 'angle_beta'
+        blocks['params'][category][name] = self.fromParameterObject(phase.cell.angle_beta)
+        blocks['params'][category][name]['shortPrettyName'] = "β"
+        blocks['params'][category][name]['category'] = category
+        blocks['params'][category][name]['name'] = name
+        blocks['params'][category][name]['units'] = '°'
+        name = 'angle_gamma'
+        blocks['params'][category][name] = self.fromParameterObject(phase.cell.angle_gamma)
+        blocks['params'][category][name]['shortPrettyName'] = "γ"
+        blocks['params'][category][name]['category'] = category
+        blocks['params'][category][name]['name'] = name
+        blocks['params'][category][name]['units'] = '°'
+        ###### SPACE GROUP
+        category = '_space_group'
+        blocks['params'][category] = {}
+        name = 'name_H-M_alt'
+        blocks['params'][category][name] = self.fromDescriptorObject(phase.spacegroup.space_group_HM_name)
+        blocks['params'][category][name]['shortPrettyName'] = "name"
+        blocks['params'][category][name]['enabled'] = True
+        blocks['params'][category][name]['category'] = category
+        blocks['params'][category][name]['name'] = name
 
+        name = 'crystal_system'
+        blocks['params'][category][name] = {}
+        blocks['params'][category][name]['value'] = phase.spacegroup.crystal_system
+        blocks['params'][category][name]['shortPrettyName'] = "crystal system"
+        name = 'IT_number'
+        blocks['params'][category][name] = {}
+        blocks['params'][category][name]['value'] = phase.spacegroup.int_number
+        blocks['params'][category][name]['shortPrettyName'] = "number"
+        ####### ATOMS
         blocks['loops']['_atom_site'] = []
         for atom in phase.atoms:
             atomDict = {}
             atomDict['label'] = self.fromDescriptorObject(atom.label)
-            atomDict['type_symbol'] = atom.specie.symbol # string
+            atomDict['label']['shortPrettyName'] = "label"
+            atomDict['type_symbol'] = {'shortPrettyName': atom.specie.symbol, 'value': atom.specie.symbol}
+            # atomDict['type_symbol'] = atom.specie.symbol # string
             atomDict['fract_x'] = self.fromParameterObject(atom.fract_x)
+            atomDict['fract_x']['shortPrettyName'] = "x"
             atomDict['fract_y'] = self.fromParameterObject(atom.fract_y)
+            atomDict['fract_y']['shortPrettyName'] = "y"
             atomDict['fract_z'] = self.fromParameterObject(atom.fract_z)
+            atomDict['fract_z']['shortPrettyName'] = "z"
             atomDict['occupancy'] = self.fromParameterObject(atom.occupancy)
+            atomDict['occupancy']['shortPrettyName'] = "occ"
             if hasattr(atom, 'adp') and isinstance(atom.adp, AtomicDisplacement) and (atom.adp.type == 'Uiso'):
                 atomDict['B_iso_or_equiv'] = atom.adp.Uiso
             blocks['loops']['_atom_site'].append(atomDict)
@@ -282,15 +338,30 @@ class Model(QObject):
         return [blocks]
 
     def fromParameterObject(self, coreObject):
+        """
+        Convert a Parameter object into a dictionary representation
+
+        still not sure if these should be reimplemented:
+            icon
+            categoryIcon
+            cifDict 
+            absDelta
+            units
+            fittable
+        """
         dict_repr = {}
         dict_repr['value'] = coreObject.raw_value
         dict_repr['fit'] = coreObject.fixed
         dict_repr['prettyName'] = coreObject.display_name
         dict_repr['error'] = coreObject.error
         dict_repr['url'] = coreObject.url
+        dict_repr['enabled'] = coreObject.enabled
         return dict_repr
         
     def fromDescriptorObject(self, coreObject):
+        """
+        Convert a Descriptor object into a dictionary representation
+        """
         dict_repr = {}
         dict_repr['value'] = coreObject.raw_value
         dict_repr['prettyName'] = coreObject.display_name
