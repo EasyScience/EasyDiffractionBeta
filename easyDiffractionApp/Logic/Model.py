@@ -230,6 +230,8 @@ class Model(QObject):
         self._currentIndex = len(self._dataBlocks) - 1
         self.dataBlocksChanged.emit()
 
+        self.setDataBlocksCif()
+
         # if success:
         #     cryspyModelsDict = cryspyModelsObj.get_dictionary()
         #     edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
@@ -283,6 +285,7 @@ class Model(QObject):
         blocks['params'][category][name] = self.fromParameterObject(phase.cell.angle_alpha)
         blocks['params'][category][name]['shortPrettyName'] = "α"
         blocks['params'][category][name]['category'] = category
+        blocks['params'][category][name]['name'] = name
         blocks['params'][category][name]['units'] = '°'
         name = 'angle_beta'
         blocks['params'][category][name] = self.fromParameterObject(phase.cell.angle_beta)
@@ -310,26 +313,35 @@ class Model(QObject):
         blocks['params'][category][name] = {}
         blocks['params'][category][name]['value'] = phase.spacegroup.crystal_system
         blocks['params'][category][name]['shortPrettyName'] = "crystal system"
+        blocks['params'][category][name]['name'] = name
+        blocks['params'][category][name]['category'] = category
         name = 'IT_number'
         blocks['params'][category][name] = {}
         blocks['params'][category][name]['value'] = phase.spacegroup.int_number
         blocks['params'][category][name]['shortPrettyName'] = "number"
+        blocks['params'][category][name]['name'] = name
+        blocks['params'][category][name]['category'] = category
         ####### ATOMS
         blocks['loops']['_atom_site'] = []
         for atom in phase.atoms:
             atomDict = {}
             atomDict['label'] = self.fromDescriptorObject(atom.label)
             atomDict['label']['shortPrettyName'] = "label"
-            atomDict['type_symbol'] = {'shortPrettyName': atom.specie.symbol, 'value': atom.specie.symbol}
+            atomDict['label']['name'] = 'label'
+            atomDict['type_symbol'] = {'shortPrettyName': atom.specie.symbol, 'value': atom.specie.symbol, 'name': 'type_symbol'}
             # atomDict['type_symbol'] = atom.specie.symbol # string
             atomDict['fract_x'] = self.fromParameterObject(atom.fract_x)
             atomDict['fract_x']['shortPrettyName'] = "x"
+            atomDict['fract_x']['name'] = 'fract_x'
             atomDict['fract_y'] = self.fromParameterObject(atom.fract_y)
             atomDict['fract_y']['shortPrettyName'] = "y"
+            atomDict['fract_y']['name'] = 'fract_y'
             atomDict['fract_z'] = self.fromParameterObject(atom.fract_z)
             atomDict['fract_z']['shortPrettyName'] = "z"
+            atomDict['fract_z']['name'] = 'fract_z'
             atomDict['occupancy'] = self.fromParameterObject(atom.occupancy)
             atomDict['occupancy']['shortPrettyName'] = "occ"
+            atomDict['occupancy']['name'] = 'occupancy'
             if hasattr(atom, 'adp') and isinstance(atom.adp, AtomicDisplacement) and (atom.adp.type == 'Uiso'):
                 atomDict['B_iso_or_equiv'] = atom.adp.Uiso
             blocks['loops']['_atom_site'].append(atomDict)
@@ -835,7 +847,7 @@ class Model(QObject):
         
         # Add all atoms in the cell, including those in equivalent positions
         for atom in atoms:
-            symbol = atom['type_symbol']
+            symbol = atom['type_symbol']['value']
             xUnique = atom['fract_x']['value']
             yUnique = atom['fract_y']['value']
             zUnique = atom['fract_z']['value']
