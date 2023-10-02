@@ -649,10 +649,7 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
             return title
         }
         const blockIdx = main.model.currentIndex
-        //console.error(`MODEL LOOP TITLE`)
-        //console.error(`*** Model name: categorY: ${category} ***`)
         const count = main.model.dataBlocks[blockIdx].loops[category].length
-        //console.error(`*** Model name: title: ${title},  count: ${count} ***`)
         return `${title} (${count})`
     }
 
@@ -662,7 +659,6 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
             return {}
         }
         const blockIdx = main.model.currentIndex
-        console.debug(`***  Model name: ${main.model.dataBlocks[blockIdx].params[category][name]} ***`)
         return main.model.dataBlocks[blockIdx].params[category][name]
     }
 
@@ -670,7 +666,6 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
         if (!main.model.defined) {
             return {}
         }
-        //console.error(`*** Model loop param: category: ${category}, name: ${name}, row: ${rowIndex} ***`)
         return main.model.dataBlocks[blockIdx].loops[category][rowIndex][name]
     }
 

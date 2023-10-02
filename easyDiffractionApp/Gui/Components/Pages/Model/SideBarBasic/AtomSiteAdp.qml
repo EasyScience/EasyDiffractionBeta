@@ -135,7 +135,7 @@ EaElements.GroupColumn {
             EaComponents.TableViewParameter {
                 id: iso
                 parameter: Globals.Proxies.modelLoopParam('_atom_site', 'B_iso_or_equiv', index)
-                onEditingFinished: Globals.Proxies.setModelLoopParam(parameter, 'raw_value', Number(text))
+                onEditingFinished: Globals.Proxies.setModelLoopParam(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fixed', fitCheckBox.checked)
             }
 

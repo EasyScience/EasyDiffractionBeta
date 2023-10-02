@@ -38,7 +38,7 @@ dependencies = [
     'darkdetect',
     'numdifftools',
     'cryspy @ git+https://github.com/ikibalin/cryspy.git@beta',
-    'EasyApp @ git+https://github.com/easyscience/EasyApp.git@new-easy-app2',
+    'EasyApp @ git+https://github.com/easyscience/EasyApp.git@beta',
     'easyDiffractionLib @ git+https://github.com/easyscience/easyDiffractionLib.git@beta'
 ]
 

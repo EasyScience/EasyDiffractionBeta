@@ -89,9 +89,9 @@ Rectangle {
                     onAccepted: focus = false
                     onEditingFinished: {
                         if (text) {
-                            Globals.Proxies.setProjectMainParam(parent.parameter, 'raw_value', text)
+                            Globals.Proxies.setProjectMainParam(parent.parameter, 'value', text)
                         } else {
-                            text = parent.parameter.raw_value
+                            text = parent.parameter.value
                         }
                     }
                 }

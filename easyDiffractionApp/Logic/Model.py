@@ -253,33 +253,50 @@ class Model(QObject):
         blocks = {'name': '', 'params': {}, 'loops': {}}
         blocks['name'] = phase.name
         blocks['params']['_cell'] = {}
-        blocks['params']['_cell']['length_a'] = phase.cell.length_a
-        blocks['params']['_cell']['length_b'] = phase.cell.length_b
-        blocks['params']['_cell']['length_c'] = phase.cell.length_c
-        blocks['params']['_cell']['angle_alpha'] = phase.cell.angle_alpha
-        blocks['params']['_cell']['angle_beta'] = phase.cell.angle_beta
-        blocks['params']['_cell']['angle_gamma'] = phase.cell.angle_gamma
+        blocks['params']['_cell']['length_a'] = self.fromParameterObject(phase.cell.length_a)
+        blocks['params']['_cell']['length_b'] = self.fromParameterObject(phase.cell.length_b)
+        blocks['params']['_cell']['length_c'] = self.fromParameterObject(phase.cell.length_c)
+        blocks['params']['_cell']['angle_alpha'] = self.fromParameterObject(phase.cell.angle_alpha)
+        blocks['params']['_cell']['angle_beta'] = self.fromParameterObject(phase.cell.angle_beta)
+        blocks['params']['_cell']['angle_gamma'] = self.fromParameterObject(phase.cell.angle_gamma)
         blocks['params']['_space_group'] = {}
-        blocks['params']['_space_group']['name_H-M_alt'] = phase.spacegroup.space_group_HM_name
-        blocks['params']['_space_group']['crystal_system'] = phase.spacegroup.crystal_system
-        blocks['params']['_space_group']['IT_number'] = phase.spacegroup.int_number
+        # name_H-M_alt is a Descriptor object
+        blocks['params']['_space_group']['name_H-M_alt'] = self.fromDescriptorObject(phase.spacegroup.space_group_HM_name)
+        blocks['params']['_space_group']['crystal_system'] = phase.spacegroup.crystal_system # string
+        blocks['params']['_space_group']['IT_number'] = phase.spacegroup.int_number # int
 
         blocks['loops']['_atom_site'] = []
         for atom in phase.atoms:
             atomDict = {}
-            atomDict['label'] = atom.label
-            atomDict['type_symbol'] = atom.specie.symbol
-            atomDict['fract_x'] = atom.fract_x
-            atomDict['fract_y'] = atom.fract_y
-            atomDict['fract_z'] = atom.fract_z
-            atomDict['occupancy'] = atom.occupancy
+            atomDict['label'] = self.fromDescriptorObject(atom.label)
+            atomDict['type_symbol'] = atom.specie.symbol # string
+            atomDict['fract_x'] = self.fromParameterObject(atom.fract_x)
+            atomDict['fract_y'] = self.fromParameterObject(atom.fract_y)
+            atomDict['fract_z'] = self.fromParameterObject(atom.fract_z)
+            atomDict['occupancy'] = self.fromParameterObject(atom.occupancy)
             if hasattr(atom, 'adp') and isinstance(atom.adp, AtomicDisplacement) and (atom.adp.type == 'Uiso'):
                 atomDict['B_iso_or_equiv'] = atom.adp.Uiso
             blocks['loops']['_atom_site'].append(atomDict)
 
         pass # debug breakpoint
         return [blocks]
+
+    def fromParameterObject(self, coreObject):
+        dict_repr = {}
+        dict_repr['value'] = coreObject.raw_value
+        dict_repr['fit'] = coreObject.fixed
+        dict_repr['prettyName'] = coreObject.display_name
+        dict_repr['error'] = coreObject.error
+        dict_repr['url'] = coreObject.url
+        return dict_repr
         
+    def fromDescriptorObject(self, coreObject):
+        dict_repr = {}
+        dict_repr['value'] = coreObject.raw_value
+        dict_repr['prettyName'] = coreObject.display_name
+        dict_repr['url'] = coreObject.url
+        return dict_repr
+
     @Slot(str)
     def replaceModel(self, edCif=''):
         console.debug("Cryspy obj and dict need to be replaced")
@@ -419,7 +436,7 @@ class Model(QObject):
 
         newAtom = copy.deepcopy(lastAtom)
         newAtom['label'] = random.choice(self.isotopesNames)
-        newAtom['type_symbol'] = newAtom['label'].raw_value
+        newAtom['type_symbol'] = newAtom['label']['value']
         newAtom['fract_x'] = random.uniform(0, 1)
         newAtom['fract_y'] = random.uniform(0, 1)
         newAtom['fract_z'] = random.uniform(0, 1)
@@ -700,9 +717,9 @@ class Model(QObject):
 
     def setCurrentModelStructViewCellModel(self):
         params = self._dataBlocks[self._currentIndex]['params']
-        a = params['_cell']['length_a'].raw_value
-        b = params['_cell']['length_b'].raw_value
-        c = params['_cell']['length_c'].raw_value
+        a = params['_cell']['length_a']['value']
+        b = params['_cell']['length_b']['value']
+        c = params['_cell']['length_c']['value']
         self._structViewCellModel = [
             # x
             { "x": 0,     "y":-0.5*b, "z":-0.5*c, "rotx": 0, "roty": 0,  "rotz":-90, "len": a },
@@ -725,9 +742,9 @@ class Model(QObject):
 
     def setCurrentModelStructViewAxesModel(self):
         params = self._dataBlocks[self._currentIndex]['params']
-        a = params['_cell']['length_a'].raw_value
-        b = params['_cell']['length_b'].raw_value
-        c = params['_cell']['length_c'].raw_value
+        a = params['_cell']['length_a']['value']
+        b = params['_cell']['length_b']['value']
+        c = params['_cell']['length_c']['value']
         self._structViewAxesModel = [
             {"x": 0.5, "y": 0,   "z": 0,   "rotx": 0, "roty":  0, "rotz": -90, "len": a},
             {"x": 0,   "y": 0.5, "z": 0,   "rotx": 0, "roty":  0, "rotz":   0, "len": b},
@@ -748,9 +765,9 @@ class Model(QObject):
         # Add all atoms in the cell, including those in equivalent positions
         for atom in atoms:
             symbol = atom['type_symbol']
-            xUnique = atom['fract_x'].raw_value
-            yUnique = atom['fract_y'].raw_value
-            zUnique = atom['fract_z'].raw_value
+            xUnique = atom['fract_x']['value']
+            yUnique = atom['fract_y']['value']
+            zUnique = atom['fract_z']['value']
             xArray, yArray, zArray, _ = spaceGroup.calc_xyz_mult(xUnique, yUnique, zUnique)
             for x, y, z in zip(xArray, yArray, zArray):
                 structViewModel.add((
