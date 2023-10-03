@@ -315,6 +315,7 @@ class Model(QObject):
         blocks['params'][category][name]['shortPrettyName'] = "crystal system"
         blocks['params'][category][name]['name'] = name
         blocks['params'][category][name]['category'] = category
+
         name = 'IT_number'
         blocks['params'][category][name] = {}
         blocks['params'][category][name]['value'] = phase.spacegroup.int_number
@@ -363,7 +364,7 @@ class Model(QObject):
         """
         dict_repr = {}
         dict_repr['value'] = coreObject.raw_value
-        dict_repr['fit'] = coreObject.fixed
+        dict_repr['fit'] = not coreObject.fixed
         dict_repr['prettyName'] = coreObject.display_name
         dict_repr['error'] = coreObject.error
         dict_repr['url'] = coreObject.url
@@ -443,6 +444,13 @@ class Model(QObject):
         if not changedIntern:
             return
         self.replaceModel()
+
+    @Slot(int, 'QVariant', str, str)
+    def setPhaseParams(self, blockIdx, param, field, value):
+        '''
+        attempt to update Phase directly
+        '''
+        pass
 
     @Slot(int, str, str, str, 'QVariant')
     def setMainParam(self, blockIdx, category, name, field, value):
