@@ -211,44 +211,26 @@ class Model(QObject):
 
     # @Slot(str)
     def loadModelsFromEdCif(self, edCif):
-        cryspyObj = self._proxy.data._cryspyObj
-        cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
-        cryspyModelsObj = str_to_globaln(cryspyCif)
-
-        modelsCountBefore = len(self.cryspyObjCrystals())
-        cryspyObj.add_items(cryspyModelsObj.items)
-        modelsCountAfter = len(self.cryspyObjCrystals())
-        success = modelsCountAfter - modelsCountBefore
-
-        cryspyModelsDict = cryspyModelsObj.get_dictionary()
-        edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
-
         # convert phase into dataBlocks
         dataBlocks = self.phaseToBlocks(self.phases)
         self._dataBlocks = dataBlocks
         self.defined = bool(len(self._dataBlocks))
         self._currentIndex = len(self._dataBlocks) - 1
-        self.dataBlocksChanged.emit()
 
         self.setDataBlocksCif()
+        self.updateCryspyCif()
+        self.dataBlocksChanged.emit()
 
-        # if success:
-        #     cryspyModelsDict = cryspyModelsObj.get_dictionary()
-        #     edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
+    def updateCryspyCif(self):
+        # this will be moved to the interface code
+        cif = self._dataBlocksCif[self.currentIndex][0]
 
-        #     self._proxy.data._cryspyDict.update(cryspyModelsDict)
-        #     self._dataBlocks += edModels
-
-        #     self._currentIndex = len(self.dataBlocks) - 1
-        #     if not self.defined:
-        #         self.defined = bool(len(self.dataBlocks))
-
-        #     console.debug(formatMsg('sub', f'{len(edModels)} model(s)', '', 'to intern dataset', 'added'))
-
-        #     self.dataBlocksChanged.emit()
-
-        # else:
-        #     console.debug(formatMsg('sub', 'No model(s)', '', 'to intern dataset', 'added'))
+        cryspyObj = self._proxy.data._cryspyObj
+        cryspyCif = CryspyParser.edCifToCryspyCif(cif)
+        cryspyModelsObj = str_to_globaln(cryspyCif)
+        cryspyObj.add_items(cryspyModelsObj.items)
+        cryspyModelsDict = cryspyModelsObj.get_dictionary()
+        self._proxy.data._cryspyDict.update(cryspyModelsDict)
 
     def phaseToBlocks(self, phases):
         """
@@ -260,6 +242,7 @@ class Model(QObject):
         phase = phases[0]
         blocks = {'name': '', 'params': {}, 'loops': {}}
         blocks['name'] = phase.name
+
         ###### CELL
         category = '_cell'
         params = 'params'
@@ -300,6 +283,7 @@ class Model(QObject):
         blocks[params][category][name]['category'] = category
         blocks[params][category][name]['name'] = name
         blocks[params][category][name]['units'] = '°'
+
         ###### SPACE GROUP
         category = '_space_group'
         blocks[params][category] = {}
@@ -309,14 +293,13 @@ class Model(QObject):
         blocks[params][category][name]['enabled'] = True
         blocks[params][category][name]['category'] = category
         blocks[params][category][name]['name'] = name
-
         name = 'crystal_system'
         blocks[params][category][name] = {}
         blocks[params][category][name]['value'] = phase.spacegroup.crystal_system
         blocks[params][category][name]['shortPrettyName'] = "crystal system"
         blocks[params][category][name]['name'] = name
         blocks[params][category][name]['category'] = category
-
+        blocks[params][category][name]['url'] = blocks[params][category]['name_H-M_alt']['url']
         name = 'IT_number'
         blocks[params][category][name] = {}
         blocks[params][category][name]['value'] = phase.spacegroup.int_number
@@ -324,7 +307,7 @@ class Model(QObject):
         blocks[params][category][name]['name'] = name
         blocks[params][category][name]['category'] = category
         blocks[params][category][name]['error'] = 0.0
-        blocks[params][category][name]['url'] = blocks[params][category]['crystal_system']['url']
+        blocks[params][category][name]['url'] = blocks[params][category]['name_H-M_alt']['url']
 
         ####### ATOMS
         blocks['loops']['_atom_site'] = []
@@ -347,8 +330,20 @@ class Model(QObject):
             atomDict['occupancy'] = self.fromParameterObject(atom.occupancy)
             atomDict['occupancy']['shortPrettyName'] = "occ"
             atomDict['occupancy']['name'] = 'occupancy'
-            if hasattr(atom, 'adp') and isinstance(atom.adp, AtomicDisplacement) and (atom.adp.type == 'Uiso'):
-                atomDict['B_iso_or_equiv'] = atom.adp.Uiso
+            if hasattr(atom, 'adp') and isinstance(atom.adp, AtomicDisplacement):
+                atomDict['ADP_type'] = {}
+                atomDict['ADP_type']['display_name'] = 'type'
+                atomDict['ADP_type']['name'] = 'ADP_type'
+                if atom.adp.adp_type.raw_value == 'Biso':
+                    atomDict['ADP_type']['value'] = 'Biso'
+                    atomDict['B_iso_or_equiv'] = self.fromParameterObject(atom.adp.Biso)
+                    atomDict['B_iso_or_equiv']['shortPrettyName'] = "iso"
+                    atomDict['B_iso_or_equiv']['name'] = "B_iso_or_equiv"
+                elif atom.adp.adp_type.raw_value == 'Uiso':
+                    atomDict['ADP_type']['value'] = 'Uiso'
+                    atomDict['U_iso_or_equiv'] = self.fromParameterObject(atom.adp.Uiso)
+                    atomDict['U_iso_or_equiv']['shortPrettyName'] = "U_iso_or_equiv"
+                    atomDict['U_iso_or_equiv']['name'] = "U_iso_or_equiv"
             blocks['loops']['_atom_site'].append(atomDict)
 
         pass # debug breakpoint
@@ -363,8 +358,6 @@ class Model(QObject):
             categoryIcon
             cifDict 
             absDelta
-            units
-            fittable
         """
         dict_repr = {}
         dict_repr['value'] = coreObject.raw_value
