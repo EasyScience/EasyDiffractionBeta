@@ -12,6 +12,7 @@ from PySide6.QtQml import QJSValue
 
 from easyDiffractionLib import Phases, Phase, Lattice, Site, SpaceGroup
 from easyCrystallography.Components.AtomicDisplacement import AtomicDisplacement
+from easyCrystallography.Components.SpaceGroup import SpaceGroup
 from easyDiffractionLib.io.cryspy_parser import CryspyParser
 from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
 from EasyApp.Logic.Logging import console
@@ -304,6 +305,16 @@ class Model(QObject):
         blocks[params][category][name] = {}
         blocks[params][category][name]['value'] = phase.spacegroup.int_number
         blocks[params][category][name]['shortPrettyName'] = "number"
+        blocks[params][category][name]['name'] = name
+        blocks[params][category][name]['category'] = category
+        blocks[params][category][name]['error'] = 0.0
+        blocks[params][category][name]['url'] = blocks[params][category]['name_H-M_alt']['url']
+
+        name = 'IT_coordinate_system_code'
+        blocks[params][category][name] = {}
+        blocks[params][category][name]['value'] = phase.spacegroup.setting.raw_value
+        blocks[params][category][name]['permittedValues'] = SpaceGroup.find_settings_by_number(phase.spacegroup.int_number)
+        blocks[params][category][name]['shortPrettyName'] = "code"
         blocks[params][category][name]['name'] = name
         blocks[params][category][name]['category'] = category
         blocks[params][category][name]['error'] = 0.0
