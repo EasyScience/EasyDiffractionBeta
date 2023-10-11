@@ -16,37 +16,37 @@ EaElements.GroupRow {
     EaElements.ParamTextField {
         parameter: Globals.Proxies.modelMainParam('_cell', 'length_a')
         onEditingFinished: Globals.Proxies.setModelMainParamWithFullUpdate(parameter, 'value', Number(text))
-        fitCheckBox.onToggled: Globals.Proxies.setModelMainParam(parameter, 'fixed', fitCheckBox.checked)
+        fitCheckBox.onToggled: Globals.Proxies.setModelMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
         parameter: Globals.Proxies.modelMainParam('_cell', 'length_b')
         onEditingFinished: Globals.Proxies.setModelMainParamWithFullUpdate(parameter, 'value', Number(text))
-        fitCheckBox.onToggled: Globals.Proxies.setModelMainParam(parameter, 'fixed', fitCheckBox.checked)
+        fitCheckBox.onToggled: Globals.Proxies.setModelMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
         parameter: Globals.Proxies.modelMainParam('_cell', 'length_c')
         onEditingFinished: Globals.Proxies.setModelMainParamWithFullUpdate(parameter, 'value', Number(text))
-        fitCheckBox.onToggled: Globals.Proxies.setModelMainParam(parameter, 'fixed', fitCheckBox.checked)
+        fitCheckBox.onToggled: Globals.Proxies.setModelMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
         parameter: Globals.Proxies.modelMainParam('_cell', 'angle_alpha')
         onEditingFinished: Globals.Proxies.setModelMainParamWithFullUpdate(parameter, 'value', Number(text))
-        fitCheckBox.onToggled: Globals.Proxies.setModelMainParam(parameter, 'fixed', fitCheckBox.checked)
+        fitCheckBox.onToggled: Globals.Proxies.setModelMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
         parameter: Globals.Proxies.modelMainParam('_cell', 'angle_beta')
         onEditingFinished: Globals.Proxies.setModelMainParamWithFullUpdate(parameter, 'value', Number(text))
-        fitCheckBox.onToggled: Globals.Proxies.setModelMainParam(parameter, 'fixed', fitCheckBox.checked)
+        fitCheckBox.onToggled: Globals.Proxies.setModelMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
         parameter: Globals.Proxies.modelMainParam('_cell', 'angle_gamma')
         onEditingFinished: Globals.Proxies.setModelMainParamWithFullUpdate(parameter, 'value', Number(text))
-        fitCheckBox.onToggled: Globals.Proxies.setModelMainParam(parameter, 'fixed', fitCheckBox.checked)
+        fitCheckBox.onToggled: Globals.Proxies.setModelMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
 }

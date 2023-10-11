@@ -138,19 +138,19 @@ EaElements.GroupColumn {
             EaComponents.TableViewParameter {
                 parameter: Globals.Proxies.modelLoopParam('_atom_site', 'fract_x', index)
                 onEditingFinished: Globals.Proxies.setModelLoopParamWithFullUpdate(parameter, 'value', Number(text))
-                fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fixed', fitCheckBox.checked)
+                fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fit', fitCheckBox.checked)
             }
 
             EaComponents.TableViewParameter {
                 parameter: Globals.Proxies.modelLoopParam('_atom_site', 'fract_y', index)
                 onEditingFinished: Globals.Proxies.setModelLoopParamWithFullUpdate(parameter, 'value', Number(text))
-                fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fixed', fitCheckBox.checked)
+                fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fit', fitCheckBox.checked)
             }
 
             EaComponents.TableViewParameter {
                 parameter: Globals.Proxies.modelLoopParam('_atom_site', 'fract_z', index)
                 onEditingFinished: Globals.Proxies.setModelLoopParamWithFullUpdate(parameter, 'value', Number(text))
-                fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fixed', fitCheckBox.checked)
+                fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fit', fitCheckBox.checked)
             }
 
             EaComponents.TableViewParameter {
@@ -163,7 +163,7 @@ EaElements.GroupColumn {
             EaComponents.TableViewParameter {
                 parameter: Globals.Proxies.modelLoopParam('_atom_site', 'occupancy', index)
                 onEditingFinished: Globals.Proxies.setModelLoopParam(parameter, 'value', Number(text))
-                fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fixed', fitCheckBox.checked)
+                fitCheckBox.onToggled: Globals.Proxies.setModelLoopParam(parameter, 'fit', fitCheckBox.checked)
             }
 
             EaComponents.TableViewButton {

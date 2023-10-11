@@ -54,7 +54,23 @@ _atom_site_B_iso_or_equiv
 O O 0 0 0 1 Biso 0
 """
 
-
+BLOCK2PHASE = {
+    '_cell': 'cell',
+    '_space_group': 'spacegroup',
+    '_atom_site': 'atoms',
+    'fract_x': 'fract_x',
+    'fract_y': 'fract_y',
+    'fract_z': 'fract_z',
+    'length_a': 'length_a',
+    'length_b': 'length_b',
+    'length_c': 'length_c',
+    'angle_alpha': 'angle_alpha',
+    'angle_beta': 'angle_beta',
+    'angle_gamma': 'angle_gamma',
+    'name_H-M_alt': 'space_group_HM_name',
+    'crystal_system': 'crystal_system',
+    'IT_number': 'int_number',
+}
 class Model(QObject):
     definedChanged = Signal()
     currentIndexChanged = Signal()
@@ -312,7 +328,10 @@ class Model(QObject):
 
         name = 'IT_coordinate_system_code'
         blocks[params][category][name] = {}
-        blocks[params][category][name]['value'] = phase.spacegroup.setting.raw_value
+
+        setting = phase.spacegroup.setting.raw_value if phase.spacegroup.setting is not None else ""
+        blocks[params][category][name]['value'] = setting
+        console.error(f"phase.spacegroup.setting: {phase.spacegroup.setting}")
         blocks[params][category][name]['permittedValues'] = SpaceGroup.find_settings_by_number(phase.spacegroup.int_number)
         blocks[params][category][name]['shortPrettyName'] = "code"
         blocks[params][category][name]['name'] = name
@@ -332,15 +351,19 @@ class Model(QObject):
             atomDict['fract_x'] = self.fromParameterObject(atom.fract_x)
             atomDict['fract_x']['shortPrettyName'] = "x"
             atomDict['fract_x']['name'] = 'fract_x'
+            atomDict['fract_x']['category'] = "_atom_site"
             atomDict['fract_y'] = self.fromParameterObject(atom.fract_y)
             atomDict['fract_y']['shortPrettyName'] = "y"
             atomDict['fract_y']['name'] = 'fract_y'
+            atomDict['fract_y']['category'] = "_atom_site"
             atomDict['fract_z'] = self.fromParameterObject(atom.fract_z)
             atomDict['fract_z']['shortPrettyName'] = "z"
             atomDict['fract_z']['name'] = 'fract_z'
+            atomDict['fract_z']['category'] = "_atom_site"
             atomDict['occupancy'] = self.fromParameterObject(atom.occupancy)
             atomDict['occupancy']['shortPrettyName'] = "occ"
             atomDict['occupancy']['name'] = 'occupancy'
+            atomDict['occupancy']['category'] = "_atom_site"
             if hasattr(atom, 'adp') and isinstance(atom.adp, AtomicDisplacement):
                 atomDict['ADP_type'] = {}
                 atomDict['ADP_type']['display_name'] = 'type'
@@ -357,7 +380,6 @@ class Model(QObject):
                     atomDict['U_iso_or_equiv']['name'] = "U_iso_or_equiv"
             blocks['loops']['_atom_site'].append(atomDict)
 
-        pass # debug breakpoint
         return [blocks]
 
     def fromParameterObject(self, coreObject):
@@ -373,6 +395,7 @@ class Model(QObject):
         dict_repr = {}
         dict_repr['value'] = coreObject.raw_value
         dict_repr['fit'] = not coreObject.fixed
+        dict_repr['fittable'] = coreObject.enabled
         dict_repr['prettyName'] = coreObject.display_name
         dict_repr['error'] = coreObject.error
         dict_repr['url'] = coreObject.url
@@ -388,6 +411,46 @@ class Model(QObject):
         dict_repr['prettyName'] = coreObject.display_name
         dict_repr['url'] = coreObject.url
         return dict_repr
+
+    def blocksToPhase(self, blockIdx, category, name, field, value):
+        """
+        Update the phase object with new values defined
+        by the data block key names.
+        """
+        # find the correct parameter in the phase object
+        phase = self.phases[blockIdx]
+        p_name = BLOCK2PHASE[name]
+        p_category = BLOCK2PHASE[category]
+        # get category
+        phase_with_category = getattr(phase, p_category)
+        if field == 'value':
+            getattr(phase_with_category, p_name).value = value
+        elif field == 'error':
+            getattr(phase_with_category, p_name).error = value
+        elif field == 'fit':
+            getattr(phase_with_category, p_name).fixed = not value
+        pass
+
+    def blocksToLoopPhase(self, blockIdx, category, name, rowIndex, field, value):
+        """
+        Update the phase loop object with new values defined
+        by the data block key names.
+        """
+        # find the correct parameter in the phase object
+        phase = self.phases[blockIdx]
+        p_name = BLOCK2PHASE[name]
+        p_category = BLOCK2PHASE[category]
+        # get category
+        phase_with_category = getattr(phase, p_category)[rowIndex]
+        # get loop item
+        phase_with_item = getattr(phase_with_category, p_name)
+        if field == 'value':
+            phase_with_item.value = value
+        elif field == 'error':
+            phase_with_item.error = value
+        elif field == 'fit':
+            phase_with_item.fixed = not value
+        pass
 
     @Slot(str)
     def replaceModel(self, edCif=''):
@@ -406,11 +469,11 @@ class Model(QObject):
         cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
         cryspyModelsObj = str_to_globaln(cryspyCif)
         cryspyModelsDict = cryspyModelsObj.get_dictionary()
-        edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
+        # edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
 
         self._proxy.data._cryspyObj.items[cryspyObjBlockIdx] = cryspyModelsObj.items[0]
         self._proxy.data._cryspyDict[cryspyDictBlockName] = cryspyModelsDict[cryspyDictBlockName]
-        self._dataBlocks[self.currentIndex] = edModels[0]
+        # self._dataBlocks[self.currentIndex] = edModels[0]
 
         console.debug(f"Model data block '{currentModelName}' (no. {self.currentIndex + 1}) has been replaced")
         self.dataBlocksChanged.emit()
@@ -451,25 +514,21 @@ class Model(QObject):
         changedIntern = self.editDataBlockMainParam(blockIdx, category, name, field, value)
         if not changedIntern:
             return
+        self.blocksToPhase(blockIdx, category, name, field, value)
         self.replaceModel()
-
-    @Slot(int, 'QVariant', str, str)
-    def setPhaseParams(self, blockIdx, param, field, value):
-        '''
-        attempt to update Phase directly
-        '''
-        pass
 
     @Slot(int, str, str, str, 'QVariant')
     def setMainParam(self, blockIdx, category, name, field, value):
         changedIntern = self.editDataBlockMainParam(blockIdx, category, name, field, value)
         changedCryspy = self.editCryspyDictByMainParam(blockIdx, category, name, field, value)
+        self.blocksToPhase(blockIdx, category, name, field, value)
         if changedIntern and changedCryspy:
             self.dataBlocksChanged.emit()
 
     @Slot(int, str, str, int, str, 'QVariant')
     def setLoopParamWithFullUpdate(self, blockIdx, category, name, rowIndex, field, value):
         changedIntern = self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
+        self.blocksToLoopPhase(blockIdx, category, name, rowIndex, field, value)
         if not changedIntern:
             return
         self.replaceModel()

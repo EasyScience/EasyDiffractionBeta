@@ -671,9 +671,7 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
 
     function setModelMainParamWithFullUpdate(param, field, value) {
         const blockIdx = main.model.currentIndex
-        //console.debug(`*** Editing (full update) model no. ${blockIdx + 1} param ${param.category}.${param.name} '${field}' to ${value} ***`)
         main.model.setMainParamWithFullUpdate(blockIdx, param.category, param.name, field, value)
-        main.model.setPhaseParams(blockIdx, param, field, value)
     }
 
     function setModelMainParam(param, field, value) {
