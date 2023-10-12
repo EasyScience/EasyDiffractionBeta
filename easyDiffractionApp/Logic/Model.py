@@ -220,14 +220,14 @@ class Model(QObject):
             fpath = fpath.toLocalFile()
             fpath = generalizePath(fpath)
             console.debug(f"Loading model(s) from: {fpath}")
-            phase = Phases.from_cif_file(fpath)
-            self.phases.append(phase[0])
             with open(fpath, 'r') as file:
                 edCif = file.read()
             self.loadModelsFromEdCif(edCif)
 
     # @Slot(str)
     def loadModelsFromEdCif(self, edCif):
+        phase = Phases.from_cif_string(edCif)
+        self.phases.append(phase[0])
         # convert phase into dataBlocks
         dataBlocks = self.phaseToBlocks(self.phases)
         self._dataBlocks = dataBlocks
@@ -235,7 +235,7 @@ class Model(QObject):
         self._currentIndex = len(self._dataBlocks) - 1
 
         self.setDataBlocksCif()
-        self.updateCryspyCif()
+        self.updateCryspyCif() # udpate cryspyObj and cryspyDict
         self.dataBlocksChanged.emit()
 
     def updateCryspyCif(self):
@@ -339,45 +339,53 @@ class Model(QObject):
         blocks[params][category][name]['error'] = 0.0
         blocks[params][category][name]['url'] = blocks[params][category]['name_H-M_alt']['url']
 
-        ####### ATOMS
+        ###### ATOMS
         blocks['loops']['_atom_site'] = []
-        for atom in phase.atoms:
+        for idx, atom in enumerate(phase.atoms):
             atomDict = {}
+            atomDict['type_symbol'] = {'shortPrettyName': 'type',
+                                       'value': atom.specie.symbol,
+                                       'name': 'type_symbol'}
             atomDict['label'] = self.fromDescriptorObject(atom.label)
             atomDict['label']['shortPrettyName'] = "label"
             atomDict['label']['name'] = 'label'
-            atomDict['type_symbol'] = {'shortPrettyName': atom.specie.symbol, 'value': atom.specie.symbol, 'name': 'type_symbol'}
-            # atomDict['type_symbol'] = atom.specie.symbol # string
             atomDict['fract_x'] = self.fromParameterObject(atom.fract_x)
             atomDict['fract_x']['shortPrettyName'] = "x"
             atomDict['fract_x']['name'] = 'fract_x'
             atomDict['fract_x']['category'] = "_atom_site"
+            atomDict['fract_x']['idx'] = idx
             atomDict['fract_y'] = self.fromParameterObject(atom.fract_y)
             atomDict['fract_y']['shortPrettyName'] = "y"
             atomDict['fract_y']['name'] = 'fract_y'
             atomDict['fract_y']['category'] = "_atom_site"
+            atomDict['fract_y']['idx'] = idx
             atomDict['fract_z'] = self.fromParameterObject(atom.fract_z)
             atomDict['fract_z']['shortPrettyName'] = "z"
             atomDict['fract_z']['name'] = 'fract_z'
             atomDict['fract_z']['category'] = "_atom_site"
+            atomDict['fract_z']['idx'] = idx
             atomDict['occupancy'] = self.fromParameterObject(atom.occupancy)
             atomDict['occupancy']['shortPrettyName'] = "occ"
             atomDict['occupancy']['name'] = 'occupancy'
             atomDict['occupancy']['category'] = "_atom_site"
+            atomDict['occupancy']['idx'] = idx
             if hasattr(atom, 'adp') and isinstance(atom.adp, AtomicDisplacement):
                 atomDict['ADP_type'] = {}
                 atomDict['ADP_type']['display_name'] = 'type'
+                atomDict['ADP_type']['shortPrettyName'] = 'type'
                 atomDict['ADP_type']['name'] = 'ADP_type'
                 if atom.adp.adp_type.raw_value == 'Biso':
                     atomDict['ADP_type']['value'] = 'Biso'
                     atomDict['B_iso_or_equiv'] = self.fromParameterObject(atom.adp.Biso)
                     atomDict['B_iso_or_equiv']['shortPrettyName'] = "iso"
                     atomDict['B_iso_or_equiv']['name'] = "B_iso_or_equiv"
+                    atomDict['B_iso_or_equiv']['idx'] = idx
                 elif atom.adp.adp_type.raw_value == 'Uiso':
                     atomDict['ADP_type']['value'] = 'Uiso'
                     atomDict['U_iso_or_equiv'] = self.fromParameterObject(atom.adp.Uiso)
                     atomDict['U_iso_or_equiv']['shortPrettyName'] = "U_iso_or_equiv"
                     atomDict['U_iso_or_equiv']['name'] = "U_iso_or_equiv"
+                    atomDict['U_iso_or_equiv']['idx'] = idx
             blocks['loops']['_atom_site'].append(atomDict)
 
         return [blocks]
@@ -452,30 +460,45 @@ class Model(QObject):
             phase_with_item.fixed = not value
         pass
 
+    def removePhase(self, phase_name: str):
+        if phase_name in self.phases.phase_names:
+            del self.phases[phase_name]
+            return True
+        return False
+
     @Slot(str)
     def replaceModel(self, edCif=''):
+        """
+        New CIF -> _dataBlocks ( -> _dataBlocksCif -> cryspyObj and cryspyDict)
+        """
         console.debug("Cryspy obj and dict need to be replaced")
-
         currentDataBlock = self.dataBlocks[self.currentIndex]
         currentModelName = currentDataBlock['name']
 
-        cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
-        cryspyObjBlockIdx = cryspyObjBlockNames.index(currentModelName)
+        if edCif:
+            # delete current phase
+            self.removePhase(currentModelName)
+            self.loadModelsFromEdCif(edCif)
 
-        cryspyDictBlockName = f'crystal_{currentModelName}'
+        # EVERYTHING BELOW NEEDS REMOVAL.
+        # Cryspy calculator should use the object generated in the interface code
+        # cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
+        # cryspyObjBlockIdx = cryspyObjBlockNames.index(currentModelName)
 
-        if not edCif:
-            edCif = CryspyParser.dataBlockToCif(currentDataBlock)
-        cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
-        cryspyModelsObj = str_to_globaln(cryspyCif)
-        cryspyModelsDict = cryspyModelsObj.get_dictionary()
-        # edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
+        # cryspyDictBlockName = f'crystal_{currentModelName}'
 
-        self._proxy.data._cryspyObj.items[cryspyObjBlockIdx] = cryspyModelsObj.items[0]
-        self._proxy.data._cryspyDict[cryspyDictBlockName] = cryspyModelsDict[cryspyDictBlockName]
-        # self._dataBlocks[self.currentIndex] = edModels[0]
+        # if not edCif:
+        #     edCif = CryspyParser.dataBlockToCif(currentDataBlock)
+        # cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
+        # cryspyModelsObj = str_to_globaln(cryspyCif)
+        # cryspyModelsDict = cryspyModelsObj.get_dictionary()
+        # # edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
 
-        console.debug(f"Model data block '{currentModelName}' (no. {self.currentIndex + 1}) has been replaced")
+        # self._proxy.data._cryspyObj.items[cryspyObjBlockIdx] = cryspyModelsObj.items[0]
+        # self._proxy.data._cryspyDict[cryspyDictBlockName] = cryspyModelsDict[cryspyDictBlockName]
+        # # self._dataBlocks[self.currentIndex] = edModels[0]
+
+        # console.debug(f"Model data block '{currentModelName}' (no. {self.currentIndex + 1}) has been replaced")
         self.dataBlocksChanged.emit()
 
     @Slot(int)
@@ -522,6 +545,7 @@ class Model(QObject):
         changedIntern = self.editDataBlockMainParam(blockIdx, category, name, field, value)
         changedCryspy = self.editCryspyDictByMainParam(blockIdx, category, name, field, value)
         self.blocksToPhase(blockIdx, category, name, field, value)
+        self.setDataBlocksCif()
         if changedIntern and changedCryspy:
             self.dataBlocksChanged.emit()
 
@@ -529,6 +553,7 @@ class Model(QObject):
     def setLoopParamWithFullUpdate(self, blockIdx, category, name, rowIndex, field, value):
         changedIntern = self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
         self.blocksToLoopPhase(blockIdx, category, name, rowIndex, field, value)
+        self.setDataBlocksCif()
         if not changedIntern:
             return
         self.replaceModel()
@@ -537,6 +562,8 @@ class Model(QObject):
     def setLoopParam(self, blockIdx, category, name, rowIndex, field, value):
         changedIntern = self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
         changedCryspy = self.editCryspyDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
+        self.blocksToLoopPhase(blockIdx, category, name, rowIndex, field, value)
+        self.setDataBlocksCif()
         if changedIntern and changedCryspy:
             self.dataBlocksChanged.emit()
 
@@ -593,17 +620,21 @@ class Model(QObject):
         lastAtom = self._dataBlocks[blockIdx]['loops'][category][-1]
 
         newAtom = copy.deepcopy(lastAtom)
-        newAtom['label'] = random.choice(self.isotopesNames)
-        newAtom['type_symbol'] = newAtom['label']['value']
-        newAtom['fract_x'] = random.uniform(0, 1)
-        newAtom['fract_y'] = random.uniform(0, 1)
-        newAtom['fract_z'] = random.uniform(0, 1)
-        newAtom['occupancy'] = 1
-        newAtom['B_iso_or_equiv'] = 0
+        atom_type = random.choice(self.isotopesNames)
+
+        newAtom['label']['value'] = atom_type
+        # type symbol is atom_type but with numerical prefix removed
+        type_symbol = re.sub(r'[0-9]', '', atom_type)
+        newAtom['type_symbol']['value'] = type_symbol
+        newAtom['fract_x']['value'] = random.uniform(0, 1)
+        newAtom['fract_y']['value'] = random.uniform(0, 1)
+        newAtom['fract_z']['value'] = random.uniform(0, 1)
+        newAtom['occupancy']['value'] = 1
+        newAtom['B_iso_or_equiv']['value'] = 0
 
         self._dataBlocks[blockIdx]['loops'][category].append(newAtom)
         atomsCount = len(self._dataBlocks[blockIdx]['loops'][category])
-
+        self.dataBlocksChanged.emit()
         console.debug(formatMsg('sub', 'Intern dict', 'added', f'{block}[{blockIdx}].{category}[{atomsCount}]'))
 
     def duplicateDataBlockLoopRow(self, category, idx):
@@ -614,7 +645,7 @@ class Model(QObject):
 
         self._dataBlocks[blockIdx]['loops'][category].append(lastAtom)
         atomsCount = len(self._dataBlocks[blockIdx]['loops'][category])
-
+        self.dataBlocksChanged.emit()
         console.debug(formatMsg('sub', 'Intern dict', 'added', f'{block}[{blockIdx}].{category}[{atomsCount}]'))
 
     def editDataBlockMainParam(self, blockIdx, category, name, field, value):
@@ -912,13 +943,15 @@ class Model(QObject):
         self.structViewAxesModelChanged.emit()
 
     def setCurrentModelStructViewAtomsModel(self):
+        '''
+        Create a list of atoms for structure view, using cryspy to calculate equivalent positions
+        '''
         print("\nsetCurrentModelStructViewAtomsModel\n")
         structViewModel = set()
         currentModelIndex = self._proxy.model.currentIndex
         models = self.cryspyObjCrystals()
         spaceGroup = [sg for sg in models[currentModelIndex].items if type(sg) == cryspy.C_item_loop_classes.cl_2_space_group.SpaceGroup][0]
         atoms = self._dataBlocks[self._currentIndex]['loops']['_atom_site']
-
         
         # Add all atoms in the cell, including those in equivalent positions
         for atom in atoms:
