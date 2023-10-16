@@ -11,6 +11,7 @@ from PySide6.QtCore import QFile, QTextStream, QIODevice
 from PySide6.QtQml import QJSValue
 
 from easyDiffractionLib import Phases, Phase, Lattice, Site, SpaceGroup
+
 from easyCrystallography.Components.AtomicDisplacement import AtomicDisplacement
 from easyCrystallography.Components.SpaceGroup import SpaceGroup
 from easyDiffractionLib.io.cryspy_parser import CryspyParser
@@ -22,13 +23,13 @@ import periodictable as pt
 from Logic.Data import Data
 from easyCrystallography.Symmetry.tools import SpacegroupInfo
 
-try:
-    import cryspy
-    from cryspy.H_functions_global.function_1_cryspy_objects import \
-        str_to_globaln
-    console.debug('CrysPy module imported')
-except ImportError:
-    console.error('No CrysPy module found')
+# try:
+#     import cryspy
+#     from cryspy.H_functions_global.function_1_cryspy_objects import \
+#         str_to_globaln
+#     console.debug('CrysPy module imported')
+# except ImportError:
+#     console.error('No CrysPy module found')
 
 
 _DEFAULT_CIF_BLOCK = """data_default
@@ -70,6 +71,7 @@ BLOCK2PHASE = {
     'name_H-M_alt': 'space_group_HM_name',
     'crystal_system': 'crystal_system',
     'IT_number': 'int_number',
+    'IT_coordinate_system_code': 'setting',
 }
 class Model(QObject):
     definedChanged = Signal()
@@ -235,7 +237,7 @@ class Model(QObject):
         self._currentIndex = len(self._dataBlocks) - 1
 
         self.setDataBlocksCif()
-        self.updateCryspyCif() # udpate cryspyObj and cryspyDict
+        # self.updateCryspyCif() # udpate cryspyObj and cryspyDict
         self.dataBlocksChanged.emit()
 
     def updateCryspyCif(self):
@@ -538,6 +540,7 @@ class Model(QObject):
         if not changedIntern:
             return
         self.blocksToPhase(blockIdx, category, name, field, value)
+        self.setDataBlocksCif()
         self.replaceModel()
 
     @Slot(int, str, str, str, 'QVariant')
@@ -584,12 +587,12 @@ class Model(QObject):
 
     # Private methods
 
-    def cryspyObjCrystals(self):
-        print("\ncryspyObjCrystals\n")
-        cryspyObj = self._proxy.data._cryspyObj
-        cryspyModelType = cryspy.E_data_classes.cl_1_crystal.Crystal
-        models = [block for block in cryspyObj.items if type(block) == cryspyModelType]
-        return models
+    # def cryspyObjCrystals(self):
+    #     print("\ncryspyObjCrystals\n")
+    #     cryspyObj = self._proxy.data._cryspyObj
+    #     cryspyModelType = cryspy.E_data_classes.cl_1_crystal.Crystal
+    #     models = [block for block in cryspyObj.items if type(block) == cryspyModelType]
+    #     return models
 
     def createSpaceGroupNames(self):
         all_system_names = SpacegroupInfo.get_all_systems()
@@ -948,9 +951,6 @@ class Model(QObject):
         '''
         print("\nsetCurrentModelStructViewAtomsModel\n")
         structViewModel = set()
-        currentModelIndex = self._proxy.model.currentIndex
-        models = self.cryspyObjCrystals()
-        spaceGroup = [sg for sg in models[currentModelIndex].items if type(sg) == cryspy.C_item_loop_classes.cl_2_space_group.SpaceGroup][0]
         atoms = self._dataBlocks[self._currentIndex]['loops']['_atom_site']
         
         # Add all atoms in the cell, including those in equivalent positions
@@ -959,7 +959,21 @@ class Model(QObject):
             xUnique = atom['fract_x']['value']
             yUnique = atom['fract_y']['value']
             zUnique = atom['fract_z']['value']
-            xArray, yArray, zArray, _ = spaceGroup.calc_xyz_mult(xUnique, yUnique, zUnique)
+
+            # symmetry mappig using EasyDiffractionLib
+            xArray, yArray, zArray = [], [], []
+            spacegroup_str = self._dataBlocks[0]['params']['_space_group']['name_H-M_alt']['value']
+            spacegroup = SpaceGroup(spacegroup_str)
+            orbit_array = spacegroup.get_orbit(np.array([xUnique, yUnique, zUnique]))
+            xArray = orbit_array[:, 0].tolist()
+            yArray = orbit_array[:, 1].tolist()
+            zArray = orbit_array[:, 2].tolist()
+
+            # wrap into unit cell if required
+            xArray = self.wrap_into_unit_cell(xArray)
+            yArray = self.wrap_into_unit_cell(yArray)
+            zArray = self.wrap_into_unit_cell(zArray)
+
             for x, y, z in zip(xArray, yArray, zArray):
                 structViewModel.add((
                     float(x),
@@ -1002,6 +1016,11 @@ class Model(QObject):
                                       for x, y, z, diameter, color in structViewModel]
         console.debug(formatMsg('sub', f'{len(atoms)} atom(s)', f'model no. {self._currentIndex + 1}', 'for structure view', 'defined'))
         self.structViewAtomsModelChanged.emit()
+
+    @staticmethod
+    def wrap_into_unit_cell(position):
+        """Wrap the atomic position into the conventional unit cell."""
+        return [(coord % 1) for coord in position]
 
     def phaseToModel(self, phase):
         '''
