@@ -81,11 +81,11 @@ jobs:
           Xvfb :0 -screen 0 1920x1080x24 -ac &
           echo "DISPLAY=:0" >> $GITHUB_ENV
 
-      - name: Set up screen (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          "/Library/Application Support/VMware Tools/vmware-resolutionSet" 1920 1080
-          system_profiler SPDisplaysDataType | grep Resolution
+      # - name: Set up screen (macOS)
+      #   if: runner.os == 'macOS'
+      #   run: |
+      #     "/Library/Application Support/VMware Tools/vmware-resolutionSet" 1920 1080
+      #     system_profiler SPDisplaysDataType | grep Resolution
 
       - name: Set up screen (Windows)
         if: runner.os == 'Windows'
@@ -220,11 +220,11 @@ jobs:
           Xvfb :0 -screen 0 1920x1080x24 -ac &
           echo "DISPLAY=:0" >> $GITHUB_ENV
 
-      - name: Set up screen (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          "/Library/Application Support/VMware Tools/vmware-resolutionSet" 1920 1080
-          system_profiler SPDisplaysDataType | grep Resolution
+      # - name: Set up screen (macOS)
+      #   if: runner.os == 'macOS'
+      #   run: |
+      #     "/Library/Application Support/VMware Tools/vmware-resolutionSet" 1920 1080
+      #     system_profiler SPDisplaysDataType | grep Resolution
 
       - name: Set up screen (Windows)
         if: runner.os == 'Windows'
