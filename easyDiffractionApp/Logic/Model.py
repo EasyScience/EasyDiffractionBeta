@@ -434,7 +434,7 @@ class Model(QObject):
         # get category
         phase_with_category = getattr(phase, p_category)
         if field == 'value':
-            getattr(phase_with_category, p_name).value = value
+            setattr(phase_with_category, p_name, value)
         elif field == 'error':
             getattr(phase_with_category, p_name).error = value
         elif field == 'fit':
@@ -536,10 +536,8 @@ class Model(QObject):
 
     @Slot(int, str, str, str, 'QVariant')
     def setMainParamWithFullUpdate(self, blockIdx, category, name, field, value):
-        changedIntern = self.editDataBlockMainParam(blockIdx, category, name, field, value)
-        if not changedIntern:
-            return
         self.blocksToPhase(blockIdx, category, name, field, value)
+        self._dataBlocks = self.phaseToBlocks(self.phases)
         self.setDataBlocksCif()
         self.replaceModel()
 
