@@ -23,13 +23,13 @@ import periodictable as pt
 from Logic.Data import Data
 from easyCrystallography.Symmetry.tools import SpacegroupInfo
 
-# try:
+try:
 #     import cryspy
-#     from cryspy.H_functions_global.function_1_cryspy_objects import \
-#         str_to_globaln
-#     console.debug('CrysPy module imported')
-# except ImportError:
-#     console.error('No CrysPy module found')
+    from cryspy.H_functions_global.function_1_cryspy_objects import \
+        str_to_globaln
+    console.debug('CrysPy module imported')
+except ImportError:
+    console.error('No CrysPy module found')
 
 
 _DEFAULT_CIF_BLOCK = """data_default
@@ -237,7 +237,7 @@ class Model(QObject):
         self._currentIndex = len(self._dataBlocks) - 1
 
         self.setDataBlocksCif()
-        # self.updateCryspyCif() # udpate cryspyObj and cryspyDict
+        self.updateCryspyCif() # udpate cryspyObj and cryspyDict
         self.dataBlocksChanged.emit()
 
     def updateCryspyCif(self):
