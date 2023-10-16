@@ -230,11 +230,12 @@ class Model(QObject):
     def loadModelsFromEdCif(self, edCif):
         phase = Phases.from_cif_string(edCif)
         self.phases.append(phase[0])
+        self._currentIndex = len(self.phases) - 1
         # convert phase into dataBlocks
         dataBlocks = self.phaseToBlocks(self.phases)
         self._dataBlocks = dataBlocks
         self.defined = bool(len(self._dataBlocks))
-        self._currentIndex = len(self._dataBlocks) - 1
+        # self._currentIndex = len(self._dataBlocks) - 1
 
         self.setDataBlocksCif()
         self.updateCryspyCif() # udpate cryspyObj and cryspyDict
@@ -258,7 +259,7 @@ class Model(QObject):
         Most notably, `shortPrettyName` is added to each parameter
         Some fields which are simple types in the Phase object are converted to dictionaries as well.
         """
-        phase = phases[0]
+        phase = phases[self._currentIndex]
         blocks = {'name': '', 'params': {}, 'loops': {}}
         blocks['name'] = phase.name
 
