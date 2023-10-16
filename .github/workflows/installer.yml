@@ -51,6 +51,7 @@ jobs:
         run: |
           echo "APP_NAME=$(python utils.py --get release.app_name)" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$(python utils.py --get project.name)" >> $GITHUB_ENV
+          echo "PACKAGE_PATH=$GITHUB_WORKSPACE/$(python utils.py --get project.name)" >> $GITHUB_ENV
           echo "RELEASE_TAG=$(python utils.py --get ci.app.info.release_tag)" >> $GITHUB_ENV
           echo "RELEASE_TITLE=$(python utils.py --get ci.app.info.release_title)" >> $GITHUB_ENV
           echo "SCRIPTS_PATH=$(python utils.py --get ci.project.subdirs.scripts)" >> $GITHUB_ENV
@@ -68,8 +69,12 @@ jobs:
           python -m pip install git+https://github.com/ikibalin/cryspy.git@beta
           python -m pip install git+https://github.com/easyscience/EasyApp.git@new-easy-app2
 
-      #- name: Create python resources file
-      #  run: pyside6-rcc $GITHUB_REPOSITORY/resources.qrc -o $GITHUB_REPOSITORY/resources.py
+
+      - name: Create python resources file
+        run: |
+          cd ${{ env.PACKAGE_NAME }}
+          pyside6-rcc ${{ env.PACKAGE_PATH }}/resources.qrc -o ${{ env.PACKAGE_PATH }}/resources.py
+          cd ..
 
       #- name: Run pytest (compare app images after previous step)
       #  run: pytest

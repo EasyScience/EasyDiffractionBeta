@@ -200,7 +200,7 @@ class Experiment(QObject):
                     procData = file.read()
 
             # If loading non-CIF data files
-            elif fext == '.xye' or fext == '.xys' or fext == '.xy':
+            elif fext == '.xye' or fext == '.xys' or fext == '.xy' or fext == '.dat':
 
                 # Try loading data file
                 try:
