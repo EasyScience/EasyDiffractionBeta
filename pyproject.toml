@@ -27,7 +27,8 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "Development Status :: 4 - Beta"
 ]
-requires-python = ">=3.8,<3.11"
+# requires-python = ">=3.8,<3.11"
+requires-python = ">=3.8"
 dependencies = [
     # those are mostly required by snapcraft
     'numpy',

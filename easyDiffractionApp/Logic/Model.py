@@ -233,9 +233,8 @@ class Model(QObject):
         self._currentIndex = len(self.phases) - 1
         # convert phase into dataBlocks
         dataBlocks = self.phaseToBlocks(self.phases)
-        self._dataBlocks = dataBlocks
+        self._dataBlocks.append(dataBlocks)
         self.defined = bool(len(self._dataBlocks))
-        # self._currentIndex = len(self._dataBlocks) - 1
 
         self.setDataBlocksCif()
         self.updateCryspyCif() # udpate cryspyObj and cryspyDict
@@ -391,7 +390,7 @@ class Model(QObject):
                     atomDict['U_iso_or_equiv']['idx'] = idx
             blocks['loops']['_atom_site'].append(atomDict)
 
-        return [blocks]
+        return blocks
 
     def fromParameterObject(self, coreObject):
         """
@@ -538,7 +537,7 @@ class Model(QObject):
     @Slot(int, str, str, str, 'QVariant')
     def setMainParamWithFullUpdate(self, blockIdx, category, name, field, value):
         self.blocksToPhase(blockIdx, category, name, field, value)
-        self._dataBlocks = self.phaseToBlocks(self.phases)
+        self._dataBlocks[blockIdx] = self.phaseToBlocks(self.phases)
         self.setDataBlocksCif()
         self.replaceModel()
 
