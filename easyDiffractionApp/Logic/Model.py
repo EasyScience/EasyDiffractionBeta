@@ -267,41 +267,43 @@ class Model(QObject):
         params = 'params'
         blocks[params][category] = {}
         name = 'length_a'
+        unit = 'Å'
+        icon = 'ruler'
+        categoryIcon = 'cube'
+        absDelta = 0.1
+        def addKeys():
+            blocks[params][category][name]['category'] = category
+            blocks[params][category][name]['name'] = name
+            blocks[params][category][name]['units'] = unit
+            blocks[params][category][name]['icon'] = icon
+            blocks[params][category][name]['categoryIcon'] = categoryIcon
+            blocks[params][category][name]['absDelta'] = absDelta
         blocks[params][category][name] = self.fromParameterObject(phase.cell.length_a)
         blocks[params][category][name]['shortPrettyName'] = "a"
-        blocks[params][category][name]['category'] = category
-        blocks[params][category][name]['name'] = name
-        blocks[params][category][name]['units'] = 'Å'
+        addKeys()
         name = 'length_b'
         blocks[params][category][name] = self.fromParameterObject(phase.cell.length_b)
         blocks[params][category][name]['shortPrettyName'] = "b"
-        blocks[params][category][name]['category'] = category
-        blocks[params][category][name]['name'] = name
-        blocks[params][category][name]['units'] = 'Å'
+        addKeys()
         name = 'length_c'
         blocks[params][category][name] = self.fromParameterObject(phase.cell.length_c)
         blocks[params][category][name]['shortPrettyName'] = "c"
-        blocks[params][category][name]['category'] = category
-        blocks[params][category][name]['name'] = name
-        blocks[params][category][name]['units'] = 'Å'
+        addKeys()
         name = 'angle_alpha'
+        unit = '°'
+        categoryIcon = 'less-than'
+        absDelta = 1.0
         blocks[params][category][name] = self.fromParameterObject(phase.cell.angle_alpha)
         blocks[params][category][name]['shortPrettyName'] = "α"
-        blocks[params][category][name]['category'] = category
-        blocks[params][category][name]['name'] = name
-        blocks[params][category][name]['units'] = '°'
+        addKeys()
         name = 'angle_beta'
         blocks[params][category][name] = self.fromParameterObject(phase.cell.angle_beta)
         blocks[params][category][name]['shortPrettyName'] = "β"
-        blocks[params][category][name]['category'] = category
-        blocks[params][category][name]['name'] = name
-        blocks[params][category][name]['units'] = '°'
+        addKeys()
         name = 'angle_gamma'
         blocks[params][category][name] = self.fromParameterObject(phase.cell.angle_gamma)
         blocks[params][category][name]['shortPrettyName'] = "γ"
-        blocks[params][category][name]['category'] = category
-        blocks[params][category][name]['name'] = name
-        blocks[params][category][name]['units'] = '°'
+        addKeys()
 
         ###### SPACE GROUP
         category = '_space_group'
@@ -330,10 +332,8 @@ class Model(QObject):
 
         name = 'IT_coordinate_system_code'
         blocks[params][category][name] = {}
-
         setting = phase.spacegroup.setting.raw_value if phase.spacegroup.setting is not None else ""
         blocks[params][category][name]['value'] = setting
-        console.error(f"phase.spacegroup.setting: {phase.spacegroup.setting}")
         blocks[params][category][name]['permittedValues'] = SpaceGroup.find_settings_by_number(phase.spacegroup.int_number)
         blocks[params][category][name]['shortPrettyName'] = "code"
         blocks[params][category][name]['name'] = name
@@ -343,6 +343,21 @@ class Model(QObject):
 
         ###### ATOMS
         blocks['loops']['_atom_site'] = []
+        categoryIcon = 'atom'
+        prettyCategory = 'atom'
+        category = '_atom_site'
+        absDelta = 0.05
+        icon = 'map-marker-alt'
+        unit = 'Å'
+        def addKeys():
+            atomDict[params]['category'] = category
+            atomDict[params]['idx'] = idx
+            atomDict[params]['categoryIcon'] = categoryIcon
+            atomDict[params]['prettyCategory'] = prettyCategory
+            atomDict[params]['absDelta'] = absDelta
+            atomDict[params]['icon'] = icon
+            atomDict[params]['rowName'] = atom.label.raw_value
+
         for idx, atom in enumerate(phase.atoms):
             atomDict = {}
             atomDict['type_symbol'] = {'shortPrettyName': 'type',
@@ -351,43 +366,52 @@ class Model(QObject):
             atomDict['label'] = self.fromDescriptorObject(atom.label)
             atomDict['label']['shortPrettyName'] = "label"
             atomDict['label']['name'] = 'label'
-            atomDict['fract_x'] = self.fromParameterObject(atom.fract_x)
-            atomDict['fract_x']['shortPrettyName'] = "x"
-            atomDict['fract_x']['name'] = 'fract_x'
-            atomDict['fract_x']['category'] = "_atom_site"
-            atomDict['fract_x']['idx'] = idx
-            atomDict['fract_y'] = self.fromParameterObject(atom.fract_y)
-            atomDict['fract_y']['shortPrettyName'] = "y"
-            atomDict['fract_y']['name'] = 'fract_y'
-            atomDict['fract_y']['category'] = "_atom_site"
-            atomDict['fract_y']['idx'] = idx
-            atomDict['fract_z'] = self.fromParameterObject(atom.fract_z)
-            atomDict['fract_z']['shortPrettyName'] = "z"
-            atomDict['fract_z']['name'] = 'fract_z'
-            atomDict['fract_z']['category'] = "_atom_site"
-            atomDict['fract_z']['idx'] = idx
-            atomDict['occupancy'] = self.fromParameterObject(atom.occupancy)
-            atomDict['occupancy']['shortPrettyName'] = "occ"
-            atomDict['occupancy']['name'] = 'occupancy'
-            atomDict['occupancy']['category'] = "_atom_site"
-            atomDict['occupancy']['idx'] = idx
+            params = 'fract_x'
+            atomDict[params] = self.fromParameterObject(atom.fract_x)
+            atomDict[params]['shortPrettyName'] = "x"
+            atomDict[params]['name'] = 'fract_x'
+            addKeys()
+            params = 'fract_y'
+            atomDict[params] = self.fromParameterObject(atom.fract_y)
+            atomDict[params]['shortPrettyName'] = "y"
+            atomDict[params]['name'] = 'fract_y'
+            addKeys()
+            params = 'fract_z'
+            atomDict[params] = self.fromParameterObject(atom.fract_z)
+            atomDict[params]['shortPrettyName'] = "z"
+            atomDict[params]['name'] = 'fract_z'
+            addKeys()
+            params = 'occupancy'
+            atomDict[params] = self.fromParameterObject(atom.occupancy)
+            atomDict[params]['shortPrettyName'] = "occ"
+            atomDict[params]['name'] = 'occupancy'
+            icon = 'fill'
+            addKeys()
+
             if hasattr(atom, 'adp') and isinstance(atom.adp, AtomicDisplacement):
                 atomDict['ADP_type'] = {}
                 atomDict['ADP_type']['display_name'] = 'type'
                 atomDict['ADP_type']['shortPrettyName'] = 'type'
                 atomDict['ADP_type']['name'] = 'ADP_type'
+                absDelta = 0.1
+                unit = 'Å²'
                 if atom.adp.adp_type.raw_value == 'Biso':
                     atomDict['ADP_type']['value'] = 'Biso'
-                    atomDict['B_iso_or_equiv'] = self.fromParameterObject(atom.adp.Biso)
-                    atomDict['B_iso_or_equiv']['shortPrettyName'] = "iso"
-                    atomDict['B_iso_or_equiv']['name'] = "B_iso_or_equiv"
-                    atomDict['B_iso_or_equiv']['idx'] = idx
+                    params = 'B_iso_or_equiv'
+                    icon = 'arrows-alt'
+                    atomDict[params] = self.fromParameterObject(atom.adp.Biso)
+                    atomDict[params]['shortPrettyName'] = "iso"
+                    atomDict[params]['name'] = "B_iso_or_equiv"
+                    addKeys()
+
                 elif atom.adp.adp_type.raw_value == 'Uiso':
                     atomDict['ADP_type']['value'] = 'Uiso'
-                    atomDict['U_iso_or_equiv'] = self.fromParameterObject(atom.adp.Uiso)
-                    atomDict['U_iso_or_equiv']['shortPrettyName'] = "U_iso_or_equiv"
-                    atomDict['U_iso_or_equiv']['name'] = "U_iso_or_equiv"
-                    atomDict['U_iso_or_equiv']['idx'] = idx
+                    params = 'U_iso_or_equiv'
+                    atomDict[params] = self.fromParameterObject(atom.adp.Uiso)
+                    atomDict[params]['shortPrettyName'] = "U_iso_or_equiv"
+                    atomDict[params]['name'] = "U_iso_or_equiv"
+                    addKeys()
+
             blocks['loops']['_atom_site'].append(atomDict)
 
         return blocks
@@ -420,6 +444,7 @@ class Model(QObject):
         dict_repr['value'] = coreObject.raw_value
         dict_repr['prettyName'] = coreObject.display_name
         dict_repr['url'] = coreObject.url
+        dict_repr['fittable'] = False # none of the descriptors are fittables
         return dict_repr
 
     def blocksToPhase(self, blockIdx, category, name, field, value):

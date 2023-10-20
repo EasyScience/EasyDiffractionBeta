@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
 
+import numpy as np
 from PySide6.QtCore import QObject, Signal, Slot, Property
 
 from EasyApp.Logic.Logging import console
@@ -167,29 +168,30 @@ class Fittables(QObject):
             # Model singles
             for categoryContent in block['params'].values():
                 for paramName, paramContent in categoryContent.items():
-                    if paramContent['fittable']:
+                    if 'fittable' in paramContent and paramContent['fittable']:
                         fittable = {}
                         fittable['blockType'] = 'model'
                         fittable['blockIdx'] = i
-                        fittable['blockName'] = block['name']['value']
-                        fittable['blockIcon'] = block['name']['icon']
+                        fittable['blockName'] = block['name'] #['value']
+                        # fittable['blockIcon'] = block['name']['icon']
+                        fittable['blockIcon'] = "layer-group"
                         fittable['category'] = paramContent['category']
-                        fittable['prettyCategory'] = paramContent['prettyCategory']
+                        fittable['prettyCategory'] = paramContent['prettyCategory'] if 'prettyCategory' in paramContent else ''
                         fittable['name'] = paramContent['name']
-                        fittable['prettyName'] = paramContent['prettyName']
-                        fittable['shortPrettyName'] = paramContent['shortPrettyName']
-                        fittable['icon'] = paramContent['icon']
-                        fittable['categoryIcon'] = paramContent['categoryIcon']
+                        fittable['prettyName'] = paramContent['prettyName'] if 'prettyName' in paramContent else ''
+                        fittable['shortPrettyName'] = paramContent['shortPrettyName'] if 'shortPrettyName' in paramContent else ''
+                        fittable['icon'] = paramContent['icon'] if 'icon' in paramContent else "map-marker-alt"
+                        fittable['categoryIcon'] = paramContent['categoryIcon'] if 'categoryIcon' in paramContent else "layer-group"
                         fittable['enabled'] = paramContent['enabled']
                         fittable['value'] = paramContent['value']
                         fittable['error'] = paramContent['error']
-                        fittable['min'] = paramContent['min']
-                        fittable['max'] = paramContent['max']
+                        fittable['min'] = paramContent['min'] if 'min' in paramContent else -np.inf
+                        fittable['max'] = paramContent['max'] if 'max' in paramContent else np.inf
                         fittable['units'] = paramContent['units']
                         fittable['fit'] = paramContent['fit']
 
-                        absDelta = paramContent['absDelta']
-                        pctDelta = paramContent['pctDelta']
+                        absDelta = paramContent['absDelta'] if 'absDelta' in paramContent else None
+                        pctDelta = paramContent['pctDelta'] if 'pctDelta' in paramContent else None
                         if absDelta is not None:
                             fittable['from'] = max(fittable['value'] - absDelta, fittable['min'])
                             fittable['to'] = min(fittable['value'] + absDelta, fittable['max'])
@@ -218,31 +220,32 @@ class Fittables(QObject):
             for category, loopRows in block['loops'].items():
                 for rowIndex, param in enumerate(loopRows):
                     for paramName, paramContent in param.items():
-                        if paramContent['fittable']:
+                        if 'fittable' in paramContent and paramContent['fittable']:
                             fittable = {}
                             fittable['blockType'] = 'model'
                             fittable['blockIdx'] = i
-                            fittable['blockName'] = block['name']['value']
-                            fittable['blockIcon'] = block['name']['icon']
-                            fittable['category'] = category  # paramContent['category'] ???
-                            fittable['prettyCategory'] = paramContent['prettyCategory']
-                            fittable['rowName'] = paramContent['rowName']
+                            fittable['blockName'] = block['name']# ['value']
+                            # fittable['blockIcon'] = block['name']['icon']
+                            fittable['blockIcon'] = "layer-group"
+                            fittable['category'] = category
+                            fittable['prettyCategory'] = paramContent['prettyCategory'] if 'prettyCategory' in paramContent else ''
+                            fittable['rowName'] = paramContent['rowName'] if 'rowName' in paramContent else ''
                             fittable['rowIndex'] = rowIndex
                             fittable['name'] = paramContent['name']
-                            fittable['prettyName'] = paramContent['prettyName']
-                            fittable['shortPrettyName'] = paramContent['shortPrettyName']
-                            fittable['icon'] = paramContent['icon']
-                            fittable['categoryIcon'] = paramContent['categoryIcon']
+                            fittable['prettyName'] = paramContent['prettyName'] if 'prettyName' in paramContent else ''
+                            fittable['shortPrettyName'] = paramContent['shortPrettyName'] if 'shortPrettyName' in paramContent else ''
+                            fittable['icon'] = paramContent['icon'] if 'icon' in paramContent else "map-marker-alt"
+                            fittable['categoryIcon'] = paramContent['categoryIcon'] if 'categoryIcon' in paramContent else "layer-group"
                             fittable['enabled'] = paramContent['enabled']
                             fittable['value'] = paramContent['value']
                             fittable['error'] = paramContent['error']
-                            fittable['min'] = paramContent['min']
-                            fittable['max'] = paramContent['max']
-                            fittable['units'] = paramContent['units']
+                            fittable['min'] = paramContent['min'] if 'min' in paramContent else -np.inf
+                            fittable['max'] = paramContent['max'] if 'max' in paramContent else np.inf
+                            fittable['units'] = paramContent['units'] if 'units' in paramContent else ''
                             fittable['fit'] = paramContent['fit']
 
-                            absDelta = paramContent['absDelta']
-                            pctDelta = paramContent['pctDelta']
+                            absDelta = paramContent['absDelta'] if 'absDelta' in paramContent else None
+                            pctDelta = paramContent['pctDelta'] if 'pctDelta' in paramContent else None
                             if absDelta is not None:
                                 fittable['from'] = max(fittable['value'] - absDelta, fittable['min'])
                                 fittable['to'] = min(fittable['value'] + absDelta, fittable['max'])
