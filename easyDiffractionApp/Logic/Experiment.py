@@ -5,12 +5,17 @@
 import os
 import copy
 import numpy as np
+import pathlib
+
 from PySide6.QtCore import QObject, Signal, Slot, Property
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 from PySide6.QtQml import QJSValue
 
-from easyDiffractionLib.io.cryspy_parser import CryspyParser
+# Parameter is App-centric, should be moved to the App
+from easyDiffractionLib.io.cryspy_parser import CryspyParser, Parameter
 from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
+from easyDiffractionLib.Jobs import get_job_from_file
+
 from EasyApp.Logic.Logging import console
 from Logic.Data import Data
 
@@ -85,13 +90,15 @@ class Experiment(QObject):
     xBraggDictsChanged = Signal()
     chartRangesChanged = Signal()
 
-    def __init__(self, parent):
+    def __init__(self, parent, interface=None):
         super().__init__(parent)
         self._proxy = parent
 
         self._defined = False
         self._currentIndex = -1
 
+        self._interface = interface
+        self._job = None
         self._dataBlocksNoMeas = []
         self._dataBlocksMeasOnly = []
 
@@ -196,6 +203,320 @@ class Experiment(QObject):
             if fext == '.xye':
                 fileContent = _DEFAULT_DATA_BLOCK_NO_MEAS + fileContent
             self.loadExperimentsFromEdCif(fileContent)
+
+            job_name = pathlib.Path(fpath).stem
+            phases = self._proxy._model.phases
+            _, self._job = get_job_from_file(fpath, job_name, phases=phases, interface=self._interface)
+
+            self.jobToBlock(job= self._job)
+
+    def jobToBlock(self, job=None):
+        if job is None:
+            return
+        # current experiment
+        cifDict = 'core'
+        dataBlock = {'name': '', 'params': {}, 'loops': {}}
+        dataBlock['name'] = Parameter(value = job.name)
+        param = 'params'
+        category = '_diffrn_radiation'
+        url = 'https://docs.easydiffraction.org/app/project/dictionaries/'
+        dataBlock[param][category] = {}
+        name = 'probe'
+        dataBlock[param][category][name] = Parameter(
+                        value = 'neutron',  # This needs proper parsing in the library
+                        permittedValues = ['neutron', 'x-ray'],
+                        category = category,
+                        name = name,
+                        shortPrettyName = name,
+                        url = url + category,
+                        cifDict = cifDict
+                    )
+        name = 'wavelength'
+        category = '_diffrn_radiation_wavelength'
+        prettyCategory = 'radiation'
+        dataBlock[param][category] = {}
+        dataBlock[param][category][name] = Parameter(
+                        value = job.parameters.wavelength.raw_value,
+                        error = job.parameters.wavelength.error,
+                        category = category,
+                        prettyCategory = prettyCategory,
+                        name = name,
+                        prettyName = name,
+                        shortPrettyName = name,
+                        icon = prettyCategory,
+                        url = url + category,
+                        cifDict = cifDict,
+                        absDelta = 0.01,
+                        units = 'Å',
+                        fittable = True,
+                        fit = not job.parameters.wavelength.fixed
+                    )
+        category = '_pd_instr'
+        prettyCategory = 'inst'
+        icon = 'grip-lines-vertical'
+        name = 'resolution_u'
+        dataBlock[param][category] = {}
+        dataBlock[param][category][name] = Parameter(
+                        value = job.parameters.resolution_u.raw_value,
+                        error = job.parameters.resolution_u.error,
+                        category = category,
+                        prettyCategory = prettyCategory,
+                        name = name,
+                        prettyName = name,
+                        shortPrettyName = 'u',
+                        icon = icon,
+                        url = url + category,
+                        absDelta = 0.1,
+                        fittable = True,
+                        fit = not job.parameters.resolution_u.fixed
+                    )
+        name = 'resolution_v'
+        dataBlock[param][category][name] = Parameter(
+                        value = job.parameters.resolution_v.raw_value,
+                        error = job.parameters.resolution_v.error,
+                        category = category,
+                        prettyCategory = prettyCategory,
+                        name = name,
+                        prettyName = name,
+                        shortPrettyName = 'v',
+                        icon = icon,
+                        url = url + category,
+                        absDelta = 0.1,
+                        fittable = True,
+                        fit = not job.parameters.resolution_v.fixed
+                    )
+        name = 'resolution_w'
+        dataBlock[param][category][name] = Parameter(
+                        value = job.parameters.resolution_w.raw_value,
+                        error = job.parameters.resolution_w.error,
+                        category = category,
+                        prettyCategory = prettyCategory,
+                        name = name,
+                        prettyName = name,
+                        shortPrettyName = 'w',
+                        icon = icon,
+                        url = url + category,
+                        absDelta = 0.1,
+                        fittable = True,
+                        fit = not job.parameters.resolution_w.fixed
+                    )
+        name = 'resolution_x'
+        dataBlock[param][category][name] = Parameter(
+                        value = job.parameters.resolution_x.raw_value,
+                        error = job.parameters.resolution_x.error,
+                        category = category,
+                        prettyCategory = prettyCategory,
+                        name = name,
+                        prettyName = name,
+                        shortPrettyName = 'x',
+                        icon = icon,
+                        url = url + category,
+                        absDelta = 0.1,
+                        fittable = True,
+                        fit = not job.parameters.resolution_x.fixed
+                    )
+        name = 'resolution_y'
+        dataBlock[param][category][name] = Parameter(
+                        job.parameters.resolution_y.raw_value,
+                        error = job.parameters.resolution_y.error,
+                        category = category,
+                        prettyCategory = prettyCategory,
+                        name = name,
+                        prettyName = name,
+                        shortPrettyName = 'y',
+                        icon = icon,
+                        url = url + category,
+                        absDelta = 0.1,
+                        fittable = True,
+                        fit = not job.parameters.resolution_y.fixed
+                    )
+        icon = 'balance-scale-left'
+        name = 'reflex_asymmetry_p1'
+        dataBlock[param][category][name] = Parameter(
+                            job.parameters.reflex_asymmetry_p1.raw_value,
+                            error = job.parameters.reflex_asymmetry_p1.error,
+                            category = category,
+                            prettyCategory = prettyCategory,
+                            name = name,
+                            prettyName = "asymmetry p1",
+                            shortPrettyName = "p1",
+                            icon = icon,
+                            url = url + category,
+                            absDelta = 0.5,
+                            fittable = True,
+                            fit = not job.parameters.reflex_asymmetry_p1.fixed
+                        )
+        name = 'reflex_asymmetry_p2'
+        dataBlock[param][category][name] = Parameter(
+                            job.parameters.reflex_asymmetry_p2.raw_value,
+                            error = job.parameters.reflex_asymmetry_p2.error,
+                            category = category,
+                            prettyCategory = prettyCategory,
+                            name = name,
+                            prettyName = "asymmetry p2",
+                            shortPrettyName = "p2",
+                            icon = icon,
+                            url = url + category,
+                            absDelta = 0.5,
+                            fittable = True,
+                            fit = not job.parameters.reflex_asymmetry_p2.fixed
+                        )
+        name = 'reflex_asymmetry_p3'
+        dataBlock[param][category][name] = Parameter(
+                            job.parameters.reflex_asymmetry_p3.raw_value,
+                            error = job.parameters.reflex_asymmetry_p3.error,
+                            category = category,
+                            prettyCategory = prettyCategory,
+                            name = name,
+                            prettyName = "asymmetry p3",
+                            shortPrettyName = "p3",
+                            icon = icon,
+                            url = url + category,
+                            absDelta = 0.5,
+                            fittable = True,
+                            fit = not job.parameters.reflex_asymmetry_p3.fixed
+                        )
+        name = 'reflex_asymmetry_p4'
+        dataBlock[param][category][name] = Parameter(
+                            job.parameters.reflex_asymmetry_p4.raw_value,
+                            error = job.parameters.reflex_asymmetry_p4.error,
+                            category = category,
+                            prettyCategory = prettyCategory,
+                            name = name,
+                            prettyName = "asymmetry p4",
+                            shortPrettyName = "p4",
+                            icon = icon,
+                            url = url + category,
+                            absDelta = 0.5,
+                            fittable = True,
+                            fit = not job.parameters.reflex_asymmetry_p4.fixed
+                        )
+
+        # _pd_calib
+        category = '_pd_calib'
+        prettyCategory = 'calib'
+        icon = 'arrows-alt-h'
+        name = '2theta_offset'
+        dataBlock[param][category] = {}
+        dataBlock[param][category][name] = Parameter(
+                            job.pattern.zero_shift.raw_value,
+                            error = job.pattern.zero_shift.error,
+                            category = category,
+                            prettyCategory = prettyCategory,
+                            name = name,
+                            prettyName = '2θ offset',
+                            shortPrettyName = "2θ",
+                            icon = icon,
+                            url = url + category,
+                            cifDict = 'pd',
+                            absDelta = 0.2,
+                            units = '°',
+                            fittable = True,
+                            fit = not job.pattern.zero_shift.fixed
+                        )
+
+
+        # _pd_meas
+        category = '_pd_meas'
+        name = '2theta_range_min'
+        dataBlock[param][category] = {}
+        x_name = job.name + '_' + job.name + '_tth'
+        xmin = job.datastore.store[x_name].data[0]
+        dataBlock[param][category][name] = Parameter(
+                            xmin,
+                            optional = True,
+                            category = category,
+                            name = name,
+                            prettyName = "range min",
+                            shortPrettyName = "min",
+                            url = url,
+                            cifDict = 'pd'
+                        )
+        name = '2theta_range_max'
+        xmax = job.datastore.store[x_name].data[-1]
+        dataBlock[param][category][name] = Parameter(
+                            xmax,
+                            optional = True,
+                            category = category,
+                            name = name,
+                            prettyName = "range max",
+                            shortPrettyName = "max",
+                            url = url,
+                            cifDict = 'pd',
+                        )
+        name = '2theta_range_inc'
+        # inc = (xmax-xmin)/len(job.datastore.store[x_name].data)
+        # 2nd point - 1st point (to change later)
+        inc = job.datastore.store[x_name].data[1] - xmin
+        dataBlock[param][category][name] = Parameter(
+                            inc,
+                            optional = True,
+                            category = category,
+                            name = name,
+                            prettyName = "range inc",
+                            shortPrettyName = "inc",
+                            url = url,
+                            cifDict = 'pd',
+                        )
+
+        # loops
+        #
+        param = 'loops'
+
+        # background
+        category = '_pd_background'
+        ed_bkg_points = []
+        job_bg_points = job.backgrounds[0]
+        key = 'line_segment_X'
+        for idx, bkg_point in enumerate(job_bg_points):
+            ed_bkg_point = {}
+            ed_bkg_point[key] = dict(Parameter(
+                bkg_point.x.raw_value,
+                idx = idx,
+                category = category,
+                name = key,
+                prettyName = '2θ',
+                shortPrettyName = '2θ',
+                url = url + category,
+                cifDict = 'pd'
+            ))
+            ed_bkg_point['line_segment_intensity'] = dict(Parameter(
+                bkg_point.y.raw_value,
+                error = bkg_point.y.error,
+                idx = idx,
+                category = category,
+                prettyCategory = 'bkg',
+                rowName = f'{bkg_point.x.raw_value:g}°',  # formatting float to str without trailing zeros
+                name = 'line_segment_intensity',
+                prettyName = 'intensity',
+                shortPrettyName = 'Ibkg',
+                icon = 'mountain',
+                categoryIcon = 'wave-square',
+                url = url + category,
+                cifDict = 'pd',
+                pctDelta = 25,
+                fittable = True,
+                fit = not bkg_point.y.fixed
+            ))
+            # ed_bkg_point['X_coordinate'] = dict(Parameter(
+            #     '2theta',
+            #     idx = idx,
+            #     category = '_pd_background',
+            #     name = 'X_coordinate',
+            #     prettyName = 'X coord',
+            #     shortPrettyName = 'X coord',
+            #     url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+            #     cifDict = 'pd'
+            # ))
+            ed_bkg_points.append(ed_bkg_point)
+        dataBlock[param] = {}
+        dataBlock[param][category] = ed_bkg_points
+
+        category = '_pd_phase_block'
+        ed_phase_blocks = []
+        # for idx, phase in enumerate(job.phases):
+        dataBlock[param][category] = ed_phase_blocks
+        return dataBlock
 
     @Slot(str)
     def loadExperimentsFromEdCif(self, edCif):

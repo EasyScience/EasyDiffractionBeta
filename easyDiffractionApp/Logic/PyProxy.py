@@ -17,14 +17,16 @@ from Logic.Summary import Summary
 from Logic.Status import Status
 from Logic.Plotting import Plotting
 from Logic.Helpers import BackendHelpers
+from easyDiffractionLib.interface import InterfaceFactory
 
 
 class PyProxy(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.interface = InterfaceFactory()
         self._logger = LoggerLevelHandler(self)
         self._project = Project(self)
-        self._experiment = Experiment(self)
+        self._experiment = Experiment(self, interface=self.interface)
         self._model = Model(self)
         self._data = Data(self)
         self._analysis = Analysis(self)
