@@ -402,6 +402,7 @@ class Model(QObject):
                     atomDict[params] = self.fromParameterObject(atom.adp.Biso)
                     atomDict[params]['shortPrettyName'] = "iso"
                     atomDict[params]['name'] = "B_iso_or_equiv"
+                    atomDict[params]['units'] = unit
                     addKeys()
 
                 elif atom.adp.adp_type.raw_value == 'Uiso':
@@ -410,6 +411,7 @@ class Model(QObject):
                     atomDict[params] = self.fromParameterObject(atom.adp.Uiso)
                     atomDict[params]['shortPrettyName'] = "U_iso_or_equiv"
                     atomDict[params]['name'] = "U_iso_or_equiv"
+                    atomDict[params]['units'] = unit
                     addKeys()
 
             blocks['loops']['_atom_site'].append(atomDict)

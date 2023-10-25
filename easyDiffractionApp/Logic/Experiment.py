@@ -193,7 +193,7 @@ class Experiment(QObject):
     def loadExperimentsFromFiles(self, fpaths):
         if type(fpaths) == QJSValue:
             fpaths = fpaths.toVariant()
-        for fpath in fpaths:
+        for idx, fpath in enumerate(fpaths):
             fpath = fpath.toLocalFile()
             fpath = generalizePath(fpath)
             _, fext = os.path.splitext(fpath)
@@ -208,21 +208,35 @@ class Experiment(QObject):
             phases = self._proxy._model.phases
             _, self._job = get_job_from_file(fpath, job_name, phases=phases, interface=self._interface)
 
-            self.jobToBlock(job= self._job)
+            blocks = self.jobToBlock(job=self._job)
+            # self._dataBlocksNoMeas[idx] = blocks
+            self._dataBlocksNoMeas.append(blocks)
+
+            blocks = self.jobToData(job=self._job)
+            self._dataBlocksMeasOnly[idx] = blocks
+            # self._dataBlocksMeasOnly.append(blocks)
+
+            self._currentIndex = len(self.dataBlocksNoMeas) - 1
+            if not self.defined:
+                self.defined = bool(len(self.dataBlocksNoMeas))
+            self.dataBlocksChanged.emit()
 
     def jobToBlock(self, job=None):
+        '''
+        Convert a Job object to a list of data blocks, without the measured data
+        '''
         if job is None:
             return
         # current experiment
         cifDict = 'core'
         dataBlock = {'name': '', 'params': {}, 'loops': {}}
-        dataBlock['name'] = Parameter(value = job.name)
+        dataBlock['name'] = dict(Parameter(value = job.name))
         param = 'params'
         category = '_diffrn_radiation'
         url = 'https://docs.easydiffraction.org/app/project/dictionaries/'
         dataBlock[param][category] = {}
         name = 'probe'
-        dataBlock[param][category][name] = Parameter(
+        dataBlock[param][category][name] = dict(Parameter(
                         value = 'neutron',  # This needs proper parsing in the library
                         permittedValues = ['neutron', 'x-ray'],
                         category = category,
@@ -230,12 +244,12 @@ class Experiment(QObject):
                         shortPrettyName = name,
                         url = url + category,
                         cifDict = cifDict
-                    )
+                    ))
         name = 'wavelength'
         category = '_diffrn_radiation_wavelength'
         prettyCategory = 'radiation'
         dataBlock[param][category] = {}
-        dataBlock[param][category][name] = Parameter(
+        dataBlock[param][category][name] = dict(Parameter(
                         value = job.parameters.wavelength.raw_value,
                         error = job.parameters.wavelength.error,
                         category = category,
@@ -250,13 +264,13 @@ class Experiment(QObject):
                         units = 'Å',
                         fittable = True,
                         fit = not job.parameters.wavelength.fixed
-                    )
+                    ))
         category = '_pd_instr'
         prettyCategory = 'inst'
         icon = 'grip-lines-vertical'
         name = 'resolution_u'
         dataBlock[param][category] = {}
-        dataBlock[param][category][name] = Parameter(
+        dataBlock[param][category][name] = dict(Parameter(
                         value = job.parameters.resolution_u.raw_value,
                         error = job.parameters.resolution_u.error,
                         category = category,
@@ -269,9 +283,9 @@ class Experiment(QObject):
                         absDelta = 0.1,
                         fittable = True,
                         fit = not job.parameters.resolution_u.fixed
-                    )
+                    ))
         name = 'resolution_v'
-        dataBlock[param][category][name] = Parameter(
+        dataBlock[param][category][name] = dict(Parameter(
                         value = job.parameters.resolution_v.raw_value,
                         error = job.parameters.resolution_v.error,
                         category = category,
@@ -284,9 +298,9 @@ class Experiment(QObject):
                         absDelta = 0.1,
                         fittable = True,
                         fit = not job.parameters.resolution_v.fixed
-                    )
+                    ))
         name = 'resolution_w'
-        dataBlock[param][category][name] = Parameter(
+        dataBlock[param][category][name] = dict(Parameter(
                         value = job.parameters.resolution_w.raw_value,
                         error = job.parameters.resolution_w.error,
                         category = category,
@@ -299,9 +313,9 @@ class Experiment(QObject):
                         absDelta = 0.1,
                         fittable = True,
                         fit = not job.parameters.resolution_w.fixed
-                    )
+                    ))
         name = 'resolution_x'
-        dataBlock[param][category][name] = Parameter(
+        dataBlock[param][category][name] = dict(Parameter(
                         value = job.parameters.resolution_x.raw_value,
                         error = job.parameters.resolution_x.error,
                         category = category,
@@ -314,9 +328,9 @@ class Experiment(QObject):
                         absDelta = 0.1,
                         fittable = True,
                         fit = not job.parameters.resolution_x.fixed
-                    )
+                    ))
         name = 'resolution_y'
-        dataBlock[param][category][name] = Parameter(
+        dataBlock[param][category][name] = dict(Parameter(
                         job.parameters.resolution_y.raw_value,
                         error = job.parameters.resolution_y.error,
                         category = category,
@@ -329,10 +343,10 @@ class Experiment(QObject):
                         absDelta = 0.1,
                         fittable = True,
                         fit = not job.parameters.resolution_y.fixed
-                    )
+                    ))
         icon = 'balance-scale-left'
         name = 'reflex_asymmetry_p1'
-        dataBlock[param][category][name] = Parameter(
+        dataBlock[param][category][name] = dict(Parameter(
                             job.parameters.reflex_asymmetry_p1.raw_value,
                             error = job.parameters.reflex_asymmetry_p1.error,
                             category = category,
@@ -345,9 +359,9 @@ class Experiment(QObject):
                             absDelta = 0.5,
                             fittable = True,
                             fit = not job.parameters.reflex_asymmetry_p1.fixed
-                        )
+                        ))
         name = 'reflex_asymmetry_p2'
-        dataBlock[param][category][name] = Parameter(
+        dataBlock[param][category][name] = dict(Parameter(
                             job.parameters.reflex_asymmetry_p2.raw_value,
                             error = job.parameters.reflex_asymmetry_p2.error,
                             category = category,
@@ -360,9 +374,9 @@ class Experiment(QObject):
                             absDelta = 0.5,
                             fittable = True,
                             fit = not job.parameters.reflex_asymmetry_p2.fixed
-                        )
+                        ))
         name = 'reflex_asymmetry_p3'
-        dataBlock[param][category][name] = Parameter(
+        dataBlock[param][category][name] = dict(Parameter(
                             job.parameters.reflex_asymmetry_p3.raw_value,
                             error = job.parameters.reflex_asymmetry_p3.error,
                             category = category,
@@ -375,9 +389,9 @@ class Experiment(QObject):
                             absDelta = 0.5,
                             fittable = True,
                             fit = not job.parameters.reflex_asymmetry_p3.fixed
-                        )
+                        ))
         name = 'reflex_asymmetry_p4'
-        dataBlock[param][category][name] = Parameter(
+        dataBlock[param][category][name] = dict(Parameter(
                             job.parameters.reflex_asymmetry_p4.raw_value,
                             error = job.parameters.reflex_asymmetry_p4.error,
                             category = category,
@@ -390,7 +404,7 @@ class Experiment(QObject):
                             absDelta = 0.5,
                             fittable = True,
                             fit = not job.parameters.reflex_asymmetry_p4.fixed
-                        )
+                        ))
 
         # _pd_calib
         category = '_pd_calib'
@@ -398,14 +412,14 @@ class Experiment(QObject):
         icon = 'arrows-alt-h'
         name = '2theta_offset'
         dataBlock[param][category] = {}
-        dataBlock[param][category][name] = Parameter(
+        dataBlock[param][category][name] = dict(Parameter(
                             job.pattern.zero_shift.raw_value,
                             error = job.pattern.zero_shift.error,
                             category = category,
                             prettyCategory = prettyCategory,
                             name = name,
                             prettyName = '2θ offset',
-                            shortPrettyName = "2θ",
+                            shortPrettyName = "offset",
                             icon = icon,
                             url = url + category,
                             cifDict = 'pd',
@@ -413,7 +427,7 @@ class Experiment(QObject):
                             units = '°',
                             fittable = True,
                             fit = not job.pattern.zero_shift.fixed
-                        )
+                        ))
 
 
         # _pd_meas
@@ -422,8 +436,8 @@ class Experiment(QObject):
         dataBlock[param][category] = {}
         x_name = job.name + '_' + job.name + '_tth'
         xmin = job.datastore.store[x_name].data[0]
-        dataBlock[param][category][name] = Parameter(
-                            xmin,
+        dataBlock[param][category][name] = dict(Parameter(
+                            str(xmin),
                             optional = True,
                             category = category,
                             name = name,
@@ -431,11 +445,11 @@ class Experiment(QObject):
                             shortPrettyName = "min",
                             url = url,
                             cifDict = 'pd'
-                        )
+                        ))
         name = '2theta_range_max'
         xmax = job.datastore.store[x_name].data[-1]
-        dataBlock[param][category][name] = Parameter(
-                            xmax,
+        dataBlock[param][category][name] = dict(Parameter(
+                            str(xmax),
                             optional = True,
                             category = category,
                             name = name,
@@ -443,13 +457,14 @@ class Experiment(QObject):
                             shortPrettyName = "max",
                             url = url,
                             cifDict = 'pd',
-                        )
+                        ))
         name = '2theta_range_inc'
         # inc = (xmax-xmin)/len(job.datastore.store[x_name].data)
         # 2nd point - 1st point (to change later)
         inc = job.datastore.store[x_name].data[1] - xmin
-        dataBlock[param][category][name] = Parameter(
-                            inc,
+        inc = round(inc, 4)
+        dataBlock[param][category][name] = dict(Parameter(
+                            str(inc),
                             optional = True,
                             category = category,
                             name = name,
@@ -457,7 +472,7 @@ class Experiment(QObject):
                             shortPrettyName = "inc",
                             url = url,
                             cifDict = 'pd',
-                        )
+                        ))
 
         # loops
         #
@@ -467,27 +482,28 @@ class Experiment(QObject):
         category = '_pd_background'
         ed_bkg_points = []
         job_bg_points = job.backgrounds[0]
-        key = 'line_segment_X'
         for idx, bkg_point in enumerate(job_bg_points):
             ed_bkg_point = {}
-            ed_bkg_point[key] = dict(Parameter(
-                bkg_point.x.raw_value,
+            name = 'line_segment_X'
+            ed_bkg_point[name] = dict(Parameter(
+                str(bkg_point.x.raw_value),
                 idx = idx,
                 category = category,
-                name = key,
+                name = name,
                 prettyName = '2θ',
                 shortPrettyName = '2θ',
                 url = url + category,
                 cifDict = 'pd'
             ))
-            ed_bkg_point['line_segment_intensity'] = dict(Parameter(
+            name = 'line_segment_intensity'
+            ed_bkg_point[name] = dict(Parameter(
                 bkg_point.y.raw_value,
                 error = bkg_point.y.error,
                 idx = idx,
                 category = category,
                 prettyCategory = 'bkg',
                 rowName = f'{bkg_point.x.raw_value:g}°',  # formatting float to str without trailing zeros
-                name = 'line_segment_intensity',
+                name = name,
                 prettyName = 'intensity',
                 shortPrettyName = 'Ibkg',
                 icon = 'mountain',
@@ -498,24 +514,119 @@ class Experiment(QObject):
                 fittable = True,
                 fit = not bkg_point.y.fixed
             ))
-            # ed_bkg_point['X_coordinate'] = dict(Parameter(
-            #     '2theta',
-            #     idx = idx,
-            #     category = '_pd_background',
-            #     name = 'X_coordinate',
-            #     prettyName = 'X coord',
-            #     shortPrettyName = 'X coord',
-            #     url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
-            #     cifDict = 'pd'
-            # ))
+            name = 'X_coordinate'
+            ed_bkg_point[name] = dict(Parameter(
+                '2theta',
+                idx = idx,
+                category = category,
+                name = name,
+                prettyName = 'X coord',
+                shortPrettyName = 'X coord',
+                url = url + category,
+                cifDict = 'pd'
+            ))
+
             ed_bkg_points.append(ed_bkg_point)
         dataBlock[param] = {}
         dataBlock[param][category] = ed_bkg_points
 
         category = '_pd_phase_block'
+        category_url = '_phase'
         ed_phase_blocks = []
-        # for idx, phase in enumerate(job.phases):
+        for idx, phase in enumerate(job.phases):
+            ed_phase_block = {}
+            scale_param = phase.scale
+            id_param = phase.name
+            name = 'id'
+            ed_phase_block[name] = dict(Parameter(
+                id_param,
+                idx = idx,
+                category = category,
+                name = name,
+                shortPrettyName = 'label',
+                url = url + category_url,
+                cifDict = 'pd'
+            ))
+            name = 'scale'
+            ed_phase_block[name] = dict(Parameter(
+                scale_param.raw_value,
+                error = scale_param.error,
+                rowName = id_param,
+                idx = idx,
+                category = category,
+                name = name,
+                prettyName = name,
+                shortPrettyName = name,
+                categoryIcon='layer-group',
+                icon = 'weight',
+                url = url + category_url,
+                cifDict = 'pd',
+                pctDelta = 25,
+                fittable = True,
+                fit = not scale_param.fixed
+            ))
+            ed_phase_blocks.append(ed_phase_block)
         dataBlock[param][category] = ed_phase_blocks
+        return dataBlock
+
+    def jobToData(self, job=None):
+        '''
+        Convert a Job object to a data blocks containing the measured data
+        '''
+        if job is None:
+            return
+         # current experiment
+        cifDict = 'pd'
+        url = 'https://docs.easydiffraction.org/app/project/dictionaries/'
+        dataBlock = {'name': '', 'loops': {}}
+        dataBlock['name'] = Parameter(value = job.name)
+        # loops
+        #
+        param = 'loops'
+
+        # background
+        category = '_pd_meas'
+        dataBlock[param][category] = {}
+        ed_points = {}
+        x_name = job.name + '_' + job.name + '_tth'
+        y_name = job.name + '_' + job.name + '_I0'
+        err_name = job.name + '_' + job.name + '_I1'
+        x_points = job.datastore.store[x_name].data
+        y_points = np.ones_like(x_points) #job.datastore.store[y_name].data
+        err_points = job.datastore.store[err_name].data
+
+        name = '2theta_scan'
+
+        ed_points[name] = dict(Parameter(
+            x_points,
+            category = category,
+            name = name,
+            prettyName = '2θ',
+            shortPrettyName = '2θ',
+            url = url + category,
+            cifDict = cifDict
+        ))
+        name = 'intensity_total'
+        ed_points[name] = dict(Parameter(
+            y_points,
+            category = category,
+            name = name,
+            prettyName = 'intensity',
+            shortPrettyName = 'I',
+            url = url + category,
+            cifDict = cifDict,
+        ))
+        name = 'intensity_total_su'
+        ed_points[name] = dict(Parameter(
+            err_points,
+            category = category,
+            name = name,
+            shortPrettyName = 'sI',
+            url = url + category,
+            cifDict = cifDict,
+        ))
+        ed_points = [ed_points]
+        dataBlock[param][category] = ed_points
         return dataBlock
 
     @Slot(str)
@@ -571,16 +682,16 @@ class Experiment(QObject):
 
             self._proxy.data._cryspyDict.update(cryspyExperimentsDict)
             self._dataBlocksMeasOnly += edExperimentsMeasOnly
-            self._dataBlocksNoMeas += edExperimentsNoMeas
+            # self._dataBlocksNoMeas += edExperimentsNoMeas
 
-            self._currentIndex = len(self.dataBlocksNoMeas) - 1
-            if not self.defined:
-                self.defined = bool(len(self.dataBlocksNoMeas))
+            # self._currentIndex = len(self.dataBlocksNoMeas) - 1
+            # if not self.defined:
+            #     self.defined = bool(len(self.dataBlocksNoMeas))
 
-            console.debug(formatMsg('sub', f'{len(edExperimentsMeasOnly)} experiment(s)', 'meas data only', 'to intern dataset', 'added'))
-            console.debug(formatMsg('sub', f'{len(edExperimentsNoMeas)} experiment(s)', 'without meas data', 'to intern dataset', 'added'))
+            # console.debug(formatMsg('sub', f'{len(edExperimentsMeasOnly)} experiment(s)', 'meas data only', 'to intern dataset', 'added'))
+            # console.debug(formatMsg('sub', f'{len(edExperimentsNoMeas)} experiment(s)', 'without meas data', 'to intern dataset', 'added'))
 
-            self.dataBlocksChanged.emit()
+            # self.dataBlocksChanged.emit()
         else:
             console.debug(formatMsg('sub', 'No experiment(s)', '', 'to intern dataset', 'added'))
 
