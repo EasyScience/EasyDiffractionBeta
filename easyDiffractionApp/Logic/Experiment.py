@@ -73,6 +73,26 @@ _DEFAULT_DATA_BLOCK = _DEFAULT_DATA_BLOCK_NO_MEAS + """36.5 1    1
 39.0 1    1
 """
 
+BLOCK2JOB = {
+    'wavelength': 'wavelength',
+    '_diffrn_radiation_wavelength': 'parameters',
+    'resolution_u': 'resolution_u',
+    '_pd_instr': 'parameters',
+    'resolution_v': 'resolution_v',
+    'resolution_w': 'resolution_w',
+    'resolution_x': 'resolution_x',
+    'resolution_y': 'resolution_y',
+    'reflex_asymmetry_p1': 'reflex_asymmetry_p1',
+    'reflex_asymmetry_p2': 'reflex_asymmetry_p2',
+    'reflex_asymmetry_p3': 'reflex_asymmetry_p3',
+    'reflex_asymmetry_p4': 'reflex_asymmetry_p4',
+    '_pd_calib': 'pattern',
+    '2theta_offset': 'zero_shift',
+
+    '_pd_background': 'backgrounds',
+    'line_segment_X': 'x',
+    'line_segment_intensity': 'y'
+}
 
 class Experiment(QObject):
     definedChanged = Signal()
@@ -209,12 +229,10 @@ class Experiment(QObject):
             _, self._job = get_job_from_file(fpath, job_name, phases=phases, interface=self._interface)
 
             blocks = self.jobToBlock(job=self._job)
-            # self._dataBlocksNoMeas[idx] = blocks
             self._dataBlocksNoMeas.append(blocks)
 
             blocks = self.jobToData(job=self._job)
-            self._dataBlocksMeasOnly[idx] = blocks
-            # self._dataBlocksMeasOnly.append(blocks)
+            self._dataBlocksMeasOnly.append(blocks)
 
             self._currentIndex = len(self.dataBlocksNoMeas) - 1
             if not self.defined:
@@ -230,7 +248,9 @@ class Experiment(QObject):
         # current experiment
         cifDict = 'core'
         dataBlock = {'name': '', 'params': {}, 'loops': {}}
-        dataBlock['name'] = dict(Parameter(value = job.name))
+        dataBlock['name'] = dict(Parameter(
+            value = job.name,
+            icon = 'microscope'))
         param = 'params'
         category = '_diffrn_radiation'
         url = 'https://docs.easydiffraction.org/app/project/dictionaries/'
@@ -579,7 +599,9 @@ class Experiment(QObject):
         cifDict = 'pd'
         url = 'https://docs.easydiffraction.org/app/project/dictionaries/'
         dataBlock = {'name': '', 'loops': {}}
-        dataBlock['name'] = Parameter(value = job.name)
+        dataBlock['name'] = dict(Parameter(
+            value = job.name,
+            icon = 'microscope'))
         # loops
         #
         param = 'loops'
@@ -677,11 +699,11 @@ class Experiment(QObject):
 
         if success:
             cryspyExperimentsDict = cryspyExperimentsObj.get_dictionary()
-            edExperimentsMeasOnly, edExperimentsNoMeas = CryspyParser.cryspyObjAndDictToEdExperiments(cryspyExperimentsObj,
-                                                                                                      cryspyExperimentsDict)
+            # edExperimentsMeasOnly, edExperimentsNoMeas = CryspyParser.cryspyObjAndDictToEdExperiments(cryspyExperimentsObj,
+            #                                                                                           cryspyExperimentsDict)
 
             self._proxy.data._cryspyDict.update(cryspyExperimentsDict)
-            self._dataBlocksMeasOnly += edExperimentsMeasOnly
+            # self._dataBlocksMeasOnly += edExperimentsMeasOnly
             # self._dataBlocksNoMeas += edExperimentsNoMeas
 
             # self._currentIndex = len(self.dataBlocksNoMeas) - 1
@@ -878,6 +900,9 @@ class Experiment(QObject):
         if oldValue == value:
             return False
         self._dataBlocksNoMeas[blockIdx]['params'][category][name][field] = value
+        # Update the job object
+        self.blocksToJob(blockIdx, category, name, field, value)
+
         if type(value) == float:
             console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}.{name}.{field}'))
         else:
@@ -890,11 +915,50 @@ class Experiment(QObject):
         if oldValue == value:
             return False
         self._dataBlocksNoMeas[blockIdx]['loops'][category][rowIndex][name][field] = value
+        # Update the job object
+        self.blocksToLoopJob(blockIdx, category, name, rowIndex, field, value)
+
         if type(value) == float:
             console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         else:
             console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         return True
+
+    def blocksToJob(self, blockIdx, category, name, field, value):
+        """
+        Update the job object with new values defined
+        by the data block key names.
+        """
+        # find the correct parameter in the phase object
+        p_name = BLOCK2JOB[name]
+        p_category = BLOCK2JOB[category]
+        # get category
+        job_with_category = getattr(self._job, p_category)
+        if field == 'value':
+            setattr(job_with_category, p_name, value)
+        elif field == 'error':
+            getattr(job_with_category, p_name).error = value
+        elif field == 'fit':
+            getattr(job_with_category, p_name).fixed = not value
+        pass
+
+    def blocksToLoopJob(self, blockIdx, category, name, rowIndex, field, value):
+        """
+        Update the job object based on the parameters passed
+        """
+        p_name = BLOCK2JOB[name]
+        p_category = BLOCK2JOB[category]
+        # get category
+        job_with_category = getattr(self._job, p_category)[rowIndex]
+        # get loop item
+        job_with_item = getattr(job_with_category, p_name)
+        if field == 'value':
+            job_with_item.value = value
+        elif field == 'error':
+            job_with_item.error = value
+        elif field == 'fit':
+            job_with_item.fixed = not value
+        pass
 
     def editCryspyDictByMainParam(self, blockIdx, category, name, field, value):
         if field != 'value' and field != 'fit':
