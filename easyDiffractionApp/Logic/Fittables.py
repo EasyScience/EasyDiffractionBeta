@@ -131,12 +131,15 @@ class Fittables(QObject):
         if rowIndex == -1:
             console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
             if blockType == 'experiment':
+                # update exp model and job object
                 self._proxy.experiment.editDataBlockMainParam(blockIdx, category, name, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.experiment.editDataBlockMainParam(blockIdx, category, name, field, value)
+                # update cryspy model
                 changedCryspy = self._proxy.experiment.editCryspyDictByMainParam(blockIdx, category, name, field, value)
             elif blockType == 'model':
                 self._proxy.model.editDataBlockMainParam(blockIdx, category, name, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.model.editDataBlockMainParam(blockIdx, category, name, field, value)
+                # update cryspy model
                 changedCryspy = self._proxy.model.editCryspyDictByMainParam(blockIdx, category, name, field, value)
         else:
             console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))

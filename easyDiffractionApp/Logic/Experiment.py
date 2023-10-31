@@ -91,7 +91,9 @@ BLOCK2JOB = {
 
     '_pd_background': 'backgrounds',
     'line_segment_X': 'x',
-    'line_segment_intensity': 'y'
+    'line_segment_intensity': 'y',
+    'scale': 'scale',
+    '_pd_phase_block': 'phases',
 }
 
 class Experiment(QObject):
@@ -914,6 +916,7 @@ class Experiment(QObject):
         oldValue = self._dataBlocksNoMeas[blockIdx]['loops'][category][rowIndex][name][field]
         if oldValue == value:
             return False
+        # cheaper to do it directly than convert the phase object after its update.
         self._dataBlocksNoMeas[blockIdx]['loops'][category][rowIndex][name][field] = value
         # Update the job object
         self.blocksToLoopJob(blockIdx, category, name, rowIndex, field, value)
@@ -949,7 +952,16 @@ class Experiment(QObject):
         p_name = BLOCK2JOB[name]
         p_category = BLOCK2JOB[category]
         # get category
-        job_with_category = getattr(self._job, p_category)[rowIndex]
+        # assumption of the first loop, since there is only one background currently
+        job_with_category = getattr(self._job, p_category)[0]
+        # should we get the loop item?
+        # this works for the background, but not for scale etc.
+        try:
+            job_with_category = job_with_category[rowIndex]
+        except TypeError:
+            pass
+        if isinstance(job_with_category, list):
+            job_with_category = job_with_category[rowIndex]
         # get loop item
         job_with_item = getattr(job_with_category, p_name)
         if field == 'value':
