@@ -115,15 +115,17 @@ class CryspyParser:
                     if value is None:
                         continue
 
-                    if isinstance(value, float):  # If parameter is of float type
+                    if isinstance(value, (float, int)):  # If parameter is of float type
+                        value = np.float32(value)  # Simplifies output
                         if param["fit"]:
                             error = param["error"]
+                            error = np.float32(error)  # Simplifies output
                             if error == 0:
                                 paramStr = f'{value}()' # Adds empty brackets for standard uncertainty for free params
                             else:
-                                paramStr = f'{ufloat(value, error):.3uS}'  # Adds brackets with standard uncertainty for free params
+                                paramStr = f'{ufloat(value, error):.1uS}'  # Adds brackets with standard uncertainty for free params
                         else:
-                            paramStr = f'{value}'
+                            paramStr = str(value)  # Keeps 32bit format
                     elif isinstance(value, str):  # If parameter is of string type
                         if ' ' in value:  # Adds quotes to text with spaces, e.g. P n m a -> "P n m a"
                             paramStr = f'"{value}"'
@@ -159,15 +161,17 @@ class CryspyParser:
                         if value is None:
                             continue
 
-                        if isinstance(value, float) or isinstance(value, int):  # If parameter is number
+                        if isinstance(value, (float, int)):  # If parameter is number
+                            value = np.float32(value)  # Simplifies output
                             if param["fit"]:
                                 error = param["error"]
+                                error = np.float32(error)  # Simplifies output
                                 if error == 0:
                                     paramStr = f'{value}()' # Adds empty brackets for standard uncertainty for free params
                                 else:
-                                    paramStr = f'{ufloat(value, error):.3uS}'  # Adds brackets with standard uncertainty for free params
+                                    paramStr = f'{ufloat(value, error):.1uS}'  # Adds brackets with standard uncertainty for free params (precision = 1 significant digit)
                             else:
-                                paramStr = f'{value}'
+                                paramStr = str(value)  # Keeps 32bit format
                         elif isinstance(value, str):  # If parameter is of string type
                             if ' ' in value:  # Adds quotes to text with spaces, e.g. P n m a -> "P n m a"
                                 paramStr = f'"{value}"'

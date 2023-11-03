@@ -561,7 +561,10 @@ class Model(QObject):
                 value = param.value
                 error = 0
                 if param.stderr is not None:
-                    error = param.stderr
+                    if param.stderr < 1e-6:
+                        error = 1e-6  # Temporary solution to compensate for too small uncertanties after lmfit
+                    else:
+                        error = param.stderr
 
                 # unit_cell_parameters
                 if group == 'unit_cell_parameters':
