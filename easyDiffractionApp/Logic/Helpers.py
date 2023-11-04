@@ -9,6 +9,7 @@ import pathlib
 import sys
 import decimal
 import importlib.util
+from uncertainties import ufloat
 
 from PySide6.QtCore import Qt, QObject, QCoreApplication, Signal, Slot, Property
 #from PySide6.QtGui import QStyleHints
@@ -143,6 +144,16 @@ class IO:
         msg = f'{mark} {msg}'
         return msg
 
+    @staticmethod
+    def toStdDevSmalestPrecision(value, std_dev):
+        if std_dev < 10:
+            fmt = '.1u'
+        else:
+            fmt = 'u'
+        value_str, std_dev_str = f'{ufloat(value, std_dev):{fmt}}'.split('+/-')
+        value_with_std_dev_str = f'{ufloat(value, std_dev):{fmt}S}'
+        return value_str, std_dev_str, value_with_std_dev_str
+
 
 class Converter:
 
@@ -237,15 +248,20 @@ class BackendHelpers(QObject):
             furi = furi[1:].replace('/', os.path.sep)
         return furi
 
-    @Slot(float, int, result=str)
-    def toPrecision(self, x, n):
-        return str(decimal.Context(prec=n).create_decimal_from_float(x))
+    #@Slot(float, int, result=str)
+    #def toPrecision(self, x, n):
+    #    return str(decimal.Context(prec=n).create_decimal_from_float(x))
 
-    @Slot(float, float, int, result=str)
-    def toOtherPrecision(self, x, s, n):
-        xStr = f'{x}'
-        sStr = self.toPrecision(s, n)
-        return str(decimal.Decimal(xStr).quantize(decimal.Decimal(sStr)))
+    #@Slot(float, float, int, result=str)
+    #def toOtherPrecision(self, x, s, n):
+    #    xStr = f'{x}'
+    #    sStr = self.toPrecision(s, n)
+    #    return str(decimal.Decimal(xStr).quantize(decimal.Decimal(sStr)))
+
+    @Slot(float, float, result='QVariant')
+    def toStdDevSmalestPrecision(self, value, std_dev):
+        value_str, std_dev_str, _ = IO.toStdDevSmalestPrecision(value, std_dev)
+        return {'value': value_str, 'std_dev': std_dev_str}
 
 
 class PyProxyWorker(QObject):

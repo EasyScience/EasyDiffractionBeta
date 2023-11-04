@@ -3,10 +3,10 @@
 # © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import numpy as np
-from uncertainties import ufloat
 from pycifstar.global_ import Global
 
 from EasyApp.Logic.Logging import console
+from Logic.Helpers import IO
 
 try:
     import cryspy
@@ -121,13 +121,13 @@ class CryspyParser:
                         value = np.float32(value)  # Simplifies output
                         if param["fit"]:
                             error = param["error"]
-                            error = np.float32(error)  # Simplifies output
+                            #error = np.float32(error)  # Simplifies output
                             if error == 0:
                                 paramStr = f'{value}()' # Adds empty brackets for standard uncertainty for free params
                             else:
-                                paramStr = f'{ufloat(value, error):.1uS}'  # Adds brackets with standard uncertainty for free params
+                                _, _, paramStr = IO.toStdDevSmalestPrecision(value, error) # Adds brackets with standard uncertainty for free params
                         else:
-                            paramStr = str(value)  # Keeps 32bit format
+                            paramStr = str(value)  # Keeps 32bit presicion format in contrast to f'{...}'
                     elif isinstance(value, str):  # If parameter is of string type
                         if ' ' in value:  # Adds quotes to text with spaces, e.g. P n m a -> "P n m a"
                             paramStr = f'"{value}"'
@@ -167,13 +167,13 @@ class CryspyParser:
                             value = np.float32(value)  # Simplifies output
                             if param["fit"]:
                                 error = param["error"]
-                                error = np.float32(error)  # Simplifies output
+                                #error = np.float32(error)  # Simplifies output
                                 if error == 0:
                                     paramStr = f'{value}()' # Adds empty brackets for standard uncertainty for free params
                                 else:
-                                    paramStr = f'{ufloat(value, error):.1uS}'  # Adds brackets with standard uncertainty for free params (precision = 1 significant digit)
+                                    _, _, paramStr = IO.toStdDevSmalestPrecision(value, error) # Adds brackets with standard uncertainty for free params
                             else:
-                                paramStr = str(value)  # Keeps 32bit format
+                                paramStr = str(value)  # Keeps 32bit presicion format in contrast to f'{...}'
                         elif isinstance(value, str):  # If parameter is of string type
                             if ' ' in value:  # Adds quotes to text with spaces, e.g. P n m a -> "P n m a"
                                 paramStr = f'"{value}"'
