@@ -119,7 +119,6 @@ Column {
 
         property var currentValueTextInput: null
 
-        enabled: !Globals.Proxies.main.fitting.isFittingNow
         defaultInfoText: qsTr("No parameters found")
 
         maxRowCountShow: 7 +
@@ -192,6 +191,7 @@ Column {
 
         // Table content row
         delegate: EaComponents.TableViewDelegate {
+            enabled: !Globals.Proxies.main.fitting.isFittingNow
 
             property bool isCurrentItem: ListView.isCurrentItem
             property var item: Globals.Proxies.main_fittables_data[index]
@@ -205,8 +205,8 @@ Column {
             }
 
             EaComponents.TableViewLabel {
-                color: EaStyle.Colors.themeForegroundMinor
                 text: index + 1
+                color: EaStyle.Colors.themeForegroundMinor
             }
 
             EaComponents.TableViewLabel {
