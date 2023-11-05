@@ -7,15 +7,27 @@ import orjson
 import os
 import pathlib
 import sys
-import time
 import decimal
-#from urllib.parse import urlparse
+import importlib.util
+from uncertainties import ufloat
 
 from PySide6.QtCore import Qt, QObject, QCoreApplication, Signal, Slot, Property
-from PySide6.QtGui import QStyleHints
+#from PySide6.QtGui import QStyleHints
 from PySide6.QtWidgets import QApplication
 
 from EasyApp.Logic.Logging import console
+
+
+class EasyAppLoader:
+
+    @staticmethod
+    def terminateIfNotFound():
+        easyAppSpec = importlib.util.find_spec("EasyApp")
+        if easyAppSpec is not None:
+            return
+
+        print('No EasyApp specs found')
+        sys.exit(1)
 
 
 class PersistentSettingsHandler:
@@ -35,43 +47,26 @@ class PersistentSettingsHandler:
 class ResourcePaths:
 
     def __init__(self):
-        self.mainQml = ''  # Current app main.qml file
-        self.splashScreenQml = ''  # Splash screen .qml file
+        self.mainQml = 'Gui/main.qml'  # Current app main.qml file
+        self.splashScreenQml = 'Gui/Components/SplashScreen.qml'  # Splash screen .qml file
         self.imports = []  # EasyApp qml components (EasyApp/...) & Current app qml components (Gui/...)
-        self.settings_ini = ''  # Persistent settings ini file location
         self.setPaths()
 
     def setPaths(self):
-        console.debug('Trying to import python resources.py file with EasyApp')
         try:
             import resources
+            self.mainQml = f'qrc:/{self.mainQml}'
+            self.splashScreenQml = f'qrc:/{self.splashScreenQml}'
+            self.imports.append('qrc:/')
             console.info(f'Resources: {resources}')
-            self.mainQml = 'qrc:/Gui/main.qml'
-            self.splashScreenQml = 'qrc:/Gui/Components/SplashScreen.qml'
-            #self.imports = ['qrc:/EasyApp', 'qrc:/']
-
-            import EasyApp
-            easyAppPath = os.path.abspath(EasyApp.__path__[0])
-            console.info(f'EasyApp module: {easyAppPath}')
-
-            self.imports = [os.path.join(easyAppPath, '..'), 'qrc:/']
-            return
         except ImportError:
-            console.debug('No rc resources file found')
+            self.imports.append('.')
+            console.debug('No python resources (rc) file found')
 
-        console.debug('Trying to import the locally installed EasyApp module')
-        try:
-            import EasyApp
-            easyAppPath = os.path.abspath(EasyApp.__path__[0])
-            console.info(f'EasyApp module: {easyAppPath}')
-            self.mainQml = 'Gui/main.qml'
-            self.splashScreenQml = 'Gui/Components/SplashScreen.qml'
-            self.imports = [os.path.join(easyAppPath, '..'), '.']
-            return
-        except ImportError:
-            console.debug('No EasyApp module is installed')
-
-        console.error('No EasyApp module found')
+        import EasyApp
+        easyAppPath = os.path.abspath(EasyApp.__path__[0])
+        self.imports.append(os.path.join(easyAppPath, '..'))
+        console.info(f'EasyApp module: {easyAppPath}')
 
 
 class CommandLineArguments:
@@ -148,6 +143,16 @@ class IO:
         msg = ' ▌ '.join(msgs)
         msg = f'{mark} {msg}'
         return msg
+
+    @staticmethod
+    def toStdDevSmalestPrecision(value, std_dev):
+        if std_dev < 10:
+            fmt = '.1u'
+        else:
+            fmt = 'u'
+        value_str, std_dev_str = f'{ufloat(value, std_dev):{fmt}}'.split('+/-')
+        value_with_std_dev_str = f'{ufloat(value, std_dev):{fmt}S}'
+        return value_str, std_dev_str, value_with_std_dev_str
 
 
 class Converter:
@@ -243,15 +248,20 @@ class BackendHelpers(QObject):
             furi = furi[1:].replace('/', os.path.sep)
         return furi
 
-    @Slot(float, int, result=str)
-    def toPrecision(self, x, n):
-        return str(decimal.Context(prec=n).create_decimal_from_float(x))
+    #@Slot(float, int, result=str)
+    #def toPrecision(self, x, n):
+    #    return str(decimal.Context(prec=n).create_decimal_from_float(x))
 
-    @Slot(float, float, int, result=str)
-    def toOtherPrecision(self, x, s, n):
-        xStr = f'{x}'
-        sStr = self.toPrecision(s, n)
-        return str(decimal.Decimal(xStr).quantize(decimal.Decimal(sStr)))
+    #@Slot(float, float, int, result=str)
+    #def toOtherPrecision(self, x, s, n):
+    #    xStr = f'{x}'
+    #    sStr = self.toPrecision(s, n)
+    #    return str(decimal.Decimal(xStr).quantize(decimal.Decimal(sStr)))
+
+    @Slot(float, float, result='QVariant')
+    def toStdDevSmalestPrecision(self, value, std_dev):
+        value_str, std_dev_str, _ = IO.toStdDevSmalestPrecision(value, std_dev)
+        return {'value': value_str, 'std_dev': std_dev_str}
 
 
 class PyProxyWorker(QObject):

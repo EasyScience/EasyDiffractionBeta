@@ -163,11 +163,12 @@ class Project(QObject):
         return self._recent
 
     @recent.setter
-    def recent(self, newValue):
-        newValue = newValue.toVariant()
-        if self._recent == newValue:
+    def recent(self, newFilePaths):
+        newFilePaths = newFilePaths.toVariant()
+        existingFilePaths = [fpath for fpath in newFilePaths if os.path.isfile(fpath)]
+        if self._recent == existingFilePaths:
             return
-        self._recent = newValue
+        self._recent = existingFilePaths
         self.recentChanged.emit()
 
     @Property(str, notify=locationChanged)
@@ -229,12 +230,6 @@ class Project(QObject):
         fpath = fpath.toLocalFile()
         fpath = IO.generalizePath(fpath)
 
-        if fpath in self._recent:
-            self._recent.remove(fpath)
-        self._recent.insert(0, fpath)
-        self._recent = self._recent[:10]
-        self.recentChanged.emit()
-
         self.loadProjectFromFile(fpath)
 
     def loadProjectFromSource(self, fpath):
@@ -276,6 +271,13 @@ class Project(QObject):
 
     def loadProjectFromFile(self, fpath):
         console.debug(f"Loading project from: {fpath}")
+
+        if fpath in self._recent:
+            self._recent.remove(fpath)
+        self._recent.insert(0, fpath)
+        self._recent = self._recent[:10]
+        self.recentChanged.emit()
+
         with open(fpath, 'r') as file:
             edCif = file.read()
 

@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-12, windows-2022]
+        os: [ubuntu-20.04, macos-13, windows-2022]
 
     steps:
       - name: Check-out repository
@@ -51,6 +51,7 @@ jobs:
         run: |
           echo "APP_NAME=$(python utils.py --get release.app_name)" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$(python utils.py --get project.name)" >> $GITHUB_ENV
+          echo "PACKAGE_PATH=$GITHUB_WORKSPACE/$(python utils.py --get project.name)" >> $GITHUB_ENV
           echo "RELEASE_TAG=$(python utils.py --get ci.app.info.release_tag)" >> $GITHUB_ENV
           echo "RELEASE_TITLE=$(python utils.py --get ci.app.info.release_title)" >> $GITHUB_ENV
           echo "SCRIPTS_PATH=$(python utils.py --get ci.project.subdirs.scripts)" >> $GITHUB_ENV
@@ -68,8 +69,11 @@ jobs:
           python -m pip install git+https://github.com/ikibalin/cryspy.git@beta
           python -m pip install git+https://github.com/easyscience/EasyApp.git@new-easy-app2
 
-      #- name: Create python resources file
-      #  run: pyside6-rcc $GITHUB_REPOSITORY/resources.qrc -o $GITHUB_REPOSITORY/resources.py
+      - name: Create python resources file
+        run: |
+          cd ${{ env.PACKAGE_NAME }}
+          pyside6-rcc ${{ env.PACKAGE_PATH }}/resources.qrc -o ${{ env.PACKAGE_PATH }}/resources.py
+          cd ..
 
       #- name: Run pytest (compare app images after previous step)
       #  run: pytest
@@ -85,10 +89,22 @@ jobs:
           Xvfb :0 -screen 0 1920x1080x24 -ac &
           echo "DISPLAY=:0" >> $GITHUB_ENV
 
+      # Method 1:
+      # Not working since Oct 2023. VMware is replaced by VirtualBox
+      #   "/Library/Application Support/VMware Tools/vmware-resolutionSet" 1920 1080
+      #   system_profiler SPDisplaysDataType | grep Resolution
+      # Method 2:
+      # Worked on macOS 12.6.9, but the default resolution already was 1920x1080: https://github.com/easyScience/EasyDiffractionBeta/actions/runs/6575129372/job/17861583655
+      # Fails on macOS 12.7, where default resolution is 1176x885: https://github.com/easyScience/EasyDiffractionBeta/actions/runs/6576347514/job/17865526935
+      # Works on macOS 13.6, where default resolution is again 1920x1080: https://github.com/easyScience/EasyDiffractionBeta/actions/runs/6576486407/job/17866007760
+      #    brew install screenresolution
+      #    screenresolution list
+      #    screenresolution get
+      #    screenresolution set 1920x1080x32@30
+      #    screenresolution get
       - name: Set up screen (macOS)
         if: runner.os == 'macOS'
         run: |
-          "/Library/Application Support/VMware Tools/vmware-resolutionSet" 1920 1080
           system_profiler SPDisplaysDataType | grep Resolution
 
       - name: Set up screen (Windows)
@@ -175,7 +191,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-12, windows-2022]
+        os: [ubuntu-20.04, macos-13, windows-2022]
 
     steps:
       - name: Check-out repository
@@ -224,10 +240,22 @@ jobs:
           Xvfb :0 -screen 0 1920x1080x24 -ac &
           echo "DISPLAY=:0" >> $GITHUB_ENV
 
+      # Method 1:
+      # Not working since Oct 2023. VMware is replaced by VirtualBox
+      #   "/Library/Application Support/VMware Tools/vmware-resolutionSet" 1920 1080
+      #   system_profiler SPDisplaysDataType | grep Resolution
+      # Method 2:
+      # Worked on macOS 12.6.9, but the default resolution already was 1920x1080: https://github.com/easyScience/EasyDiffractionBeta/actions/runs/6575129372/job/17861583655
+      # Fails on macOS 12.7, where default resolution is 1176x885: https://github.com/easyScience/EasyDiffractionBeta/actions/runs/6576347514/job/17865526935
+      # Works on macOS 13.6, where default resolution is again 1920x1080: https://github.com/easyScience/EasyDiffractionBeta/actions/runs/6576486407/job/17866007760
+      #    brew install screenresolution
+      #    screenresolution list
+      #    screenresolution get
+      #    screenresolution set 1920x1080x32@30
+      #    screenresolution get
       - name: Set up screen (macOS)
         if: runner.os == 'macOS'
         run: |
-          "/Library/Application Support/VMware Tools/vmware-resolutionSet" 1920 1080
           system_profiler SPDisplaysDataType | grep Resolution
 
       - name: Set up screen (Windows)

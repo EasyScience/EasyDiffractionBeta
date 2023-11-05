@@ -2,14 +2,15 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
-# Import logger from EasyApp module
 import sys
-EASYAPP_LOCAL_PATH = '../../EasyApp'
-sys.path.append(EASYAPP_LOCAL_PATH)
-from EasyApp.Logic.Logging import console
 
 
 if __name__ == '__main__':
+
+    from Logic.Helpers import EasyAppLoader
+    EasyAppLoader.terminateIfNotFound()
+    from EasyApp.Logic.Logging import console
+    console.debug('Resource paths exposed to QML')
 
     from PySide6.QtCore import qInstallMessageHandler
     qInstallMessageHandler(console.qmlMessageHandler)

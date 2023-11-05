@@ -119,7 +119,6 @@ Column {
 
         property var currentValueTextInput: null
 
-        enabled: !Globals.Proxies.main.fitting.isFittingNow
         defaultInfoText: qsTr("No parameters found")
 
         maxRowCountShow: 7 +
@@ -192,6 +191,7 @@ Column {
 
         // Table content row
         delegate: EaComponents.TableViewDelegate {
+            enabled: !Globals.Proxies.main.fitting.isFittingNow
 
             property bool isCurrentItem: ListView.isCurrentItem
             property var item: Globals.Proxies.main_fittables_data[index]
@@ -205,8 +205,8 @@ Column {
             }
 
             EaComponents.TableViewLabel {
-                color: EaStyle.Colors.themeForegroundMinor
                 text: index + 1
+                color: EaStyle.Colors.themeForegroundMinor
             }
 
             EaComponents.TableViewLabel {
@@ -228,10 +228,7 @@ Column {
                 fit: item.fit
                 text: item.error === 0 ?
                           EaLogic.Utils.toDefaultPrecision(item.value) :
-                          Globals.Proxies.main.backendHelpers.toOtherPrecision(item.value, item.error, 1)
-                      //EaLogic.Utils.toErrSinglePrecision(item.value, item.error).length <= 8 ?
-                      //    EaLogic.Utils.toErrSinglePrecision(item.value, item.error) :
-                      //    EaLogic.Utils.toDefaultPrecision(item.value)
+                          Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(item.value, item.error).value
                 onEditingFinished: {
                     focus = false
                     console.debug('')
@@ -258,7 +255,7 @@ Column {
                 elide: Text.ElideNone
                 text: item.error === 0 ?
                           '' :
-                          Globals.Proxies.main.backendHelpers.toPrecision(item.error, 1)  // EaLogic.Utils.toSinglePrecision(item.error)
+                          Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(item.value, item.error).std_dev
             }
 
             EaComponents.TableViewParameter {
@@ -337,7 +334,7 @@ Column {
                 //            EaLogic.Utils.toDefaultPrecision(slider.from)
                 return error === 0 ?
                             EaLogic.Utils.toDefaultPrecision(slider.from) :
-                            Globals.Proxies.main.backendHelpers.toOtherPrecision(slider.from, error, 1)
+                            Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(slider.from, error).value
             }
         }
 
@@ -358,7 +355,7 @@ Column {
                 //            EaLogic.Utils.toDefaultPrecision(value)
                 return error === 0 ?
                             EaLogic.Utils.toDefaultPrecision(value) :
-                            Globals.Proxies.main.backendHelpers.toOtherPrecision(value, error, 1)
+                            Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(value, error).value
             }
 
             onMoved: {
@@ -394,7 +391,7 @@ Column {
                 //            EaLogic.Utils.toDefaultPrecision(slider.to)
                 return error === 0 ?
                             EaLogic.Utils.toDefaultPrecision(slider.to) :
-                            Globals.Proxies.main.backendHelpers.toOtherPrecision(slider.to, error, 1)
+                            Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(slider.to, error).value
             }
         }
 

@@ -200,7 +200,7 @@ class Experiment(QObject):
                     procData = file.read()
 
             # If loading non-CIF data files
-            elif fext == '.xye' or fext == '.xys' or fext == '.xy':
+            elif fext == '.xye' or fext == '.xys' or fext == '.xy' or fext == '.dat':
 
                 # Try loading data file
                 try:
@@ -702,7 +702,10 @@ class Experiment(QObject):
                 value = param.value
                 error = 0
                 if param.stderr is not None:
-                    error = param.stderr
+                    if param.stderr < 1e-6:
+                        error = 1e-6  # Temporary solution to compensate for too small uncertanties after lmfit
+                    else:
+                        error = param.stderr
 
                 # wavelength
                 if group == 'wavelength':

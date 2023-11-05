@@ -170,6 +170,7 @@ class Worker(QObject):
         freeParamValuesStart = [self._proxy.data._cryspyDict[way[0]][way[1]][way[2]] for way in freeParamNamesReduced]
         paramsLmfit = lmfit.Parameters()
         for cryspyParamPath, val in zip(freeParamNamesReduced, freeParamValuesStart):
+            #val = np.float32(val)
             lmfitParamName = Data.cryspyDictParamPathToStr(cryspyParamPath)  # Only ascii letters and numbers allowed for lmfit.Parameters()???
             left = self._proxy.model.paramValueByFieldAndCrypyParamPath('min', cryspyParamPath)
             if left is None:
@@ -186,37 +187,31 @@ class Worker(QObject):
         # Minimization: lmfit.minimize
         self._proxy.fitting.chiSqStart = self._proxy.fitting.chiSq
         self._cryspyUsePrecalculatedData = True
-        method = self._proxy.fitting.minimizerMethod.lower()
-        iter_cb = self.callbackFunc
-        nan_policy = 'propagate'
-        max_nfev = self._proxy.fitting.minimizerMaxIter
+
+        mini = lmfit.Minimizer(self.residFunc,
+                               paramsLmfit,
+                               iter_cb=self.callbackFunc,
+                               nan_policy='propagate',
+                               max_nfev=self._proxy.fitting.minimizerMaxIter)
+
         tol = self._proxy.fitting.minimizerTol
+        method = self._proxy.fitting.minimizerMethod.lower()
         if method in ['leastsq', 'least_squares']:
             self._iterStart == -1
-            result = lmfit.minimize(self.residFunc,
-                                    paramsLmfit,
-                                    method=method,
-                                    iter_cb=iter_cb,
-                                    nan_policy=nan_policy,
-                                    max_nfev=max_nfev,
-                                    ftol=tol,
-                                    xtol=tol)
+            result = mini.minimize(method=method,
+                                   ftol=tol,
+                                   xtol=tol)
         elif method in ['bfgs', 'lbfgsb', 'l-bfgs-b']:
             self._iterStart == 1
-            result = lmfit.minimize(self.residFunc,
-                                    paramsLmfit,
-                                    method=method,
-                                    iter_cb=iter_cb,
-                                    nan_policy=nan_policy,
-                                    max_nfev=max_nfev,
-                                    tol=tol)
+            result = mini.minimize(method=method,
+                                   tol=tol)
         else:
             self.finished.emit()
             console.error(f'Optimization method {method} is not supported.')
             return
 
         # Print results of the optimization
-        lmfit.report_fit(result)
+        lmfit.report_fit(result, min_correl=0.5)
 
         # Optimization status
         if result.success:  # NEED FIX: Move to connections. Pass names via signal.emit(names)

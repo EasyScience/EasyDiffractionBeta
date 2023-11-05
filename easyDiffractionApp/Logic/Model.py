@@ -18,8 +18,6 @@ from Logic.Data import Data
 
 try:
     import cryspy
-    from cryspy.H_functions_global.function_1_cryspy_objects import \
-        str_to_globaln
     from cryspy.A_functions_base.database import DATABASE
     from cryspy.A_functions_base.function_2_space_group import \
         REFERENCE_TABLE_IT_COORDINATE_SYSTEM_CODE_NAME_HM_EXTENDED, \
@@ -183,7 +181,7 @@ class Model(QObject):
     def loadModelsFromEdCif(self, edCif):
         cryspyObj = self._proxy.data._cryspyObj
         cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
-        cryspyModelsObj = str_to_globaln(cryspyCif)
+        cryspyModelsObj = CryspyParser.cryspyCifToModelsObj(cryspyCif)
 
         modelsCountBefore = len(self.cryspyObjCrystals())
         cryspyObj.add_items(cryspyModelsObj.items)
@@ -191,9 +189,9 @@ class Model(QObject):
         success = modelsCountAfter - modelsCountBefore
 
         if success:
-            cryspyModelsDict = cryspyModelsObj.get_dictionary()
-            edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
+            edModels = CryspyParser.cryspyObjToEdModels(cryspyModelsObj)
 
+            cryspyModelsDict = cryspyModelsObj.get_dictionary()
             self._proxy.data._cryspyDict.update(cryspyModelsDict)
             self._dataBlocks += edModels
 
@@ -226,10 +224,10 @@ class Model(QObject):
         if not edCif:
             edCif = CryspyParser.dataBlockToCif(currentDataBlock)
         cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
-        cryspyModelsObj = str_to_globaln(cryspyCif)
-        cryspyModelsDict = cryspyModelsObj.get_dictionary()
-        edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
+        cryspyModelsObj = CryspyParser.cryspyCifToModelsObj(cryspyCif)
+        edModels = CryspyParser.cryspyObjToEdModels(cryspyModelsObj)
 
+        cryspyModelsDict = cryspyModelsObj.get_dictionary()
         self._proxy.data._cryspyObj.items[cryspyObjBlockIdx] = cryspyModelsObj.items[0]
         self._proxy.data._cryspyDict[cryspyDictBlockName] = cryspyModelsDict[cryspyDictBlockName]
         self._dataBlocks[idx] = edModels[0]
@@ -561,7 +559,10 @@ class Model(QObject):
                 value = param.value
                 error = 0
                 if param.stderr is not None:
-                    error = param.stderr
+                    if param.stderr < 1e-6:
+                        error = 1e-6  # Temporary solution to compensate for too small uncertanties after lmfit
+                    else:
+                        error = param.stderr
 
                 # unit_cell_parameters
                 if group == 'unit_cell_parameters':
