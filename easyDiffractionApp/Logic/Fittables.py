@@ -115,14 +115,20 @@ class Fittables(QObject):
             console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
             if blockType == 'experiment':
                 self._proxy.experiment.setMainParam(blockIdx, category, name, field, value)
+                # Update the job object
+                self._proxy.experiment.blocksToJob(blockIdx, category, name, field, value)
             elif blockType == 'model':
                 self._proxy.model.setMainParam(blockIdx, category, name, field, value)
+                # Update the job object
+                self._proxy.model.blocksToPhase(blockIdx, category, name, field, value)
         else:
             console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
             if blockType == 'experiment':
                 self._proxy.experiment.setLoopParam(blockIdx, category, name, rowIndex, field, value)
+                self._proxy.experiment.blocksToLoopJob(blockIdx, category, name, rowIndex, field, value)
             elif blockType == 'model':
                 self._proxy.model.setLoopParam(blockIdx, category, name, rowIndex, field, value)
+                self._proxy.model.blocksToLoopPhase(blockIdx, category, name, rowIndex, field, value)
 
     @Slot(str, int, str, int, str, str, float)
     def editSilently(self, blockType, blockIdx, category, rowIndex, name, field, value):  # NEED FIX: Move to connections
@@ -139,6 +145,7 @@ class Fittables(QObject):
             elif blockType == 'model':
                 self._proxy.model.editDataBlockMainParam(blockIdx, category, name, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.model.editDataBlockMainParam(blockIdx, category, name, field, value)
+                self._proxy.model.blocksToPhase(blockIdx, category, name, field, value)
                 # update cryspy model
                 changedCryspy = self._proxy.model.editCryspyDictByMainParam(blockIdx, category, name, field, value)
         else:
@@ -150,6 +157,7 @@ class Fittables(QObject):
             elif blockType == 'model':
                 self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
+                self._proxy.model.blocksToLoopPhase(blockIdx, category, name, field, value)
                 changedCryspy = self._proxy.model.editCryspyDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
         if changedIntern and changedCryspy:
             if blockType == 'model':

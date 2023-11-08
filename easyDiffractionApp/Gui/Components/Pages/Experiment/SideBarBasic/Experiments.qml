@@ -88,7 +88,7 @@ Column {
 
             EaComponents.TableViewParameter {
                 selected: index === Globals.Proxies.main.experiment.currentIndex
-                text: tableView.model[index].name.value
+                text: tableView.model[index].name
             }
 
             EaComponents.TableViewButton {
