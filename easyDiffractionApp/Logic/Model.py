@@ -59,6 +59,7 @@ BLOCK2PHASE = {
     '_cell': 'cell',
     '_space_group': 'spacegroup',
     '_atom_site': 'atoms',
+    'occupancy': 'occupancy',
     'fract_x': 'fract_x',
     'fract_y': 'fract_y',
     'fract_z': 'fract_z',
@@ -259,8 +260,8 @@ class Model(QObject):
         Some fields which are simple types in the Phase object are converted to dictionaries as well.
         """
         phase = phases[self._currentIndex]
-        blocks = {'name': '', 'params': {}, 'loops': {}}
-        blocks['name'] = phase.name
+        blocks = {'name': {}, 'params': {}, 'loops': {}}
+        blocks['name']['value'] = phase.name
 
         ###### CELL
         category = '_cell'
@@ -502,7 +503,7 @@ class Model(QObject):
         """
         console.debug("Cryspy obj and dict need to be replaced")
         currentDataBlock = self.dataBlocks[self.currentIndex]
-        currentModelName = currentDataBlock['name']
+        currentModelName = currentDataBlock['name']['value']
 
         if edCif:
             # delete current phase
@@ -535,7 +536,7 @@ class Model(QObject):
         console.debug(f"Removing model no. {index + 1}")
 
         currentDataBlock = self.dataBlocks[index]
-        currentModelName = currentDataBlock['name']
+        currentModelName = currentDataBlock['name']['value']
 
         cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
         cryspyObjBlockIdx = cryspyObjBlockNames.index(currentModelName)
@@ -733,7 +734,7 @@ class Model(QObject):
         return True
 
     def cryspyDictPathByMainParam(self, blockIdx, category, name, value):
-        blockName = self._dataBlocks[blockIdx]['name']
+        blockName = self._dataBlocks[blockIdx]['name']['value']
         path = ['','','']
         path[0] = f"crystal_{blockName}"
 
@@ -768,7 +769,7 @@ class Model(QObject):
         return path, value
 
     def cryspyDictPathByLoopParam(self, blockIdx, category, name, rowIndex, value):
-        blockName = self._dataBlocks[blockIdx]['name']
+        blockName = self._dataBlocks[blockIdx]['name']['value']
         path = ['','','']
         path[0] = f"crystal_{blockName}"
 
@@ -845,7 +846,7 @@ class Model(QObject):
                 rowIndex = idx[0]
                 name = 'B_iso_or_equiv'
 
-            blockIdx = [block['name'] for block in self._dataBlocks].index(blockName)
+            blockIdx = [block['name']['value'] for block in self._dataBlocks].index(blockName)
 
             if rowIndex == -1:
                 return self.dataBlocks[blockIdx]['params'][category][name][field]
@@ -913,7 +914,7 @@ class Model(QObject):
 
                 value = float(value)  # convert float64 to float (needed for QML access)
                 error = float(error)  # convert float64 to float (needed for QML access)
-                blockIdx = [block['name'] for block in self._dataBlocks].index(blockName)
+                blockIdx = [block['name']['value'] for block in self._dataBlocks].index(blockName)
 
                 if rowIndex == -1:
                     self.editDataBlockMainParam(blockIdx, category, name, 'value', value)

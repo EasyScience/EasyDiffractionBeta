@@ -250,7 +250,9 @@ class Experiment(QObject):
         # current experiment
         cifDict = 'core'
         dataBlock = {'name': '', 'params': {}, 'loops': {}}
-        dataBlock['name'] = job.name
+        dataBlock['name'] = dict(Parameter(
+            value = job.name,
+            icon = 'microscope'))
         param = 'params'
         category = '_diffrn_radiation'
         url = 'https://docs.easydiffraction.org/app/project/dictionaries/'
@@ -598,10 +600,10 @@ class Experiment(QObject):
          # current experiment
         cifDict = 'pd'
         url = 'https://docs.easydiffraction.org/app/project/dictionaries/'
-        dataBlock = {'name': '', 'loops': {}}
-        # dataBlock['name'] = dict(Parameter(
-        #     value = job.name,
-        #     icon = 'microscope'))
+        dataBlock = {'name': {}, 'loops': {}}
+        dataBlock['name'] = dict(Parameter(
+            value = job.name,
+            icon = 'microscope'))
         dataBlock['name'] = job.name
         # loops
         #
@@ -674,7 +676,7 @@ class Experiment(QObject):
             dataBlock.add_items(cryspyRangeObj)
 
         # Add/modify CryspyObj with phases based on the already loaded phases
-        loadedModelNames = [block['name'] for block in self._proxy.model.dataBlocks]
+        loadedModelNames = [block['name']['value'] for block in self._proxy.model.dataBlocks]
         for dataBlock in cryspyExperimentsObj.items:
             for itemIdx, item in enumerate(dataBlock.items):
                 if type(item) == cryspy.C_item_loop_classes.cl_1_phase.PhaseL:
@@ -723,7 +725,7 @@ class Experiment(QObject):
         console.debug("Cryspy obj and dict need to be replaced")
 
         currentDataBlock = self.dataBlocksNoMeas[self.currentIndex]
-        currentExperimentName = currentDataBlock['name']
+        currentExperimentName = currentDataBlock['name']['value']
 
         cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
         cryspyObjBlockIdx = cryspyObjBlockNames.index(currentExperimentName)
@@ -1004,7 +1006,7 @@ class Experiment(QObject):
         return True
 
     def cryspyDictPathByMainParam(self, blockIdx, category, name, value):
-        blockName = self._dataBlocksNoMeas[blockIdx]['name']
+        blockName = self._dataBlocksNoMeas[blockIdx]['name']['value']
         path = ['','','']
         path[0] = f"pd_{blockName}"
 
@@ -1062,7 +1064,7 @@ class Experiment(QObject):
         return path, value
 
     def cryspyDictPathByLoopParam(self, blockIdx, category, name, rowIndex, value):
-        blockName = self._dataBlocksNoMeas[blockIdx]['name']
+        blockName = self._dataBlocksNoMeas[blockIdx]['name']['value']
         path = ['','','']
         path[0] = f"pd_{blockName}"
 
@@ -1150,7 +1152,7 @@ class Experiment(QObject):
                 name = 'scale'
                 rowIndex = idx[0]
 
-            blockIdx = [block['name'] for block in self._dataBlocksNoMeas].index(blockName)
+            blockIdx = [block['name']['value'] for block in self._dataBlocksNoMeas].index(blockName)
 
             if rowIndex == -1:
                 return self.dataBlocksNoMeas[blockIdx]['params'][category][name][field]
@@ -1234,7 +1236,7 @@ class Experiment(QObject):
 
                 value = float(value)  # convert float64 to float (needed for QML access)
                 error = float(error)  # convert float64 to float (needed for QML access)
-                blockIdx = [block['name'] for block in self._dataBlocksNoMeas].index(blockName)
+                blockIdx = [block['name']['value'] for block in self._dataBlocksNoMeas].index(blockName)
 
                 if rowIndex == -1:
                     self.editDataBlockMainParam(blockIdx, category, name, 'value', value)
@@ -1267,7 +1269,7 @@ class Experiment(QObject):
             self._proxy.fitting.chiSqStart = self._proxy.fitting.chiSq
 
     def setMeasuredArraysForSingleExperiment(self, idx):
-        ed_name = self._proxy.experiment.dataBlocksNoMeas[idx]['name']
+        ed_name = self._proxy.experiment.dataBlocksNoMeas[idx]['name']['value']
         cryspy_block_name = f'pd_{ed_name}'
         cryspyInOutDict = self._proxy.data._cryspyInOutDict
 
@@ -1285,7 +1287,7 @@ class Experiment(QObject):
         self.setSYMeasArray(sy_meas_array, idx)
 
     def setCalculatedArraysForSingleExperiment(self, idx):
-        ed_name = self._proxy.experiment.dataBlocksNoMeas[idx]['name']
+        ed_name = self._proxy.experiment.dataBlocksNoMeas[idx]['name']['value']
         cryspy_block_name = f'pd_{ed_name}'
         cryspyInOutDict = self._proxy.data._cryspyInOutDict
 
