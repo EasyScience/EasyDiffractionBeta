@@ -21,7 +21,7 @@ class Data(QObject):
         self._data.reset()
 
     def cryspyDictParamPathToStr(p):
-        return self._data.cryspyDictParamPathToStr(p)
+        return CryspyData.cryspyDictParamPathToStr(p)
 
     def strToCryspyDictParamPath(s):
-        return self._data.strToCryspyDictParamPath(s)
+        return CryspyData.strToCryspyDictParamPath(s)

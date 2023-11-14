@@ -314,8 +314,9 @@ class Fitting(QObject):
         else:
             if self._proxy.fittables._freeParamsCount > 0:
                 self.isFittingNow = True
-                #self._worker.run()
+                # self._worker.run()
                 self._threadpool.start(self._worker.run)
+
                 console.debug('Minimization process has been started in a separate thread')
             else:
                 self._proxy.status.fitStatus = 'No free params'

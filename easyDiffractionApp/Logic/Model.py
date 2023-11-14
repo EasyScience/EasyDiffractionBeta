@@ -358,6 +358,8 @@ class Model(QObject):
             atomDict[params]['absDelta'] = absDelta
             atomDict[params]['icon'] = icon
             atomDict[params]['rowName'] = atom.label.raw_value
+            atomDict[params]['min'] = -np.inf
+            atomDict[params]['max'] = np.inf
 
         for idx, atom in enumerate(phase.atoms):
             atomDict = {}
@@ -437,6 +439,8 @@ class Model(QObject):
         dict_repr['error'] = coreObject.error
         dict_repr['url'] = coreObject.url
         dict_repr['enabled'] = coreObject.enabled
+        dict_repr['min'] = -np.inf
+        dict_repr['max'] = np.inf
         return dict_repr
         
     def fromDescriptorObject(self, coreObject):
