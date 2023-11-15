@@ -13,6 +13,7 @@ from PySide6.QtQml import QJSValue
 
 # Parameter is App-centric, should be moved to the App
 from easyDiffractionLib.io.cryspy_parser import CryspyParser, Parameter
+from easyDiffractionLib.io.cif import dataBlockToCif, cifV2ToV1
 from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
 from easyDiffractionLib.Jobs import get_job_from_file
 
@@ -657,14 +658,14 @@ class Experiment(QObject):
     @Slot(str)
     def loadExperimentsFromEdCif(self, edCif):
         cryspyObj = self._proxy.data._cryspyObj
-        cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
+        cryspyCif = cifV2ToV1(edCif)
         cryspyExperimentsObj = str_to_globaln(cryspyCif)
 
         # Add/modify CryspyObj with ranges based on the measured data points in _pd_meas loop
         range_min = 0  # default value to be updated later
         range_max = 180  # default value to be updated later
         defaultEdRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
-        cryspyRangeCif = CryspyParser.edCifToCryspyCif(defaultEdRangeCif)
+        cryspyRangeCif = cifV2ToV1(defaultEdRangeCif)
         cryspyRangeObj = str_to_globaln(cryspyRangeCif).items
         for dataBlock in cryspyExperimentsObj.items:
             for item in dataBlock.items:
@@ -691,7 +692,7 @@ class Experiment(QObject):
                 defaultEdModelsCif = 'loop_\n_pd_phase_block.id\n_pd_phase_block.scale'
                 for modelName in loadedModelNames:
                     defaultEdModelsCif += f'\n{modelName} 1.0'
-                cryspyPhasesCif = CryspyParser.edCifToCryspyCif(defaultEdModelsCif)
+                cryspyPhasesCif = cifV2ToV1(defaultEdModelsCif)
                 cryspyPhasesObj = str_to_globaln(cryspyPhasesCif).items
                 dataBlock.add_items(cryspyPhasesObj)
 
@@ -702,21 +703,7 @@ class Experiment(QObject):
 
         if success:
             cryspyExperimentsDict = cryspyExperimentsObj.get_dictionary()
-            # edExperimentsMeasOnly, edExperimentsNoMeas = CryspyParser.cryspyObjAndDictToEdExperiments(cryspyExperimentsObj,
-            #                                                                                           cryspyExperimentsDict)
-
             self._proxy.data._cryspyDict.update(cryspyExperimentsDict)
-            # self._dataBlocksMeasOnly += edExperimentsMeasOnly
-            # self._dataBlocksNoMeas += edExperimentsNoMeas
-
-            # self._currentIndex = len(self.dataBlocksNoMeas) - 1
-            # if not self.defined:
-            #     self.defined = bool(len(self.dataBlocksNoMeas))
-
-            # console.debug(formatMsg('sub', f'{len(edExperimentsMeasOnly)} experiment(s)', 'meas data only', 'to intern dataset', 'added'))
-            # console.debug(formatMsg('sub', f'{len(edExperimentsNoMeas)} experiment(s)', 'without meas data', 'to intern dataset', 'added'))
-
-            # self.dataBlocksChanged.emit()
         else:
             console.debug(formatMsg('sub', 'No experiment(s)', '', 'to intern dataset', 'added'))
 
@@ -731,19 +718,19 @@ class Experiment(QObject):
         cryspyObjBlockIdx = cryspyObjBlockNames.index(currentExperimentName)
 
         if not edCifNoMeas:
-            edCifNoMeas = CryspyParser.dataBlockToCif(currentDataBlock)
+            edCifNoMeas = dataBlockToCif(currentDataBlock)
 
         range_min = currentDataBlock['params']['_pd_meas']['2theta_range_min']['value']
         range_max = currentDataBlock['params']['_pd_meas']['2theta_range_max']['value']
         edRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
         edCifNoMeas += '\n\n' + edRangeCif
 
-        edCifMeasOnly = CryspyParser.dataBlockToCif(self.dataBlocksMeasOnly[self.currentIndex],
+        edCifMeasOnly = dataBlockToCif(self.dataBlocksMeasOnly[self.currentIndex],
                                                     includeBlockName=False)
 
         edCif = edCifNoMeas + '\n\n' + edCifMeasOnly
 
-        cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
+        cryspyCif = cifV2ToV1(edCif)
         cryspyExperimentsObj = str_to_globaln(cryspyCif)
         cryspyExperimentsDict = cryspyExperimentsObj.get_dictionary()
 
@@ -760,16 +747,6 @@ class Experiment(QObject):
 
         console.debug(f"Experiment data block '{currentExperimentName}' (no. {self.currentIndex + 1}) (without measured data) has been replaced")
         self.dataBlocksNoMeasChanged.emit()  # self.dataBlocksNoMeasChanged.emit(blockIdx)
-
-#        # remove experiment from self._proxy.data._cryspyDict
-#        currentExperimentName = self.dataBlocks[self.currentIndex]['name']
-#        del self._proxy.data._cryspyDict[f'pd_{currentExperimentName}']
-#
-#        # add experiment to self._proxy.data._cryspyDict
-#        cifNoMeas = CryspyParser.dataBlocksToCif(self._dataBlocks)
-#        cifMeasOnly = self.dataBlocksCifMeasOnly
-#        edCif = cifNoMeas + '\n' + cifMeasOnly
-#        self.loadExperimentsFromEdCif(edCif)
 
     @Slot(int)
     def removeExperiment(self, index):
@@ -1412,12 +1389,12 @@ class Experiment(QObject):
         self.chartRangesChanged.emit()
 
     def setDataBlocksCifNoMeas(self):
-        self._dataBlocksCifNoMeas = [CryspyParser.dataBlockToCif(block) for block in self._dataBlocksNoMeas]
+        self._dataBlocksCifNoMeas = [dataBlockToCif(block) for block in self._dataBlocksNoMeas]
         console.debug(formatMsg('sub', f'{len(self._dataBlocksCifNoMeas)} experiment(s)', 'without meas data', 'to CIF string', 'converted'))
         self.dataBlocksCifNoMeasChanged.emit()
 
     def setDataBlocksCifMeasOnly(self):
-        self._dataBlocksCifMeasOnly = [CryspyParser.dataBlockToCif(block, includeBlockName=False) for block in self._dataBlocksMeasOnly]
+        self._dataBlocksCifMeasOnly = [dataBlockToCif(block, includeBlockName=False) for block in self._dataBlocksMeasOnly]
         console.debug(formatMsg('sub', f'{len(self._dataBlocksCifMeasOnly)} experiment(s)', 'meas data only', 'to CIF string', 'converted'))
         self.dataBlocksCifMeasOnlyChanged.emit()
 

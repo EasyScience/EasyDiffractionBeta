@@ -14,7 +14,7 @@ from easyDiffractionLib import Phases, Phase, Lattice, Site, SpaceGroup
 
 from easyCrystallography.Components.AtomicDisplacement import AtomicDisplacement
 from easyCrystallography.Components.SpaceGroup import SpaceGroup
-from easyDiffractionLib.io.cryspy_parser import CryspyParser
+from easyDiffractionLib.io.cif import dataBlockToCif, cifV2ToV1
 from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
 from EasyApp.Logic.Logging import console
 
@@ -229,6 +229,7 @@ class Model(QObject):
 
     # @Slot(str)
     def loadModelsFromEdCif(self, edCif):
+        # Update the Phases object
         phase = Phases.from_cif_string(edCif)
         self.phases.append(phase[0])
         self._currentIndex = len(self.phases) - 1
@@ -246,7 +247,7 @@ class Model(QObject):
         cif = self._dataBlocksCif[self.currentIndex][0]
 
         cryspyObj = self._proxy.data._cryspyObj
-        cryspyCif = CryspyParser.edCifToCryspyCif(cif)
+        cryspyCif = cifV2ToV1(cif)
         cryspyModelsObj = str_to_globaln(cryspyCif)
         cryspyObj.add_items(cryspyModelsObj.items)
         cryspyModelsDict = cryspyModelsObj.get_dictionary()
@@ -513,26 +514,6 @@ class Model(QObject):
             # delete current phase
             self.removePhase(currentModelName)
             self.loadModelsFromEdCif(edCif)
-
-        # EVERYTHING BELOW NEEDS REMOVAL.
-        # Cryspy calculator should use the object generated in the interface code
-        # cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
-        # cryspyObjBlockIdx = cryspyObjBlockNames.index(currentModelName)
-
-        # cryspyDictBlockName = f'crystal_{currentModelName}'
-
-        # if not edCif:
-        #     edCif = CryspyParser.dataBlockToCif(currentDataBlock)
-        # cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
-        # cryspyModelsObj = str_to_globaln(cryspyCif)
-        # cryspyModelsDict = cryspyModelsObj.get_dictionary()
-        # # edModels = CryspyParser.cryspyObjAndDictToEdModels(cryspyModelsObj, cryspyModelsDict)
-
-        # self._proxy.data._cryspyObj.items[cryspyObjBlockIdx] = cryspyModelsObj.items[0]
-        # self._proxy.data._cryspyDict[cryspyDictBlockName] = cryspyModelsDict[cryspyDictBlockName]
-        # # self._dataBlocks[self.currentIndex] = edModels[0]
-
-        # console.debug(f"Model data block '{currentModelName}' (no. {self.currentIndex + 1}) has been replaced")
         self.dataBlocksChanged.emit()
 
     @Slot(int)
@@ -928,7 +909,7 @@ class Model(QObject):
                     self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', error)
 
     def setDataBlocksCif(self):
-        self._dataBlocksCif = [[CryspyParser.dataBlockToCif(block)] for block in self._dataBlocks]
+        self._dataBlocksCif = [[dataBlockToCif(block)] for block in self._dataBlocks]
         console.debug(formatMsg('sub', f'{len(self._dataBlocksCif)} model(s)', '', 'to CIF string', 'converted'))
         self.dataBlocksCifChanged.emit()
 

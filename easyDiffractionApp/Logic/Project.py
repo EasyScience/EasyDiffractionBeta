@@ -11,6 +11,7 @@ from PySide6.QtCore import QFile, QTextStream, QIODevice
 
 from easyDiffractionLib.io.cryspy_parser import CryspyParser, Parameter
 from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
+from easyDiffractionLib.io.cif import cifV2ToV1, gemmiObjToEdProject
 from EasyApp.Logic.Logging import console
 
 
@@ -206,7 +207,7 @@ class Project(QObject):
 
     def createDataBlockFromCif(self, edCif):
         block = cif.read_string(edCif).sole_block()
-        dataBlock = CryspyParser.gemmiObjToEdProject(block)
+        dataBlock = gemmiObjToEdProject(block)
         return dataBlock
 
     @Slot('QVariant')
@@ -242,10 +243,10 @@ class Project(QObject):
 
         stream = QTextStream(file)
         edCif = stream.readAll()
-        cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
+        cryspyCif = cifV2ToV1(edCif)
 
         block = cif.read_string(edCif).sole_block()
-        self._dataBlock = CryspyParser.gemmiObjToEdProject(block)
+        self._dataBlock = gemmiObjToEdProject(block)
 
 
         self.location = os.path.dirname(fpath)
@@ -276,7 +277,7 @@ class Project(QObject):
             edCif = file.read()
 
         block = cif.read_string(edCif).sole_block()
-        self._dataBlock = CryspyParser.gemmiObjToEdProject(block)
+        self._dataBlock = gemmiObjToEdProject(block)
 
         st = os.stat(fpath)
         fmt = "%d %b %Y %H:%M"
