@@ -9,9 +9,10 @@ from EasyApp.Logic.Logging import console
 from easyDiffractionLib.calculators.cryspy import Data as  CryspyData # TODO: make non-cryspy specific
 
 class Data(QObject):
-    def __init__(self, parent):
+    def __init__(self, parent, interface=None):
         super().__init__(parent)
-        self._data = CryspyData(parent)
+        self.interface = interface
+        self._data = self.interface.data()
         self._cryspyDict = self._data._cryspyDict
         self._cryspyObj = self._data._cryspyObj
         self._cryspyInOutDict = self._data._cryspyInOutDict

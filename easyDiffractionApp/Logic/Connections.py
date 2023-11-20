@@ -87,7 +87,7 @@ class Connections(QObject):
         # Experiment page
         if self._proxy.experiment.defined:
             console.debug(formatMsg('main', 'Recalculating data...'))
-            self._proxy.experiment.runCryspyCalculations()
+            self._proxy.experiment.runProfileCalculations()
             console.debug(formatMsg('main', 'Replacing arrays...'))
             self._proxy.experiment.replaceArrays()
             console.debug(formatMsg('main', f'Redrawing curves on experiment page using {self._proxy.plotting.currentLib1d}...'))
@@ -137,7 +137,7 @@ class Connections(QObject):
 
         # Experiment page
         console.debug(formatMsg('main', 'Calculating data...'))
-        self._proxy.experiment.runCryspyCalculations()
+        self._proxy.experiment.runProfileCalculations()
         console.debug(formatMsg('main', 'Adding arrays and ranges...'))
         self._proxy.experiment.addArraysAndChartRanges()
         console.debug(formatMsg('main', f'Drawing curves on experiment page using {self._proxy.plotting.currentLib1d}...'))
@@ -181,7 +181,7 @@ class Connections(QObject):
 
         # Experiment page
         console.debug(formatMsg('main', 'Recalculating data...'))
-        self._proxy.experiment.runCryspyCalculations()
+        self._proxy.experiment.runProfileCalculations()
         console.debug(formatMsg('main', 'Replacing arrays...'))
         self._proxy.experiment.replaceArrays()
         console.debug(formatMsg('main', f'Redrawing curves on experiment page using {self._proxy.plotting.currentLib1d}...'))
@@ -247,7 +247,7 @@ class Connections(QObject):
 
     def recalcAndUpdateAnalysisPageOnly(self):
         console.debug(formatMsg('main', 'Recalculating data...'))
-        self._proxy.experiment.runCryspyCalculations()
+        self._proxy.experiment.runProfileCalculations()
         console.debug(formatMsg('main', 'Replacing arrays...'))
         self._proxy.experiment.replaceArrays()
         console.debug(formatMsg('main', f'Redrawing curves on analysis page using {self._proxy.plotting.currentLib1d}...'))

@@ -24,7 +24,6 @@ from Logic.Data import Data
 from easyCrystallography.Symmetry.tools import SpacegroupInfo
 
 try:
-#     import cryspy
     from cryspy.H_functions_global.function_1_cryspy_objects import \
         str_to_globaln
     console.debug('CrysPy module imported')
@@ -84,9 +83,10 @@ class Model(QObject):
     structViewCellModelChanged = Signal()
     structViewAxesModelChanged = Signal()
 
-    def __init__(self, parent):
+    def __init__(self, parent, interface=None):
         super().__init__(parent)
         self._proxy = parent
+        self._interface = interface
         self._defined = False
         self._currentIndex = -1
         self._dataBlocks = []
@@ -239,19 +239,12 @@ class Model(QObject):
         self.defined = bool(len(self._dataBlocks))
 
         self.setDataBlocksCif()
-        self.updateCryspyCif() # udpate cryspyObj and cryspyDict
+        self.updateCifOnInterface()
         self.dataBlocksChanged.emit()
 
-    def updateCryspyCif(self):
-        # this will be moved to the interface code
+    def updateCifOnInterface(self):
         cif = self._dataBlocksCif[self.currentIndex][0]
-
-        cryspyObj = self._proxy.data._cryspyObj
-        cryspyCif = cifV2ToV1(cif)
-        cryspyModelsObj = str_to_globaln(cryspyCif)
-        cryspyObj.add_items(cryspyModelsObj.items)
-        cryspyModelsDict = cryspyModelsObj.get_dictionary()
-        self._proxy.data._cryspyDict.update(cryspyModelsDict)
+        self._interface.updateModelCif(cif)
 
     def phaseToBlocks(self, phases):
         """
@@ -523,19 +516,15 @@ class Model(QObject):
         currentDataBlock = self.dataBlocks[index]
         currentModelName = currentDataBlock['name']['value']
 
-        cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
-        cryspyObjBlockIdx = cryspyObjBlockNames.index(currentModelName)
-
-        cryspyDictBlockName = f'crystal_{currentModelName}'
-
-        del self._proxy.data._cryspyObj.items[cryspyObjBlockIdx]
-        del self._proxy.data._cryspyDict[cryspyDictBlockName]
+        self._interface.remove_phase(currentModelName) # delete phase info on interface
+        self.removePhase(currentModelName) # delete phase locally
         del self._dataBlocks[index]
 
         self.defined = bool(len(self.dataBlocks))
+        if not self.defined:
+            self._currentIndex = -1
 
         self.dataBlocksChanged.emit()
-
         console.debug(f"Model no. {index + 1} has been removed")
 
     @Slot()
@@ -962,6 +951,10 @@ class Model(QObject):
         '''
         print("\nsetCurrentModelStructViewAtomsModel\n")
         structViewModel = set()
+        if self._currentIndex == -1:
+            self._structViewAtomsModel = []
+            self.structViewAtomsModelChanged.emit()
+            return
         atoms = self._dataBlocks[self._currentIndex]['loops']['_atom_site']
         
         # Add all atoms in the cell, including those in equivalent positions

@@ -9,9 +9,10 @@ from gemmi import cif
 from PySide6.QtCore import QObject, Signal, Slot, Property, QUrl
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 
-from easyDiffractionLib.io.cryspy_parser import CryspyParser, Parameter
+from easyDiffractionLib.io.cryspy_parser import Parameter
+from easyDiffractionLib.io.cif import dataBlockToCif
 from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
-from easyDiffractionLib.io.cif import cifV2ToV1, gemmiObjToEdProject
+from easyDiffractionLib.io.cif import cifV2ToV1
 from EasyApp.Logic.Logging import console
 
 
@@ -436,6 +437,70 @@ class Project(QObject):
         self.needSave = False
 
     def setDataBlockCif(self):
-        self._dataBlockCif = CryspyParser.dataBlockToCif(self._dataBlock)
+        self._dataBlockCif = dataBlockToCif(self._dataBlock)
         console.debug(formatMsg('sub', 'Project', '', 'to CIF string', 'converted'))
         self.dataBlockCifChanged.emit()
+
+
+def gemmiObjToEdProject(starObj):
+    edProject = {'name': '', 'params': {}, 'loops': {}}
+
+    # DATABLOCK ID
+
+    edProject['name'] = dict(Parameter(
+        starObj.name,
+        icon = 'archive',
+        url = 'https://docs.easydiffraction.org/app/project/dictionaries/',
+    ))
+
+    # DATABLOCK SINGLES
+
+    for param in starObj:
+        if param.pair is not None and param.pair[0] == '_project.description':
+            category, name = param.pair[0].split('.')
+            if category not in edProject['params']:
+                edProject['params'][category] = {}
+            edProject['params'][category][name] = dict(Parameter(
+                param.pair[0],
+                category = category,
+                name = name,
+                prettyName = 'Description',
+                url = 'https://docs.easydiffraction.org/app/project/dictionaries/',
+            ))
+
+    # DATABLOCK TABLES
+
+    for loop in starObj:
+        if loop.loop is None:
+            continue
+        category = loop.loop.tags[0]
+
+        if '_model' in category:
+            edModels = []
+            for rowItem in loop.loop.values:
+                edModel = {}
+                edModel['cif_file_name'] = dict(Parameter(
+                    rowItem,
+                    category = '_model',
+                    name = 'cif_file_name',
+                    prettyName = 'Model file',
+                    url = 'https://easydiffraction.org'
+                ))
+                edModels.append(edModel)
+            edProject['loops']['_model'] = edModels
+
+        elif '_experiment' in category:
+            edExperiments = []
+            for rowItem in loop.loop.values:
+                edExperiment = {}
+                edExperiment['cif_file_name'] = dict(Parameter(
+                    rowItem,
+                    category = '_experiment',
+                    name = 'cif_file_name',
+                    prettyName = 'Experiment file',
+                    url = 'https://easydiffraction.org'
+                ))
+                edExperiments.append(edExperiment)
+            edProject['loops']['_experiment'] = edExperiments
+
+    return edProject

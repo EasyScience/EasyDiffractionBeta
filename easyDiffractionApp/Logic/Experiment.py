@@ -657,55 +657,8 @@ class Experiment(QObject):
 
     @Slot(str)
     def loadExperimentsFromEdCif(self, edCif):
-        cryspyObj = self._proxy.data._cryspyObj
-        cryspyCif = cifV2ToV1(edCif)
-        cryspyExperimentsObj = str_to_globaln(cryspyCif)
-
-        # Add/modify CryspyObj with ranges based on the measured data points in _pd_meas loop
-        range_min = 0  # default value to be updated later
-        range_max = 180  # default value to be updated later
-        defaultEdRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
-        cryspyRangeCif = cifV2ToV1(defaultEdRangeCif)
-        cryspyRangeObj = str_to_globaln(cryspyRangeCif).items
-        for dataBlock in cryspyExperimentsObj.items:
-            for item in dataBlock.items:
-                if type(item) == cryspy.C_item_loop_classes.cl_1_pd_meas.PdMeasL:
-                    range_min = item.items[0].ttheta
-                    range_max = item.items[-1].ttheta
-                    cryspyRangeObj[0].ttheta_min = range_min
-                    cryspyRangeObj[0].ttheta_max = range_max
-            dataBlock.add_items(cryspyRangeObj)
-
-        # Add/modify CryspyObj with phases based on the already loaded phases
-        loadedModelNames = [block['name']['value'] for block in self._proxy.model.dataBlocks]
-        for dataBlock in cryspyExperimentsObj.items:
-            for itemIdx, item in enumerate(dataBlock.items):
-                if type(item) == cryspy.C_item_loop_classes.cl_1_phase.PhaseL:
-                    cryspyModelNames = [phase.label for phase in item.items]
-                    for modelIdx, modelName in enumerate(cryspyModelNames):
-                        if modelName not in loadedModelNames:
-                            del item.items[modelIdx]
-                    if not len(item.items):
-                        del dataBlock.items[itemIdx]
-            itemTypes = [type(item) for item in dataBlock.items]
-            if cryspy.C_item_loop_classes.cl_1_phase.PhaseL not in itemTypes:
-                defaultEdModelsCif = 'loop_\n_pd_phase_block.id\n_pd_phase_block.scale'
-                for modelName in loadedModelNames:
-                    defaultEdModelsCif += f'\n{modelName} 1.0'
-                cryspyPhasesCif = cifV2ToV1(defaultEdModelsCif)
-                cryspyPhasesObj = str_to_globaln(cryspyPhasesCif).items
-                dataBlock.add_items(cryspyPhasesObj)
-
-        experimentsCountBefore = len(self.cryspyObjExperiments())
-        cryspyObj.add_items(cryspyExperimentsObj.items)
-        experimentsCountAfter = len(self.cryspyObjExperiments())
-        success = experimentsCountAfter - experimentsCountBefore
-
-        if success:
-            cryspyExperimentsDict = cryspyExperimentsObj.get_dictionary()
-            self._proxy.data._cryspyDict.update(cryspyExperimentsDict)
-        else:
-            console.debug(formatMsg('sub', 'No experiment(s)', '', 'to intern dataset', 'added'))
+        modelNames = [block['name']['value'] for block in self._proxy.model.dataBlocks]
+        self._interface.updateExpCif(edCif, modelNames)
 
     @Slot(str)
     def replaceExperiment(self, edCifNoMeas=''):
@@ -1222,14 +1175,13 @@ class Experiment(QObject):
                     self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'value', value)
                     self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', error)
 
-    def runCryspyCalculations(self):
-        result = rhochi_calc_chi_sq_by_dictionary(
-            self._proxy.data._cryspyDict,
-            dict_in_out=self._proxy.data._cryspyInOutDict,
-            flag_use_precalculated_data=False,
-            flag_calc_analytical_derivatives=False)
+    def runProfileCalculations(self):
 
-        console.debug(formatMsg('sub', 'Cryspy calculations', 'finished'))
+        # shove it all into the calculator.
+
+        result = self._interface.calculate_profile()
+
+        console.debug(formatMsg('sub', 'Profle calculations', 'finished'))
 
         chiSq = result[0]
         self._proxy.fitting._pointsCount = result[1]
