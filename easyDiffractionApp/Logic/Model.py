@@ -14,7 +14,7 @@ from easyDiffractionLib import Phases, Phase, Lattice, Site, SpaceGroup
 
 from easyCrystallography.Components.AtomicDisplacement import AtomicDisplacement
 from easyCrystallography.Components.SpaceGroup import SpaceGroup
-from easyDiffractionLib.io.cif import dataBlockToCif, cifV2ToV1
+from easyDiffractionLib.io.cif import dataBlockToCif
 from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
 from EasyApp.Logic.Logging import console
 
@@ -22,13 +22,6 @@ from Logic.Tables import PERIODIC_TABLE # TODO CHANGE THIS TO PERIODICTABLE
 import periodictable as pt
 from Logic.Data import Data
 from easyCrystallography.Symmetry.tools import SpacegroupInfo
-
-try:
-    from cryspy.H_functions_global.function_1_cryspy_objects import \
-        str_to_globaln
-    console.debug('CrysPy module imported')
-except ImportError:
-    console.error('No CrysPy module found')
 
 
 _DEFAULT_CIF_BLOCK = """data_default
@@ -497,15 +490,11 @@ class Model(QObject):
     @Slot(str)
     def replaceModel(self, edCif=''):
         """
-        New CIF -> _dataBlocks ( -> _dataBlocksCif -> cryspyObj and cryspyDict)
+        New CIF -> _dataBlocks ( -> _dataBlocksCif -> calcObj and calcDict)
         """
-        console.debug("Cryspy obj and dict need to be replaced")
-        currentDataBlock = self.dataBlocks[self.currentIndex]
-        currentModelName = currentDataBlock['name']['value']
-
+        console.debug("Calculator obj and dict need to be replaced")
         if edCif:
-            # delete current phase
-            self.removePhase(currentModelName)
+            self.removeModel(self.currentIndex)
             self.loadModelsFromEdCif(edCif)
         self.dataBlocksChanged.emit()
 
@@ -539,17 +528,26 @@ class Model(QObject):
     @Slot(int, str, str, str, 'QVariant')
     def setMainParamWithFullUpdate(self, blockIdx, category, name, field, value):
         self.blocksToPhase(blockIdx, category, name, field, value)
-        self._dataBlocks[blockIdx] = self.phaseToBlocks(self.phases)
+        # we should do the proper phase -> datablocks conversion
+        # self._dataBlocks[blockIdx] = self.phaseToBlocks(self.phases)
+
+        # but it's easier to just update the existing dict
+        if field == 'value':
+            self._dataBlocks[blockIdx]['params'][category][name]['value'] = value
+        elif field == 'error':
+            self._dataBlocks[blockIdx]['params'][category][name]['error'] = value
+        elif field == 'fit':
+            self._dataBlocks[blockIdx]['params'][category][name]['fit'] = value
         self.setDataBlocksCif()
         self.replaceModel()
 
     @Slot(int, str, str, str, 'QVariant')
     def setMainParam(self, blockIdx, category, name, field, value):
         changedIntern = self.editDataBlockMainParam(blockIdx, category, name, field, value)
-        changedCryspy = self.editCryspyDictByMainParam(blockIdx, category, name, field, value)
+        changedCalculator = self.editCalculatorDictByMainParam(blockIdx, category, name, field, value)
         self.blocksToPhase(blockIdx, category, name, field, value)
         self.setDataBlocksCif()
-        if changedIntern and changedCryspy:
+        if changedIntern and changedCalculator:
             self.dataBlocksChanged.emit()
 
     @Slot(int, str, str, int, str, 'QVariant')
@@ -564,10 +562,10 @@ class Model(QObject):
     @Slot(int, str, str, int, str, 'QVariant')
     def setLoopParam(self, blockIdx, category, name, rowIndex, field, value):
         changedIntern = self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
-        changedCryspy = self.editCryspyDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
+        changedCalculator = self.editCalculatorDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
         self.blocksToLoopPhase(blockIdx, category, name, rowIndex, field, value)
         self.setDataBlocksCif()
-        if changedIntern and changedCryspy:
+        if changedIntern and changedCalculator:
             self.dataBlocksChanged.emit()
 
     @Slot(str, int)
@@ -586,13 +584,6 @@ class Model(QObject):
         self.replaceModel()
 
     # Private methods
-
-    # def cryspyObjCrystals(self):
-    #     print("\ncryspyObjCrystals\n")
-    #     cryspyObj = self._proxy.data._cryspyObj
-    #     cryspyModelType = cryspy.E_data_classes.cl_1_crystal.Crystal
-    #     models = [block for block in cryspyObj.items if type(block) == cryspyModelType]
-    #     return models
 
     def createSpaceGroupNames(self):
         all_system_names = SpacegroupInfo.get_all_systems()
@@ -675,39 +666,39 @@ class Model(QObject):
             console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         return True
 
-    def editCryspyDictByMainParam(self, blockIdx, category, name, field, value):
+    def editCalculatorDictByMainParam(self, blockIdx, category, name, field, value):
         if field != 'value' and field != 'fit':
             return True
 
-        path, value = self.cryspyDictPathByMainParam(blockIdx, category, name, value)
+        path, value = self.calculatorDictPathByMainParam(blockIdx, category, name, value)
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
-        oldValue = self._proxy.data._cryspyDict[path[0]][path[1]][path[2]]
+        oldValue = self._proxy.data._calcDict[path[0]][path[1]][path[2]]
         if oldValue == value:
             return False
-        self._proxy.data._cryspyDict[path[0]][path[1]][path[2]] = value
+        self._proxy.data._calcDict[path[0]][path[1]][path[2]] = value
 
-        console.debug(formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
+        console.debug(formatMsg('sub', 'Calculator dict', f'{oldValue} → {value}', f'{path}'))
         return True
 
-    def editCryspyDictByLoopParam(self, blockIdx, category, name, rowIndex, field, value):
+    def editCalculatorDictByLoopParam(self, blockIdx, category, name, rowIndex, field, value):
         if field != 'value' and field != 'fit':
             return True
 
-        path, value = self.cryspyDictPathByLoopParam(blockIdx, category, name, rowIndex, value)
+        path, value = self.calculatorDictPathByLoopParam(blockIdx, category, name, rowIndex, value)
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
-        oldValue = self._proxy.data._cryspyDict[path[0]][path[1]][path[2]]
+        oldValue = self._proxy.data._calcDict[path[0]][path[1]][path[2]]
         if oldValue == value:
             return False
-        self._proxy.data._cryspyDict[path[0]][path[1]][path[2]] = value
+        self._proxy.data._calcDict[path[0]][path[1]][path[2]] = value
 
-        console.debug(formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
+        console.debug(formatMsg('sub', 'Calculator dict', f'{oldValue} → {value}', f'{path}'))
         return True
 
-    def cryspyDictPathByMainParam(self, blockIdx, category, name, value):
+    def calculatorDictPathByMainParam(self, blockIdx, category, name, value):
         blockName = self._dataBlocks[blockIdx]['name']['value']
         path = ['','','']
         path[0] = f"crystal_{blockName}"
@@ -742,7 +733,7 @@ class Model(QObject):
 
         return path, value
 
-    def cryspyDictPathByLoopParam(self, blockIdx, category, name, rowIndex, value):
+    def calculatorDictPathByLoopParam(self, blockIdx, category, name, rowIndex, value):
         blockName = self._dataBlocks[blockIdx]['name']['value']
         path = ['','','']
         path[0] = f"crystal_{blockName}"
@@ -831,7 +822,7 @@ class Model(QObject):
 
     def editDataBlockByLmfitParams(self, params):
         for param in params.values():
-            block, group, idx = Data.strToCryspyDictParamPath(param.name)
+            block, group, idx = Data.strToCalcDictParamPath(param.name)
 
             # crystal block
             if block.startswith('crystal_'):
@@ -947,7 +938,7 @@ class Model(QObject):
 
     def setCurrentModelStructViewAtomsModel(self):
         '''
-        Create a list of atoms for structure view, using cryspy to calculate equivalent positions
+        Create a list of atoms for structure view, using easyCrystallography to calculate equivalent positions
         '''
         print("\nsetCurrentModelStructViewAtomsModel\n")
         structViewModel = set()

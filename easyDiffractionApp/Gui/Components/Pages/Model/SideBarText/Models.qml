@@ -109,7 +109,7 @@ EaElements.ComboBox {
             EaComponents.TableViewParameter {
                 enabled: false
                 text: typeof comboBox.model[currentIndex] !== 'undefined' ?
-                    comboBox.model[currentIndex].name :
+                    comboBox.model[currentIndex]['name'].value :
                     ''
             }
         }

@@ -6,23 +6,23 @@ import numpy as np
 from PySide6.QtCore import QObject, Slot
 
 from EasyApp.Logic.Logging import console
-from easyDiffractionLib.calculators.cryspy import Data as  CryspyData # TODO: make non-cryspy specific
+from easyDiffractionLib.calculators.cryspy import Data as  CalcData # TODO: make non-cryspy specific
 
 class Data(QObject):
     def __init__(self, parent, interface=None):
         super().__init__(parent)
         self.interface = interface
         self._data = self.interface.data()
-        self._cryspyDict = self._data._cryspyDict
-        self._cryspyObj = self._data._cryspyObj
-        self._cryspyInOutDict = self._data._cryspyInOutDict
+        self._calcDict = self._data._cryspyDict
+        self._calcObj = self._data._cryspyObj
+        self._calcInOutDict = self._data._cryspyInOutDict
 
     @Slot()
     def resetAll(self):
         self._data.reset()
 
-    def cryspyDictParamPathToStr(p):
-        return CryspyData.cryspyDictParamPathToStr(p)
+    def calcDictParamPathToStr(p):
+        return CalcData.cryspyDictParamPathToStr(p)
 
-    def strToCryspyDictParamPath(s):
-        return CryspyData.strToCryspyDictParamPath(s)
+    def strToCalcDictParamPath(s):
+        return CalcData.strToCryspyDictParamPath(s)

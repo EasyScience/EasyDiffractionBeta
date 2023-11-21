@@ -141,24 +141,24 @@ class Fittables(QObject):
                 self._proxy.experiment.editDataBlockMainParam(blockIdx, category, name, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.experiment.editDataBlockMainParam(blockIdx, category, name, field, value)
                 # update cryspy model
-                changedCryspy = self._proxy.experiment.editCryspyDictByMainParam(blockIdx, category, name, field, value)
+                changedCryspy = self._proxy.experiment.editCalcDictByMainParam(blockIdx, category, name, field, value)
             elif blockType == 'model':
                 self._proxy.model.editDataBlockMainParam(blockIdx, category, name, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.model.editDataBlockMainParam(blockIdx, category, name, field, value)
                 self._proxy.model.blocksToPhase(blockIdx, category, name, field, value)
                 # update cryspy model
-                changedCryspy = self._proxy.model.editCryspyDictByMainParam(blockIdx, category, name, field, value)
+                changedCryspy = self._proxy.model.editCalcDictByMainParam(blockIdx, category, name, field, value)
         else:
             console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
             if blockType == 'experiment':
                 self._proxy.experiment.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.experiment.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
-                changedCryspy = self._proxy.experiment.editCryspyDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
+                changedCryspy = self._proxy.experiment.editCalcDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
             elif blockType == 'model':
                 self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
                 self._proxy.model.blocksToLoopPhase(blockIdx, category, name, rowIndex, field, value)
-                changedCryspy = self._proxy.model.editCryspyDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
+                changedCryspy = self._proxy.model.editCalcDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
         if changedIntern and changedCryspy:
             if blockType == 'model':
                 self.modelChangedSilently.emit()

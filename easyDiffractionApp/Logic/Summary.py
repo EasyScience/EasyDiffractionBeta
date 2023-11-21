@@ -49,9 +49,9 @@ class Summary(QObject):
 
     def setDataBlocksCif(self):
         dataBlocksCifList = []
-        cryspyDict = self._proxy.data._cryspyDict
-        cryspyInOutDict = self._proxy.data._cryspyInOutDict
-        cryspyObj = self._proxy.data._cryspyObj
+        cryspyDict = self._proxy.data._calcDict
+        cryspyInOutDict = self._proxy.data._calcInOutDict
+        cryspyObj = self._proxy.data._calcObj
         cryspyObj.take_parameters_from_dictionary(cryspyDict, l_parameter_name=None, l_sigma=None)
         cryspyObj.take_parameters_from_dictionary(cryspyInOutDict, l_parameter_name=None, l_sigma=None)
 

@@ -24,8 +24,6 @@ try:
     import cryspy
     from cryspy.H_functions_global.function_1_cryspy_objects import \
         str_to_globaln
-    from cryspy.procedure_rhochi.rhochi_by_dictionary import \
-        rhochi_calc_chi_sq_by_dictionary
     console.debug('CrysPy module imported')
 except ImportError:
     console.debug('No CrysPy module found')
@@ -662,13 +660,13 @@ class Experiment(QObject):
 
     @Slot(str)
     def replaceExperiment(self, edCifNoMeas=''):
-        console.debug("Cryspy obj and dict need to be replaced")
+        console.debug("Calculator obj and dict need to be replaced")
 
         currentDataBlock = self.dataBlocksNoMeas[self.currentIndex]
         currentExperimentName = currentDataBlock['name']['value']
 
-        cryspyObjBlockNames = [item.data_name for item in self._proxy.data._cryspyObj.items]
-        cryspyObjBlockIdx = cryspyObjBlockNames.index(currentExperimentName)
+        calcObjBlockNames = [item.data_name for item in self._proxy.data._calcObj.items]
+        calcObjBlockIdx = calcObjBlockNames.index(currentExperimentName)
 
         if not edCifNoMeas:
             edCifNoMeas = dataBlockToCif(currentDataBlock)
@@ -683,20 +681,21 @@ class Experiment(QObject):
 
         edCif = edCifNoMeas + '\n\n' + edCifMeasOnly
 
-        cryspyCif = cifV2ToV1(edCif)
-        cryspyExperimentsObj = str_to_globaln(cryspyCif)
-        cryspyExperimentsDict = cryspyExperimentsObj.get_dictionary()
+        blocks = self._interface.replaceExpCif(edCif, currentExperimentName)
+        self._dataBlocksNoMeas[self.currentIndex] = blocks
 
-        # Powder diffraction experiment always has 'pd_' prefix if recognized by CrysPy
-        # Had to add edCifMeasOnly loop to the input CIF in order to allow CrysPy to do this
-        cryspyDictBlockName = f'pd_{currentExperimentName}'
+        # calcCif = cifV2ToV1(edCif)
+        # calcExperimentsObj = str_to_globaln(calcCif)
+        # calcExperimentsDict = calcExperimentsObj.get_dictionary()
 
-        _, edExperimentsNoMeas = CryspyParser.cryspyObjAndDictToEdExperiments(cryspyExperimentsObj,
-                                                                              cryspyExperimentsDict)
+        # calcDictBlockName = f'pd_{currentExperimentName}'
 
-        self._proxy.data._cryspyObj.items[cryspyObjBlockIdx] = cryspyExperimentsObj.items[0]
-        self._proxy.data._cryspyDict[cryspyDictBlockName] = cryspyExperimentsDict[cryspyDictBlockName]
-        self._dataBlocksNoMeas[self.currentIndex] = edExperimentsNoMeas[0]
+        # _, edExperimentsNoMeas = CryspyParser.calcObjAndDictToEdExperiments(calcExperimentsObj,
+        #                                                                     calcExperimentsDict)
+
+        # self._proxy.data._calcObj.items[calcObjBlockIdx] = calcExperimentsObj.items[0]
+        # self._proxy.data._calcDict[calcDictBlockName] = calcExperimentsDict[calcDictBlockName]
+        # self._dataBlocksNoMeas[self.currentIndex] = edExperimentsNoMeas[0]
 
         console.debug(f"Experiment data block '{currentExperimentName}' (no. {self.currentIndex + 1}) (without measured data) has been replaced")
         self.dataBlocksNoMeasChanged.emit()  # self.dataBlocksNoMeasChanged.emit(blockIdx)
@@ -749,8 +748,8 @@ class Experiment(QObject):
     @Slot(int, str, str, str, 'QVariant')
     def setMainParam(self, blockIdx, category, name, field, value):
         changedIntern = self.editDataBlockMainParam(blockIdx, category, name, field, value)
-        changedCryspy = self.editCryspyDictByMainParam(blockIdx, category, name, field, value)
-        if changedIntern and changedCryspy:
+        changedCalc = self.editCalcDictByMainParam(blockIdx, category, name, field, value)
+        if changedIntern and changedCalc:
             self.dataBlocksNoMeasChanged.emit()
 
     @Slot(int, str, str, int, str, 'QVariant')
@@ -763,8 +762,8 @@ class Experiment(QObject):
     @Slot(int, str, str, int, str, 'QVariant')
     def setLoopParam(self, blockIdx, category, name, rowIndex, field, value):
         changedIntern = self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
-        changedCryspy = self.editCryspyDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
-        if changedIntern and changedCryspy:
+        changedCalc = self.editCalcDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
+        if changedIntern and changedCalc:
             self.dataBlocksNoMeasChanged.emit()
 
     @Slot(str, int)
@@ -783,13 +782,6 @@ class Experiment(QObject):
         self.replaceExperiment()
 
     # Private methods
-
-    def cryspyObjExperiments(self):
-        cryspyObj = self._proxy.data._cryspyObj
-        cryspyExperimentType = cryspy.E_data_classes.cl_2_pd.Pd
-        experiments = [block for block in cryspyObj.items if type(block) == cryspyExperimentType]
-        return experiments
-
     def removeDataBlockLoopRow(self, category, rowIndex):
         block = 'experiment'
         blockIdx = self._currentIndex
@@ -903,39 +895,39 @@ class Experiment(QObject):
             job_with_item.fixed = not value
         pass
 
-    def editCryspyDictByMainParam(self, blockIdx, category, name, field, value):
+    def editCalcDictByMainParam(self, blockIdx, category, name, field, value):
         if field != 'value' and field != 'fit':
             return True
 
-        path, value = self.cryspyDictPathByMainParam(blockIdx, category, name, value)
+        path, value = self.calcDictPathByMainParam(blockIdx, category, name, value)
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
-        oldValue = self._proxy.data._cryspyDict[path[0]][path[1]][path[2]]
+        oldValue = self._proxy.data._calcDict[path[0]][path[1]][path[2]]
         if oldValue == value:
             return False
-        self._proxy.data._cryspyDict[path[0]][path[1]][path[2]] = value
+        self._proxy.data._calcDict[path[0]][path[1]][path[2]] = value
+
+        console.debug(formatMsg('sub', 'Calc dict', f'{oldValue} → {value}', f'{path}'))
+        return True
+
+    def editCalcDictByLoopParam(self, blockIdx, category, name, rowIndex, field, value):
+        if field != 'value' and field != 'fit':
+            return True
+
+        path, value = self.calcDictPathByLoopParam(blockIdx, category, name, rowIndex, value)
+        if field == 'fit':
+            path[1] = f'flags_{path[1]}'
+
+        oldValue = self._proxy.data._calcDict[path[0]][path[1]][path[2]]
+        if oldValue == value:
+            return False
+        self._proxy.data._calcDict[path[0]][path[1]][path[2]] = value
 
         console.debug(formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
         return True
 
-    def editCryspyDictByLoopParam(self, blockIdx, category, name, rowIndex, field, value):
-        if field != 'value' and field != 'fit':
-            return True
-
-        path, value = self.cryspyDictPathByLoopParam(blockIdx, category, name, rowIndex, value)
-        if field == 'fit':
-            path[1] = f'flags_{path[1]}'
-
-        oldValue = self._proxy.data._cryspyDict[path[0]][path[1]][path[2]]
-        if oldValue == value:
-            return False
-        self._proxy.data._cryspyDict[path[0]][path[1]][path[2]] = value
-
-        console.debug(formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
-        return True
-
-    def cryspyDictPathByMainParam(self, blockIdx, category, name, value):
+    def calcDictPathByMainParam(self, blockIdx, category, name, value):
         blockName = self._dataBlocksNoMeas[blockIdx]['name']['value']
         path = ['','','']
         path[0] = f"pd_{blockName}"
@@ -993,7 +985,7 @@ class Experiment(QObject):
 
         return path, value
 
-    def cryspyDictPathByLoopParam(self, blockIdx, category, name, rowIndex, value):
+    def calcDictPathByLoopParam(self, blockIdx, category, name, rowIndex, value):
         blockName = self._dataBlocksNoMeas[blockIdx]['name']['value']
         path = ['','','']
         path[0] = f"pd_{blockName}"
@@ -1093,7 +1085,7 @@ class Experiment(QObject):
 
     def editDataBlockByLmfitParams(self, params):
         for param in params.values():
-            block, group, idx = Data.strToCryspyDictParamPath(param.name)
+            block, group, idx = Data.strToCalcDictParamPath(param.name)
 
             # pd (powder diffraction) block
             if block.startswith('pd_'):
@@ -1199,34 +1191,34 @@ class Experiment(QObject):
 
     def setMeasuredArraysForSingleExperiment(self, idx):
         ed_name = self._proxy.experiment.dataBlocksNoMeas[idx]['name']['value']
-        cryspy_block_name = f'pd_{ed_name}'
-        cryspyInOutDict = self._proxy.data._cryspyInOutDict
+        calc_block_name = f'pd_{ed_name}'
+        calcInOutDict = self._proxy.data._calcInOutDict
 
         # X data
-        x_array = cryspyInOutDict[cryspy_block_name]['ttheta']
+        x_array = calcInOutDict[calc_block_name]['ttheta']
         x_array = np.rad2deg(x_array)
         self.setXArray(x_array, idx)
 
         # Measured Y data
-        y_meas_array = cryspyInOutDict[cryspy_block_name]['signal_exp'][0]
+        y_meas_array = calcInOutDict[calc_block_name]['signal_exp'][0]
         self.setYMeasArray(y_meas_array, idx)
 
         # Standard deviation of the measured Y data
-        sy_meas_array = cryspyInOutDict[cryspy_block_name]['signal_exp'][1]
+        sy_meas_array = calcInOutDict[calc_block_name]['signal_exp'][1]
         self.setSYMeasArray(sy_meas_array, idx)
 
     def setCalculatedArraysForSingleExperiment(self, idx):
         ed_name = self._proxy.experiment.dataBlocksNoMeas[idx]['name']['value']
-        cryspy_block_name = f'pd_{ed_name}'
-        cryspyInOutDict = self._proxy.data._cryspyInOutDict
+        calc_block_name = f'pd_{ed_name}'
+        calcInOutDict = self._proxy.data._calcInOutDict
 
         # Background Y data # NED FIX: use calculatedYBkgArray()
-        y_bkg_array = cryspyInOutDict[cryspy_block_name]['signal_background']
+        y_bkg_array = calcInOutDict[calc_block_name]['signal_background']
         self.setYBkgArray(y_bkg_array, idx)
 
         # Total calculated Y data (sum of all phases up and down polarisation plus background)
-        y_calc_total_array = cryspyInOutDict[cryspy_block_name]['signal_plus'] + \
-                             cryspyInOutDict[cryspy_block_name]['signal_minus'] + \
+        y_calc_total_array = calcInOutDict[calc_block_name]['signal_plus'] + \
+                             calcInOutDict[calc_block_name]['signal_minus'] + \
                              y_bkg_array
         self.setYCalcTotalArray(y_calc_total_array, idx)
 
@@ -1238,10 +1230,10 @@ class Experiment(QObject):
         # Bragg peaks data
         #cryspyInOutDict[cryspy_name]['dict_in_out_co2sio4']['index_hkl'] # [0] - h array, [1] - k array, [2] - l array
         #cryspyInOutDict[cryspy_name]['dict_in_out_co2sio4']['ttheta_hkl'] # need rad2deg
-        modelNames = [key[12:] for key in cryspyInOutDict[cryspy_block_name].keys() if 'dict_in_out' in key]
+        modelNames = [key[12:] for key in calcInOutDict[calc_block_name].keys() if 'dict_in_out' in key]
         xBraggDict = {}
         for modelName in modelNames:
-            x_bragg_array = cryspyInOutDict[cryspy_block_name][f'dict_in_out_{modelName}']['ttheta_hkl']
+            x_bragg_array = calcInOutDict[calc_block_name][f'dict_in_out_{modelName}']['ttheta_hkl']
             x_bragg_array = np.rad2deg(x_bragg_array)
             xBraggDict[modelName] = x_bragg_array
         self.setXBraggDict(xBraggDict, idx)
