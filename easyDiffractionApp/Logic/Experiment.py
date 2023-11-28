@@ -15,7 +15,7 @@ from PySide6.QtQml import QJSValue
 from easyDiffractionLib.io.cryspy_parser import CryspyParser, Parameter
 from easyDiffractionLib.io.cif import dataBlockToCif, cifV2ToV1
 from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
-from easyDiffractionLib.Jobs import get_job_from_file
+from easyDiffractionLib.Jobs import get_job_from_file, get_job_from_cif_string
 
 from EasyApp.Logic.Logging import console
 from Logic.Data import Data
@@ -169,12 +169,10 @@ class Experiment(QObject):
 
     @Property('QVariant', notify=dataBlocksMeasOnlyChanged)
     def dataBlocksMeasOnly(self):
-        #console.error('EXPERIMENT DATABLOCK (MEAS ONLY) GETTER')
         return self._dataBlocksMeasOnly
 
     @Property('QVariant', notify=dataBlocksNoMeasChanged)
     def dataBlocksNoMeas(self):
-        #console.error('EXPERIMENT DATABLOCK (NO MEAS) GETTER')
         return self._dataBlocksNoMeas
 
     @Property('QVariant', notify=dataBlocksCifChanged)
@@ -200,6 +198,7 @@ class Experiment(QObject):
     def loadExperimentsFromResources(self, fpaths):
         if type(fpaths) == QJSValue:
             fpaths = fpaths.toVariant()
+
         for fpath in fpaths:
             console.debug(f"Loading experiment(s) from: {fpath}")
             file = QFile(fpath)
@@ -208,7 +207,7 @@ class Experiment(QObject):
                 return
             stream = QTextStream(file)
             edCif = stream.readAll()
-            self.loadExperimentsFromEdCif(edCif)
+            self.loadExperimentFromCifString(edCif, pathlib.Path(fpath).stem)
 
     @Slot('QVariant')
     def loadExperimentsFromFiles(self, fpaths):
@@ -223,22 +222,26 @@ class Experiment(QObject):
                 fileContent = file.read()
             if fext == '.xye':
                 fileContent = _DEFAULT_DATA_BLOCK_NO_MEAS + fileContent
-            self.loadExperimentsFromEdCif(fileContent)
 
-            job_name = pathlib.Path(fpath).stem
-            phases = self._proxy._model.phases
-            _, self._job = get_job_from_file(fpath, job_name, phases=phases, interface=self._interface)
+            self.loadExperimentFromCifString(fileContent, pathlib.Path(fpath).stem)
 
-            blocks = self.jobToBlock(job=self._job)
-            self._dataBlocksNoMeas.append(blocks)
+    def loadExperimentFromCifString(self, cifString="", job_name=""):
+        console.debug(f"Loading experiment(s) from: {job_name}")
+        self.loadExperimentsFromEdCif(cifString)
 
-            blocks = self.jobToData(job=self._job)
-            self._dataBlocksMeasOnly.append(blocks)
+        phases = self._proxy._model.phases
+        _, self._job = get_job_from_cif_string(cifString, job_name, phases=phases, interface=self._interface)
 
-            self._currentIndex = len(self.dataBlocksNoMeas) - 1
-            if not self.defined:
-                self.defined = bool(len(self.dataBlocksNoMeas))
-            self.dataBlocksChanged.emit()
+        blocks = self.jobToBlock(job=self._job)
+        self._dataBlocksNoMeas.append(blocks)
+
+        blocks = self.jobToData(job=self._job)
+        self._dataBlocksMeasOnly.append(blocks)
+
+        self._currentIndex = len(self._dataBlocksNoMeas) - 1
+        if not self.defined:
+            self.defined = bool(len(self._dataBlocksNoMeas))
+        self.dataBlocksChanged.emit()
 
     def jobToBlock(self, job=None):
         '''
@@ -662,10 +665,11 @@ class Experiment(QObject):
     def replaceExperiment(self, edCifNoMeas=''):
         console.debug("Calculator obj and dict need to be replaced")
 
-        currentDataBlock = self.dataBlocksNoMeas[self.currentIndex]
+        currentDataBlock = self._dataBlocksNoMeas[self.currentIndex]
         currentExperimentName = currentDataBlock['name']['value']
 
-        calcObjBlockNames = [item.data_name for item in self._proxy.data._calcObj.items]
+        # calcObjBlockNames = [item.data_name for item in self._proxy.data._calcObj.items]
+        calcObjBlockNames = [item.data_name for item in self._interface.data()._calcObj]
         calcObjBlockIdx = calcObjBlockNames.index(currentExperimentName)
 
         if not edCifNoMeas:
@@ -710,7 +714,7 @@ class Experiment(QObject):
         del self._yMeasArrays[index]
         del self._yBkgArrays[index]
 
-        self.defined = bool(len(self.dataBlocksNoMeas))
+        self.defined = bool(len(self._dataBlocksNoMeas))
 
         self.dataBlocksNoMeasChanged.emit()
         self.dataBlocksMeasOnlyChanged.emit()
@@ -1077,9 +1081,9 @@ class Experiment(QObject):
             blockIdx = [block['name']['value'] for block in self._dataBlocksNoMeas].index(blockName)
 
             if rowIndex == -1:
-                return self.dataBlocksNoMeas[blockIdx]['params'][category][name][field]
+                return self._dataBlocksNoMeas[blockIdx]['params'][category][name][field]
             else:
-                return self.dataBlocksNoMeas[blockIdx]['loops'][category][rowIndex][name][field]
+                return self._dataBlocksNoMeas[blockIdx]['loops'][category][rowIndex][name][field]
 
         return None
 
@@ -1190,9 +1194,10 @@ class Experiment(QObject):
             self._proxy.fitting.chiSqStart = self._proxy.fitting.chiSq
 
     def setMeasuredArraysForSingleExperiment(self, idx):
-        ed_name = self._proxy.experiment.dataBlocksNoMeas[idx]['name']['value']
+        ed_name = self._dataBlocksNoMeas[idx]['name']['value']
         calc_block_name = f'pd_{ed_name}'
-        calcInOutDict = self._proxy.data._calcInOutDict
+        # calcInOutDict = self._proxy.data._calcInOutDict
+        calcInOutDict = self._interface.data()._cryspyInOutDict
 
         # X data
         x_array = calcInOutDict[calc_block_name]['ttheta']
@@ -1208,9 +1213,10 @@ class Experiment(QObject):
         self.setSYMeasArray(sy_meas_array, idx)
 
     def setCalculatedArraysForSingleExperiment(self, idx):
-        ed_name = self._proxy.experiment.dataBlocksNoMeas[idx]['name']['value']
+        ed_name = self._dataBlocksNoMeas[idx]['name']['value']
         calc_block_name = f'pd_{ed_name}'
-        calcInOutDict = self._proxy.data._calcInOutDict
+        # calcInOutDict = self._proxy.data._calcInOutDict
+        calcInOutDict = self._interface.data()._cryspyInOutDict
 
         # Background Y data # NED FIX: use calculatedYBkgArray()
         y_bkg_array = calcInOutDict[calc_block_name]['signal_background']

@@ -20,9 +20,10 @@ class Summary(QObject):
     isCreatedChanged = Signal()
     dataBlocksCifChanged = Signal()
 
-    def __init__(self, parent):
+    def __init__(self, parent, interface=None):
         super().__init__(parent)
         self._proxy = parent
+        self._interface = interface
         self._isCreated = False
         self._dataBlocksCif = ''
 
@@ -50,7 +51,8 @@ class Summary(QObject):
     def setDataBlocksCif(self):
         dataBlocksCifList = []
         cryspyDict = self._proxy.data._calcDict
-        cryspyInOutDict = self._proxy.data._calcInOutDict
+        # cryspyInOutDict = self._proxy.data._calcInOutDict
+        cryspyInOutDict = self._interface.data()._cryspyInOutDict
         cryspyObj = self._proxy.data._calcObj
         cryspyObj.take_parameters_from_dictionary(cryspyDict, l_parameter_name=None, l_sigma=None)
         cryspyObj.take_parameters_from_dictionary(cryspyInOutDict, l_parameter_name=None, l_sigma=None)
