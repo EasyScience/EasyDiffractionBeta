@@ -674,10 +674,10 @@ class Model(QObject):
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
-        oldValue = self._proxy.data._calcDict[path[0]][path[1]][path[2]]
+        oldValue = self._interface.data()._cryspyDict[path[0]][path[1]][path[2]]
         if oldValue == value:
             return False
-        self._proxy.data._calcDict[path[0]][path[1]][path[2]] = value
+        self._interface.data()._cryspyDict[path[0]][path[1]][path[2]] = value
 
         console.debug(formatMsg('sub', 'Calculator dict', f'{oldValue} → {value}', f'{path}'))
         return True
@@ -690,10 +690,10 @@ class Model(QObject):
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
-        oldValue = self._proxy.data._calcDict[path[0]][path[1]][path[2]]
+        oldValue = self._interface.data()._cryspyDict[path[0]][path[1]][path[2]]
         if oldValue == value:
             return False
-        self._proxy.data._calcDict[path[0]][path[1]][path[2]] = value
+        self._interface.data()._cryspyDict[path[0]][path[1]][path[2]] = value
 
         console.debug(formatMsg('sub', 'Calculator dict', f'{oldValue} → {value}', f'{path}'))
         return True

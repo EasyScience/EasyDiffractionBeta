@@ -26,12 +26,13 @@ SCALE = 1
 class Worker(QObject):
     finished = Signal()
 
-    def __init__(self, proxy):
+    def __init__(self, proxy, interface=None):
         super().__init__()
         self._proxy = proxy
+        self._interface = interface
         self._needCancel = False
 
-        self._cryspyDictInitial = copy.deepcopy(self._proxy.data._calcDict)
+        self._cryspyDictInitial = copy.deepcopy(self._interface.data()._cryspyDict)
         self._cryspyUsePrecalculatedData = False
         self._cryspyCalcAnalyticalDerivatives = False
 
@@ -82,12 +83,12 @@ class Worker(QObject):
             # Update CrysPy dict from Lmfit params
             for param in params:
                 block, group, idx = Data.strToCalcDictParamPath(param)
-                self._proxy.data._calcDict[block][group][idx] = params[param].value
+                self._interface.data()._cryspyDict[block][group][idx] = params[param].value
 
             # Calculate diffraction pattern
             rhochi_calc_chi_sq_by_dictionary(
-                self._proxy.data._calcDict,
-                dict_in_out=self._proxy.data._calcInOutDict,
+                self._interface.data()._cryspyDict,
+                dict_in_out=self._interface.data()._inOutDict,
                 flag_use_precalculated_data=self._cryspyUsePrecalculatedData,
                 flag_calc_analytical_derivatives=self._cryspyCalcAnalyticalDerivatives)
 
@@ -96,7 +97,7 @@ class Worker(QObject):
             for dataBlock in self._proxy.experiment.dataBlocksNoMeas:
                 ed_name = dataBlock['name']['value']
                 cryspy_name = f'pd_{ed_name}'
-                cryspyInOutDict = self._proxy.data._calcInOutDict
+                cryspyInOutDict = self._interface.data()._inOutDict
 
                 y_meas_array = cryspyInOutDict[cryspy_name]['signal_exp'][0]
                 sy_meas_array = cryspyInOutDict[cryspy_name]['signal_exp'][1]
@@ -113,15 +114,15 @@ class Worker(QObject):
         self._proxy.fitting._freezeChiSqStart = True
 
         # Save initial state of cryspyDict if cancel fit is requested
-        self._cryspyDictInitial = copy.deepcopy(self._proxy.data._calcDict)
+        self._cryspyDictInitial = copy.deepcopy(self._interface.data()._cryspyDict)
 
         # Preliminary calculations
         self._cryspyUsePrecalculatedData = False
         self._cryspyCalcAnalyticalDerivatives = False
         #self._proxy.fitting.chiSq, self._proxy.fitting._pointsCount, _, _, freeParamNames = rhochi_calc_chi_sq_by_dictionary(
         chiSq, pointsCount, _, _, freeParamNames = rhochi_calc_chi_sq_by_dictionary(
-            self._proxy.data._calcDict,
-            dict_in_out=self._proxy.data._calcInOutDict,
+            self._interface.data()._cryspyDict,
+            dict_in_out=self._interface.data()._inOutDict,
             flag_use_precalculated_data=self._cryspyUsePrecalculatedData,
             flag_calc_analytical_derivatives=self._cryspyCalcAnalyticalDerivatives)
 
@@ -137,7 +138,7 @@ class Worker(QObject):
         self._proxy.fitting.chiSq = chiSq / (self._proxy.fitting._pointsCount - self._proxy.fitting._freeParamsCount)
 
         # Create lmfit parameters to be varied
-        freeParamValuesStart = [self._proxy.data._calcDict[way[0]][way[1]][way[2]] for way in freeParamNames]
+        freeParamValuesStart = [self._interface.data()._cryspyDict[way[0]][way[1]][way[2]] for way in freeParamNames]
         paramsLmfit = lmfit.Parameters()
         for cryspyParamPath, val in zip(freeParamNames, freeParamValuesStart):
             lmfitParamName = Data.calcDictParamPathToStr(cryspyParamPath)  # Only ascii letters and numbers allowed for lmfit.Parameters()???
@@ -191,14 +192,14 @@ class Worker(QObject):
         # Update CrysPy dict with the best params after minimization finished/aborted/failed
         for param in result.params:
             block, group, idx = Data.strToCalcDictParamPath(param)
-            self._proxy.data._calcDict[block][group][idx] = result.params[param].value
+            self._interface.data()._cryspyDict[block][group][idx] = result.params[param].value
 
         # Calculate optimal chi2
         self._cryspyUsePrecalculatedData = False
         self._cryspyCalcAnalyticalDerivatives = False
         chiSq, _, _, _, _ = rhochi_calc_chi_sq_by_dictionary(
-            self._proxy.data._calcDict,
-            dict_in_out=self._proxy.data._calcInOutDict,
+            self._interface.data()._cryspyDict,
+            dict_in_out=self._interface.data()._inOutDict,
             flag_use_precalculated_data=self._cryspyUsePrecalculatedData,
             flag_calc_analytical_derivatives=self._cryspyCalcAnalyticalDerivatives)
         self._proxy.fitting.chiSq = chiSq / (self._proxy.fitting._pointsCount - self._proxy.fitting._freeParamsCount)
@@ -225,11 +226,12 @@ class Fitting(QObject):
     minimizerMethodChanged = Signal()
     minimizerTolChanged = Signal()
 
-    def __init__(self, parent):
+    def __init__(self, parent, interface=None):
         super().__init__(parent)
         self._proxy = parent
+        self._interface = interface
         self._threadpool = QThreadPool.globalInstance()
-        self._worker = Worker(self._proxy)
+        self._worker = Worker(self._proxy, self._interface)
         self._isFittingNow = False
 
         self._chiSq = None

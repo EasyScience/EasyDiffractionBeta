@@ -147,7 +147,7 @@ class Fittables(QObject):
                 changedIntern = self._proxy.model.editDataBlockMainParam(blockIdx, category, name, field, value)
                 self._proxy.model.blocksToPhase(blockIdx, category, name, field, value)
                 # update cryspy model
-                changedCryspy = self._proxy.model.editCalcDictByMainParam(blockIdx, category, name, field, value)
+                changedCryspy = self._proxy.model.editCalculatorDictByMainParam(blockIdx, category, name, field, value)
         else:
             console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
             if blockType == 'experiment':
@@ -158,7 +158,7 @@ class Fittables(QObject):
                 self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
                 self._proxy.model.blocksToLoopPhase(blockIdx, category, name, rowIndex, field, value)
-                changedCryspy = self._proxy.model.editCalcDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
+                changedCryspy = self._proxy.model.editCalculatorDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
         if changedIntern and changedCryspy:
             if blockType == 'model':
                 self.modelChangedSilently.emit()

@@ -12,21 +12,13 @@ from PySide6.QtCore import QFile, QTextStream, QIODevice
 from PySide6.QtQml import QJSValue
 
 # Parameter is App-centric, should be moved to the App
-from easyDiffractionLib.io.cryspy_parser import CryspyParser, Parameter
-from easyDiffractionLib.io.cif import dataBlockToCif, cifV2ToV1
+from easyDiffractionLib.io.cryspy_parser import Parameter
+from easyDiffractionLib.io.cif import dataBlockToCif
 from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
 from easyDiffractionLib.Jobs import get_job_from_file, get_job_from_cif_string
 
 from EasyApp.Logic.Logging import console
 from Logic.Data import Data
-
-try:
-    import cryspy
-    from cryspy.H_functions_global.function_1_cryspy_objects import \
-        str_to_globaln
-    console.debug('CrysPy module imported')
-except ImportError:
-    console.debug('No CrysPy module found')
 
 
 _DEFAULT_DATA_BLOCK_NO_MEAS = """data_pnd
@@ -668,7 +660,6 @@ class Experiment(QObject):
         currentDataBlock = self._dataBlocksNoMeas[self.currentIndex]
         currentExperimentName = currentDataBlock['name']['value']
 
-        # calcObjBlockNames = [item.data_name for item in self._proxy.data._calcObj.items]
         calcObjBlockNames = [item.data_name for item in self._interface.data()._calcObj]
         calcObjBlockIdx = calcObjBlockNames.index(currentExperimentName)
 
@@ -907,10 +898,10 @@ class Experiment(QObject):
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
-        oldValue = self._proxy.data._calcDict[path[0]][path[1]][path[2]]
+        oldValue = self._interface.data()._cryspyDict[path[0]][path[1]][path[2]]
         if oldValue == value:
             return False
-        self._proxy.data._calcDict[path[0]][path[1]][path[2]] = value
+        self._interface.data()._cryspyDict[path[0]][path[1]][path[2]] = value
 
         console.debug(formatMsg('sub', 'Calc dict', f'{oldValue} → {value}', f'{path}'))
         return True
@@ -923,12 +914,12 @@ class Experiment(QObject):
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
-        oldValue = self._proxy.data._calcDict[path[0]][path[1]][path[2]]
+        oldValue = self._interface.data()._cryspyDict[path[0]][path[1]][path[2]]
         if oldValue == value:
             return False
-        self._proxy.data._calcDict[path[0]][path[1]][path[2]] = value
+        self._interface.data()._cryspyDict[path[0]][path[1]][path[2]] = value
 
-        console.debug(formatMsg('sub', 'Cryspy dict', f'{oldValue} → {value}', f'{path}'))
+        console.debug(formatMsg('sub', 'calc dict', f'{oldValue} → {value}', f'{path}'))
         return True
 
     def calcDictPathByMainParam(self, blockIdx, category, name, value):
@@ -1196,8 +1187,7 @@ class Experiment(QObject):
     def setMeasuredArraysForSingleExperiment(self, idx):
         ed_name = self._dataBlocksNoMeas[idx]['name']['value']
         calc_block_name = f'pd_{ed_name}'
-        # calcInOutDict = self._proxy.data._calcInOutDict
-        calcInOutDict = self._interface.data()._cryspyInOutDict
+        calcInOutDict = self._interface.data()._inOutDict
 
         # X data
         x_array = calcInOutDict[calc_block_name]['ttheta']
@@ -1215,8 +1205,7 @@ class Experiment(QObject):
     def setCalculatedArraysForSingleExperiment(self, idx):
         ed_name = self._dataBlocksNoMeas[idx]['name']['value']
         calc_block_name = f'pd_{ed_name}'
-        # calcInOutDict = self._proxy.data._calcInOutDict
-        calcInOutDict = self._interface.data()._cryspyInOutDict
+        calcInOutDict = self._interface.data()._inOutDict
 
         # Background Y data # NED FIX: use calculatedYBkgArray()
         y_bkg_array = calcInOutDict[calc_block_name]['signal_background']

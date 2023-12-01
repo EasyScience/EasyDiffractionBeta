@@ -15,7 +15,7 @@ class Data(QObject):
         self._data = self.interface.data()
         self._calcDict = self._data._cryspyDict
         self._calcObj = self._data._cryspyObj
-        self._calcInOutDict = self._data._cryspyInOutDict
+        self._calcInOutDict = self._data._inOutDict
 
     @Slot()
     def resetAll(self):

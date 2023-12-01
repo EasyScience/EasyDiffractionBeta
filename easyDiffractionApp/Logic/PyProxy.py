@@ -31,7 +31,7 @@ class PyProxy(QObject):
         self._data = Data(self, interface=self.interface)
         self._analysis = Analysis(self)
         self._fittables = Fittables(self)
-        self._fitting = Fitting(self)
+        self._fitting = Fitting(self, interface=self.interface)
         self._summary = Summary(self, interface=self.interface)
         self._status = Status(self)
         self._plotting = Plotting(self)
