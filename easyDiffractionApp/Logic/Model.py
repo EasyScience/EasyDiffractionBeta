@@ -505,7 +505,8 @@ class Model(QObject):
         currentDataBlock = self.dataBlocks[index]
         currentModelName = currentDataBlock['name']['value']
 
-        self._interface.remove_phase(currentModelName) # delete phase info on interface
+        # self._interface.remove_phase(currentModelName) # delete phase info on interface
+        self._interface.remove_phase(phases_obj=self.phases, phase_obj=self.phases[self.currentIndex])
         self.removePhase(currentModelName) # delete phase locally
         del self._dataBlocks[index]
 
@@ -513,7 +514,7 @@ class Model(QObject):
         if not self.defined:
             self._currentIndex = -1
 
-        self.dataBlocksChanged.emit()
+        # self.dataBlocksChanged.emit()
         console.debug(f"Model no. {index + 1} has been removed")
 
     @Slot()
