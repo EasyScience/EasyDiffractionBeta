@@ -11,7 +11,7 @@ from Logic.Experiment import Experiment
 from Logic.Model import Model
 from Logic.Data import Data
 from Logic.Analysis import Analysis
-from Logic.Fitting import Fitting
+from Logic.Fitting2 import Fitting
 from Logic.Fittables import Fittables
 from Logic.Summary import Summary
 from Logic.Status import Status

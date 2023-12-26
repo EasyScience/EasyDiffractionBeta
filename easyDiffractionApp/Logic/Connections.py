@@ -42,7 +42,7 @@ class Connections(QObject):
 
         # Fitting
         self._proxy.fitting.fitFinished.connect(self.onFittingFitFinished)
-        self._proxy.fitting.chiSqSignificantlyChanged.connect(self.onFittingChiSqSignificantlyChanged)
+        # self._proxy.fitting.chiSqSignificantlyChanged.connect(self.onFittingChiSqSignificantlyChanged)
         self._proxy.fitting.minimizerMethodChanged.connect(self.onFittingMinimizerMethodChanged)
 
     #########

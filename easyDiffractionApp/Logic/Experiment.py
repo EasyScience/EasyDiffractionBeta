@@ -111,7 +111,7 @@ class Experiment(QObject):
         self._currentIndex = -1
 
         self._interface = interface
-        self._job = None
+        self._job = self.defaultJob()
         self._dataBlocksNoMeas = []
         self._dataBlocksMeasOnly = []
 
@@ -128,6 +128,14 @@ class Experiment(QObject):
         self._xBraggDicts = []
 
         self._chartRanges = []
+
+    def job(self):
+        return self._job
+
+    def defaultJob(self):
+        _, job = get_job_from_cif_string(_DEFAULT_DATA_BLOCK, interface=self._interface)
+
+        return job
 
     # QML accessible properties
 
@@ -1162,6 +1170,11 @@ class Experiment(QObject):
                     self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'value', value)
                     self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', error)
 
+    def isSpinPolarized(self):
+        # return self._interface.data()._cryspyDict['pd']['flags_polarization']['value']
+        # currently only one experiment is supported
+        return False
+
     def runProfileCalculations(self):
 
         # shove it all into the calculator.
@@ -1176,13 +1189,13 @@ class Experiment(QObject):
         self._proxy.fitting.chiSq = chiSq / (self._proxy.fitting._pointsCount - self._proxy.fitting._freeParamsCount)
 
         gofLastIter = self._proxy.fitting.chiSq  # NEED FIX
-        if self._proxy.fitting.chiSqStart is None:
-            self._proxy.status.goodnessOfFit = f'{gofLastIter:0.2f}'                           # NEED move to connection
-        else:
-            gofStart = self._proxy.fitting.chiSqStart # NEED FIX
-            self._proxy.status.goodnessOfFit = f'{gofStart:0.2f} → {gofLastIter:0.2f}'  # NEED move to connection
-        if not self._proxy.fitting._freezeChiSqStart:
-            self._proxy.fitting.chiSqStart = self._proxy.fitting.chiSq
+        # if self._proxy.fitting.chiSqStart is None:
+        #     self._proxy.status.goodnessOfFit = f'{gofLastIter:0.2f}'                           # NEED move to connection
+        # else:
+        #     gofStart = self._proxy.fitting.chiSqStart # NEED FIX
+        #     self._proxy.status.goodnessOfFit = f'{gofStart:0.2f} → {gofLastIter:0.2f}'  # NEED move to connection
+        # if not self._proxy.fitting._freezeChiSqStart:
+        #     self._proxy.fitting.chiSqStart = self._proxy.fitting.chiSq
 
     def setMeasuredArraysForSingleExperiment(self, idx):
         ed_name = self._dataBlocksNoMeas[idx]['name']['value']
