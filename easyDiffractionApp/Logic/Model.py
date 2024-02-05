@@ -223,8 +223,11 @@ class Model(QObject):
     # @Slot(str)
     def loadModelsFromEdCif(self, edCif):
         # Update the Phases object
-        phase = Phases.from_cif_string(edCif)
-        self.phases.append(phase[0])
+        phases = Phases.from_cif_string(edCif)
+        phases.interface = self._interface
+        for phase in phases:
+            phase.scale.fixed = True
+            self.phases.append(phase)
         self._currentIndex = len(self.phases) - 1
         # convert phase into dataBlocks
         dataBlocks = self.phaseToBlocks(self.phases)
@@ -236,6 +239,9 @@ class Model(QObject):
         self.dataBlocksChanged.emit()
 
     def updateCifOnInterface(self):
+        '''
+        Update the CIF representation on the current interface
+        '''
         cif = self._dataBlocksCif[self.currentIndex][0]
         self._interface.updateModelCif(cif)
 

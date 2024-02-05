@@ -47,9 +47,11 @@ class Fitting(QObject):
         self.interface = interface
         # self.fitter = CoreFitter(self.parent.sample(), self.interface.fit_func)
         self.fitter = CoreFitter(self.parent.experiment.job(), self.parent.experiment.job().create_simulation)
+        # self.fitter = CoreFitter(self.parent.experiment.job(), self.interface.fit_func)
 
         # Multithreading
         # self._fitter_thread = None
+        self.use_threading = True # change to False to disable threading for testing
         self._fit_finished = True
         self._fit_results = _defaultFitResults()
         self.data = None
@@ -223,9 +225,13 @@ class Fitting(QObject):
         # self.data = self.parent.pdata()
         name = 'pd_' + self.parent.experiment.job().name
         self.data = self.interface.data()._inOutDict[name]
-        if not self.fit_thread.is_alive():
-            self.is_fitting_now = True
-            self.fit_thread.start()
+        if self.use_threading:
+            if not self.fit_thread.is_alive():
+                self.is_fitting_now = True
+                self.fit_thread.start()
+        else:
+            # non-threaded version
+            self.fit_threading()
 
     @Property(str, notify=minimizerMethodChanged)
     def minimizerMethod(self):

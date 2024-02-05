@@ -241,6 +241,8 @@ class Experiment(QObject):
         self._currentIndex = len(self._dataBlocksNoMeas) - 1
         if not self.defined:
             self.defined = bool(len(self._dataBlocksNoMeas))
+
+        self._job.interface = self._interface
         self.dataBlocksChanged.emit()
 
     def jobToBlock(self, job=None):
@@ -1180,6 +1182,10 @@ class Experiment(QObject):
         # shove it all into the calculator.
 
         result = self._interface.calculate_profile()
+        # debug stuff - remove before merging
+        # simx = self._xArrays
+        # simx = self._dataBlocksMeasOnly[0]['loops']['_pd_meas'][0]['2theta_scan']['value']
+        # result = self._job.create_simulation(simx)
 
         console.debug(formatMsg('sub', 'Profle calculations', 'finished'))
 
