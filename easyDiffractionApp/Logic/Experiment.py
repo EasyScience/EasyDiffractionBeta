@@ -220,10 +220,12 @@ class Experiment(QObject):
             console.debug(f"Loading experiment(s) from: {fpath}")
             with open(fpath, 'r') as file:
                 fileContent = file.read()
+                name = pathlib.Path(fpath).stem
             if fext == '.xye':
                 fileContent = _DEFAULT_DATA_BLOCK_NO_MEAS + fileContent
+                name = None
 
-            self.loadExperimentFromCifString(fileContent, pathlib.Path(fpath).stem)
+            self.loadExperimentFromCifString(fileContent, name)
 
     def loadExperimentFromCifString(self, cifString="", job_name=""):
         console.debug(f"Loading experiment(s) from: {job_name}")
