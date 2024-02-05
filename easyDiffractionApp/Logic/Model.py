@@ -529,7 +529,9 @@ class Model(QObject):
         self._currentIndex = -1
         self._dataBlocks = []
         self._dataBlocksCif = []
-        #self.dataBlocksChanged.emit()
+        for name in self.phases.phase_names:
+            del self.phases[name]
+        self.dataBlocksChanged.emit()
         console.debug("All models removed")
 
     @Slot(int, str, str, str, 'QVariant')
