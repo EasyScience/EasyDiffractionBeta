@@ -237,7 +237,7 @@ jobs:
           Get-DisplayResolution
 
       - name: Download zipped offline app installer from from the previous job step
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v3
         with:
           name: zipped-app-installer
 
