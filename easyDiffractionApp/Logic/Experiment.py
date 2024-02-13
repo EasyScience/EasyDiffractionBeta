@@ -15,7 +15,7 @@ from PySide6.QtQml import QJSValue
 from easyDiffractionLib.io.cryspy_parser import Parameter
 from easyDiffractionLib.io.cif import dataBlockToCif
 from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
-from easyDiffractionLib.Jobs import get_job_from_file, get_job_from_cif_string
+from easyDiffractionLib.Jobs import get_job_from_cif_string
 
 from EasyApp.Logic.Logging import console
 from Logic.Data import Data

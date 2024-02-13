@@ -13,12 +13,13 @@ from PySide6.QtQml import QJSValue
 from easyDiffractionLib import Phases, Phase, Lattice, Site, SpaceGroup
 
 from easyCrystallography.Components.AtomicDisplacement import AtomicDisplacement
-from easyCrystallography.Components.SpaceGroup import SpaceGroup
+# from easyCrystallography.Components.SpaceGroup import SpaceGroup
 from easyDiffractionLib.io.cif import dataBlockToCif
 from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
 from EasyApp.Logic.Logging import console
 
 from Logic.Tables import PERIODIC_TABLE # TODO CHANGE THIS TO PERIODICTABLE
+from Logic.Tables import COLOR_TABLE
 import periodictable as pt
 from Logic.Data import Data
 from easyCrystallography.Symmetry.tools import SpacegroupInfo
@@ -179,6 +180,8 @@ class Model(QObject):
         if typeSymbol == '':
             return ''
         typeSymbol = re.sub(r'[0-9]', '', typeSymbol)  # '162Dy' -> 'Dy'
+        if key == 'color':
+            return COLOR_TABLE[typeSymbol]
         try:
             callable = getattr(pt, typeSymbol)
             r = getattr(callable, key)

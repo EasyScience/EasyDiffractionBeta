@@ -9,7 +9,6 @@ from typing import Callable, List
 
 from threading import Thread
 
-from easyDiffractionLib.interface import InterfaceFactory as Calculator
 from easyCore.Fitting.Fitting import Fitter as CoreFitter
 from easyCore.Utils.io.xml import XMLSerializer
 from easyCore.Fitting.Constraints import ObjConstraint, NumericConstraint

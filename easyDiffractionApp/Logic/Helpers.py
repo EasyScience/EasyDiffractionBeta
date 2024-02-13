@@ -11,7 +11,6 @@ import time
 #from urllib.parse import urlparse
 
 from PySide6.QtCore import Qt, QObject, QCoreApplication, Signal, Slot, Property
-from PySide6.QtGui import QStyleHints
 from PySide6.QtWidgets import QApplication
 
 from EasyApp.Logic.Logging import console
