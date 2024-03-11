@@ -1,15 +1,12 @@
-# Use hatch to build the application.
 [build-system]
+# Use hatch to build the application.
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.metadata]
-allow-direct-references = true
-
-# Information about the EasyExampleApp project.
-# Note that while the project is called EasyExampleApp
-# the application itself is EasyExample.
 [project]
+# Information about the EasyDiffractionApp project.
+# Note that while the project is called EasyDiffractionApp
+# the application itself is EasyDiffraction.
 name = 'easyDiffractionApp'
 version = '0.9.0-alpha10'
 description = 'Making diffraction data analysis and modelling easy.'
@@ -29,7 +26,6 @@ classifiers = [
 ]
 requires-python = ">=3.8,<3.11"
 dependencies = [
-    # those are mostly required by snapcraft
     'toml',
     'numpy',
     'lmfit',
@@ -128,14 +124,13 @@ pix_fmt = 'yuv420p'     # Pixel format
 [ci.app.translations]
 dir = 'Gui/Resources/Translations'
 languages = [ { code = 'en', name = 'English' },
-              { code = 'da', name = 'Dansk' },   { code = 'sv', name = 'Svenska' },   { code = 'pl', name = 'Polski' },
+              { code = 'da', name = 'Dansk' },
+              { code = 'sv', name = 'Svenska' },
+              { code = 'pl', name = 'Polski' },
               { code = 'ru', name = 'Русский' } ]
 
 [ci.app.audio]
 dir = 'Gui/Resources/Audio'
-
-[ci.poetry]
-venv_path = { macOS = '/Users/runner/Library/Caches/pypoetry/virtualenvs', Linux = '/home/runner/.cache/pypoetry/virtualenvs', Windows = 'C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs' }
 
 [ci.pyinstaller]
 separator = { macos = ':', ubuntu = ':', windows = ';' }
