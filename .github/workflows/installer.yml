@@ -284,9 +284,10 @@ jobs:
       - name: Check app istallation is done
         run: python ${{ env.SCRIPTS_PATH }}/CheckAppExists.py
 
-      # Windows 2022 - Have to disable because can't see what is going on there...
       # macOS 12 - OK
       # Ubuntu 20.04 - OK?
       # Ubuntu 22.04 - FAILS - ImportError: libpyside6qml.abi3.so.6.5: cannot open shared object file: No such file or directory - https://github.com/pyinstaller/pyinstaller/issues/7197
+      # Windows 2022 - Have to disable because it can't exit app and one can't see what is going on there (no GitHub logging)...
       - name: Run app in testmode and quit (macOS & Linux)
+        if: runner.os != 'Windows'
         run: python ${{ env.SCRIPTS_PATH }}/RunApp.py --testmode
