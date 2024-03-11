@@ -21,10 +21,10 @@ jobs:
 
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
             python-version: 3.11
 
@@ -73,7 +73,6 @@ jobs:
         run: |
           cd ${{ env.PACKAGE_NAME }}
           pyside6-rcc ${{ env.PACKAGE_PATH }}/resources.qrc -o ${{ env.PACKAGE_PATH }}/resources.py
-          cd ..
 
       #- name: Run pytest (compare app images after previous step)
       #  run: pytest
@@ -117,7 +116,6 @@ jobs:
         run: |
           cd ${{ env.PACKAGE_NAME }}
           python main.py --testmode
-          cd ..
 
       - name: Create freezed python app bundle
         run: python ${{ env.SCRIPTS_PATH }}/FreezeApp.py
@@ -176,7 +174,7 @@ jobs:
           ${{ secrets.APP_REPO_FTP_PASSWORD }}
 
       - name: Upload zipped offline app installer for the next job step
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v3
         with:
           name: zipped-app-installer
           path: ${{ env.DISTRIBUTION_PATH }}/*.zip
@@ -195,10 +193,10 @@ jobs:
 
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
             python-version: 3.11
 
