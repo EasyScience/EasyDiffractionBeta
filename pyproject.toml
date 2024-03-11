@@ -36,9 +36,26 @@ dependencies = [
     'EasyApp @ git+https://github.com/easyscience/EasyApp.git@new-easy-app2'
 ]
 
-# CUSTOM CONFIG
-# -------------
-# The information presented from here is to do with release and CI. This can be disregarded
+[project.urls]
+homepage = 'https://easydiffraction.org'
+
+[tool.hatch.metadata]
+# This allows for local and git references in dependencies.
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+# https://github.com/pypa/hatch/releases/tag/hatchling-v1.19.0
+packages = ["EasyDiffractionApp"]
+
+##########################################################
+##########################################################
+############## CI CONFIGURATION INFORMATION ##############
+##########################################################
+##########################################################
+
+# The content in this section is related to how the
+# application is built on the Github action. Users of
+# EasyDiffraction shouldn't worry about this content.
 
 [release]
 app_name = 'EasyDiffraction'
