@@ -236,12 +236,14 @@ def installQtInstallerFramework():
         return
     try:
         message = f'install QtInstallerFramework to {qtifwDirPath()}'
-        silent_script = os.path.join(CONFIG.scripts_dir, CONFIG['ci']['scripts']['silent_install'])
-        Functions.installSilently(
-            installer=qtifwSetupExe(),
-            silent_script=silent_script
+        Functions.run(
+            qtifwSetupExe(),
+            'install',
+            '--verbose',
+            '--confirm-command',
+            '--default-answer',
+            '--accept-licenses'
         )
-        time.sleep(10)
     except Exception as exception:
         Functions.printFailMessage(message, exception)
         sys.exit(1)
@@ -311,6 +313,7 @@ def createOfflineInstaller():
         qtifw_binarycreator_path = os.path.join(qtifw_bin_dir_path, 'binarycreator')
         qtifw_installerbase_path = os.path.join(qtifw_bin_dir_path, 'installerbase')
         setup_exe_path = os.path.join(CONFIG.dist_dir, CONFIG.setup_name)
+        message = f'{message} with: {qtifw_binarycreator_path} --verbose --offline-only -c {configXmlPath()} -p {packagesDirPath()} -t {qtifw_installerbase_path} {setup_exe_path}'
         Functions.run(
             qtifw_binarycreator_path,
             '--verbose',

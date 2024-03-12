@@ -53,7 +53,7 @@ Controller.prototype.ReadyForInstallationPageCallback = function()
 Controller.prototype.PerformInstallationPageCallback = function()
 {
   console.log("* enter PerformInstallationPage")
-  gui.clickButton(buttons.NextButton);
+  gui.clickButton(buttons.NextButton)
   console.log("   exit PerformInstallationPage")
 }
 
@@ -63,4 +63,3 @@ Controller.prototype.FinishedPageCallback = function()
   gui.clickButton(buttons.FinishButton)
   console.log("   exit FinishedPage")
 }
-

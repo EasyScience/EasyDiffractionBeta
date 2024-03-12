@@ -90,7 +90,6 @@ def installSilently(installer, silent_script, sudo=False):
         args = [installer, '--verbose', '--script', silent_script]
         if sudo:
             args = ['sudo', *args]
-
         run(*args)
     except Exception as exception:
         printFailMessage(message, exception)

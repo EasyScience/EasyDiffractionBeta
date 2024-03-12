@@ -40,6 +40,8 @@ build
 *.user
 settings.ini*
 .ci/
+ci/
+ci_*/
 .idea/
 .build/
 temp/

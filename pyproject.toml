@@ -74,10 +74,10 @@ scripts = 'tools/Scripts'
 docs = { src = 'docs', dest = 'Documentation' }
 examples = { src = '{PROJECT_NAME}/Examples', dest = 'Examples' }
 tutorials = 'docs/UserManual/VideoTutorials'
-download = '.ci/download'
-screenshots = '.ci/screenshots'
-build = '.ci/build'
-distribution = '.ci/distribution'
+download = 'ci/download'
+screenshots = 'ci/screenshots'
+build = 'ci/build'
+distribution = 'ci/distribution'
 
 [ci.scripts]
 silent_install = 'SilentInstall.js'
