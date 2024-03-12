@@ -17,14 +17,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-13, windows-2022]
+        os: [Ubuntu-20.04, Ubuntu-22.04, macOS-13, Windows-2022]
 
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
             python-version: 3.11
 
@@ -70,10 +70,7 @@ jobs:
           python -m pip install git+https://github.com/easyscience/EasyApp.git@new-easy-app2
 
       - name: Create python resources file
-        run: |
-          cd ${{ env.PACKAGE_NAME }}
-          pyside6-rcc ${{ env.PACKAGE_PATH }}/resources.qrc -o ${{ env.PACKAGE_PATH }}/resources.py
-          cd ..
+        run: pyside6-rcc ${{ env.PACKAGE_PATH }}/resources.qrc -o ${{ env.PACKAGE_PATH }}/resources.py
 
       #- name: Run pytest (compare app images after previous step)
       #  run: pytest
@@ -114,15 +111,13 @@ jobs:
           Get-DisplayResolution
 
       - name: Run QML GUI tests
-        run: |
-          cd ${{ env.PACKAGE_NAME }}
-          python main.py --testmode
-          cd ..
+        run: python ${{ env.PACKAGE_NAME }}/main.py --testmode
 
-      - name: Create freezed python app bundle
+      - name: Create freezed python app bundle with PyInstaller
         run: python ${{ env.SCRIPTS_PATH }}/FreezeApp.py
 
-      - name: Create both online and offline app installer from freezed app bundle
+      #- name: Create both online and offline app installer from freezed app bundle
+      - name: Create offline app installer from freezed app bundle with QtIFW
         run: >
           python ${{ env.SCRIPTS_PATH }}/MakeInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
@@ -168,15 +163,15 @@ jobs:
           name: ${{ env.RELEASE_TITLE }}
           bodyFile: "RELEASE.md"
 
-      - name: Upload online app installer to repository via FTP (master branch)
-        if: github.event_name == 'push' && env.BRANCH_NAME == 'master'
-        run: >
-          python ${{ env.SCRIPTS_PATH }}/UploadToFtp.py
-          ${{ env.BRANCH_NAME }} ${{ matrix.os }}
-          ${{ secrets.APP_REPO_FTP_PASSWORD }}
+      #- name: Upload online app installer to repository via FTP (master branch)
+      #  if: github.event_name == 'push' && env.BRANCH_NAME == 'master'
+      #  run: >
+      #    python ${{ env.SCRIPTS_PATH }}/UploadToFtp.py
+      #    ${{ env.BRANCH_NAME }} ${{ matrix.os }}
+      #    ${{ secrets.APP_REPO_FTP_PASSWORD }}
 
       - name: Upload zipped offline app installer for the next job step
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v3
         with:
           name: zipped-app-installer
           path: ${{ env.DISTRIBUTION_PATH }}/*.zip
@@ -191,14 +186,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-13, windows-2022]
+        os: [Ubuntu-20.04, Ubuntu-22.04, macOS-13, Windows-2022]
 
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
             python-version: 3.11
 
@@ -265,7 +260,7 @@ jobs:
           Get-DisplayResolution
 
       - name: Download zipped offline app installer from from the previous job step
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v3
         with:
           name: zipped-app-installer
 
@@ -286,10 +281,10 @@ jobs:
       - name: Check app istallation is done
         run: python ${{ env.SCRIPTS_PATH }}/CheckAppExists.py
 
-      # Windows 2022 - Have to disable because can't see what is going on there...
       # macOS 12 - OK
       # Ubuntu 20.04 - OK?
       # Ubuntu 22.04 - FAILS - ImportError: libpyside6qml.abi3.so.6.5: cannot open shared object file: No such file or directory - https://github.com/pyinstaller/pyinstaller/issues/7197
+      # Windows 2022 - Have to disable because it can't exit app and one can't see what is going on there (no GitHub logging)...
       - name: Run app in testmode and quit (macOS & Linux)
         if: runner.os != 'Windows'
         run: python ${{ env.SCRIPTS_PATH }}/RunApp.py --testmode

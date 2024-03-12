@@ -1,3 +1,11 @@
+# Version 0.9.0-alpha10 (12 Mar 2024)
+
+This is a test version of EasyDiffraction with improved GUI and overall performance. This version temporarily does not use the EasyScience framework, contains only CrysPy as calculation engine and uses only Lmfit for minimization.  
+
+### Bug Fixes
+
+- Fixed formatting of parameters in CIF files and analysis table.
+
 # Version 0.9.0-alpha9 (5 Nov 2023)
 
 This is a test version of EasyDiffraction with improved GUI and overall performance. This version temporarily does not use the EasyScience framework, contains only CrysPy as calculation engine and uses only Lmfit for minimization.  

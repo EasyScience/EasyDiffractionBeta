@@ -12,7 +12,7 @@ jobs:
   build_snap:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: snapcore/action-build@v1
       id: snapcraft
     - uses: actions/upload-artifact@v3
@@ -72,11 +72,11 @@ jobs:
           snap: ${{ env.SNAP_FILENAME }}
           release: beta
 
-      - name: Publish Main Branch to snapcraft stable
-        if: steps.branch-name.outputs.current_branch == 'main'
-        uses: snapcore/action-publish@v1
-        env:
-          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
-        with:
-          snap: ${{ env.SNAP_FILENAME }}
-          release: stable
+      #- name: Publish Master Branch to snapcraft stable
+      #  if: steps.branch-name.outputs.current_branch == 'master'
+      #  uses: snapcore/action-publish@v1
+      #  env:
+      #    SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+      #  with:
+      #    snap: ${{ env.SNAP_FILENAME }}
+      #    release: stable
