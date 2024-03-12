@@ -44,7 +44,7 @@ class Config():
         self.setup_name_suffix = f'_v{self.app_version}_{self.setup_os}'
         if self.matrix_os is not None:
             self.setup_name_suffix = f'_v{self.app_version}_{self.matrix_os}'
-        if self.os == 'macOS':
+        if self.os == 'macos':
             if self.processor == 'i386':
                 self.setup_name_suffix = f'{self.setup_name_suffix}-Intel'
             elif self.processor == 'arm':
