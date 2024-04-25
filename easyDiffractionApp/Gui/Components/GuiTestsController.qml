@@ -54,8 +54,29 @@ EaElements.RemoteController {
 
     // Tests
 
-    function saveImage(dirName, fileName) {
-        saveScreenshot(parent, `${dirName}/${fileName}`)
+    function saveImage(fileName, path='../tests/gui/screenshots/actual') {
+        saveScreenshot(parent, `${path}/${fileName}`)
+    }
+
+    function startGuiTest_() {
+        console.debug('Start basic suit of GUI tests (step 1 of 2)')
+        rc.posToCenter()
+        rc.showPointer()
+        rc.wait(1000)
+
+        const saveImagesDir = '../tests/gui/basic/actual'
+        saveImage(saveImagesDir, 'HomePage.png')
+
+        rc.wait(1000)
+        Globals.Proxies.main.status.fitStatus = true
+    }
+
+    function finishGuiTest_() {
+        console.debug('Finish basic suit of GUI tests (step 2 of 2)')
+        res.push( rc.compare('58 (6 free, 52 fixed)', '58 (6 free, 52 fixed)') )
+        res.push( rc.compare('341.99 → 4.41', '341.99 → 4.41') )
+        res.push( rc.compare('Success', 'Success') )
+        rc.hidePointer()
     }
 
     function startGuiTest() {
@@ -65,7 +86,6 @@ EaElements.RemoteController {
         // Set up testing process
         /////////////////////////
 
-        //const saveImagesDir = '../.tests/GuiTests/BasicGuiTest/ActualImages'
 
         rc.posToCenter()
         rc.showPointer()
@@ -74,7 +94,7 @@ EaElements.RemoteController {
         // Home Page
         ////////////
 
-        //saveImage(saveImagesDir, 'HomePage.png')
+        saveImage('HomePage.png')
 
         res.push( rc.compare(Globals.Refs.app.appbar.homeButton.enabled, true) )
         res.push( rc.compare(Globals.Refs.app.appbar.projectButton.enabled, false) )
@@ -93,7 +113,7 @@ EaElements.RemoteController {
         // Project Page
         ///////////////
 
-        //saveImage(saveImagesDir, 'ProjectPage.png')
+        saveImage('ProjectPage.png')
 
         res.push( rc.compare(Globals.Refs.app.appbar.homeButton.enabled, true) )
         res.push( rc.compare(Globals.Refs.app.appbar.projectButton.enabled, true) )
@@ -114,7 +134,7 @@ EaElements.RemoteController {
         // Model Page
         /////////////
 
-        //saveImage(saveImagesDir, 'ModelPage.png')
+        saveImage('ModelPage.png')
 
         res.push( rc.compare(Globals.Refs.app.appbar.homeButton.enabled, true) )
         res.push( rc.compare(Globals.Refs.app.appbar.projectButton.enabled, true) )
@@ -154,7 +174,7 @@ EaElements.RemoteController {
         // Experiment page
         //////////////////
 
-        //saveImage(saveImagesDir, 'ExperimentPage.png')
+        saveImage('ExperimentPage.png')
 
         res.push( rc.compare(Globals.Refs.app.appbar.homeButton.enabled, true) )
         res.push( rc.compare(Globals.Refs.app.appbar.projectButton.enabled, true) )
@@ -189,7 +209,7 @@ EaElements.RemoteController {
         // Analysis page
         ////////////////
 
-        //saveImage(saveImagesDir, 'AnalysisPage.png')
+        saveImage('AnalysisPage.png')
 
         res.push( rc.compare(Globals.Refs.app.appbar.homeButton.enabled, true) )
         res.push( rc.compare(Globals.Refs.app.appbar.projectButton.enabled, true) )
@@ -243,7 +263,7 @@ EaElements.RemoteController {
         // Summary page
         ///////////////
 
-        //saveImage(saveImagesDir, 'SummaryPage.png')
+        saveImage('SummaryPage.png')
 
         ///////////////////////////
         // Complete testing process
