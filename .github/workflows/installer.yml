@@ -289,10 +289,16 @@ jobs:
         if: runner.os != 'Windows'
         run: python ${{ env.SCRIPTS_PATH }}/RunApp.py --testmode
 
+      - name: Run screenshots comparison tests
+        if: runner.os != 'Windows'
+        run: pytest tests/gui
+
       - name: Upload zipped GUI tests screenshots
         uses: actions/upload-artifact@v4
         with:
           name: test-screenshots_${{ matrix.os }}  # desired name (without .zip) of the zip file to be uploaded
-          path: 'tests/gui/screenshots'  # all files from this directory are zipped into file with name from above
+          path: |  # all files from these paths are zipped into file with name from above
+            tests/gui/screenshots
+            .tests/image_diff
           if-no-files-found: 'error'
           compression-level: 0
