@@ -3,10 +3,10 @@ import os
 # Help functions
 
 def desired_img_path(fname:str):
-    return os.path.join('screenshots', 'desired', fname)
+    return os.path.join('tests', 'gui', 'screenshots', 'desired', fname)
 
 def actual_img_path(fname:str):
-    return os.path.join('screenshots', 'actual', fname)
+    return os.path.join('tests', 'gui', 'screenshots', 'actual', fname)
 
 # Tests
 
