@@ -118,6 +118,7 @@ jobs:
         run: pytest tests/gui
 
       - name: Upload zipped GUI tests screenshots
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: build-installer_screenshots_${{ matrix.os }}  # desired name (without .zip) of the zip file to be uploaded
@@ -308,6 +309,7 @@ jobs:
         run: pytest tests/gui
 
       - name: Upload zipped GUI tests screenshots
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-installer_screenshots_${{ matrix.os }}  # desired name (without .zip) of the zip file to be uploaded
