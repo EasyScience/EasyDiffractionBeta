@@ -54,29 +54,8 @@ EaElements.RemoteController {
 
     // Tests
 
-    function saveImage(fileName, path='../tests/gui/screenshots/actual') {
+    function saveImage(fileName, path='tests/gui/screenshots/actual') {
         saveScreenshot(parent, `${path}/${fileName}`)
-    }
-
-    function startGuiTest_() {
-        console.debug('Start basic suit of GUI tests (step 1 of 2)')
-        rc.posToCenter()
-        rc.showPointer()
-        rc.wait(1000)
-
-        const saveImagesDir = '../tests/gui/basic/actual'
-        saveImage(saveImagesDir, 'HomePage.png')
-
-        rc.wait(1000)
-        Globals.Proxies.main.status.fitStatus = true
-    }
-
-    function finishGuiTest_() {
-        console.debug('Finish basic suit of GUI tests (step 2 of 2)')
-        res.push( rc.compare('58 (6 free, 52 fixed)', '58 (6 free, 52 fixed)') )
-        res.push( rc.compare('341.99 → 4.41', '341.99 → 4.41') )
-        res.push( rc.compare('Success', 'Success') )
-        rc.hidePointer()
     }
 
     function startGuiTest() {

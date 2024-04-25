@@ -66,6 +66,7 @@ jobs:
           python -m pip install numpy lmfit numdifftools
           python -m pip install orjson jsbeautifier
           python -m pip install pyinstaller requests dephell_licenses
+          python -m pip install pytest pytest-image-diff
           python -m pip install git+https://github.com/ikibalin/cryspy.git@beta
           python -m pip install git+https://github.com/easyscience/EasyApp.git@new-easy-app2
 
@@ -112,6 +113,19 @@ jobs:
 
       - name: Run QML GUI tests
         run: python ${{ env.PACKAGE_NAME }}/main.py --testmode
+
+      - name: Run screenshots comparison tests
+        run: pytest tests/gui
+
+      - name: Upload zipped GUI tests screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-installer_screenshots_${{ matrix.os }}  # desired name (without .zip) of the zip file to be uploaded
+          path: |  # all files from these paths are zipped into file with name from above
+            tests/gui/screenshots
+            .tests/image_diff
+          if-no-files-found: 'error'
+          compression-level: 0
 
       - name: Create freezed python app bundle with PyInstaller
         run: python ${{ env.SCRIPTS_PATH }}/FreezeApp.py
@@ -296,7 +310,7 @@ jobs:
       - name: Upload zipped GUI tests screenshots
         uses: actions/upload-artifact@v4
         with:
-          name: test-screenshots_${{ matrix.os }}  # desired name (without .zip) of the zip file to be uploaded
+          name: test-installer_screenshots_${{ matrix.os }}  # desired name (without .zip) of the zip file to be uploaded
           path: |  # all files from these paths are zipped into file with name from above
             tests/gui/screenshots
             .tests/image_diff

@@ -1,21 +1,12 @@
 import os
-import pathlib
 
 # Help functions
-
-def change_cwd_to_tests():
-    """Changes the current directory to the directory of this script file."""
-    os.chdir(os.path.dirname(__file__))
 
 def desired_img_path(fname:str):
     return os.path.join('screenshots', 'desired', fname)
 
 def actual_img_path(fname:str):
     return os.path.join('screenshots', 'actual', fname)
-
-# Set up paths
-
-change_cwd_to_tests()
 
 # Tests
 
