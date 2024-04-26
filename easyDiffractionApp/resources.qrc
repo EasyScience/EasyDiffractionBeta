@@ -33,7 +33,6 @@
         <file>Gui/Components/Pages/Model/MainContent/Plotly1dTab.qml</file>
         <file>Gui/Components/Pages/Model/MainContent/QtCharts1dTab.qml</file>
         <file>Gui/Components/Pages/Model/MainContent/StructureViewTab.qml</file>
-        <file>Gui/Components/Pages/Model/MainContent/View3DTab.qml</file>
         <file>Gui/Components/Pages/Model/SideBarAdvanced/Appearance.qml</file>
         <file>Gui/Components/Pages/Model/SideBarBasic/AtomSite.qml</file>
         <file>Gui/Components/Pages/Model/SideBarBasic/AtomSiteAdp.qml</file>
