@@ -28,7 +28,7 @@ jobs:
         with:
             python-version: 3.11
 
-      - name: Upgrade PIP
+      - name: Upgrade package installer for Python
         run: python -m pip install --upgrade pip
 
       - name: Add extra info to pyproject.toml
@@ -73,9 +73,6 @@ jobs:
       - name: Create python resources file
         run: pyside6-rcc ${{ env.PACKAGE_PATH }}/resources.qrc -o ${{ env.PACKAGE_PATH }}/resources.py
 
-      #- name: Run pytest (compare app images after previous step)
-      #  run: pytest
-
       - name: Set up screen (Linux)
         if: runner.os == 'Linux'
         run: |
@@ -111,11 +108,12 @@ jobs:
           Set-DisplayResolution -Width 1920 -Height 1080 -Force
           Get-DisplayResolution
 
-      - name: Run QML GUI tests
+      - name: Run app in testmode and quit
+        shell: bash
         run: python ${{ env.PACKAGE_NAME }}/main.py --testmode
 
       - name: Run screenshots comparison tests
-        run: pytest tests/gui
+        run: pytest tests/gui --color=yes
 
       - name: Upload zipped GUI tests screenshots
         if: always()
@@ -212,7 +210,7 @@ jobs:
         with:
             python-version: 3.11
 
-      - name: Upgrade PIP
+      - name: Upgrade package installer for Python
         run: python -m pip install --upgrade pip
 
       - name: Declare env variables on push only
@@ -302,12 +300,13 @@ jobs:
       # Ubuntu 22.04 - FAILS - ImportError: libpyside6qml.abi3.so.6.5: cannot open shared object file: No such file or directory - https://github.com/pyinstaller/pyinstaller/issues/7197
       # Windows 2022 - Have to disable because it can't exit app and one can't see what is going on there (no GitHub logging)...
       - name: Run app in testmode and quit (macOS & Linux)
-        if: runner.os != 'Windows'
+        #if: runner.os != 'Windows'
+        shell: bash
         run: python ${{ env.SCRIPTS_PATH }}/RunApp.py --testmode
 
       - name: Run screenshots comparison tests
-        if: runner.os != 'Windows'
-        run: pytest tests/gui
+        #if: runner.os != 'Windows'
+        run: pytest tests/gui --color=yes
 
       - name: Upload zipped GUI tests screenshots
         if: always()
