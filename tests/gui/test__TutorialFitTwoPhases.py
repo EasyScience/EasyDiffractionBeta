@@ -1,9 +1,21 @@
 import os
+import sys
 
 # Help functions
 
+def os_name():
+    platform = sys.platform
+    if platform.startswith('darwin'):
+        return 'macos'
+    elif platform.startswith('lin'):
+        return 'ubuntu'
+    elif platform.startswith('win'):
+        return 'windows'
+    else:
+        return 'unknown'
+
 def desired_img_path(fname:str):
-    return os.path.join('tests', 'gui', 'screenshots', 'desired', fname)
+    return os.path.join('tests', 'gui', 'screenshots', 'desired', os_name(), fname)
 
 def actual_img_path(fname:str):
     return os.path.join('tests', 'gui', 'screenshots', 'actual', fname)
@@ -49,4 +61,4 @@ def test__SummaryPage(image_diff):
 # Debug
 
 if __name__ == '__main__':
-    pass
+    print(f'::::: Current platform: {os_name()}')

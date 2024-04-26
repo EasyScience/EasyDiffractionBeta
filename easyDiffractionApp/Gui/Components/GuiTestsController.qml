@@ -73,8 +73,6 @@ EaElements.RemoteController {
         // Home Page
         ////////////
 
-        saveImage('HomePage.png')
-
         res.push( rc.compare(Globals.Refs.app.appbar.homeButton.enabled, true) )
         res.push( rc.compare(Globals.Refs.app.appbar.projectButton.enabled, false) )
         res.push( rc.compare(Globals.Refs.app.appbar.modelButton.enabled, false) )
@@ -85,14 +83,13 @@ EaElements.RemoteController {
         res.push( rc.compare(Globals.Refs.app.homePage.startButton.text, 'Start') )
         res.push( rc.compare(Globals.Refs.app.homePage.startButton.enabled, true) )
 
+        saveImage('HomePage.png')
         rc.mouseClick(Globals.Refs.app.homePage.startButton)
         //rc.wait(2000)
 
         ///////////////
         // Project Page
         ///////////////
-
-        saveImage('ProjectPage.png')
 
         res.push( rc.compare(Globals.Refs.app.appbar.homeButton.enabled, true) )
         res.push( rc.compare(Globals.Refs.app.appbar.projectButton.enabled, true) )
@@ -106,14 +103,12 @@ EaElements.RemoteController {
 
         res.push( rc.compare(Globals.Proxies.main.status.project, 'Undefined') )
 
+        saveImage('ProjectPage.png')
         rc.mouseClick(Globals.Refs.app.projectPage.continueButton)
-        //rc.wait(2000)
 
         /////////////
         // Model Page
         /////////////
-
-        saveImage('ModelPage.png')
 
         res.push( rc.compare(Globals.Refs.app.appbar.homeButton.enabled, true) )
         res.push( rc.compare(Globals.Refs.app.appbar.projectButton.enabled, true) )
@@ -146,14 +141,12 @@ EaElements.RemoteController {
 
         res.push( rc.compare(Globals.Proxies.main.status.phaseCount, '2') )
 
+        saveImage('ModelPage.png')
         rc.mouseClick(Globals.Refs.app.modelPage.continueButton)
-        //rc.wait(2000)
 
         //////////////////
         // Experiment page
         //////////////////
-
-        saveImage('ExperimentPage.png')
 
         res.push( rc.compare(Globals.Refs.app.appbar.homeButton.enabled, true) )
         res.push( rc.compare(Globals.Refs.app.appbar.projectButton.enabled, true) )
@@ -181,14 +174,12 @@ EaElements.RemoteController {
 
         res.push( rc.compare(Globals.Proxies.main.status.experimentsCount, '1') )
 
+        saveImage('ExperimentPage.png')
         rc.mouseClick(Globals.Refs.app.experimentPage.continueButton)
-        //rc.wait(2000)
 
         ////////////////
         // Analysis page
         ////////////////
-
-        saveImage('AnalysisPage.png')
 
         res.push( rc.compare(Globals.Refs.app.appbar.homeButton.enabled, true) )
         res.push( rc.compare(Globals.Refs.app.appbar.projectButton.enabled, true) )
@@ -211,6 +202,7 @@ EaElements.RemoteController {
         //res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.measuredYData, Globals.Tests.expected.created.experiment.yData) )
         //res.push( rc.compare(Globals.Refs.app.analysisPage.plotView.calculatedYData, Globals.Tests.expected.created.model.yData) )
 
+        saveImage('AnalysisPage.png')
         rc.mouseClick(Globals.Refs.app.analysisPage.startFittingButton)
     }
 
