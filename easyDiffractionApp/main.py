@@ -20,7 +20,7 @@ if __name__ == '__main__':
     EnvironmentVariables.set()
     console.debug('Environment variables defined')
 
-    # Magically fixes the following issues in QtQuick3D on macOS for local run
+    # Magically fixes the following issues in QtQuick3D on macOS when using pyside6==6.5.3
     # - Particles not supported due to missing RGBA32F and RGBA16F texture format support
     # - No GLSL shader code found (versions tried:  QList(120) ) in baked shader
     # - Failed to build graphics pipeline state
