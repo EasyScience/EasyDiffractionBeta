@@ -21,6 +21,7 @@
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrReflexAsymmetry.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrResolution.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas2Theta.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeasTimeOfFlight.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/Phase.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarText/Experiments.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarText/TextView.qml</file>

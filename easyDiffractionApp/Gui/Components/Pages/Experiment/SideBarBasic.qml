@@ -34,23 +34,63 @@ EaComponents.SideBarColumn {
         icon: 'arrows-alt-h'
         visible: Globals.Proxies.main.experiment.defined
 
-        Loader { source: 'SideBarBasic/PdMeas2Theta.qml' }
+        Loader { source: {
+                if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
+                    return ''
+                }
+                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
+                    return 'SideBarBasic/PdMeas2Theta.qml'
+                } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                    return 'SideBarBasic/PdMeasTimeOfFlight.qml'
+                } else {
+                    return ''
+                }
+            }
+        }
     }
 
     EaElements.GroupBox {
+        id: instrumentResolutionGroup
         title: qsTr("Instrument resolution")
         icon: 'grip-lines-vertical'
-        visible: Globals.Proxies.main.experiment.defined
+        visible: Globals.Proxies.main.experiment.defined  // not needed, as redefined in Loader?
 
-        Loader { source: 'SideBarBasic/PdInstrResolution.qml' }
+        Loader { source: {
+                if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
+                    instrumentResolutionGroup.visible = false
+                    return ''
+                }
+                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
+                    instrumentResolutionGroup.visible = true
+                    return 'SideBarBasic/PdInstrResolution.qml'
+                } else {
+                    instrumentResolutionGroup.visible = false
+                    return ''
+                }
+            }
+        }
     }
 
     EaElements.GroupBox {
+        id: peakAsymmetryGroup
         title: qsTr("Peak asymmetry")
         icon: 'balance-scale-left'
-        visible: Globals.Proxies.main.experiment.defined
+        visible: Globals.Proxies.main.experiment.defined  // not needed, as redefined in Loader?
 
-        Loader { source: 'SideBarBasic/PdInstrReflexAsymmetry.qml' }
+        Loader { source: {
+                if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
+                    peakAsymmetryGroup.visible = false
+                    return ''
+                }
+                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
+                    peakAsymmetryGroup.visible = true
+                    return 'SideBarBasic/PdInstrReflexAsymmetry.qml'
+                } else {
+                    peakAsymmetryGroup.visible = false
+                    return ''
+                }
+            }
+        }
     }
 
     EaElements.GroupBox {
