@@ -39,9 +39,9 @@ EaComponents.SideBarColumn {
                     return ''
                 }
                 if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
-                    return 'SideBarBasic/PdMeas2Theta.qml'
+                    return 'SideBarBasic/PdMeas_CW.qml'
                 } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
-                    return 'SideBarBasic/PdMeasTimeOfFlight.qml'
+                    return 'SideBarBasic/PdMeas_TOF.qml'
                 } else {
                     return ''
                 }
@@ -50,21 +50,39 @@ EaComponents.SideBarColumn {
     }
 
     EaElements.GroupBox {
-        id: instrumentResolutionGroup
-        title: qsTr("Instrument resolution")
-        icon: 'grip-lines-vertical'
-        visible: Globals.Proxies.main.experiment.defined  // not needed, as redefined in Loader?
+        title: qsTr("Diffractometer")
+        icon: 'microscope'
+        visible: Globals.Proxies.main.experiment.defined
 
         Loader { source: {
                 if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
-                    instrumentResolutionGroup.visible = false
                     return ''
                 }
                 if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
-                    instrumentResolutionGroup.visible = true
-                    return 'SideBarBasic/PdInstrResolution.qml'
+                    return 'SideBarBasic/PdInstrParams_CW.qml'
+                } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                    return 'SideBarBasic/PdInstrParams_TOF.qml'
                 } else {
-                    instrumentResolutionGroup.visible = false
+                    return ''
+                }
+            }
+        }
+    }
+
+    EaElements.GroupBox {
+        title: qsTr("Peak profile")
+        icon: 'shapes'
+        visible: Globals.Proxies.main.experiment.defined
+
+        Loader { source: {
+                if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
+                    return ''
+                }
+                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
+                    return 'SideBarBasic/PdPeakProfile_CW.qml'
+                } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                    return 'SideBarBasic/PdPeakProfile_TOF.qml'
+                } else {
                     return ''
                 }
             }
@@ -75,7 +93,6 @@ EaComponents.SideBarColumn {
         id: peakAsymmetryGroup
         title: qsTr("Peak asymmetry")
         icon: 'balance-scale-left'
-        visible: Globals.Proxies.main.experiment.defined  // not needed, as redefined in Loader?
 
         Loader { source: {
                 if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
@@ -84,7 +101,7 @@ EaComponents.SideBarColumn {
                 }
                 if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
                     peakAsymmetryGroup.visible = true
-                    return 'SideBarBasic/PdInstrReflexAsymmetry.qml'
+                    return 'SideBarBasic/PdInstrPeakAsymm_CW.qml'
                 } else {
                     peakAsymmetryGroup.visible = false
                     return ''

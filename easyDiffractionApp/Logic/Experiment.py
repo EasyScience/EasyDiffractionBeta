@@ -238,9 +238,10 @@ class Experiment(QObject):
     def loadExperimentsFromEdCif(self, edCif):
         cryspyObj = self._proxy.data._cryspyObj
 
-        # Add the tof background parameters required for cryspy
+        # Add the tof cryspy specific parameters
         # We set them to be 0 and calculate the background ourselves
         if 'time_of_flight' in edCif:
+            edCif += '\n_pd_instr.peak_shape Gauss'
             edCif += '\n_tof_background_time_max 1000.0\n_tof_background_coeff1 0.0'
             cryspyCif = CryspyParser.edCifToCryspyCif(edCif, 'tof')
         elif '2theta_scan' in edCif:

@@ -14,18 +14,20 @@ import Gui.Globals as Globals
 EaElements.GroupRow {
 
     EaElements.ParamTextField {
-        enabled: false
-        parameter: Globals.Proxies.experimentMainParam('_pd_meas', 'tof_range_min')
+        readOnly: true
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'ttheta_bank')
     }
 
     EaElements.ParamTextField {
-        enabled: false
-        parameter: Globals.Proxies.experimentMainParam('_pd_meas', 'tof_range_max')
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'dtt1')
+        onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
+        fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
-        enabled: false
-        parameter: Globals.Proxies.experimentMainParam('_pd_meas', 'tof_range_inc')
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'dtt2')
+        onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
+        fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {

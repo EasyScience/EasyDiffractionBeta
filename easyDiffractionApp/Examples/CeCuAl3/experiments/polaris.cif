@@ -2,22 +2,21 @@ data_polaris
 
 _diffrn_radiation.probe neutron
 
-_pd_instr.zero           2.921
+_pd_instr.2theta_bank  145.000
 _pd_instr.dtt1        6167.247
 _pd_instr.dtt2          -2.280
-_pd_instr.2theta_bank  145.000
+_pd_instr.zero           2.921
 
-_pd_instr.peak_shape    Gauss
 _pd_instr.alpha0      0.00000
 _pd_instr.alpha1      0.29710
 _pd_instr.beta0       0.04182
 _pd_instr.beta1       0.00224
-_pd_instr.gamma0      0.00000
-_pd_instr.gamma1      0.60400
-_pd_instr.gamma2      0.00000
 _pd_instr.sigma0      0.40900
 _pd_instr.sigma1      8.11800
 _pd_instr.sigma2      0.00000
+_pd_instr.gamma0      0.00000
+_pd_instr.gamma1      0.60400
+_pd_instr.gamma2      0.00000
 
 loop_
 _pd_phase_block.id

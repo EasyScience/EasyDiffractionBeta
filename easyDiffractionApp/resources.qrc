@@ -18,10 +18,13 @@
         <file>Gui/Components/Pages/Experiment/SideBarBasic/DiffrnRadiation.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/Experiments.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrReflexAsymmetry.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrResolution.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas2Theta.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeasTimeOfFlight.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrPeakAsymm_CW.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_CW.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_TOF.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_CW.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_TOF.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_CW.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_TOF.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/Phase.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarText/Experiments.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarText/TextView.qml</file>

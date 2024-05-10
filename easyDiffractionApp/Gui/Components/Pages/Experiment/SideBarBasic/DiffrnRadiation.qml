@@ -19,9 +19,18 @@ EaElements.GroupRow {
     }
 
     EaElements.ParamTextField {
-        parameter: Globals.Proxies.experimentMainParam('_diffrn_radiation_wavelength', 'wavelength')
-        onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
-        fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
+        readOnly: true
+        parameter: {
+            if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
+                return {}
+            }
+            let param = Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')
+            let val = param.value
+            val = val.replace('cw', 'Constant wavelength')
+            val = val.replace('tof', 'Time-of-flight')
+            param.value = val
+            return param
+        }
     }
 
 }
