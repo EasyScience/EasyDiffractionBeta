@@ -15,7 +15,7 @@ EaElements.GroupRow {
 
     EaElements.ParamTextField {
         readOnly: true
-        parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'ttheta_bank')
+        parameter: Globals.Proxies.experimentMainParam('_pd_instr', '2theta_bank')
     }
 
     EaElements.ParamTextField {

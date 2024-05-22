@@ -70,7 +70,7 @@ EaComponents.SideBarColumn {
     }
 
     EaElements.GroupBox {
-        title: qsTr("Peak profile")
+        title: qsTr("Profile shape")
         icon: 'shapes'
         visible: Globals.Proxies.main.experiment.defined
 
@@ -110,12 +110,40 @@ EaComponents.SideBarColumn {
         }
     }
 
+    /*
     EaElements.GroupBox {
         title: Globals.Proxies.experimentLoopTitle(qsTr('Background'), '_pd_background')
         icon: 'wave-square'
         visible: Globals.Proxies.main.experiment.defined
 
         Loader { source: 'SideBarBasic/PdBackground.qml' }
+    }
+    */
+
+    EaElements.GroupBox {
+        title: {
+            if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
+                return Globals.Proxies.experimentLoopTitle(qsTr('Background'), '_pd_background')
+            } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                return qsTr('Background')
+            }
+        }
+        icon: 'wave-square'
+        visible: Globals.Proxies.main.experiment.defined
+
+        Loader { source: {
+                if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
+                    return ''
+                }
+                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
+                    return 'SideBarBasic/PdBackground.qml'
+                } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                    return 'SideBarBasic/PdBackground_TOF.qml'
+                } else {
+                    return ''
+                }
+            }
+        }
     }
 
     EaElements.GroupBox {

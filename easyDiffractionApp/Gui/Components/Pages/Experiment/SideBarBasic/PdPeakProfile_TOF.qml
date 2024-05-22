@@ -77,6 +77,7 @@ EaElements.GroupColumn {
     //        color: EaStyle.Colors.themeForegroundMinor
     //        text: 'FWHM parameters of the Lorentzian component'
     //    }
+        /*
         EaElements.GroupRow {
             EaElements.ParamTextField {
                 parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'gamma0')
@@ -97,6 +98,7 @@ EaElements.GroupColumn {
                 visible: false
             }
         }
+        */
     //}
 
 }

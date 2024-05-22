@@ -1,13 +1,14 @@
 data_cecual3
 
-_cell.length_a  4.25678
-_cell.length_b  4.25678
+_cell.length_a 4.25678
+_cell.length_b 4.25678
 _cell.length_c 10.63386
-_cell.angle_alpha 90
-_cell.angle_beta  90
-_cell.angle_gamma 90
+_cell.angle_alpha 90.0
+_cell.angle_beta 90.0
+_cell.angle_gamma 90.0
 
 _space_group.name_H-M_alt "I 4 m m"
+_space_group.IT_coordinate_system_code 1
 
 loop_
 _atom_site.label
@@ -18,9 +19,9 @@ _atom_site.fract_z
 _atom_site.occupancy
 _atom_site.ADP_type
 _atom_site.B_iso_or_equiv
-Ce  Ce  0.0 0.0 0.0      1.0    Biso 0.00589
-Cu1 Cu  0.0 0.0 0.63224  0.925  Biso 0.00830
-Al1 Al  0.0 0.0 0.63224  0.075  Biso 0.00830
-Cu2 Cu  0.0 0.0 0.40437  0.044  Biso 0.00970
-Al2 Al  0.0 0.0 0.40437  0.956  Biso 0.00970
-Al3 Al  0.0 0.5 0.24981  0.986  Biso 0.00707
+Ce Ce 0.0 0.0 0.0 1.0 Biso 0.449
+Cu1 Cu 0.0 0.0 0.63224 0.925 Biso 0.65549
+Al1 Al 0.0 0.0 0.63224 0.075 Biso 0.65549
+Cu2 Cu 0.0 0.0 0.40437 0.044 Biso 0.76224
+Al2 Al 0.0 0.0 0.40437 0.956 Biso 0.76224
+Al3 Al 0.0 0.5 0.24981 0.986 Biso 0.54

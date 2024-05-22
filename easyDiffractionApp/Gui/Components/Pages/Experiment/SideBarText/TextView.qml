@@ -98,10 +98,17 @@ Rectangle {
             fontIcon: "check"
             ToolTip.text: qsTr("Apply changes")
             //onClicked: forceActiveFocus()
+            /*
             onClicked: {
                 Globals.Proxies.main.experiment.replaceExperiment(
                             listView.firstDelegateRef.text + '\n\n' +
                             Globals.Proxies.main.experiment.dataBlocksCifMeasOnly[Globals.Proxies.main.experiment.currentIndex])
+                forceActiveFocus()
+            }
+            */
+            onClicked: {
+                const edCifNoMeas = listView.firstDelegateRef.text
+                Globals.Proxies.main.experiment.replaceExperiment(edCifNoMeas)
                 forceActiveFocus()
             }
         }

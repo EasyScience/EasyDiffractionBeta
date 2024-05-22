@@ -256,16 +256,15 @@ class CryspyParser:
             '_pd_instr.sigma1': '_tof_profile_sigma1',
             '_pd_instr.sigma2': '_tof_profile_sigma2',
 
+            '_tof_background.time_max': '_tof_background_time_max',
+            '_tof_background.coeff': '_tof_background_coeff',
+
             '_pd_meas.time_of_flight': '_tof_meas_time',
             '_pd_meas.intensity_total_su': '_tof_meas_intensity_sigma',  # before _pd_meas.intensity_total!
             '_pd_meas.intensity_total': '_tof_meas_intensity',
-        }
-        _edToCryspyNamesMap = {
-            #'_pd_meas.2theta_range_min': '_range_2theta_min',
-            #'_pd_meas.2theta_range_max': '_range_2theta_max',
 
-            #'_pd_background.line_segment_X': '_pd_background_2theta',
-            #'_pd_background.line_segment_intensity': '_pd_background_intensity',
+            '_pd_meas.tof_range_min': '_range_time_min',
+            '_pd_meas.tof_range_max': '_range_time_max',
         }
         edToCryspyValuesMap = {
             'x-ray': 'X-rays',
@@ -1052,11 +1051,11 @@ class CryspyParser:
                         if hasattr(item, 'zero') and hasattr(item, 'dtt1') and hasattr(item, 'dtt2') and hasattr(item, 'ttheta_bank'):
                             if not '_pd_instr' in ed_experiment_no_meas['params']:
                                 ed_experiment_no_meas['params']['_pd_instr'] = {}
-                            ed_experiment_no_meas['params']['_pd_instr']['ttheta_bank'] = dict(Parameter(
+                            ed_experiment_no_meas['params']['_pd_instr']['2theta_bank'] = dict(Parameter(
                                 item.ttheta_bank,
                                 category = '_pd_instr',
                                 prettyCategory = 'inst',
-                                name = 'ttheta_bank',
+                                name = '2theta_bank',
                                 prettyName = '2theta bank',
                                 shortPrettyName = '2θ bank',
                                 icon = 'hashtag',
@@ -1073,7 +1072,7 @@ class CryspyParser:
                                 shortPrettyName = 'dtt1',
                                 icon = 'radiation',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                                absDelta = 0.5,
+                                absDelta = 100.0,
                                 fittable = True,
                                 fit = item.dtt1_refinement
                             ))
@@ -1087,7 +1086,7 @@ class CryspyParser:
                                 shortPrettyName = 'dtt2',
                                 icon = 'radiation',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                                absDelta = 0.5,
+                                absDelta = 0.1,
                                 fittable = True,
                                 fit = item.dtt2_refinement
                             ))
@@ -1108,7 +1107,7 @@ class CryspyParser:
 
                     # Cryspy peak profile section (TOF)
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_tof_profile.TOFProfile:
-                        if hasattr(item, 'alpha0') and hasattr(item, 'beta0') and hasattr(item, 'gamma0') and hasattr(item, 'sigma0'):
+                        if hasattr(item, 'alpha0') and hasattr(item, 'beta0') and hasattr(item, 'sigma0'):
                             if not '_pd_instr' in ed_experiment_no_meas['params']:
                                 ed_experiment_no_meas['params']['_pd_instr'] = {}
                             ed_experiment_no_meas['params']['_pd_instr']['alpha0'] = dict(Parameter(
@@ -1209,48 +1208,48 @@ class CryspyParser:
                                 fittable = True,
                                 fit = item.sigma2_refinement
                             ))
-                            ed_experiment_no_meas['params']['_pd_instr']['gamma0'] = dict(Parameter(
-                                item.gamma0,
-                                error = item.gamma0_sigma,
-                                category = '_pd_instr',
-                                prettyCategory = 'inst',
-                                name = 'gamma0',
-                                prettyName = 'gamma0',
-                                shortPrettyName = 'γ0',
-                                icon = 'shapes',
-                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                                absDelta = 0.5,
-                                fittable = True,
-                                fit = item.gamma0_refinement
-                            ))
-                            ed_experiment_no_meas['params']['_pd_instr']['gamma1'] = dict(Parameter(
-                                item.gamma1,
-                                error = item.gamma1_sigma,
-                                category = '_pd_instr',
-                                prettyCategory = 'inst',
-                                name = 'gamma1',
-                                prettyName = 'gamma1',
-                                shortPrettyName = 'γ1',
-                                icon = 'shapes',
-                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                                absDelta = 0.5,
-                                fittable = True,
-                                fit = item.gamma1_refinement
-                            ))
-                            ed_experiment_no_meas['params']['_pd_instr']['gamma2'] = dict(Parameter(
-                                item.gamma2,
-                                error = item.gamma2_sigma,
-                                category = '_pd_instr',
-                                prettyCategory = 'inst',
-                                name = 'gamma2',
-                                prettyName = 'gamma2',
-                                shortPrettyName = 'γ2',
-                                icon = 'shapes',
-                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                                absDelta = 0.5,
-                                fittable = True,
-                                fit = item.gamma2_refinement
-                            ))
+                            #ed_experiment_no_meas['params']['_pd_instr']['gamma0'] = dict(Parameter(
+                            #    item.gamma0,
+                            #    error = item.gamma0_sigma,
+                            #    category = '_pd_instr',
+                            #    prettyCategory = 'inst',
+                            #    name = 'gamma0',
+                            #    prettyName = 'gamma0',
+                            #    shortPrettyName = 'γ0',
+                            #    icon = 'shapes',
+                            #    url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
+                            #    absDelta = 0.5,
+                            #    fittable = True,
+                            #    fit = item.gamma0_refinement
+                            #))
+                            #ed_experiment_no_meas['params']['_pd_instr']['gamma1'] = dict(Parameter(
+                            #    item.gamma1,
+                            #    error = item.gamma1_sigma,
+                            #    category = '_pd_instr',
+                            #    prettyCategory = 'inst',
+                            #    name = 'gamma1',
+                            #    prettyName = 'gamma1',
+                            #    shortPrettyName = 'γ1',
+                            #    icon = 'shapes',
+                            #    url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
+                            #    absDelta = 0.5,
+                            #    fittable = True,
+                            #    fit = item.gamma1_refinement
+                            #))
+                            #ed_experiment_no_meas['params']['_pd_instr']['gamma2'] = dict(Parameter(
+                            #    item.gamma2,
+                            #    error = item.gamma2_sigma,
+                            #    category = '_pd_instr',
+                            #    prettyCategory = 'inst',
+                            #    name = 'gamma2',
+                            #    prettyName = 'gamma2',
+                            #    shortPrettyName = 'γ2',
+                            #    icon = 'shapes',
+                            #    url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
+                            #    absDelta = 0.5,
+                            #    fittable = True,
+                            #    fit = item.gamma2_refinement
+                            #))
 
                     # Ed (pycifstar processed) background section
                     elif type(item) is cryspy.B_parent_classes.cl_2_loop.LoopN and item.items[0].PREFIX == 'pd_background':
@@ -1300,11 +1299,275 @@ class CryspyParser:
                             ed_bkg_points.append(ed_bkg_point)
                         ed_experiment_no_meas['loops']['_pd_background'] = ed_bkg_points
 
-                    # Cryspy background section (TOF)
+                    # Cryspy background section (TOF, polinom coeffs?)
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_tof_background.TOFBackground:
-                        print(f'::::: {type(item)}')
+                        if hasattr(item, 'time_max'):
+                            if not '_tof_background' in ed_experiment_no_meas['params']:
+                                ed_experiment_no_meas['params']['_tof_background'] = {}
+                            ed_experiment_no_meas['params']['_tof_background']['time_max'] = dict(Parameter(
+                                item.time_max,
+                                optional=True,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'time_max',  # Is this the name used on save cif?
+                                prettyName = 'TOF max',
+                                shortPrettyName = 'max',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff1'] = dict(Parameter(
+                                item.coeff1 if hasattr(item, 'coeff1') else 0.0,
+                                error = item.coeff1_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff1',
+                                prettyName = 'coeff1',
+                                shortPrettyName = 'c1',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff1_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff2'] = dict(Parameter(
+                                item.coeff2 if hasattr(item, 'coeff2') else 0.0,
+                                error = item.coeff2_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff2',
+                                prettyName = 'coeff2',
+                                shortPrettyName = 'c2',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff2_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff3'] = dict(Parameter(
+                                item.coeff3 if hasattr(item, 'coeff3') else 0.0,
+                                error = item.coeff3_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff3',
+                                prettyName = 'coeff3',
+                                shortPrettyName = 'c3',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff3_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff4'] = dict(Parameter(
+                                item.coeff4 if hasattr(item, 'coeff4') else 0.0,
+                                error = item.coeff4_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff4',
+                                prettyName = 'coeff4',
+                                shortPrettyName = 'c4',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff4_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff5'] = dict(Parameter(
+                                item.coeff5 if hasattr(item, 'coeff5') else 0.0,
+                                error = item.coeff5_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff5',
+                                prettyName = 'coeff5',
+                                shortPrettyName = 'c5',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff5_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff6'] = dict(Parameter(
+                                item.coeff6 if hasattr(item, 'coeff6') else 0.0,
+                                error = item.coeff6_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff6',
+                                prettyName = 'coeff6',
+                                shortPrettyName = 'c6',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff6_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff7'] = dict(Parameter(
+                                item.coeff7 if hasattr(item, 'coeff7') else 0.0,
+                                error = item.coeff7_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff7',
+                                prettyName = 'coeff7',
+                                shortPrettyName = 'c7',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff7_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff8'] = dict(Parameter(
+                                item.coeff8 if hasattr(item, 'coeff8') else 0.0,
+                                error = item.coeff8_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff8',
+                                prettyName = 'coeff8',
+                                shortPrettyName = 'c8',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff8_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff9'] = dict(Parameter(
+                                item.coeff9 if hasattr(item, 'coeff9') else 0.0,
+                                error = item.coeff9_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff9',
+                                prettyName = 'coeff9',
+                                shortPrettyName = 'c9',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff9_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff10'] = dict(Parameter(
+                                item.coeff10 if hasattr(item, 'coeff10') else 0.0,
+                                error = item.coeff10_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff10',
+                                prettyName = 'coeff10',
+                                shortPrettyName = 'c10',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff10_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff11'] = dict(Parameter(
+                                item.coeff11 if hasattr(item, 'coeff11') else 0.0,
+                                error = item.coeff11_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff11',
+                                prettyName = 'coeff11',
+                                shortPrettyName = 'c11',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff11_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff12'] = dict(Parameter(
+                                item.coeff12 if hasattr(item, 'coeff12') else 0.0,
+                                error = item.coeff12_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff12',
+                                prettyName = 'coeff12',
+                                shortPrettyName = 'c12',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff12_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff13'] = dict(Parameter(
+                                item.coeff13 if hasattr(item, 'coeff13') else 0.0,
+                                error = item.coeff13_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff13',
+                                prettyName = 'coeff13',
+                                shortPrettyName = 'c13',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff13_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff14'] = dict(Parameter(
+                                item.coeff14 if hasattr(item, 'coeff14') else 0.0,
+                                error = item.coeff14_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff14',
+                                prettyName = 'coeff14',
+                                shortPrettyName = 'c14',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff14_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff15'] = dict(Parameter(
+                                item.coeff15 if hasattr(item, 'coeff15') else 0.0,
+                                error = item.coeff15_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff15',
+                                prettyName = 'coeff15',
+                                shortPrettyName = 'c15',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff15_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff16'] = dict(Parameter(
+                                item.coeff16 if hasattr(item, 'coeff16') else 0.0,
+                                error = item.coeff16_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff16',
+                                prettyName = 'coeff16',
+                                shortPrettyName = 'c16',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff16_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff17'] = dict(Parameter(
+                                item.coeff17 if hasattr(item, 'coeff17') else 0.0,
+                                error = item.coeff17_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff17',
+                                prettyName = 'coeff17',
+                                shortPrettyName = 'c17',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff17_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_tof_background']['coeff18'] = dict(Parameter(
+                                item.coeff18 if hasattr(item, 'coeff18') else 0.0,
+                                error = item.coeff18_sigma,
+                                category = '_tof_background',
+                                prettyCategory = 'bkg',
+                                name = 'coeff18',
+                                prettyName = 'coeff18',
+                                shortPrettyName = 'c18',
+                                categoryIcon = 'wave-square',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_background/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.coeff18_refinement
+                            ))
 
-                    # Cryspy background section (CW)
+                    # Cryspy background section (CW, points)
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_pd_background.PdBackgroundL:
                         cryspy_bkg_points = item.items
                         ed_bkg_points = []
@@ -1353,6 +1616,8 @@ class CryspyParser:
 
                     # Cryspy measured data section (TOF)
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_tof_meas.TOFMeasL:
+                        if not '_diffrn_radiation' in ed_experiment_no_meas['params']:
+                            ed_experiment_no_meas['params']['_diffrn_radiation'] = {}
                         ed_experiment_no_meas['params']['_diffrn_radiation']['type'] = dict(Parameter(
                             'tof',
                             optional=True,
@@ -1403,6 +1668,8 @@ class CryspyParser:
 
                     # Cryspy measured data section (CW)
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_pd_meas.PdMeasL:
+                        if not '_diffrn_radiation' in ed_experiment_no_meas['params']:
+                            ed_experiment_no_meas['params']['_diffrn_radiation'] = {}
                         ed_experiment_no_meas['params']['_diffrn_radiation']['type'] = dict(Parameter(
                             'cw',
                             optional=True,

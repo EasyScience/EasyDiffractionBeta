@@ -6,6 +6,7 @@ import os
 import copy
 from io import StringIO
 import numpy as np
+import time
 from PySide6.QtCore import QObject, Signal, Slot, Property
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 from PySide6.QtQml import QJSValue
@@ -240,12 +241,13 @@ class Experiment(QObject):
 
         # Add the tof cryspy specific parameters
         # We set them to be 0 and calculate the background ourselves
-        if 'time_of_flight' in edCif:
-            edCif += '\n_pd_instr.peak_shape Gauss'
-            edCif += '\n_tof_background_time_max 1000.0\n_tof_background_coeff1 0.0'
-            cryspyCif = CryspyParser.edCifToCryspyCif(edCif, 'tof')
-        elif '2theta_scan' in edCif:
+        if '2theta_scan' in edCif:
             cryspyCif = CryspyParser.edCifToCryspyCif(edCif, 'cw')
+        elif 'time_of_flight' in edCif:
+            edCif += '\n_pd_instr.peak_shape Gauss'  # 'pseudo-Voigt' is default
+            #edCif += '\n_pd_instr.peak_shape pseudo-Voigt'
+            edCif += '\n_tof_background_time_max 1000.0'
+            cryspyCif = CryspyParser.edCifToCryspyCif(edCif, 'tof')
         cryspyExperimentsObj = str_to_globaln(cryspyCif)
 
         # Add/modify CryspyObj with ranges based on the measured data points in _pd_meas loop
@@ -274,6 +276,9 @@ class Experiment(QObject):
                         range_max = item.items[-1].time
                         cryspyRangeObj[0].time_min = range_min
                         cryspyRangeObj[0].time_max = range_max
+                for idx, item in enumerate(dataBlock.items):
+                    if type(item) == cryspy.C_item_loop_classes.cl_1_tof_background.TOFBackground:
+                        dataBlock.items[idx].time_max = range_max
             dataBlock.add_items(cryspyRangeObj)
 
         # Add/modify CryspyObj with phases based on the already loaded phases
@@ -321,15 +326,11 @@ class Experiment(QObject):
         else:
             console.debug(IO.formatMsg('sub', 'No experiment(s)', '', 'to intern dataset', 'added'))
 
-
-
-
-
-
     @Slot(str)
     def replaceExperiment(self, edCifNoMeas=''):  # NEED modifications for CW/TOF
         console.debug("Cryspy obj and dict need to be replaced")
 
+        # Compose EasyDiffraction CIF
         currentDataBlock = self.dataBlocksNoMeas[self.currentIndex]
         currentExperimentName = currentDataBlock['name']['value']
 
@@ -339,23 +340,37 @@ class Experiment(QObject):
         if not edCifNoMeas:
             edCifNoMeas = CryspyParser.dataBlockToCif(currentDataBlock)
 
-        range_min = currentDataBlock['params']['_pd_meas']['2theta_range_min']['value']
-        range_max = currentDataBlock['params']['_pd_meas']['2theta_range_max']['value']
-        edRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
-        edCifNoMeas += '\n\n' + edRangeCif
-
         edCifMeasOnly = CryspyParser.dataBlockToCif(self.dataBlocksMeasOnly[self.currentIndex],
                                                     includeBlockName=False)
 
         edCif = edCifNoMeas + '\n\n' + edCifMeasOnly
 
-        cryspyCif = CryspyParser.edCifToCryspyCif(edCif)
+        # Add parameters, which are optional for EasyDiffraction CIF, but required for CrysPy CIF
+        if '2theta_scan' in edCif:
+            diffrn_radiation_type = 'cw'
+            experiment_prefix = 'pd'
+            range_min = currentDataBlock['params']['_pd_meas']['2theta_range_min']['value']
+            range_max = currentDataBlock['params']['_pd_meas']['2theta_range_max']['value']
+            edRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
+        elif 'time_of_flight' in edCif:
+            diffrn_radiation_type = 'tof'
+            experiment_prefix = 'tof'
+            time_max = currentDataBlock['params']['_tof_background']['time_max']['value']
+            edCif += '\n\n_pd_instr.peak_shape Gauss'
+            edCif += f'\n_tof_background.time_max {time_max}'
+            range_min = currentDataBlock['params']['_pd_meas']['tof_range_min']['value']
+            range_max = currentDataBlock['params']['_pd_meas']['tof_range_max']['value']
+            edRangeCif = f'_pd_meas.tof_range_min {range_min}\n_pd_meas.tof_range_max {range_max}'
+        edCif += '\n\n' + edRangeCif
+
+        # Create CrysPy CIF and objects
+        cryspyCif = CryspyParser.edCifToCryspyCif(edCif, diffrn_radiation_type)
         cryspyExperimentsObj = str_to_globaln(cryspyCif)
         cryspyExperimentsDict = cryspyExperimentsObj.get_dictionary()
 
-        # Powder diffraction experiment always has 'pd_' prefix if recognized by CrysPy
+        # Powder diffraction experiment should have 'pd_' or 'tof_' prefix to be recognized by CrysPy
         # Had to add edCifMeasOnly loop to the input CIF in order to allow CrysPy to do this
-        cryspyDictBlockName = f'pd_{currentExperimentName}'
+        cryspyDictBlockName = f'{experiment_prefix}_{currentExperimentName}'
 
         _, edExperimentsNoMeas = CryspyParser.cryspyObjAndDictToEdExperiments(cryspyExperimentsObj,
                                                                               cryspyExperimentsDict)
@@ -548,6 +563,8 @@ class Experiment(QObject):
             return True
 
         path, value = self.cryspyDictPathByLoopParam(blockIdx, category, name, rowIndex, value)
+        if path[1] == '':  # Temporary solution! If param is handled by ED directly, not CrysPy, as e.g. TOF background
+            return True
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
@@ -581,7 +598,8 @@ class Experiment(QObject):
             if name == '2theta_offset':
                 path[1] = 'offset_ttheta'
                 path[2] = 0
-                #value = np.deg2rad(value)
+                if diffrn_radiation_type == 'cw':
+                    value = np.deg2rad(value)
 
         # _pd_instr
         elif category == '_pd_instr':
@@ -617,26 +635,137 @@ class Experiment(QObject):
                 path[1] = 'asymmetry_parameters'
                 path[2] = 3
 
+            elif name == 'dtt1':
+                path[1] = 'dtt1'
+                path[2] = 0
+            elif name == 'dtt2':
+                path[1] = 'dtt2'
+                path[2] = 0
+            elif name == 'zero':
+                path[1] = 'zero'
+                path[2] = 0
+
+            elif name == 'alpha0':
+                path[1] = 'profile_alphas'
+                path[2] = 0
+            elif name == 'alpha1':
+                path[1] = 'profile_alphas'
+                path[2] = 1
+            elif name == 'beta0':
+                path[1] = 'profile_betas'
+                path[2] = 0
+            elif name == 'beta1':
+                path[1] = 'profile_betas'
+                path[2] = 1
+            elif name == 'sigma0':
+                path[1] = 'profile_sigmas'
+                path[2] = 0
+            elif name == 'sigma1':
+                path[1] = 'profile_sigmas'
+                path[2] = 1
+            elif name == 'sigma2':
+                path[1] = 'profile_sigmas'
+                path[2] = 2
+            elif name == 'gamma0':
+                path[1] = 'profile_gammas'  # if profile_peak_shape == 'pseudo-Voigt'
+                path[2] = 0
+            elif name == 'gamma1':
+                path[1] = 'profile_gammas'  # if profile_peak_shape == 'pseudo-Voigt'
+                path[2] = 1
+            elif name == 'gamma2':
+                path[1] = 'profile_gammas'  # if profile_peak_shape == 'pseudo-Voigt'
+                path[2] = 2
+
+        # _tof_background
+        elif category == '_tof_background':
+            if name == 'coeff1':
+                path[1] = 'background_coefficients'
+                path[2] = 0
+            elif name == 'coeff2':
+                path[1] = 'background_coefficients'
+                path[2] = 1
+            elif name == 'coeff3':
+                path[1] = 'background_coefficients'
+                path[2] = 2
+            elif name == 'coeff4':
+                path[1] = 'background_coefficients'
+                path[2] = 3
+            elif name == 'coeff5':
+                path[1] = 'background_coefficients'
+                path[2] = 4
+            elif name == 'coeff6':
+                path[1] = 'background_coefficients'
+                path[2] = 5
+            elif name == 'coeff7':
+                path[1] = 'background_coefficients'
+                path[2] = 6
+            elif name == 'coeff8':
+                path[1] = 'background_coefficients'
+                path[2] = 7
+            elif name == 'coeff9':
+                path[1] = 'background_coefficients'
+                path[2] = 8
+            elif name == 'coeff10':
+                path[1] = 'background_coefficients'
+                path[2] = 9
+            elif name == 'coeff11':
+                path[1] = 'background_coefficients'
+                path[2] = 10
+            elif name == 'coeff12':
+                path[1] = 'background_coefficients'
+                path[2] = 11
+            elif name == 'coeff13':
+                path[1] = 'background_coefficients'
+                path[2] = 12
+            elif name == 'coeff14':
+                path[1] = 'background_coefficients'
+                path[2] = 13
+            elif name == 'coeff15':
+                path[1] = 'background_coefficients'
+                path[2] = 14
+            elif name == 'coeff16':
+                path[1] = 'background_coefficients'
+                path[2] = 15
+            elif name == 'coeff17':
+                path[1] = 'background_coefficients'
+                path[2] = 16
+            elif name == 'coeff18':
+                path[1] = 'background_coefficients'
+                path[2] = 17
+
+
         # undefined
         else:
-            console.error(f"Undefined parameter name '{category}{name}'")
+            console.error(f"Undefined parameter name '{category}_{name}'")
+
+        console.debug(f"Editing CrysPy parameter '{path[0]}.{path[1]}{[path[2]]}'")
 
         return path, value
 
     def cryspyDictPathByLoopParam(self, blockIdx, category, name, rowIndex, value):
+        diffrn_radiation_type = self._dataBlocksNoMeas[blockIdx]['params']['_diffrn_radiation']['type']['value']
+        if diffrn_radiation_type == 'cw':
+            experiment_prefix = 'pd'
+        elif diffrn_radiation_type == 'tof':
+            experiment_prefix = 'tof'
+
         blockName = self._dataBlocksNoMeas[blockIdx]['name']['value']
         path = ['','','']
-        path[0] = f"pd_{blockName}"
+        path[0] = f"{experiment_prefix}_{blockName}"
 
         # _pd_background
         if category == '_pd_background':
-            if name == 'line_segment_X':
-                path[1] = 'background_ttheta'
-                path[2] = rowIndex
-                #value = np.deg2rad(value)
-            if name == 'line_segment_intensity':
-                path[1] = 'background_intensity'
-                path[2] = rowIndex
+            if diffrn_radiation_type == 'cw':
+                console.debug('Background is handeled by CrysPy')  # NEED FIX: do as in TOF
+                if name == 'line_segment_X':
+                    path[1] = 'background_ttheta'
+                    path[2] = rowIndex
+                    value = np.deg2rad(value)
+                if name == 'line_segment_intensity':
+                    path[1] = 'background_intensity'
+                    path[2] = rowIndex
+            elif diffrn_radiation_type == 'tof':
+                console.debug('Background is handeled by ED, not CrysPy')
 
         # _pd_phase_block
         if category == '_pd_phase_block':
@@ -748,7 +877,7 @@ class Experiment(QObject):
                 elif group == 'offset_ttheta':
                     category = '_pd_calib'
                     name = '2theta_offset'
-                    #value = np.rad2deg(value)
+                    value = np.rad2deg(value)
 
                 # resolution_parameters
                 elif group == 'resolution_parameters':
@@ -846,7 +975,8 @@ class Experiment(QObject):
 
         # X data
         x_array = cryspyInOutDict[cryspy_block_name][x_array_name]
-        #x_array = np.rad2deg(x_array)
+        if diffrn_radiation_type == 'cw':
+            x_array = np.rad2deg(x_array)
         self.setXArray(x_array, idx)
 
         # Measured Y data
@@ -857,7 +987,7 @@ class Experiment(QObject):
         sy_meas_array = cryspyInOutDict[cryspy_block_name]['signal_exp'][1]
         self.setSYMeasArray(sy_meas_array, idx)
 
-    def calculatedYBkgArray(self, cryspy_block_idx, cryspy_block_name, x_array_name):
+    def calculatedYBkgArray_OLD(self, cryspy_block_idx, cryspy_block_name, x_array_name):
         dataBlockNoMeas = self._dataBlocksNoMeas[cryspy_block_idx]
         pd_background = dataBlockNoMeas['loops']['_pd_background']
         x_bkg_points = np.array([item['line_segment_X']['value'] for item in pd_background])
@@ -866,6 +996,12 @@ class Experiment(QObject):
         desired_x_bkg_array = cryspyInOutDict[cryspy_block_name][x_array_name]
         desired_y_bkg_array = np.interp(desired_x_bkg_array, x_bkg_points, y_bkg_points)
         return desired_y_bkg_array
+
+    def calculatedYBkgArray(self, cryspy_block_idx, cryspy_block_name, x_array_name):
+        cryspyInOutDict = self._proxy.data._cryspyInOutDict
+        y_array_name = 'signal_background'
+        y_bkg_array = cryspyInOutDict[cryspy_block_name][y_array_name]
+        return y_bkg_array
 
     def setCalculatedArraysForSingleExperiment(self, idx):
         diffrn_radiation_type = self._proxy.experiment.dataBlocksNoMeas[idx]['params']['_diffrn_radiation']['type']['value']
@@ -879,6 +1015,15 @@ class Experiment(QObject):
         ed_name = self._proxy.experiment.dataBlocksNoMeas[idx]['name']['value']
         cryspy_block_name = f'{experiment_prefix}_{ed_name}'
         cryspyInOutDict = self._proxy.data._cryspyInOutDict
+
+        print(f"!!!!! 1 {list(cryspyInOutDict[cryspy_block_name].keys())}")
+        print('signal_plus' not in list(cryspyInOutDict[cryspy_block_name].keys()))
+        if 'signal_plus' not in list(cryspyInOutDict[cryspy_block_name].keys()):
+            print('NOOOOOOOOOO')
+            print(f"!!!!! 2 {list(cryspyInOutDict[cryspy_block_name].keys())}")
+            return
+            time.sleep(0.1)
+            print(f"!!!!! 3 {list(cryspyInOutDict[cryspy_block_name].keys())}")
 
         # Background Y data # NEED FIX: use calculatedYBkgArray()
         #y_bkg_array = cryspyInOutDict[cryspy_block_name]['signal_background']
@@ -904,7 +1049,8 @@ class Experiment(QObject):
         xBraggDict = {}
         for modelName in modelNames:
             x_bragg_array = cryspyInOutDict[cryspy_block_name][f'{dict_name_prefix}_{modelName}'][f'{x_array_name}_hkl']
-            #x_bragg_array = np.rad2deg(x_bragg_array)
+            if diffrn_radiation_type == 'cw':
+                x_bragg_array = np.rad2deg(x_bragg_array)
             xBraggDict[modelName] = x_bragg_array
         self.setXBraggDict(xBraggDict, idx)
 

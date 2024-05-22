@@ -18,6 +18,7 @@
         <file>Gui/Components/Pages/Experiment/SideBarBasic/DiffrnRadiation.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/Experiments.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground_TOF.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrPeakAsymm_CW.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_CW.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_TOF.qml</file>
