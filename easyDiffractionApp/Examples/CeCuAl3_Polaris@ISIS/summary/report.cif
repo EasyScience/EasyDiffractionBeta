@@ -1,4 +1,4 @@
-data_cecual3
+data_cecual
 
 _cell.length_a 4.25678
 _cell.length_b 4.25678
@@ -31,24 +31,24 @@ data_polaris
 _pd_instr.2theta_bank 145.0
 _pd_instr.dtt1 6167.247
 _pd_instr.dtt2 -2.28
-_pd_instr.zero 2.9210000038146973()
+_pd_instr.zero 2.92(3)
 _pd_instr.alpha0 0.0
 _pd_instr.alpha1 0.2971
 _pd_instr.beta0 0.04182
 _pd_instr.beta1 0.00224
-_pd_instr.sigma0 0.4090000092983246()
-_pd_instr.sigma1 8.118000030517578()
+_pd_instr.sigma0 0.409
+_pd_instr.sigma1 8.118
 _pd_instr.sigma2 0.0
 
-_tof_background.coeff1 24832.85
-_tof_background.coeff2 6139.244
-_tof_background.coeff3 8063.472
-_tof_background.coeff4 3125.05
-_tof_background.coeff5 2566.956
-_tof_background.coeff6 311.077
-_tof_background.coeff7 837.348
-_tof_background.coeff8 -103.742
-_tof_background.coeff9 -11.806
+_tof_background.coeff1 25101(108)
+_tof_background.coeff2 6940(199)
+_tof_background.coeff3 8460(189)
+_tof_background.coeff4 3452(162)
+_tof_background.coeff5 2812(157)
+_tof_background.coeff6 545(122)
+_tof_background.coeff7 1000(128)
+_tof_background.coeff8 9(77)
+_tof_background.coeff9 116(78)
 _tof_background.coeff10 0.0
 _tof_background.coeff11 0.0
 _tof_background.coeff12 0.0
@@ -64,4 +64,4 @@ _diffrn_radiation.probe neutron
 loop_
 _pd_phase_block.id
 _pd_phase_block.scale
-cecual3 1359.56005859375()
+cecual 1336(2)

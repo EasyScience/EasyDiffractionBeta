@@ -4,7 +4,7 @@ _project.description "neutrons, powder, time-of-flight, Polaris@ISIS"
 
 loop_
 _model.cif_file_name
-cecual3.cif
+cecual.cif
 
 loop_
 _experiment.cif_file_name

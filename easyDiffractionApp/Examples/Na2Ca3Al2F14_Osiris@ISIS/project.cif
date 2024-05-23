@@ -1,0 +1,11 @@
+data_Na2Ca3Al2F14
+
+_project.description "neutrons, powder, time-of-flight, Osiris@ISIS"
+
+loop_
+_model.cif_file_name
+ncaf.cif
+
+loop_
+_experiment.cif_file_name
+osiris.cif
