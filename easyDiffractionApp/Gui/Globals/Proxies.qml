@@ -656,7 +656,7 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
     }
 
     function modelLoopParam(category, name, rowIndex, blockIdx = main.model.currentIndex) {
-        if (!main.model.defined) {
+        if (!main.model.defined || typeof main.model.dataBlocks[blockIdx].loops[category][rowIndex] === 'undefined') {
             return {}
         }
         return main.model.dataBlocks[blockIdx].loops[category][rowIndex][name]
