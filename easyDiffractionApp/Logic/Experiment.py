@@ -778,7 +778,7 @@ class Experiment(QObject):
     def paramValueByFieldAndCrypyParamPath(self, field, path):  # NEED FIX: code duplicate of editDataBlockByLmfitParams
         block, group, idx = path
 
-        # pd (powder diffraction) block
+        # Experiment, pd (powder diffraction), block
         if block.startswith('pd_'):
             blockName = block[3:]
             category = None
@@ -855,18 +855,15 @@ class Experiment(QObject):
             block, group, idx = Data.strToCryspyDictParamPath(param.name)
 
             # pd (powder diffraction) block
-            if block.startswith('pd_'):
-                blockName = block[3:]
+            if block.startswith('pd_') or block.startswith('tof_'):
+                if block.startswith('pd_'):
+                    blockName = block[3:]  # CW
+                elif block.startswith('tof_'):
+                    blockName = block[4:]  # TOF
                 category = None
                 name = None
                 rowIndex = -1
                 value = param.value
-                error = 0
-                if param.stderr is not None:
-                    if param.stderr < 1e-6:
-                        error = 1e-6  # Temporary solution to compensate for too small uncertanties after lmfit
-                    else:
-                        error = param.stderr
 
                 # wavelength
                 if group == 'wavelength':
@@ -912,7 +909,7 @@ class Experiment(QObject):
                     category = '_pd_background'
                     name = 'line_segment_X'
                     rowIndex = idx[0]
-                    #value = np.rad2deg(value)
+                    value = np.rad2deg(value)
 
                 # background_intensity
                 elif group == 'background_intensity':
@@ -926,6 +923,99 @@ class Experiment(QObject):
                     name = 'scale'
                     rowIndex = idx[0]
 
+                # zero (TOF)
+                elif group == 'zero':
+                    category = '_pd_instr'
+                    name = 'zero'
+
+                # dtt1 (TOF)
+                elif group == 'dtt1':
+                    category = '_pd_instr'
+                    name = 'dtt1'
+
+                # dtt2 (TOF)
+                elif group == 'dtt2':
+                    category = '_pd_instr'
+                    name = 'dtt2'
+
+                # profile_alphas (TOF)
+                elif group == 'profile_alphas':
+                    category = '_pd_instr'
+                    if idx[0] == 0:
+                        name = 'alpha0'
+                    elif idx[0] == 1:
+                        name = 'alpha1'
+
+                # profile_betas (TOF)
+                elif group == 'profile_betas':
+                    category = '_pd_instr'
+                    if idx[0] == 0:
+                        name = 'beta0'
+                    elif idx[0] == 1:
+                        name = 'beta1'
+
+                # profile_sigmas (TOF)
+                elif group == 'profile_sigmas':
+                    category = '_pd_instr'
+                    if idx[0] == 0:
+                        name = 'sigma0'
+                    elif idx[0] == 1:
+                        name = 'sigma1'
+                    elif idx[0] == 2:
+                        name = 'sigma2'
+
+                # background_coefficients (TOF)
+                elif group == 'background_coefficients':
+                    category = '_tof_background'
+                    if idx[0] == 0:
+                        name = 'coeff1'
+                    elif idx[0] == 1:
+                        name = 'coeff2'
+                    elif idx[0] == 2:
+                        name = 'coeff3'
+                    elif idx[0] == 3:
+                        name = 'coeff4'
+                    elif idx[0] == 4:
+                        name = 'coeff5'
+                    elif idx[0] == 5:
+                        name = 'coeff6'
+                    elif idx[0] == 6:
+                        name = 'coeff7'
+                    elif idx[0] == 7:
+                        name = 'coeff8'
+                    elif idx[0] == 8:
+                        name = 'coeff9'
+                    elif idx[0] == 9:
+                        name = 'coeff10'
+                    elif idx[0] == 10:
+                        name = 'coeff11'
+                    elif idx[0] == 11:
+                        name = 'coeff12'
+                    elif idx[0] == 12:
+                        name = 'coeff13'
+                    elif idx[0] == 13:
+                        name = 'coeff14'
+                    elif idx[0] == 14:
+                        name = 'coeff15'
+                    elif idx[0] == 15:
+                        name = 'coeff16'
+                    elif idx[0] == 16:
+                        name = 'coeff17'
+                    elif idx[0] == 17:
+                        name = 'coeff18'
+
+                # Unrecognized group
+                else:
+                    console.error(f'Unrecognized group {group} in parameter {param.name}')
+                    return
+
+                error = 0
+                if param.stderr is not None:
+                    if param.stderr < 1e-6:
+                        error = 1e-6  # Temporary solution to compensate for too small uncertanties after lmfit
+                    else:
+                        error = param.stderr
+
                 value = float(value)  # convert float64 to float (needed for QML access)
                 error = float(error)  # convert float64 to float (needed for QML access)
                 blockIdx = [block['name']['value'] for block in self._dataBlocksNoMeas].index(blockName)
@@ -936,6 +1026,15 @@ class Experiment(QObject):
                 else:
                     self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'value', value)
                     self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', error)
+
+            # Model (crystal phase) block
+            elif block.startswith('crystal_'):
+                pass
+
+            # Unknown block
+            else:
+                console.error(f'Unrecognized parameter {param.name}')
+
 
     def runCryspyCalculations(self):
         result = rhochi_calc_chi_sq_by_dictionary(
@@ -1016,14 +1115,8 @@ class Experiment(QObject):
         cryspy_block_name = f'{experiment_prefix}_{ed_name}'
         cryspyInOutDict = self._proxy.data._cryspyInOutDict
 
-        print(f"!!!!! 1 {list(cryspyInOutDict[cryspy_block_name].keys())}")
-        print('signal_plus' not in list(cryspyInOutDict[cryspy_block_name].keys()))
         if 'signal_plus' not in list(cryspyInOutDict[cryspy_block_name].keys()):
-            print('NOOOOOOOOOO')
-            print(f"!!!!! 2 {list(cryspyInOutDict[cryspy_block_name].keys())}")
             return
-            time.sleep(0.1)
-            print(f"!!!!! 3 {list(cryspyInOutDict[cryspy_block_name].keys())}")
 
         # Background Y data # NEED FIX: use calculatedYBkgArray()
         #y_bkg_array = cryspyInOutDict[cryspy_block_name]['signal_background']
