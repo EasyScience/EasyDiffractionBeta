@@ -10,7 +10,6 @@ _pd_instr.beta0 0.01079(7)
 _pd_instr.beta1 0.0555(9)
 _pd_instr.sigma0 0.0
 _pd_instr.sigma1 13.2(1)
-_pd_instr.sigma2 0.0
 
 _tof_background.coeff1 819(43)
 _tof_background.coeff2 737(85)

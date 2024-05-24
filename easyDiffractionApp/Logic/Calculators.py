@@ -1194,20 +1194,20 @@ class CryspyParser:
                                 fittable = True,
                                 fit = item.sigma1_refinement
                             ))
-                            ed_experiment_no_meas['params']['_pd_instr']['sigma2'] = dict(Parameter(
-                                item.sigma2,
-                                error = item.sigma2_sigma,
-                                category = '_pd_instr',
-                                prettyCategory = 'inst',
-                                name = 'sigma2',
-                                prettyName = 'sigma2',
-                                shortPrettyName = 'σ2',
-                                icon = 'shapes',
-                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                                absDelta = 0.5,
-                                fittable = True,
-                                fit = item.sigma2_refinement
-                            ))
+                            #ed_experiment_no_meas['params']['_pd_instr']['sigma2'] = dict(Parameter(
+                            #    item.sigma2,
+                            #    error = item.sigma2_sigma,
+                            #    category = '_pd_instr',
+                            #    prettyCategory = 'inst',
+                            #    name = 'sigma2',
+                            #    prettyName = 'sigma2',
+                            #    shortPrettyName = 'σ2',
+                            #    icon = 'shapes',
+                            #    url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
+                            #    absDelta = 0.5,
+                            #    fittable = True,
+                            #    fit = item.sigma2_refinement
+                            #))
                             #ed_experiment_no_meas['params']['_pd_instr']['gamma0'] = dict(Parameter(
                             #    item.gamma0,
                             #    error = item.gamma0_sigma,

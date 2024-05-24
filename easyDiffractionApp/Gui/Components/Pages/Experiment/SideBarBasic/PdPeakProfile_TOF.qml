@@ -30,6 +30,16 @@ EaElements.GroupColumn {
                 onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
             }
+        }
+    //}
+
+    //Column {
+    //    spacing: titleSpacing
+    //    EaElements.Label {
+    //        color: EaStyle.Colors.themeForegroundMinor
+    //        text: 'Exponential decay parameters'
+    //    }
+        EaElements.GroupRow {
             EaElements.ParamTextField {
                 parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'beta0')
                 onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
@@ -60,14 +70,14 @@ EaElements.GroupColumn {
                 onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
             }
-            EaElements.ParamTextField {
-                parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'sigma2')
-                onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
-                fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
-            }
-            EaElements.ParamTextField {  // Empty spot for better visual alignment
-                visible: false
-            }
+            //EaElements.ParamTextField {
+            //    parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'sigma2')
+            //    onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
+            //    fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
+            //}
+            //EaElements.ParamTextField {  // Empty spot for better visual alignment
+            //    visible: false
+            //}
         }
     //}
 
