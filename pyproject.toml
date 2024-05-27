@@ -36,7 +36,9 @@ dependencies = [
 [project.optional-dependencies]
 ci = [
   'toml',
-  'pyinstaller'
+  'pyinstaller',
+  'requests',
+  'dephell_licenses'
 ]
 test = [
   'pytest>=5.2',
