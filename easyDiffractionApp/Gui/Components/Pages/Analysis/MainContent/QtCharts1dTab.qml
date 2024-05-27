@@ -98,7 +98,7 @@ Column {
                     axisX: mainChart.axisX
                     axisY: mainChart.axisY
 
-                    useOpenGL: mainChart.useOpenGL
+                    //useOpenGL: mainChart.useOpenGL
 
                     color: EaStyle.Colors.chartForegroundsExtra[2]
                     width: 2
@@ -115,7 +115,7 @@ Column {
                     axisX: mainChart.axisX
                     axisY: mainChart.axisY
 
-                    useOpenGL: mainChart.useOpenGL
+                    //useOpenGL: mainChart.useOpenGL
 
                     color: EaStyle.Colors.chartForegrounds[1]
                     width: 1
@@ -130,7 +130,7 @@ Column {
                     axisX: mainChart.axisX
                     axisY: mainChart.axisY
 
-                    useOpenGL: mainChart.useOpenGL
+                    //useOpenGL: mainChart.useOpenGL
 
                     color: calcSerieColor
                     width: 2
@@ -304,7 +304,7 @@ Column {
                     axisX: residualChart.axisX
                     axisY: residualChart.axisY
 
-                    useOpenGL: residualChart.useOpenGL
+                    //useOpenGL: residualChart.useOpenGL
 
                     color: EaStyle.Colors.chartForegrounds[2]
 

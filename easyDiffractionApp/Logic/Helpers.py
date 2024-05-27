@@ -89,8 +89,11 @@ class EnvironmentVariables:
 
     @staticmethod
     def set():
-        os.environ['QSG_RHI_BACKEND'] = 'opengl'  # For QtCharts XYSeries useOpenGL
-        os.environ['QT_RHI_SHADER_DEBUG'] = '1'  # https://doc.qt.io/qt-6/qtquick3d-tool-shadergen.html
+        # see https://doc.qt.io/qt-6/qtquick3d-requirements.html
+        #os.environ['QSG_RHI_BACKEND'] = 'opengl'  # Requests the specific RHI backend. For QtCharts XYSeries useOpenGL
+        os.environ['QT_RHI_SHADER_DEBUG'] = '1'    # Enables the graphics API implementation's debug
+        os.environ['QSG_INFO'] = '1'               # Printing system information when initializing the Qt Quick scene graph
+        # misc
         #qsetenv("QT_QPA_PLATFORM", "windows:darkmode=[1|2]")
         #os.environ['QT_QPA_PLATFORM'] = 'windows:darkmode=[1|2]'
         #os.environ['QT_MESSAGE_PATTERN'] = "\033[32m%{time h:mm:ss.zzz}%{if-category}\033[32m %{category}:%{endif} %{if-debug}\033[34m%{function}%{endif}%{if-warning}\033[31m%{backtrace depth=3}%{endif}%{if-critical}\033[31m%{backtrace depth=3}%{endif}%{if-fatal}\033[31m%{backtrace depth=3}%{endif}\033[0m %{message}"
