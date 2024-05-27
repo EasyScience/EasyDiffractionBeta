@@ -2,4 +2,4 @@ This is a test version of EasyDiffraction with improved GUI and overall performa
 
 ### Bug Fixes
 
-- Fixed formatting of parameters in CIF files and analysis table.
+- Fitting time-of-flight (TOF) data using the [CrysPy](https://github.com/ikibalin/cryspy) calculation engine is now supported.
