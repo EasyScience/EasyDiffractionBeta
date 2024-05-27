@@ -7,7 +7,7 @@ import sys
 import datetime
 import argparse
 import pip
-import tomllib
+import toml
 
 
 ### Get value from pyproject.toml
@@ -16,7 +16,7 @@ def conf():
     project_fname = 'pyproject.toml'
     current_path = os.path.dirname(__file__)
     project_fpath = os.path.join(current_path, project_fname)
-    return tomllib.load(project_fpath)
+    return toml.load(project_fpath)
 
 def keyPath():
     if len(sys.argv) < 2:
@@ -66,7 +66,7 @@ def extraDict():
                                         'commit_url': commit_url } } } }
 
 def extraToml():
-    return tomllib.dumps(extraDict())
+    return toml.dumps(extraDict())
 
 def updatePyprojectToml():
     with open('pyproject.toml', 'r', encoding='utf-8') as f:

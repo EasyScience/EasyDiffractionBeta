@@ -35,6 +35,7 @@ dependencies = [
 
 [project.optional-dependencies]
 ci = [
+  'toml',
   'pyinstaller'
 ]
 test = [
