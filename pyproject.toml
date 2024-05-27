@@ -38,6 +38,7 @@ ci = [
   'toml',
   'pyinstaller',
   'requests',
+  'licensename',
   'dephell_licenses'
 ]
 test = [
