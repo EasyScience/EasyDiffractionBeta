@@ -6,7 +6,7 @@ import os, sys
 import time
 import requests
 import xml.dom.minidom
-import dephell_licenses
+import licensename, dephell_licenses
 import Functions, Config
 
 
@@ -155,8 +155,10 @@ def installerConfigXml():
 def appPackageXml():
     try:
         message = f"create app package content"
-        license_id = CONFIG['project']['license'].replace('-only', '')
-        license_name = dephell_licenses.licenses.get_by_id(license_id).name.replace('"', "'")
+        license_file = CONFIG['project']['license']['file']
+        license_id = licensename.from_file(license_file)
+        license_name = dephell_licenses.licenses.get_by_id(license_id).name
+        license_name = license_name.replace('"', "'")
         requires_root = 'false'
         raw_xml = Functions.dict2xml({
             'Package': {

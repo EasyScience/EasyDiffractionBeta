@@ -31,10 +31,13 @@ jobs:
       - name: Upgrade package installer for Python
         run: python -m pip install --upgrade pip
 
-      - name: Add extra info to pyproject.toml
+      - name: Install Python dependences
         run: |
-          python -m pip install toml
-          python utils.py --update
+          python -m pip install flit
+          flit install --only-deps  # Install the dependencies, but not the EasyDiffractionApp package itself
+
+      - name: Add extra info to pyproject.toml
+        run: python utils.py --update
 
       - name: Declare env variables on push only
         if: github.event_name == 'push'
@@ -60,15 +63,6 @@ jobs:
           echo "QTIFW_PATH=$(python utils.py --get ci.qtifw.setup.installation_path.${{ runner.os }})" >> $GITHUB_ENV
           echo "PYTHON_PACKAGES_PATH=$(python utils.py --get ci.cache.python_packages_path)" >> $GITHUB_ENV
           echo "GIT_INSTALL_URL=git+$GITHUB_SERVER_URL/$GITHUB_REPOSITORY@${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
-
-      - name: Install Python dependences
-        run: |
-          python -m pip install numpy lmfit numdifftools
-          python -m pip install orjson jsbeautifier
-          python -m pip install pyinstaller requests dephell_licenses
-          python -m pip install pytest pytest-image-diff
-          python -m pip install git+https://github.com/ikibalin/cryspy.git@beta
-          python -m pip install git+https://github.com/easyscience/EasyApp.git@new-easy-app2
 
       - name: Create python resources file
         run: pyside6-rcc ${{ env.PACKAGE_PATH }}/resources.qrc -o ${{ env.PACKAGE_PATH }}/resources.py
@@ -213,6 +207,11 @@ jobs:
       - name: Upgrade package installer for Python
         run: python -m pip install --upgrade pip
 
+      - name: Install Python dependences
+        run: |
+          python -m pip install flit
+          flit install --only-deps  # Install the dependencies, but not the EasyDiffractionApp package itself
+
       - name: Declare env variables on push only
         if: github.event_name == 'push'
         shell: bash
@@ -224,19 +223,12 @@ jobs:
         run: echo "BRANCH_NAME=$GITHUB_HEAD_REF" >> $GITHUB_ENV
 
       - name: Add extra info to pyproject.toml
-        run: |
-          python -m pip install toml
-          python utils.py --update
+        run: python utils.py --update
 
       - name: Declare env variables on push and pull_request
         shell: bash
         run: |
           echo "SCRIPTS_PATH=$(python utils.py --get ci.project.subdirs.scripts)" >> $GITHUB_ENV
-
-      - name: Install Python dependences
-        run: |
-          python -m pip install requests
-          python -m pip install pytest pytest-image-diff
 
       - name: Set up screen (Linux)
         if: runner.os == 'Linux'
