@@ -116,8 +116,8 @@ Column {
                 console.debug(`Clicking '${text}' button: ${this}`)
                 if (Globals.Vars.isTestMode) {
                     console.debug('*** Loading model from resources (test mode) ***')
-                    const fpaths = [':/Examples/Co2SiO4-Mult-Phases/models/co2sio4.cif',
-                                    ':/Examples/Co2SiO4-Mult-Phases/models/coo.cif']
+                    const fpaths = [':/Examples/Co2SiO4-Mult-Phases_D20@ILL/models/co2sio4.cif',
+                                    ':/Examples/Co2SiO4-Mult-Phases_D20@ILL/models/coo.cif']
                     Globals.Proxies.main.model.loadModelsFromResources(fpaths)
                 } else {
                     openCifFileDialog.open()

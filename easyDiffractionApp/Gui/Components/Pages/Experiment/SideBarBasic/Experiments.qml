@@ -116,7 +116,7 @@ Column {
                 console.debug(`Clicking '${text}' button: ${this}`)
                 if (Globals.Vars.isTestMode) {
                     console.debug('*** Loading experiment from resources (test mode) ***')
-                    const fpaths = [':/Examples/Co2SiO4-Mult-Phases/experiments/d20.cif']
+                    const fpaths = [':/Examples/Co2SiO4-Mult-Phases_D20@ILL/experiments/d20.cif']
                     Globals.Proxies.main.experiment.loadExperimentsFromResources(fpaths)
                 } else {
                     openCifFileDialog.open()
