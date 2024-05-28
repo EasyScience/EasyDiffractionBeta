@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]  # [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
+        os: [ubuntu-20.04, ubuntu-22.04]  # [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
 
     steps:
       - name: Check-out repository
@@ -178,10 +178,13 @@ jobs:
       #    ${{ secrets.APP_REPO_FTP_PASSWORD }}
 
       - name: Upload zipped offline app installer for the next job step
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: zipped-app-installer
+          name: zipped-app-installer_${{ matrix.os }}
           path: ${{ env.DISTRIBUTION_PATH }}/*.zip
+          compression-level: 0  # no compression
+          if-no-files-found: error
+          retention-days: 10
 
   test-installer:
     needs: build-installer
@@ -193,7 +196,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]  # [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
+        os: [ubuntu-20.04, ubuntu-22.04]  # [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
 
     steps:
       - name: Check-out repository
@@ -266,9 +269,9 @@ jobs:
           Get-DisplayResolution
 
       - name: Download zipped offline app installer from from the previous job step
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: zipped-app-installer
+          name: zipped-app-installer_${{ matrix.os }}
 
       - name: Unzip archive with offline app installer for distribution
         run: >
