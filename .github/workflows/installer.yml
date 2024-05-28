@@ -91,8 +91,8 @@ jobs:
       #    screenresolution get
       #    screenresolution set 1920x1080x32@30
       #    screenresolution get
-      - name: Set up screen (macOS)
-        if: runner.os == 'macOS'
+      - name: Set up screen (macOS, not flyci)
+        if: matrix.os == 'macos-13'  # runner.os == 'macOS'
         run: |
           system_profiler SPDisplaysDataType | grep Resolution
 
