@@ -54,6 +54,8 @@ jobs:
         run: |
           echo "MATRIX_OS=${{ matrix.os }}" >> $GITHUB_ENV
           echo "RUNNER_OS=${{ runner.os }}" >> $GITHUB_ENV
+          echo "RUNNER_ARCH=${{ runner.arch }}" >> $GITHUB_ENV
+          echo "TEMP_ARTIFACT_SUFFIX=$(python utils.py --get release.app_name)" >> $GITHUB_ENV
           echo "APP_NAME=$(python utils.py --get release.app_name)" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$(python utils.py --get project.name)" >> $GITHUB_ENV
           echo "PACKAGE_PATH=$GITHUB_WORKSPACE/$(python utils.py --get project.name)" >> $GITHUB_ENV
@@ -182,7 +184,7 @@ jobs:
       - name: Upload zipped offline app installer for the next job step
         uses: actions/upload-artifact@v4
         with:
-          name: zipped-app-installer_${{ runner.os }}  # zip of another zip
+          name: zipped-app-installer_${{ runner.os }}-${{ runner.arch }}  # zip of another zip
           path: ${{ env.DISTRIBUTION_PATH }}/*.zip
           compression-level: 0  # no compression
           if-no-files-found: error
@@ -273,7 +275,7 @@ jobs:
       - name: Download zipped offline app installer from from the previous job step
         uses: actions/download-artifact@v4
         with:
-          name: zipped-app-installer_${{ runner.os }}  # zip of another zip
+          name: zipped-app-installer_${{ runner.os }}-${{ runner.arch }}  # zip of another zip
 
       - name: Unzip archive with offline app installer for distribution
         run: >
