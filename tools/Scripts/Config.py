@@ -18,7 +18,7 @@ class Config():
         self.os = Functions.osName()
         self.processor = Functions.processor()
         self.branch_name = branch_name
-        self.matrix_os = matrix_os.removeprefix('flyci-').removesuffix('-m2').removesuffix('-m3')
+        self.matrix_os = self.matrixOs(matrix_os)
 
         # Application
         self.app_version = self.__dict__['project']['version']
@@ -68,6 +68,11 @@ class Config():
 
     def __getitem__(self, key):
         return self.__dict__[key]
+
+    def matrixOs(self, matrix_os):
+        if matrix_os is None:
+            return matrix_os
+        return matrix_os.removeprefix('flyci-').removesuffix('-m2').removesuffix('-m3')
 
     # https://doc.qt.io/qtinstallerframework/scripting.html
     def installationDir(self):
