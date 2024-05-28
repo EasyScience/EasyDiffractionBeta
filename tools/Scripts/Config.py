@@ -71,8 +71,13 @@ class Config():
 
     def matrixOs(self, matrix_os):
         if matrix_os is None:
-            return matrix_os
-        return matrix_os.removeprefix('flyci-').removesuffix('-m2').removesuffix('-m3')
+            return None
+        if 'ubuntu-24.04' in matrix_os:
+            matrix_os = 'ubuntu-22.04'  # NEED FIX: Temporary solution to test the 22.04 build on 24.04
+        elif 'flyci' in matrix_os:
+            matrix_os = matrix_os.removeprefix('flyci-')  # Simplify the default flyci name
+            matrix_os = matrix_os.removesuffix('-m2')  # Simplify the default flyci name
+        return matrix_os
 
     # https://doc.qt.io/qtinstallerframework/scripting.html
     def installationDir(self):
