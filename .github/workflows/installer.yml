@@ -133,7 +133,16 @@ jobs:
           python ${{ env.SCRIPTS_PATH }}/MakeInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
 
-      - name: Sign offline app installer
+      - name: Upload zipped offline app installer for the next job step
+        uses: actions/upload-artifact@v4
+        with:
+          name: zipped-app-installer_${{ runner.os }}-${{ runner.arch }}  # zip of another zip
+          path: ${{ env.DISTRIBUTION_PATH }}/*.zip
+          compression-level: 0  # no compression
+          if-no-files-found: error
+          retention-days: 10
+
+      - name: Sign offline app installer (master only)
         if: github.event_name == 'push' && env.BRANCH_NAME == 'master'
         run: >
           python ${{ env.SCRIPTS_PATH }}/SignAppInstaller.py
@@ -180,15 +189,6 @@ jobs:
       #    python ${{ env.SCRIPTS_PATH }}/UploadToFtp.py
       #    ${{ env.BRANCH_NAME }} ${{ matrix.os }}
       #    ${{ secrets.APP_REPO_FTP_PASSWORD }}
-
-      - name: Upload zipped offline app installer for the next job step
-        uses: actions/upload-artifact@v4
-        with:
-          name: zipped-app-installer_${{ runner.os }}-${{ runner.arch }}  # zip of another zip
-          path: ${{ env.DISTRIBUTION_PATH }}/*.zip
-          compression-level: 0  # no compression
-          if-no-files-found: error
-          retention-days: 10
 
   test-installer:
     needs: build-installer
