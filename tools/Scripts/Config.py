@@ -18,7 +18,7 @@ class Config():
         self.os = Functions.osName()
         self.processor = Functions.processor()
         self.branch_name = branch_name
-        self.matrix_os = matrix_os
+        self.matrix_os = self.matrixOs(matrix_os)
 
         # Application
         self.app_version = self.__dict__['project']['version']
@@ -68,6 +68,16 @@ class Config():
 
     def __getitem__(self, key):
         return self.__dict__[key]
+
+    def matrixOs(self, matrix_os):
+        if matrix_os is None:
+            return None
+        if 'ubuntu-24.04' in matrix_os:
+            matrix_os = 'ubuntu-22.04'  # NEED FIX: Temporary solution to test the 22.04 build on 24.04
+        elif 'flyci' in matrix_os:
+            matrix_os = matrix_os.removeprefix('flyci-')  # Simplify the default flyci name
+            matrix_os = matrix_os.removesuffix('-m2')  # Simplify the default flyci name
+        return matrix_os
 
     # https://doc.qt.io/qtinstallerframework/scripting.html
     def installationDir(self):
