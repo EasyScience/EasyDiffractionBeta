@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]  # [ubuntu-20.04, ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
+        os: [ubuntu-20.04, ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]  # [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
 
     steps:
       - name: Check-out repository
@@ -192,7 +192,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]  # [ubuntu-20.04, ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
+        os: [ubuntu-20.04, ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]  # [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
 
     steps:
       - name: Check-out repository
@@ -253,8 +253,8 @@ jobs:
       #    screenresolution get
       #    screenresolution set 1920x1080x32@30
       #    screenresolution get
-      - name: Set up screen (macOS)
-        if: runner.os == 'macOS'
+      - name: Set up screen (macOS, not flyci)
+        if: matrix.os == 'macos-13'  # runner.os == 'macOS'
         run: |
           system_profiler SPDisplaysDataType | grep Resolution
 
