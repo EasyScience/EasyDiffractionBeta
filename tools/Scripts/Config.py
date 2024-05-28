@@ -18,7 +18,7 @@ class Config():
         self.os = Functions.osName()
         self.processor = Functions.processor()
         self.branch_name = branch_name
-        self.matrix_os = matrix_os
+        self.matrix_os = matrix_os.removeprefix('flyci-').removesuffix('-m2').removesuffix('-m3')
 
         # Application
         self.app_version = self.__dict__['project']['version']
