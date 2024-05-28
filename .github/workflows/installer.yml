@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04]  # [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
+        os: [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
 
     steps:
       - name: Check-out repository
@@ -182,7 +182,7 @@ jobs:
       - name: Upload zipped offline app installer for the next job step
         uses: actions/upload-artifact@v4
         with:
-          name: zipped-app-installer_${{ runner.os }}
+          name: zipped-app-installer_${{ runner.os }}  # zip of another zip
           path: ${{ env.DISTRIBUTION_PATH }}/*.zip
           compression-level: 0  # no compression
           if-no-files-found: error
@@ -198,7 +198,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04]  # [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
+        os: [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, flyci-macos-14-m2]
 
     steps:
       - name: Check-out repository
@@ -273,7 +273,7 @@ jobs:
       - name: Download zipped offline app installer from from the previous job step
         uses: actions/download-artifact@v4
         with:
-          name: zipped-app-installer_${{ runner.os }}
+          name: zipped-app-installer_${{ runner.os }}  # zip of another zip
 
       - name: Unzip archive with offline app installer for distribution
         run: >
