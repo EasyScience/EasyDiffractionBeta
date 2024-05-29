@@ -19,12 +19,12 @@
         <file>Gui/Components/Pages/Experiment/SideBarBasic/Experiments.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground_TOF.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrPeakAsymm_CW.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_CW.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrPeakAsymm_CWL.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_CWL.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_TOF.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_CW.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_CWL.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_TOF.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_CW.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_CWL.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_TOF.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/Phase.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarText/Experiments.qml</file>

@@ -99,7 +99,7 @@ class Worker(QObject):
         totalResid = np.empty(0)
         for dataBlock in self._proxy.experiment.dataBlocksNoMeas:
             diffrn_radiation_type = dataBlock['params']['_diffrn_radiation']['type']['value']
-            if diffrn_radiation_type == 'cw':
+            if diffrn_radiation_type == 'cwl':
                 experiment_prefix = 'pd'
             elif diffrn_radiation_type == 'tof':
                 experiment_prefix = 'tof'

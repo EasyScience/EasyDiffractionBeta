@@ -38,8 +38,8 @@ EaComponents.SideBarColumn {
                 if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
                     return ''
                 }
-                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
-                    return 'SideBarBasic/PdMeas_CW.qml'
+                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                    return 'SideBarBasic/PdMeas_CWL.qml'
                 } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
                     return 'SideBarBasic/PdMeas_TOF.qml'
                 } else {
@@ -58,8 +58,8 @@ EaComponents.SideBarColumn {
                 if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
                     return ''
                 }
-                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
-                    return 'SideBarBasic/PdInstrParams_CW.qml'
+                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                    return 'SideBarBasic/PdInstrParams_CWL.qml'
                 } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
                     return 'SideBarBasic/PdInstrParams_TOF.qml'
                 } else {
@@ -78,8 +78,8 @@ EaComponents.SideBarColumn {
                 if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
                     return ''
                 }
-                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
-                    return 'SideBarBasic/PdPeakProfile_CW.qml'
+                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                    return 'SideBarBasic/PdPeakProfile_CWL.qml'
                 } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
                     return 'SideBarBasic/PdPeakProfile_TOF.qml'
                 } else {
@@ -99,9 +99,9 @@ EaComponents.SideBarColumn {
                     peakAsymmetryGroup.visible = false
                     return ''
                 }
-                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
+                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
                     peakAsymmetryGroup.visible = true
-                    return 'SideBarBasic/PdInstrPeakAsymm_CW.qml'
+                    return 'SideBarBasic/PdInstrPeakAsymm_CWL.qml'
                 } else {
                     peakAsymmetryGroup.visible = false
                     return ''
@@ -122,7 +122,7 @@ EaComponents.SideBarColumn {
 
     EaElements.GroupBox {
         title: {
-            if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
+            if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
                 return Globals.Proxies.experimentLoopTitle(qsTr('Background'), '_pd_background')
             } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
                 return qsTr('Background')
@@ -135,7 +135,7 @@ EaComponents.SideBarColumn {
                 if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
                     return ''
                 }
-                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cw') {
+                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
                     return 'SideBarBasic/PdBackground.qml'
                 } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
                     return 'SideBarBasic/PdBackground_TOF.qml'

@@ -10,8 +10,8 @@ import EasyApp.Gui.Elements as EaElements
 
 import Gui.Globals as Globals
 
-EaElements.GroupColumn {
-    property real titleSpacing: 0.5
+EaElements.GroupRow {
+    //property real titleSpacing: 0.5
 
     //Column {
     //    spacing: titleSpacing
@@ -19,7 +19,7 @@ EaElements.GroupColumn {
     //        color: EaStyle.Colors.themeForegroundMinor
     //        text: 'Exponential decay parameters'
     //    }
-        EaElements.GroupRow {
+    //    EaElements.GroupRow {
             EaElements.ParamTextField {
                 parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'alpha0')
                 onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
@@ -30,7 +30,7 @@ EaElements.GroupColumn {
                 onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
             }
-        }
+    //   }
     //}
 
     //Column {
@@ -39,7 +39,7 @@ EaElements.GroupColumn {
     //        color: EaStyle.Colors.themeForegroundMinor
     //        text: 'Exponential decay parameters'
     //    }
-        EaElements.GroupRow {
+    //    EaElements.GroupRow {
             EaElements.ParamTextField {
                 parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'beta0')
                 onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
@@ -50,7 +50,7 @@ EaElements.GroupColumn {
                 onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
             }
-        }
+    //    }
     //}
 
     //Column {
@@ -59,7 +59,7 @@ EaElements.GroupColumn {
     //        color: EaStyle.Colors.themeForegroundMinor
     //        text: 'Variance of the Gaussian component'
     //    }
-        EaElements.GroupRow {
+    //    EaElements.GroupRow {
             EaElements.ParamTextField {
                 parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'sigma0')
                 onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
@@ -78,7 +78,7 @@ EaElements.GroupColumn {
             //EaElements.ParamTextField {  // Empty spot for better visual alignment
             //    visible: false
             //}
-        }
+    //    }
     //}
 
     //Column {

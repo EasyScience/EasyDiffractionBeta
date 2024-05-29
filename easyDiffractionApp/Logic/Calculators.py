@@ -191,7 +191,7 @@ class CryspyParser:
         return cif
 
     @staticmethod
-    def edCifToCryspyCif(edCif, diffrn_radiation_type='cw'):
+    def edCifToCryspyCif(edCif, diffrn_radiation_type='cwl'):
         rawToEdNamesCif = {
             '_symmetry_space_group_name_H-M': '_space_group.name_H-M_alt',
             '_atom_site_thermal_displace_type': '_atom_site.ADP_type',
@@ -210,7 +210,7 @@ class CryspyParser:
             '_model.cif_file_name': '_model_cif_file_name',
             '_experiment.cif_file_name': '_experiment_cif_file_name'
         }
-        edToCryspyNamesMap['cw'] = {
+        edToCryspyNamesMap['cwl'] = {
             '_diffrn_radiation_wavelength.wavelength': '_setup_wavelength',
 
             '_pd_calib.2theta_offset': '_setup_offset_2theta',
@@ -750,7 +750,7 @@ class CryspyParser:
 
                     # DATABLOCK SINGLES
 
-                    # Ranges category (CW)
+                    # Ranges category (CWL)
                     if type(item) == cryspy.C_item_loop_classes.cl_1_range.Range:
                         ed_experiment_no_meas['params']['_pd_meas'] = {}
                         if hasattr(item, 'ttheta_min') and hasattr(item, 'ttheta_max'):
@@ -855,7 +855,7 @@ class CryspyParser:
                             ed_phases.append(ed_phase)
                         ed_experiment_no_meas['loops']['_pd_phase_block'] = ed_phases
 
-                    # Cryspy setup section (TOF/CW)
+                    # Cryspy setup section (TOF/CWL)
                     elif type(item) == cryspy.C_item_loop_classes.cl_1_setup.Setup:
                         if hasattr(item, 'radiation'):
                             if not '_diffrn_radiation' in ed_experiment_no_meas['params']:
@@ -908,7 +908,7 @@ class CryspyParser:
                                 fit = item.offset_ttheta_refinement
                             ))
 
-                    # Cryspy instrument resolution section (CW)
+                    # Cryspy instrument resolution section (CWL)
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_pd_instr_resolution.PdInstrResolution:
                         if hasattr(item, 'u') and hasattr(item, 'v') and hasattr(item, 'w') and hasattr(item, 'x') and hasattr(item, 'y'):
                             if not '_pd_instr' in ed_experiment_no_meas['params']:
@@ -984,7 +984,7 @@ class CryspyParser:
                                 fit = item.y_refinement
                             ))
 
-                    # Cryspy peak asymmetries section (CW)
+                    # Cryspy peak asymmetries section (CWL)
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_pd_instr_reflex_asymmetry.PdInstrReflexAsymmetry:
                         if hasattr(item, 'p1') and hasattr(item, 'p2') and hasattr(item, 'p3') and hasattr(item, 'p4'):
                             if not '_pd_instr' in ed_experiment_no_meas['params']:
@@ -1567,7 +1567,7 @@ class CryspyParser:
                                 fit = item.coeff18_refinement
                             ))
 
-                    # Cryspy background section (CW, points)
+                    # Cryspy background section (CWL, points)
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_pd_background.PdBackgroundL:
                         cryspy_bkg_points = item.items
                         ed_bkg_points = []
@@ -1666,12 +1666,12 @@ class CryspyParser:
                         pd_meas_range_inc = (pd_meas_range_max - pd_meas_range_min) / (len(ed_meas_points) - 1)
                         ed_experiment_no_meas['params']['_pd_meas']['tof_range_inc']['value'] = pd_meas_range_inc
 
-                    # Cryspy measured data section (CW)
+                    # Cryspy measured data section (CWL)
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_pd_meas.PdMeasL:
                         if not '_diffrn_radiation' in ed_experiment_no_meas['params']:
                             ed_experiment_no_meas['params']['_diffrn_radiation'] = {}
                         ed_experiment_no_meas['params']['_diffrn_radiation']['type'] = dict(Parameter(
-                            'cw',
+                            'cwl',
                             optional=True,
                             category='_diffrn_radiation',
                             name='type',

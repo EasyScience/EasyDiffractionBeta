@@ -26,7 +26,7 @@ EaElements.GroupRow {
             }
             let param = Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')
             let val = param.value
-            val = val.replace('cw', 'constant wavelength')
+            val = val.replace('cwl', 'constant wavelength')
             val = val.replace('tof', 'time-of-flight')
             param.value = val
             return param

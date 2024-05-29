@@ -242,7 +242,7 @@ class Experiment(QObject):
         # Add the tof cryspy specific parameters
         # We set them to be 0 and calculate the background ourselves
         if '2theta_scan' in edCif:
-            cryspyCif = CryspyParser.edCifToCryspyCif(edCif, 'cw')
+            cryspyCif = CryspyParser.edCifToCryspyCif(edCif, 'cwl')
         elif 'time_of_flight' in edCif:
             edCif += '\n_pd_instr.peak_shape Gauss'  # 'pseudo-Voigt' is default
             #edCif += '\n_pd_instr.peak_shape pseudo-Voigt'
@@ -257,7 +257,7 @@ class Experiment(QObject):
                 range_min = 0  # default value to be updated later
                 range_max = 180  # default value to be updated later
                 defaultEdRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
-                cryspyRangeCif = CryspyParser.edCifToCryspyCif(defaultEdRangeCif, 'cw')
+                cryspyRangeCif = CryspyParser.edCifToCryspyCif(defaultEdRangeCif, 'cwl')
                 cryspyRangeObj = str_to_globaln(cryspyRangeCif).items
                 for item in dataBlock.items:
                     if type(item) == cryspy.C_item_loop_classes.cl_1_pd_meas.PdMeasL:
@@ -327,7 +327,7 @@ class Experiment(QObject):
             console.debug(IO.formatMsg('sub', 'No experiment(s)', '', 'to intern dataset', 'added'))
 
     @Slot(str)
-    def replaceExperiment(self, edCifNoMeas=''):  # NEED modifications for CW/TOF
+    def replaceExperiment(self, edCifNoMeas=''):  # NEED modifications for CWL/TOF
         console.debug("Cryspy obj and dict need to be replaced")
 
         # Compose EasyDiffraction CIF
@@ -347,7 +347,7 @@ class Experiment(QObject):
 
         # Add parameters, which are optional for EasyDiffraction CIF, but required for CrysPy CIF
         if '2theta_scan' in edCif:
-            diffrn_radiation_type = 'cw'
+            diffrn_radiation_type = 'cwl'
             experiment_prefix = 'pd'
             range_min = currentDataBlock['params']['_pd_meas']['2theta_range_min']['value']
             range_max = currentDataBlock['params']['_pd_meas']['2theta_range_max']['value']
@@ -578,7 +578,7 @@ class Experiment(QObject):
 
     def cryspyDictPathByMainParam(self, blockIdx, category, name, value):
         diffrn_radiation_type = self._dataBlocksNoMeas[blockIdx]['params']['_diffrn_radiation']['type']['value']
-        if diffrn_radiation_type == 'cw':
+        if diffrn_radiation_type == 'cwl':
             experiment_prefix = 'pd'
         elif diffrn_radiation_type == 'tof':
             experiment_prefix = 'tof'
@@ -598,7 +598,7 @@ class Experiment(QObject):
             if name == '2theta_offset':
                 path[1] = 'offset_ttheta'
                 path[2] = 0
-                if diffrn_radiation_type == 'cw':
+                if diffrn_radiation_type == 'cwl':
                     value = np.deg2rad(value)
 
         # _pd_instr
@@ -645,94 +645,25 @@ class Experiment(QObject):
                 path[1] = 'zero'
                 path[2] = 0
 
-            elif name == 'alpha0':
+            elif name in ['alpha0', 'alpha1']:
                 path[1] = 'profile_alphas'
-                path[2] = 0
-            elif name == 'alpha1':
-                path[1] = 'profile_alphas'
-                path[2] = 1
-            elif name == 'beta0':
+                path[2] = int(name[-1])
+            elif name in ['beta0', 'beta1']:
                 path[1] = 'profile_betas'
-                path[2] = 0
-            elif name == 'beta1':
-                path[1] = 'profile_betas'
-                path[2] = 1
-            elif name == 'sigma0':
+                path[2] = int(name[-1])
+            elif name in ['sigma0', 'sigma1', 'sigma2']:  # sigma2: if profile_peak_shape == 'pseudo-Voigt'
                 path[1] = 'profile_sigmas'
-                path[2] = 0
-            elif name == 'sigma1':
-                path[1] = 'profile_sigmas'
-                path[2] = 1
-            elif name == 'sigma2':
-                path[1] = 'profile_sigmas'
-                path[2] = 2
-            elif name == 'gamma0':
-                path[1] = 'profile_gammas'  # if profile_peak_shape == 'pseudo-Voigt'
-                path[2] = 0
-            elif name == 'gamma1':
-                path[1] = 'profile_gammas'  # if profile_peak_shape == 'pseudo-Voigt'
-                path[2] = 1
-            elif name == 'gamma2':
-                path[1] = 'profile_gammas'  # if profile_peak_shape == 'pseudo-Voigt'
-                path[2] = 2
+                path[2] = int(name[-1])
+            elif name in ['gamma0', 'gamma1', 'gamma2']:  # gamma0, gamma1, gamma2: if profile_peak_shape == 'pseudo-Voigt'
+                path[1] = 'profile_gammas'
+                path[2] = int(name[-1])
 
         # _tof_background
         elif category == '_tof_background':
-            if name == 'coeff1':
-                path[1] = 'background_coefficients'
-                path[2] = 0
-            elif name == 'coeff2':
-                path[1] = 'background_coefficients'
-                path[2] = 1
-            elif name == 'coeff3':
-                path[1] = 'background_coefficients'
-                path[2] = 2
-            elif name == 'coeff4':
-                path[1] = 'background_coefficients'
-                path[2] = 3
-            elif name == 'coeff5':
-                path[1] = 'background_coefficients'
-                path[2] = 4
-            elif name == 'coeff6':
-                path[1] = 'background_coefficients'
-                path[2] = 5
-            elif name == 'coeff7':
-                path[1] = 'background_coefficients'
-                path[2] = 6
-            elif name == 'coeff8':
-                path[1] = 'background_coefficients'
-                path[2] = 7
-            elif name == 'coeff9':
-                path[1] = 'background_coefficients'
-                path[2] = 8
-            elif name == 'coeff10':
-                path[1] = 'background_coefficients'
-                path[2] = 9
-            elif name == 'coeff11':
-                path[1] = 'background_coefficients'
-                path[2] = 10
-            elif name == 'coeff12':
-                path[1] = 'background_coefficients'
-                path[2] = 11
-            elif name == 'coeff13':
-                path[1] = 'background_coefficients'
-                path[2] = 12
-            elif name == 'coeff14':
-                path[1] = 'background_coefficients'
-                path[2] = 13
-            elif name == 'coeff15':
-                path[1] = 'background_coefficients'
-                path[2] = 14
-            elif name == 'coeff16':
-                path[1] = 'background_coefficients'
-                path[2] = 15
-            elif name == 'coeff17':
-                path[1] = 'background_coefficients'
-                path[2] = 16
-            elif name == 'coeff18':
-                path[1] = 'background_coefficients'
-                path[2] = 17
-
+             if name.startswith('coeff'):
+                 coeff_index = int(name[5:])
+                 path[1] = 'background_coefficients'
+                 path[2] = coeff_index - 1
 
         # undefined
         else:
@@ -744,7 +675,7 @@ class Experiment(QObject):
 
     def cryspyDictPathByLoopParam(self, blockIdx, category, name, rowIndex, value):
         diffrn_radiation_type = self._dataBlocksNoMeas[blockIdx]['params']['_diffrn_radiation']['type']['value']
-        if diffrn_radiation_type == 'cw':
+        if diffrn_radiation_type == 'cwl':
             experiment_prefix = 'pd'
         elif diffrn_radiation_type == 'tof':
             experiment_prefix = 'tof'
@@ -755,7 +686,7 @@ class Experiment(QObject):
 
         # _pd_background
         if category == '_pd_background':
-            if diffrn_radiation_type == 'cw':
+            if diffrn_radiation_type == 'cwl':
                 console.debug('Background is handeled by CrysPy')  # NEED FIX: do as in TOF
                 if name == 'line_segment_X':
                     path[1] = 'background_ttheta'
@@ -857,7 +788,7 @@ class Experiment(QObject):
             # pd (powder diffraction) block
             if block.startswith('pd_') or block.startswith('tof_'):
                 if block.startswith('pd_'):
-                    blockName = block[3:]  # CW
+                    blockName = block[3:]  # CWL
                 elif block.startswith('tof_'):
                     blockName = block[4:]  # TOF
                 category = None
@@ -967,42 +898,7 @@ class Experiment(QObject):
                 # background_coefficients (TOF)
                 elif group == 'background_coefficients':
                     category = '_tof_background'
-                    if idx[0] == 0:
-                        name = 'coeff1'
-                    elif idx[0] == 1:
-                        name = 'coeff2'
-                    elif idx[0] == 2:
-                        name = 'coeff3'
-                    elif idx[0] == 3:
-                        name = 'coeff4'
-                    elif idx[0] == 4:
-                        name = 'coeff5'
-                    elif idx[0] == 5:
-                        name = 'coeff6'
-                    elif idx[0] == 6:
-                        name = 'coeff7'
-                    elif idx[0] == 7:
-                        name = 'coeff8'
-                    elif idx[0] == 8:
-                        name = 'coeff9'
-                    elif idx[0] == 9:
-                        name = 'coeff10'
-                    elif idx[0] == 10:
-                        name = 'coeff11'
-                    elif idx[0] == 11:
-                        name = 'coeff12'
-                    elif idx[0] == 12:
-                        name = 'coeff13'
-                    elif idx[0] == 13:
-                        name = 'coeff14'
-                    elif idx[0] == 14:
-                        name = 'coeff15'
-                    elif idx[0] == 15:
-                        name = 'coeff16'
-                    elif idx[0] == 16:
-                        name = 'coeff17'
-                    elif idx[0] == 17:
-                        name = 'coeff18'
+                    name = f'coeff{idx[0]+1}'
 
                 # Unrecognized group
                 else:
@@ -1061,7 +957,7 @@ class Experiment(QObject):
 
     def setMeasuredArraysForSingleExperiment(self, idx):
         diffrn_radiation_type = self._proxy.experiment.dataBlocksNoMeas[idx]['params']['_diffrn_radiation']['type']['value']
-        if diffrn_radiation_type == 'cw':
+        if diffrn_radiation_type == 'cwl':
             experiment_prefix = 'pd'
             x_array_name = 'ttheta'
         elif diffrn_radiation_type == 'tof':
@@ -1074,7 +970,7 @@ class Experiment(QObject):
 
         # X data
         x_array = cryspyInOutDict[cryspy_block_name][x_array_name]
-        if diffrn_radiation_type == 'cw':
+        if diffrn_radiation_type == 'cwl':
             x_array = np.rad2deg(x_array)
         self.setXArray(x_array, idx)
 
@@ -1104,7 +1000,7 @@ class Experiment(QObject):
 
     def setCalculatedArraysForSingleExperiment(self, idx):
         diffrn_radiation_type = self._proxy.experiment.dataBlocksNoMeas[idx]['params']['_diffrn_radiation']['type']['value']
-        if diffrn_radiation_type == 'cw':
+        if diffrn_radiation_type == 'cwl':
             experiment_prefix = 'pd'
             x_array_name = 'ttheta'
         elif diffrn_radiation_type == 'tof':
@@ -1142,7 +1038,7 @@ class Experiment(QObject):
         xBraggDict = {}
         for modelName in modelNames:
             x_bragg_array = cryspyInOutDict[cryspy_block_name][f'{dict_name_prefix}_{modelName}'][f'{x_array_name}_hkl']
-            if diffrn_radiation_type == 'cw':
+            if diffrn_radiation_type == 'cwl':
                 x_bragg_array = np.rad2deg(x_bragg_array)
             xBraggDict[modelName] = x_bragg_array
         self.setXBraggDict(xBraggDict, idx)
