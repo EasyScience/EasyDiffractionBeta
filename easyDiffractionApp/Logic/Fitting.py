@@ -98,8 +98,14 @@ class Worker(QObject):
         # Create total residual array
         totalResid = np.empty(0)
         for dataBlock in self._proxy.experiment.dataBlocksNoMeas:
+            diffrn_radiation_type = dataBlock['params']['_diffrn_radiation']['type']['value']
+            if diffrn_radiation_type == 'cwl':
+                experiment_prefix = 'pd'
+            elif diffrn_radiation_type == 'tof':
+                experiment_prefix = 'tof'
+
             ed_name = dataBlock['name']['value']
-            cryspy_name = f'pd_{ed_name}'
+            cryspy_name = f'{experiment_prefix}_{ed_name}'
             cryspyInOutDict = self._proxy.data._cryspyInOutDict
 
             y_meas_array = cryspyInOutDict[cryspy_name]['signal_exp'][0]
@@ -379,7 +385,7 @@ class Fitting(QObject):
         else:
             if self._proxy.fittables._freeParamsCount > 0:
                 self.isFittingNow = True
-                #self._worker.run()
+                #self._worker.runLmfit()
                 self._threadpool.start(self._worker.runLmfit)
                 console.debug('Minimization process has been started in a separate thread')
             else:

@@ -1,0 +1,101 @@
+COMM Si3N4 alpha-beta (3T2-LLB data)
+! Current global Chi2 (Bragg contrib.) =      2.211    
+! Files => DAT-file: sin_3t2.dat,  PCR-file: sin_3t2
+!Job Npr Nph Nba Nex Nsc Nor Dum Iwg Ilo Ias Res Ste Nre Cry Uni Cor Opt Aut
+   1   5   2  -5   1   0   0   0   0   0   0   0   0   0   0   0   0   0   1
+!
+!Ipr Ppl Ioc Mat Pcr Ls1 Ls2 Ls3 NLI Prf Ins Rpa Sym Hkl Fou Sho Ana
+   0   0   1   0   1   0   4   0   0   1   6  -1   0   5   0   0   0
+!
+! Lambda1  Lambda2    Ratio    Bkpos    Wdt    Cthm     muR   AsyLim   Rpolarz  2nd-muR -> Patt# 1
+ 1.225100 1.225100  1.00000   90.000  8.0000  0.0000  0.0680   40.00    0.0000  0.0000
+!
+!NCY  Eps  R_at  R_an  R_pr  R_gl     Thmin       Step       Thmax    PSD    Sent0
+  8  0.10  1.00  1.00  1.00  1.00      0.0000   0.050000   125.4500   0.000   0.000
+!
+! Excluded regions (LowT  HighT) for Pattern#  1
+        0.00        8.00
+! 
+!
+      48    !Number of refined parameters
+!
+!  Zero    Code    SyCos    Code   SySin    Code  Lambda     Code MORE ->Patt# 1
+  0.01231  441.0  0.00000    0.0  0.00000    0.0 0.000000    0.00   0
+!
+!   Background coefficients/codes  for Pattern#  1  (Chebychev polynomials, up to 24 coefficients)
+     152.091      -5.073      19.468      -8.368       6.484      -1.949
+       31.00       41.00       51.00      391.00      401.00      261.00
+       1.424       1.623       1.837       0.000       0.000       0.000
+      461.00      471.00      481.00        0.00        0.00        0.00
+       0.000       0.000       0.000       0.000       0.000       0.000
+        0.00        0.00        0.00        0.00        0.00        0.00
+       0.000       0.000       0.000       0.000       0.000       0.000
+        0.00        0.00        0.00        0.00        0.00        0.00
+!-------------------------------------------------------------------------------
+!  Data for PHASE number:   1  ==> Current R_Bragg for Pattern#  1:   1.4058
+!-------------------------------------------------------------------------------
+ Si3N4-alpha
+!
+!Nat Dis Ang Pr1 Pr2 Pr3 Jbt Irf Isy Str Furth       ATZ    Nvk Npr More
+   6   0   0 0.0 0.0 1.0   0   0   0   0   0       5050.253   0   7   0
+!
+!
+P 3 1 c                  <--Space group symbol
+!Atom   Typ       X        Y        Z     Biso       Occ     In Fin N_t Spc /Codes
+Si1    SI      0.08185  0.51180  0.65956  0.17699   3.00000   0   0   0    0  #conn Si N 0 2.2
+                111.00   121.00   131.00   331.00      0.00
+Si2    SI      0.25323  0.16763  0.45090  0.31672   3.00000   0   0   0    0  
+                141.00   151.00     0.00   341.00      0.00
+N1     N       0.65512  0.61058  0.43269  0.39190   3.00000   0   0   0    0  
+                161.00   171.00   181.00   351.00      0.00
+N2     N       0.31514  0.31865  0.69801  0.39078   3.00000   0   0   0    0  
+                191.00   201.00   211.00   361.00      0.00
+N3     N       0.33333  0.66667  0.60393  0.39853   1.00000   0   0   0    0  
+                  0.00     0.00   221.00   371.00      0.00
+N4     N       0.00000  0.00000  0.45289  0.38332   1.00000   0   0   0    0  
+                  0.00     0.00   231.00   381.00      0.00
+!-------> Profile Parameters for Pattern #   1  ----> Phase #   1
+!  Scale          Shape1      Bov      Str1      Str2      Str3   Strain-Model
+ 0.2313845E-01   0.00000   0.00000   0.00000   0.00000   0.00000       0
+      11.00000     0.000     0.000     0.000     0.000     0.000
+!       U            V            W             X            Y         GauSiz      LorSiz    Size-Model
+     0.188441    -0.394771     0.109782     0.000000     0.113032     0.081255     0.000000       0
+       101.00        91.00        81.00         0.00       421.00       411.00         0.00
+!     a          b         c        alpha      beta       gamma      #Cell Info
+   7.751860   7.751860   5.619507  90.000000  90.000000 120.000000   
+   61.00000   61.00000   71.00000    0.00000    0.00000   61.00000
+!  Pref1    Pref2      Asy1     Asy2     Asy3     Asy4      S_L      D_L
+  0.00000  0.00000  0.07880  0.02046  0.00000  0.00000  0.00000  0.00000
+     0.00     0.00   251.00   241.00     0.00     0.00     0.00     0.00
+!-------------------------------------------------------------------------------
+!  Data for PHASE number:   2  ==> Current R_Bragg for Pattern#  1:   2.3347
+!-------------------------------------------------------------------------------
+ Si3N4-beta
+!
+!Nat Dis Ang Pr1 Pr2 Pr3 Jbt Irf Isy Str Furth       ATZ    Nvk Npr More
+   3   0   0 0.0 0.0 1.0   0   0   0   0   0      10100.506   0   7   0
+!
+!
+P 63/m                   <--Space group symbol
+!Atom   Typ       X        Y        Z     Biso       Occ     In Fin N_t Spc /Codes
+Si     SI      0.17523  0.76978  0.25000  0.17699   3.00000   0   0   0    0  #conn Si N 0 2.2
+                291.00   301.00     0.00   331.00      0.00
+N1     N       0.33131  0.03121  0.25000  0.39853   3.00000   0   0   0    0  
+                311.00   321.00     0.00   371.00      0.00
+N2     N       0.33333  0.66667  0.25000  0.38332   1.00000   0   0   0    0  
+                  0.00     0.00     0.00   381.00      0.00
+!-------> Profile Parameters for Pattern #   1  ----> Phase #   2
+!  Scale          Shape1      Bov      Str1      Str2      Str3   Strain-Model
+ 0.1694953E-02   0.00000   0.00000   0.00000   0.00000   0.00000       0
+      21.00000     0.000     0.000     0.000     0.000     0.000
+!       U            V            W             X            Y         GauSiz      LorSiz    Size-Model
+     0.188441    -0.394771     0.109782     0.000000     0.075577     0.127009     0.000000       0
+       101.00        91.00        81.00         0.00       431.00       451.00         0.00
+!     a          b         c        alpha      beta       gamma      #Cell Info
+   7.605371   7.605371   2.907068  90.000000  90.000000 120.000000   # multiple box -0.15 1.15 -0.15 1.15 -0.15 3.15
+  271.00000  271.00000  281.00000    0.00000    0.00000  271.00000
+!  Pref1    Pref2      Asy1     Asy2     Asy3     Asy4      S_L      D_L
+  0.00000  0.00000  0.07880  0.02046  0.00000  0.00000  0.00000  0.00000
+     0.00     0.00   251.00   241.00     0.00     0.00     0.00     0.00
+!  2Th1/TOF1    2Th2/TOF2  Pattern to plot
+       8.000     125.450       1
