@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
 # SPDX-License-Identifier: BSD-3-Clause
-# © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+# © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 from PySide6.QtCore import QObject, Signal, Slot, Property
 
@@ -129,17 +129,21 @@ class Fittables(QObject):
         if rowIndex == -1:
             console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
             if blockType == 'experiment':
+                self._proxy.experiment.editDataBlockMainParam(blockIdx, category, name, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.experiment.editDataBlockMainParam(blockIdx, category, name, field, value)
                 changedCryspy = self._proxy.experiment.editCryspyDictByMainParam(blockIdx, category, name, field, value)
             elif blockType == 'model':
+                self._proxy.model.editDataBlockMainParam(blockIdx, category, name, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.model.editDataBlockMainParam(blockIdx, category, name, field, value)
                 changedCryspy = self._proxy.model.editCryspyDictByMainParam(blockIdx, category, name, field, value)
         else:
             console.debug(IO.formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
             if blockType == 'experiment':
+                self._proxy.experiment.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.experiment.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
                 changedCryspy = self._proxy.experiment.editCryspyDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
             elif blockType == 'model':
+                self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', 0)  # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
                 changedCryspy = self._proxy.model.editCryspyDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
         if changedIntern and changedCryspy:

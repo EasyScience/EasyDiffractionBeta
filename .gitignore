@@ -14,10 +14,13 @@ CMakeLists.txt.user*
 
 # Python
 __pycache__
-.venv
+.venv*
 .coverage
 .pyc
-#resources.py
+resources.py
+
+# Pytest
+.tests
 
 # C++
 
@@ -40,6 +43,8 @@ build
 *.user
 settings.ini*
 .ci/
+ci/
+ci_*/
 .idea/
 .build/
 temp/

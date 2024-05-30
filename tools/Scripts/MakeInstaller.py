@@ -6,7 +6,7 @@ import os, sys
 import time
 import requests
 import xml.dom.minidom
-import dephell_licenses
+import licensename, dephell_licenses
 import Functions, Config
 
 
@@ -155,8 +155,10 @@ def installerConfigXml():
 def appPackageXml():
     try:
         message = f"create app package content"
-        license_id = CONFIG['project']['license'].replace('-only', '')
-        license_name = dephell_licenses.licenses.get_by_id(license_id).name.replace('"', "'")
+        license_file = CONFIG['project']['license']['file']
+        license_id = licensename.from_file(license_file)
+        license_name = dephell_licenses.licenses.get_by_id(license_id).name
+        license_name = license_name.replace('"', "'")
         requires_root = 'false'
         raw_xml = Functions.dict2xml({
             'Package': {
@@ -236,12 +238,14 @@ def installQtInstallerFramework():
         return
     try:
         message = f'install QtInstallerFramework to {qtifwDirPath()}'
-        silent_script = os.path.join(CONFIG.scripts_dir, CONFIG['ci']['scripts']['silent_install'])
-        Functions.installSilently(
-            installer=qtifwSetupExe(),
-            silent_script=silent_script
+        Functions.run(
+            qtifwSetupExe(),
+            'install',
+            '--verbose',
+            '--confirm-command',
+            '--default-answer',
+            '--accept-licenses'
         )
-        time.sleep(10)
     except Exception as exception:
         Functions.printFailMessage(message, exception)
         sys.exit(1)
@@ -311,6 +315,7 @@ def createOfflineInstaller():
         qtifw_binarycreator_path = os.path.join(qtifw_bin_dir_path, 'binarycreator')
         qtifw_installerbase_path = os.path.join(qtifw_bin_dir_path, 'installerbase')
         setup_exe_path = os.path.join(CONFIG.dist_dir, CONFIG.setup_name)
+        message = f'{message} with: {qtifw_binarycreator_path} --verbose --offline-only -c {configXmlPath()} -p {packagesDirPath()} -t {qtifw_installerbase_path} {setup_exe_path}'
         Functions.run(
             qtifw_binarycreator_path,
             '--verbose',
@@ -362,5 +367,5 @@ if __name__ == "__main__":
     installQtInstallerFramework()
     createInstallerSourceDir()
     createOfflineInstaller()
-    createOnlineRepositoryLocally()
-    addFilesToLocalRepository()
+    #createOnlineRepositoryLocally()
+    #addFilesToLocalRepository()

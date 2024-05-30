@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
+// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors <support@easydiffraction.org>
 // SPDX-License-Identifier: BSD-3-Clause
-// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 pragma Singleton
 
@@ -12,14 +12,22 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
     readonly property var projectConfig: QtObject {
         readonly property var release: QtObject {  // NEED FIX
             readonly property string appName: 'EasyDiffraction'
-            readonly property string version: '0.9.0-alpha3'
-            readonly property string appIssuesUrl: 'https://github.com/easyscience/EasyDiffractionApp/issues'
+            readonly property string version: '0.9.1-alpha0'
+            readonly property string appIssuesUrl: 'https://github.com/easyscience/easydiffractionapp/issues'
             readonly property string homePageUrl: 'https://easydiffraction.org'
             readonly property string docsUrl: 'https://docs.easydiffraction.org/app/'
             readonly property string contactUrl: 'https://easydiffraction.org/#contact'
         }
         readonly property var ci: QtObject {
-            property var app: QtObject {}
+            property var app: QtObject {
+                property var info: QtObject {
+                    readonly property string branch_name: 'master'
+                    readonly property string branch_url: ''
+                    readonly property string commit_sha_short: ''
+                    readonly property string commit_url: ''
+                    readonly property string build_date: '29 May 2024'
+                }
+            }
         }
     }
 
@@ -71,7 +79,7 @@ ${name} is developed by ESS DMSC`
             { url: "https://ess.eu", icon: iconPath('ESS.png'), heightScale: 3.0 }
         ]
         readonly property string developerYearsFrom: "2019"
-        readonly property string developerYearsTo: "2023"
+        readonly property string developerYearsTo: "2024"
     }
 
     // Logic
@@ -84,4 +92,5 @@ ${name} is developed by ESS DMSC`
         //return `https://raw.githubusercontent.com/easyscience/easyDiffractionApp/${branch}/${file}` // NEED FIX
         return `https://raw.githubusercontent.com/easyscience/easyDiffractionApp/master/${file}` // NEED FIX
     }
+
 }

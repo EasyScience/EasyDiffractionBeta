@@ -39,13 +39,14 @@ def fixPermissions():
 def runInstallerSilently():
     try:
         message = f'install {CONFIG.app_name}'
-        silent_script = CONFIG['ci']['scripts']['silent_install']
-        silent_script_path = os.path.join(CONFIG.scripts_dir, silent_script)
-        args = {
-            'installer':     setupExePath(),
-            'silent_script': silent_script_path
-        }
-        Functions.installSilently(**args)
+        Functions.run(
+            setupExePath(),
+            'install',
+            '--verbose',
+            '--confirm-command',
+            '--default-answer',
+            '--accept-licenses'
+        )
     except Exception as exception:
         Functions.printFailMessage(message, exception)
         sys.exit(1)

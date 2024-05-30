@@ -1,17 +1,14 @@
-# Use hatch to build the application.
 [build-system]
+# Use hatch to build the application.
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.metadata]
-allow-direct-references = true
-
-# Information about the EasyExampleApp project.
-# Note that while the project is called EasyExampleApp
-# the application itself is EasyExample.
 [project]
+# Information about the EasyDiffractionApp project.
+# Note that while the project is called EasyDiffractionApp
+# the application itself is EasyDiffraction.
 name = 'easyDiffractionApp'
-version = '0.9.0-alpha3'
+version = '0.9.1a0'
 description = 'Making diffraction data analysis and modelling easy.'
 authors = [
   {name = "Andrew Sazonov", email = "andrew.sazonov@ess.eu"}
@@ -19,7 +16,7 @@ authors = [
 maintainers = [
   {name = "Andrew Sazonov", email = "andrew.sazonov@ess.eu"}
 ]
-license = "BSD-3-Clause"
+license = {file = "LICENSE.md"}
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: BSD License",
@@ -27,15 +24,49 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "Development Status :: 4 - Beta"
 ]
-requires-python = ">=3.8,<3.11"
+requires-python = ">=3.8,<3.13"
 dependencies = [
-    'numpy>=1.24.2',
+    'numpy',
+    'lmfit',
+    'orjson',
+    'cryspy @ git+https://github.com/ikibalin/cryspy.git@beta',
     'EasyApp @ git+https://github.com/easyscience/EasyApp.git@new-easy-app2'
 ]
 
-# CUSTOM CONFIG
-# -------------
-# The information presented from here is to do with release and CI. This can be disregarded
+[project.optional-dependencies]
+ci = [
+  'toml',
+  'pyinstaller',
+  'requests',
+  'licensename',
+  'dephell_licenses'
+]
+test = [
+  'pytest>=5.2',
+  'pytest-image-diff',
+  'pytest-benchmark'
+]
+
+[project.urls]
+homepage = 'https://easydiffraction.org'
+
+[tool.hatch.metadata]
+# This allows for local and git references in dependencies.
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+# https://github.com/pypa/hatch/releases/tag/hatchling-v1.19.0
+packages = ["EasyDiffractionApp"]
+
+##########################################################
+##########################################################
+############## CI CONFIGURATION INFORMATION ##############
+##########################################################
+##########################################################
+
+# The content in this section is related to how the
+# application is built on the Github action. Users of
+# EasyDiffraction shouldn't worry about this content.
 
 [release]
 app_name = 'EasyDiffraction'
@@ -54,10 +85,10 @@ scripts = 'tools/Scripts'
 docs = { src = 'docs', dest = 'Documentation' }
 examples = { src = '{PROJECT_NAME}/Examples', dest = 'Examples' }
 tutorials = 'docs/UserManual/VideoTutorials'
-download = '.ci/download'
-screenshots = '.ci/screenshots'
-build = '.ci/build'
-distribution = '.ci/distribution'
+download = 'ci/download'
+screenshots = 'ci/screenshots'
+build = 'ci/build'
+distribution = 'ci/distribution'
 
 [ci.scripts]
 silent_install = 'SilentInstall.js'
@@ -121,14 +152,13 @@ pix_fmt = 'yuv420p'     # Pixel format
 [ci.app.translations]
 dir = 'Gui/Resources/Translations'
 languages = [ { code = 'en', name = 'English' },
-              { code = 'da', name = 'Dansk' },   { code = 'sv', name = 'Svenska' },   { code = 'pl', name = 'Polski' },
+              { code = 'da', name = 'Dansk' },
+              { code = 'sv', name = 'Svenska' },
+              { code = 'pl', name = 'Polski' },
               { code = 'ru', name = 'Русский' } ]
 
 [ci.app.audio]
 dir = 'Gui/Resources/Audio'
-
-[ci.poetry]
-venv_path = { macOS = '/Users/runner/Library/Caches/pypoetry/virtualenvs', Linux = '/home/runner/.cache/pypoetry/virtualenvs', Windows = 'C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs' }
 
 [ci.pyinstaller]
 separator = { macos = ':', ubuntu = ':', windows = ';' }
@@ -148,8 +178,8 @@ manual_exclude = [ 'mfc*', 'msvcp*', 'VCRUNTIME*', '*Qt*Bluetooth*', '*Qt*Bodymo
                    '*Qt*Scxml*', '*Qt*Sensors*', '*Qt*Sql*', '*Qt*VirtualKeyboard*', '*Qt*Wayland*' ]
 
 [ci.qtifw.setup]
-version = '4.6.0'
-https_mirrors = ['download.qt.io', 'ftp.fau.de/qtproject', 'mirrors.dotsrc.org/qtproject']
+version = '4.7.0'
+https_mirrors = ['qt.mirror.constant.com', 'ftp.fau.de/qtproject', 'mirrors.dotsrc.org/qtproject']
 base_path = 'official_releases/qt-installer-framework'
 file_name_base = 'QtInstallerFramework'
 file_platform = { macos = 'macOS-x64', ubuntu = 'linux-x64', windows = 'windows-x64' }

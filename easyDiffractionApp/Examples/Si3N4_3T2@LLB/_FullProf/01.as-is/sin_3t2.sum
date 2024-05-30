@@ -1,0 +1,223 @@
+
+
+        **********************************************************
+        ** PROGRAM FullProf.2k (Version 7.95 - Jan2023-ILL JRC) **
+        **********************************************************
+                       M U L T I -- P A T T E R N                 
+            Rietveld, Profile Matching & Integrated Intensity     
+                 Refinement of X-ray and/or Neutron Data
+
+
+    Date: 27/05/2024  Time: 10:42:34.147                              
+
+ => PCR file code: sin_3t2
+ => DAT file code: sin_3t2              -> Relative contribution: 1.0000                                                            
+ => Title: Si3N4 alpha-beta (3T2-LLB data)
+
+ ==> CONDITIONS OF THIS RUN FOR PATTERN No.:  1
+
+ => Global Refinement of neutron powder data                                                                                        
+ => The    5th default profile function was selected
+
+ => Data in D1A,D2B format as prepared by D1A(D2B)SUM for pattern:  1
+ => Wavelengths:  1.22510 1.22510
+ => Cos(Monochromator angle)=   0.0000
+ => Absorption correction (AC), muR-eff =   0.0680  0.0000
+ => AC : Cylinder Debye-Scherrer (Hewat formula)
+ => Base of peaks: 2.0*HW*    8.00
+ ==> Angular range, step and number of points:
+     2Thmin:       0.000000  2Thmax:     125.450005  Step:       0.050000  No. of points:   2510
+ =>-------> Pattern#  1
+ => Crystal Structure Refinement for phase: 1
+ => The    7th profile function was selected for phase no.  1
+ => The density (volumic mass) of phase 1 is:    3.186 g/cm3
+ =>-------> Pattern#  1
+ => Crystal Structure Refinement for phase: 2
+ => The    7th profile function was selected for phase no.  2
+ => The density (volumic mass) of phase 2 is:    3.199 g/cm3
+ => Scor: 2.1244
+
+ ==> RESULTS OF REFINEMENT:
+
+
+ => No. of fitted parameters:   48
+
+
+------------------------------------------------------------------------------
+ => Phase No.  1  Si3N4-alpha                            P 3 1 c             
+------------------------------------------------------------------------------
+
+ =>  No. of reflections for pattern#:   1:   352  
+
+
+ ==> ATOM PARAMETERS:
+
+  Name      x     sx       y     sy       z      sz      B   sB   occ. socc.  Mult
+ Si1     0.08185(  26)  0.51180(  23)  0.65956(  48)  0.177( 23)  3.000(  0)    6
+ Si2     0.25323(  20)  0.16763(  19)  0.45090(   0)  0.317( 16)  3.000(  0)    6
+ N1      0.65512(  10)  0.61058(   8)  0.43269(  46)  0.392( 10)  3.000(  0)    6
+ N2      0.31514(  10)  0.31865(  10)  0.69801(  52)  0.391(  9)  3.000(  0)    6
+ N3      0.33333(   0)  0.66667(   0)  0.60393(  45)  0.399( 19)  1.000(  0)    2
+ N4      0.00000(   0)  0.00000(   0)  0.45289(  55)  0.383( 16)  1.000(  0)    2
+
+ ==> PROFILE PARAMETERS FOR PATTERN#  1
+
+ => Cell parameters      :
+                              7.75186   0.00004
+                              7.75186   0.00004
+                              5.61951   0.00003
+                             90.00000   0.00000
+                             90.00000   0.00000
+                            120.00000   0.00000
+ 
+ => overall scale factor :      0.023138450     0.000054199
+ => Eta(p-v) or m(p-vii) :    0.00000   0.00000
+ => Overall tem. factor  :    0.00000   0.00000
+ => Halfwidth parameters :    0.18844   0.14993
+                             -0.39477   0.00492
+                              0.10978   0.14991
+ => Preferred orientation:    0.00000   0.00000
+                              0.00000   0.00000
+ => Asymmetry parameters :    0.07880   0.00275
+                              0.02046   0.00107
+                              0.00000   0.00000
+                              0.00000   0.00000
+ => X and y parameters   :    0.00000   0.00000
+                              0.11303   0.00118
+ => Strain parameters    :    0.00000   0.00000
+                              0.00000   0.00000
+                              0.00000   0.00000
+ => Size parameters (G,L):    0.08125   0.07496
+                              0.00000   0.00000
+
+ => Add. shape parameters: 
+                              0.00000   0.00000
+                              0.00000   0.00000
+
+
+
+------------------------------------------------------------------------------
+ => Phase No.  2  Si3N4-beta                             P 63/m              
+------------------------------------------------------------------------------
+
+ =>  No. of reflections for pattern#:   1:   210  
+
+
+ ==> ATOM PARAMETERS:
+
+  Name      x     sx       y     sy       z      sz      B   sB   occ. socc.  Mult
+ Si      0.17523(  83)  0.76978( 109)  0.25000(   0)  0.177( 23)  3.000(  0)    6
+ N1      0.33131(  78)  0.03121(  46)  0.25000(   0)  0.399( 19)  3.000(  0)    6
+ N2      0.33333(   0)  0.66667(   0)  0.25000(   0)  0.383( 16)  1.000(  0)    2
+
+ ==> PROFILE PARAMETERS FOR PATTERN#  1
+
+ => Cell parameters      :
+                              7.60537   0.00015
+                              7.60537   0.00015
+                              2.90707   0.00009
+                             90.00000   0.00000
+                             90.00000   0.00000
+                            120.00000   0.00000
+ 
+ => overall scale factor :      0.001694953     0.000034973
+ => Eta(p-v) or m(p-vii) :    0.00000   0.00000
+ => Overall tem. factor  :    0.00000   0.00000
+ => Halfwidth parameters :    0.18844   0.14993
+                             -0.39477   0.00492
+                              0.10978   0.14991
+ => Preferred orientation:    0.00000   0.00000
+                              0.00000   0.00000
+ => Asymmetry parameters :    0.07880   0.00275
+                              0.02046   0.00107
+                              0.00000   0.00000
+                              0.00000   0.00000
+ => X and y parameters   :    0.00000   0.00000
+                              0.07558   0.01516
+ => Strain parameters    :    0.00000   0.00000
+                              0.00000   0.00000
+                              0.00000   0.00000
+ => Size parameters (G,L):    0.12701   0.07504
+                              0.00000   0.00000
+
+ => Add. shape parameters: 
+                              0.00000   0.00000
+                              0.00000   0.00000
+
+
+
+ ==> GLOBAL PARAMETERS FOR PATTERN#  1
+
+
+ => Zero-point:     0.0123    0.0007
+ => Chebychev Polynomials Background Parameters ==>
+                               152.09      1.5154    
+                              -5.0725      2.9069    
+                               19.468      2.7254    
+                              -8.3677      2.2730    
+                               6.4841      1.9926    
+                              -1.9492      1.4250    
+                               1.4238      1.1491    
+                               1.6231     0.60945    
+                               1.8370     0.47039    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+                               0.0000      0.0000    
+ 
+ => Cos(2theta)-shift parameter :   0.0000  0.0000
+ => Sin(2theta)-shift parameter :   0.0000  0.0000
+
+ ==> RELIABILITY FACTORS WITH ALL NON-EXCLUDED POINTS FOR PATTERN:  1
+
+  => Cycle:  1 => MaxCycle:  8
+ => N-P+C:  2301
+ =>  R-factors (not corrected for background) for Pattern:  1
+ => Rp:  1.92     Rwp:  2.28     Rexp:    1.53 Chi2:  2.21      L.S. refinement
+ => Conventional Rietveld R-factors for Pattern:  1
+ => Rp:  3.58     Rwp:  3.71     Rexp:    2.50 Chi2:  2.21    
+ => Deviance:   485.         Dev*  :  0.2107    
+ => DW-Stat.:    0.8127     DW-exp:     1.9134
+ => N-sigma of the GoF:       41.070
+
+ ==> RELIABILITY FACTORS FOR POINTS WITH BRAGG CONTRIBUTIONS FOR PATTERN:  1
+
+ => N-P+C:  2301
+ =>  R-factors (not corrected for background) for Pattern:  1
+ => Rp:  1.92     Rwp:  2.28     Rexp:    1.53 Chi2:  2.21      L.S. refinement
+ => Conventional Rietveld R-factors for Pattern:  1
+ => Rp:  3.58     Rwp:  3.71     Rexp:    2.50 Chi2:  2.21    
+ => Deviance:   485.         Dev*  :  0.2107    
+ => DW-Stat.:    0.8127     DW-exp:     1.9134
+ => N-sigma of the GoF:       41.070
+
+ => Global user-weigthed Chi2 (Bragg contrib.):   2.21    
+
+     -----------------------------------------------------
+     BRAGG R-Factors and weight fractions for Pattern #  1
+     -----------------------------------------------------
+
+ => Phase:  1      Si3N4-alpha
+ => Bragg R-factor:   1.40       Vol:  292.443( 0.003)  Fract(%):   93.20( 0.33)
+ => Rf-factor= 0.879             ATZ:        5050.253   Brindley:  1.0000
+
+ => Phase:  2      Si3N4-beta
+ => Bragg R-factor:   2.33       Vol:  145.622( 0.006)  Fract(%):    6.80( 0.14)
+ => Rf-factor=  1.15             ATZ:       10100.506   Brindley:  1.0000
+
+ 
+              CPU Time:     0.234 seconds
+                            0.004 minutes
+
+ => Run finished at:     Date: 27/05/2024  Time: 10:42:34.375                              

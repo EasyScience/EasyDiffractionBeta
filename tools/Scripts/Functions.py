@@ -11,6 +11,7 @@ import zipfile
 import subprocess
 import requests
 import shutil
+import platform
 from distutils import dir_util
 
 
@@ -89,7 +90,6 @@ def installSilently(installer, silent_script, sudo=False):
         args = [installer, '--verbose', '--script', silent_script]
         if sudo:
             args = ['sudo', *args]
-
         run(*args)
     except Exception as exception:
         printFailMessage(message, exception)
@@ -113,6 +113,10 @@ def osName():
     else:
         print("- Unsupported platform '{0}'".format(platform))
         return None
+
+
+def processor():
+    return platform.processor()
 
 
 def environmentVariable(name, default=None):

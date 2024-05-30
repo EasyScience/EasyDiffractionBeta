@@ -1,34 +1,43 @@
 name: Build Installer
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - "**"
 
 jobs:
   build-installer:
-    timeout-minutes: 60
+    timeout-minutes: 80
 
     runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-12, windows-2022]
+        os: [ubuntu-22.04, windows-2022, macos-13, macos-14]  # [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
 
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
             python-version: 3.11
 
-      - name: Upgrade PIP
+      - name: Upgrade package installer for Python
         run: python -m pip install --upgrade pip
 
-      - name: Add extra info to pyproject.toml
+      - name: Install Python dependences
         run: |
-          python -m pip install toml
-          python utils.py --update
+          python -m pip install flit
+          flit install --only-deps  # Install the dependencies, but not the EasyDiffractionApp package itself
+
+      - name: Add extra info to pyproject.toml
+        run: python utils.py --update
 
       - name: Declare env variables on push only
         if: github.event_name == 'push'
@@ -43,8 +52,13 @@ jobs:
       - name: Declare env variables on push and pull_request
         shell: bash
         run: |
+          echo "MATRIX_OS=${{ matrix.os }}" >> $GITHUB_ENV
+          echo "RUNNER_OS=${{ runner.os }}" >> $GITHUB_ENV
+          echo "RUNNER_ARCH=${{ runner.arch }}" >> $GITHUB_ENV
+          echo "TEMP_ARTIFACT_SUFFIX=$(python utils.py --get release.app_name)" >> $GITHUB_ENV
           echo "APP_NAME=$(python utils.py --get release.app_name)" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$(python utils.py --get project.name)" >> $GITHUB_ENV
+          echo "PACKAGE_PATH=$GITHUB_WORKSPACE/$(python utils.py --get project.name)" >> $GITHUB_ENV
           echo "RELEASE_TAG=$(python utils.py --get ci.app.info.release_tag)" >> $GITHUB_ENV
           echo "RELEASE_TITLE=$(python utils.py --get ci.app.info.release_title)" >> $GITHUB_ENV
           echo "SCRIPTS_PATH=$(python utils.py --get ci.project.subdirs.scripts)" >> $GITHUB_ENV
@@ -54,18 +68,8 @@ jobs:
           echo "PYTHON_PACKAGES_PATH=$(python utils.py --get ci.cache.python_packages_path)" >> $GITHUB_ENV
           echo "GIT_INSTALL_URL=git+$GITHUB_SERVER_URL/$GITHUB_REPOSITORY@${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
 
-      - name: Install Python dependences
-        run: |
-          python -m pip install numpy lmfit orjson jsbeautifier
-          python -m pip install pyinstaller requests dephell_licenses
-          python -m pip install git+https://github.com/ikibalin/cryspy.git@beta
-          python -m pip install git+https://github.com/easyscience/EasyApp.git@new-easy-app2
-
-      #- name: Create python resources file
-      #  run: pyside6-rcc $GITHUB_REPOSITORY/resources.qrc -o $GITHUB_REPOSITORY/resources.py
-
-      #- name: Run pytest (compare app images after previous step)
-      #  run: pytest
+      - name: Create python resources file
+        run: pyside6-rcc ${{ env.PACKAGE_PATH }}/resources.qrc -o ${{ env.PACKAGE_PATH }}/resources.py
 
       - name: Set up screen (Linux)
         if: runner.os == 'Linux'
@@ -74,14 +78,26 @@ jobs:
           sudo apt-get install libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xfixes0 libxcb-shape0 libxcb-cursor0
           sudo apt-get install libpulse-mainloop-glib0
           sudo apt-get install libxkbcommon-x11-0
-          sudo apt-get install libegl1-mesa
+          sudo apt-get install libegl1-mesa-dev
           Xvfb :0 -screen 0 1920x1080x24 -ac &
           echo "DISPLAY=:0" >> $GITHUB_ENV
 
-      - name: Set up screen (macOS)
-        if: runner.os == 'macOS'
+      # Method 1:
+      # Not working since Oct 2023. VMware is replaced by VirtualBox
+      #   "/Library/Application Support/VMware Tools/vmware-resolutionSet" 1920 1080
+      #   system_profiler SPDisplaysDataType | grep Resolution
+      # Method 2:
+      # Worked on macOS 12.6.9, but the default resolution already was 1920x1080: https://github.com/easyScience/EasyDiffractionBeta/actions/runs/6575129372/job/17861583655
+      # Fails on macOS 12.7, where default resolution is 1176x885: https://github.com/easyScience/EasyDiffractionBeta/actions/runs/6576347514/job/17865526935
+      # Works on macOS 13.6, where default resolution is again 1920x1080: https://github.com/easyScience/EasyDiffractionBeta/actions/runs/6576486407/job/17866007760
+      #    brew install screenresolution
+      #    screenresolution list
+      #    screenresolution get
+      #    screenresolution set 1920x1080x32@30
+      #    screenresolution get
+      - name: Set up screen (macOS, not flyci)
+        if: matrix.os == 'macos-13'  # runner.os == 'macOS'
         run: |
-          "/Library/Application Support/VMware Tools/vmware-resolutionSet" 1920 1080
           system_profiler SPDisplaysDataType | grep Resolution
 
       - name: Set up screen (Windows)
@@ -90,21 +106,34 @@ jobs:
           Set-DisplayResolution -Width 1920 -Height 1080 -Force
           Get-DisplayResolution
 
-      - name: Run QML GUI tests
-        run: |
-          cd ${{ env.PACKAGE_NAME }}
-          python main.py --testmode
-          cd ..
+      - name: Run app in testmode and quit
+        shell: bash
+        run: python ${{ env.PACKAGE_NAME }}/main.py --testmode
 
-      - name: Create freezed python app bundle
+      - name: Run screenshots comparison tests
+        run: pytest tests/gui --color=yes
+
+      - name: Upload zipped GUI tests screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-installer_screenshots_${{ matrix.os }}  # desired name (without .zip) of the zip file to be uploaded
+          path: |  # all files from these paths are zipped into file with name from above
+            tests/gui/screenshots
+            .tests/image_diff
+          if-no-files-found: 'error'
+          compression-level: 0
+
+      - name: Create freezed python app bundle with PyInstaller
         run: python ${{ env.SCRIPTS_PATH }}/FreezeApp.py
 
-      - name: Create both online and offline app installer from freezed app bundle
+      #- name: Create both online and offline app installer from freezed app bundle
+      - name: Create offline app installer from freezed app bundle with QtIFW
         run: >
           python ${{ env.SCRIPTS_PATH }}/MakeInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
 
-      - name: Sign offline app installer
+      - name: Sign offline app installer (master branch)
         if: github.event_name == 'push' && env.BRANCH_NAME == 'master'
         run: >
           python ${{ env.SCRIPTS_PATH }}/SignAppInstaller.py
@@ -116,6 +145,15 @@ jobs:
         run: >
           python ${{ env.SCRIPTS_PATH }}/ZipAppInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
+
+      - name: Upload double-zipped offline app installer for the next job step
+        uses: actions/upload-artifact@v4
+        with:
+          name: zipped-app-installer_${{ runner.os }}-${{ runner.arch }}  # zip of another zip
+          path: ${{ env.DISTRIBUTION_PATH }}/*.zip
+          compression-level: 0  # no compression
+          if-no-files-found: error
+          retention-days: 10
 
       - name: Upload zipped offline app installer to GitHub releases (non-master branch)
         if: github.event_name == 'push' && env.BRANCH_NAME != 'master'
@@ -145,18 +183,12 @@ jobs:
           name: ${{ env.RELEASE_TITLE }}
           bodyFile: "RELEASE.md"
 
-      - name: Upload online app installer to repository via FTP (master branch)
-        if: github.event_name == 'push' && env.BRANCH_NAME == 'master'
-        run: >
-          python ${{ env.SCRIPTS_PATH }}/UploadToFtp.py
-          ${{ env.BRANCH_NAME }} ${{ matrix.os }}
-          ${{ secrets.APP_REPO_FTP_PASSWORD }}
-
-      - name: Upload zipped offline app installer for the next job step
-        uses: actions/upload-artifact@master
-        with:
-          name: zipped-app-installer
-          path: ${{ env.DISTRIBUTION_PATH }}/*.zip
+      #- name: Upload online app installer to repository via FTP (master branch)
+      #  if: github.event_name == 'push' && env.BRANCH_NAME == 'master'
+      #  run: >
+      #    python ${{ env.SCRIPTS_PATH }}/UploadToFtp.py
+      #    ${{ env.BRANCH_NAME }} ${{ matrix.os }}
+      #    ${{ secrets.APP_REPO_FTP_PASSWORD }}
 
   test-installer:
     needs: build-installer
@@ -168,19 +200,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-12, windows-2022]
+        os: [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]  # [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
 
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
             python-version: 3.11
 
-      - name: Upgrade PIP
+      - name: Upgrade package installer for Python
         run: python -m pip install --upgrade pip
+
+      - name: Install Python dependences
+        run: |
+          python -m pip install flit
+          flit install --only-deps  # Install the dependencies, but not the EasyDiffractionApp package itself
 
       - name: Declare env variables on push only
         if: github.event_name == 'push'
@@ -193,18 +230,12 @@ jobs:
         run: echo "BRANCH_NAME=$GITHUB_HEAD_REF" >> $GITHUB_ENV
 
       - name: Add extra info to pyproject.toml
-        run: |
-          python -m pip install toml
-          python utils.py --update
+        run: python utils.py --update
 
       - name: Declare env variables on push and pull_request
         shell: bash
         run: |
           echo "SCRIPTS_PATH=$(python utils.py --get ci.project.subdirs.scripts)" >> $GITHUB_ENV
-
-      - name: Install Python dependences
-        run: |
-          python -m pip install requests
 
       - name: Set up screen (Linux)
         if: runner.os == 'Linux'
@@ -213,14 +244,26 @@ jobs:
           sudo apt-get install libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xfixes0 libxcb-shape0 libxcb-cursor0
           sudo apt-get install libpulse-mainloop-glib0
           sudo apt-get install libxkbcommon-x11-0
-          sudo apt-get install libegl1-mesa
+          sudo apt-get install libegl1-mesa-dev
           Xvfb :0 -screen 0 1920x1080x24 -ac &
           echo "DISPLAY=:0" >> $GITHUB_ENV
 
-      - name: Set up screen (macOS)
-        if: runner.os == 'macOS'
+      # Method 1:
+      # Not working since Oct 2023. VMware is replaced by VirtualBox
+      #   "/Library/Application Support/VMware Tools/vmware-resolutionSet" 1920 1080
+      #   system_profiler SPDisplaysDataType | grep Resolution
+      # Method 2:
+      # Worked on macOS 12.6.9, but the default resolution already was 1920x1080: https://github.com/easyScience/EasyDiffractionBeta/actions/runs/6575129372/job/17861583655
+      # Fails on macOS 12.7, where default resolution is 1176x885: https://github.com/easyScience/EasyDiffractionBeta/actions/runs/6576347514/job/17865526935
+      # Works on macOS 13.6, where default resolution is again 1920x1080: https://github.com/easyScience/EasyDiffractionBeta/actions/runs/6576486407/job/17866007760
+      #    brew install screenresolution
+      #    screenresolution list
+      #    screenresolution get
+      #    screenresolution set 1920x1080x32@30
+      #    screenresolution get
+      - name: Set up screen (macOS, not flyci)
+        if: matrix.os == 'macos-13'  # runner.os == 'macOS'
         run: |
-          "/Library/Application Support/VMware Tools/vmware-resolutionSet" 1920 1080
           system_profiler SPDisplaysDataType | grep Resolution
 
       - name: Set up screen (Windows)
@@ -230,9 +273,9 @@ jobs:
           Get-DisplayResolution
 
       - name: Download zipped offline app installer from from the previous job step
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v4
         with:
-          name: zipped-app-installer
+          name: zipped-app-installer_${{ runner.os }}-${{ runner.arch }}  # zip of another zip
 
       - name: Unzip archive with offline app installer for distribution
         run: >
@@ -251,10 +294,21 @@ jobs:
       - name: Check app istallation is done
         run: python ${{ env.SCRIPTS_PATH }}/CheckAppExists.py
 
-      # Windows 2022 - Have to disable because can't see what is going on there...
-      # macOS 12 - OK
-      # Ubuntu 20.04 - OK?
-      # Ubuntu 22.04 - FAILS - ImportError: libpyside6qml.abi3.so.6.5: cannot open shared object file: No such file or directory - https://github.com/pyinstaller/pyinstaller/issues/7197
       - name: Run app in testmode and quit (macOS & Linux)
-        if: runner.os != 'Windows'
+        if: runner.os != 'Windows'  # disabled because it can't exit app and one can't see what is going on there (no GitHub logging)...
         run: python ${{ env.SCRIPTS_PATH }}/RunApp.py --testmode
+
+      - name: Run screenshots comparison tests
+        if: runner.os != 'Windows'  # disabled as didn't run app in test in the previous step
+        run: pytest tests/gui --color=yes
+
+      - name: Upload zipped GUI tests screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-installer_screenshots_${{ matrix.os }}  # desired name (without .zip) of the zip file to be uploaded
+          path: |  # all files from these paths are zipped into file with name from above
+            tests/gui/screenshots
+            .tests/image_diff
+          if-no-files-found: 'error'
+          compression-level: 0

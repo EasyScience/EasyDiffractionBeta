@@ -1,0 +1,11 @@
+data_LaMnO3
+
+_project.description "neutrons, powder, constant wavelength, 3T2@LLB"
+
+loop_
+_model.cif_file_name
+lmo.cif
+
+loop_
+_experiment.cif_file_name
+3t2.cif

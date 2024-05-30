@@ -1,0 +1,27 @@
+data_si3n4_a
+
+_cell.length_a 7.751858
+_cell.length_b 7.751858
+_cell.length_c 5.619506
+_cell.angle_alpha 90.0
+_cell.angle_beta 90.0
+_cell.angle_gamma 120.0
+
+_space_group.name_H-M_alt "P 3 1 c"
+_space_group.IT_coordinate_system_code h
+
+loop_
+_atom_site.label
+_atom_site.type_symbol
+_atom_site.fract_x
+_atom_site.fract_y
+_atom_site.fract_z
+_atom_site.occupancy
+_atom_site.ADP_type
+_atom_site.B_iso_or_equiv
+Si1 Si 0.08185 0.5118 0.65956 1.0 Biso 0.17691
+Si2 Si 0.25323 0.16763 0.4509 1.0 Biso 0.31657
+N1 N 0.65512 0.61058 0.43269 1.0 Biso 0.39195
+N2 N 0.31514 0.31865 0.69801 1.0 Biso 0.39075
+N3 N 0.33333 0.66667 0.60393 1.0 Biso 0.39846
+N4 N 0.0 0.0 0.45289 1.0 Biso 0.38332

@@ -1,0 +1,25 @@
+#VESTA_FORMAT_VERSION 3.1.9
+ 
+ 
+CRYSTAL
+TITLE
+    Backscattering Bank (2theta= 144.845)  Si- Argonne
+ 
+IMPORT_STRUCTURE
+arg_si.cif
+ 
+IMPORT_DENSITY 1
++1.000000E+000 arg_si.pgrid
+ 
+BOUND
+ -1.15 1.15 -1.15 1.15 -0.15 1.15                                 
+  0   0   0   0  0
+SBOND
+  1  Si  Si   0 2.5  0  1  0  0  1
+  0 0 0 0
+ 
+STYLE
+MODEL   2  1  0
+SURFS   0  1  1
+SECTS  96  0
+POLYS  0

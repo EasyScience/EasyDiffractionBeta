@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2022 easyDiffraction contributors <support@easydiffraction.org>
+// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors <support@easydiffraction.org>
 // SPDX-License-Identifier: BSD-3-Clause
-// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import QtQuick
 import QtQuick.Controls
@@ -70,7 +70,7 @@ Column {
                 { value: "occupancy", text: `<font color='${EaStyle.Colors.themeForegroundMinor}' face='${EaStyle.Fonts.iconsFamily}'>fill </font>Atomic occupancies` },
                 { value: "B_iso", text: `<font color='${EaStyle.Colors.themeForegroundMinor}' face='${EaStyle.Fonts.iconsFamily}'>arrows-alt </font>Atomic displacement` },
                 { value: "experiment", text: `<font color='${EaStyle.Colors.themeForegroundMinor}' face='${EaStyle.Fonts.iconsFamily}'>microscope </font>Experiment (${Globals.Proxies.main.fittables.experimentParamsCount})` },
-                { value: "resolution", text: `<font color='${EaStyle.Colors.themeForegroundMinor}' face='${EaStyle.Fonts.iconsFamily}'>grip-lines-vertical </font>Instrument resolution` },
+                { value: "resolution", text: `<font color='${EaStyle.Colors.themeForegroundMinor}' face='${EaStyle.Fonts.iconsFamily}'>shapes </font>Peak shape` },
                 { value: "asymmetry", text: `<font color='${EaStyle.Colors.themeForegroundMinor}' face='${EaStyle.Fonts.iconsFamily}'>balance-scale-left </font>Peak asymmetry` },
                 { value: "background", text: `<font color='${EaStyle.Colors.themeForegroundMinor}' face='${EaStyle.Fonts.iconsFamily}'>wave-square </font>Background` }
             ]
@@ -119,7 +119,6 @@ Column {
 
         property var currentValueTextInput: null
 
-        enabled: !Globals.Proxies.main.fitting.isFittingNow
         defaultInfoText: qsTr("No parameters found")
 
         maxRowCountShow: 7 +
@@ -192,6 +191,7 @@ Column {
 
         // Table content row
         delegate: EaComponents.TableViewDelegate {
+            enabled: !Globals.Proxies.main.fitting.isFittingNow
 
             property bool isCurrentItem: ListView.isCurrentItem
             property var item: Globals.Proxies.main_fittables_data[index]
@@ -205,8 +205,8 @@ Column {
             }
 
             EaComponents.TableViewLabel {
-                color: EaStyle.Colors.themeForegroundMinor
                 text: index + 1
+                color: EaStyle.Colors.themeForegroundMinor
             }
 
             EaComponents.TableViewLabel {
@@ -226,9 +226,9 @@ Column {
                 selected: //index === tableView.currentIndex ||
                           index === selectedParamIndex
                 fit: item.fit
-                text: EaLogic.Utils.toErrSinglePrecision(item.value, item.error).length <= 8 ?
-                          EaLogic.Utils.toErrSinglePrecision(item.value, item.error) :
-                          EaLogic.Utils.toDefaultPrecision(item.value)
+                text: item.error === 0 ?
+                          EaLogic.Utils.toDefaultPrecision(item.value) :
+                          Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(item.value, item.error).value
                 onEditingFinished: {
                     focus = false
                     console.debug('')
@@ -253,7 +253,9 @@ Column {
 
             EaComponents.TableViewLabel {
                 elide: Text.ElideNone
-                text: EaLogic.Utils.toSinglePrecision(item.error)
+                text: item.error === 0 ?
+                          '' :
+                          Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(item.value, item.error).std_dev
             }
 
             EaComponents.TableViewParameter {
@@ -327,10 +329,12 @@ Column {
             text: {
                 const value = Globals.Proxies.main_fittables_data[selectedParamIndex].value
                 const error = Globals.Proxies.main_fittables_data[selectedParamIndex].error
-                return EaLogic.Utils.toErrSinglePrecision(value, error).length <= 8 ?
-                            EaLogic.Utils.toErrSinglePrecision(slider.from, error) :
-                            EaLogic.Utils.toDefaultPrecision(slider.from)
-
+                //return EaLogic.Utils.toErrSinglePrecision(value, error).length <= 8 ?
+                //            EaLogic.Utils.toErrSinglePrecision(slider.from, error) :
+                //            EaLogic.Utils.toDefaultPrecision(slider.from)
+                return error === 0 ?
+                            EaLogic.Utils.toDefaultPrecision(slider.from) :
+                            Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(slider.from, error).value
             }
         }
 
@@ -346,9 +350,12 @@ Column {
             toolTipText: {
                 const value = Globals.Proxies.main_fittables_data[selectedParamIndex].value
                 const error = Globals.Proxies.main_fittables_data[selectedParamIndex].error
-                return EaLogic.Utils.toErrSinglePrecision(value, error).length <= 8 ?
-                            EaLogic.Utils.toErrSinglePrecision(value, error) :
-                            EaLogic.Utils.toDefaultPrecision(value)
+                //return EaLogic.Utils.toErrSinglePrecision(value, error).length <= 8 ?
+                //            EaLogic.Utils.toErrSinglePrecision(value, error) :
+                //            EaLogic.Utils.toDefaultPrecision(value)
+                return error === 0 ?
+                            EaLogic.Utils.toDefaultPrecision(value) :
+                            Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(value, error).value
             }
 
             onMoved: {
@@ -379,10 +386,12 @@ Column {
             text: {
                 const value = Globals.Proxies.main_fittables_data[selectedParamIndex].value
                 const error = Globals.Proxies.main_fittables_data[selectedParamIndex].error
-                return EaLogic.Utils.toErrSinglePrecision(value, error).length <= 8 ?
-                            EaLogic.Utils.toErrSinglePrecision(slider.to, error) :
-                            EaLogic.Utils.toDefaultPrecision(slider.to)
-
+                //return EaLogic.Utils.toErrSinglePrecision(value, error).length <= 8 ?
+                //            EaLogic.Utils.toErrSinglePrecision(slider.to, error) :
+                //            EaLogic.Utils.toDefaultPrecision(slider.to)
+                return error === 0 ?
+                            EaLogic.Utils.toDefaultPrecision(slider.to) :
+                            Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(slider.to, error).value
             }
         }
 

@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
+// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors <support@easydiffraction.org>
 // SPDX-License-Identifier: BSD-3-Clause
-// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import QtQuick
 import QtQuick.Controls
@@ -98,10 +98,17 @@ Rectangle {
             fontIcon: "check"
             ToolTip.text: qsTr("Apply changes")
             //onClicked: forceActiveFocus()
+            /*
             onClicked: {
                 Globals.Proxies.main.experiment.replaceExperiment(
                             listView.firstDelegateRef.text + '\n\n' +
                             Globals.Proxies.main.experiment.dataBlocksCifMeasOnly[Globals.Proxies.main.experiment.currentIndex])
+                forceActiveFocus()
+            }
+            */
+            onClicked: {
+                const edCifNoMeas = listView.firstDelegateRef.text
+                Globals.Proxies.main.experiment.replaceExperiment(edCifNoMeas)
                 forceActiveFocus()
             }
         }
