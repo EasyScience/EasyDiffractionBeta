@@ -152,7 +152,7 @@ jobs:
         uses: lando/code-sign-action@v2
         with:
           # ci\distribution\EasyDiffraction_v0.9.1a0_windows-2022
-          file: ${{ env.DISTRIBUTION_PATH }}/${{ env.APP_NAME }} + "_v" + ${{ env.TAG_STRING }} + "_windows-2022.exe"
+          file: ${{ env.DISTRIBUTION_PATH }}/${{ env.APP_NAME }}_v${{ env.TAG_STRING }}_windows-2022.exe
           certificate-data: ${{ secrets.WINDOZE_CERT_DATA }}
           certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD }}
           keylocker-host: ${{ secrets.KEYLOCKER_HOST }}
