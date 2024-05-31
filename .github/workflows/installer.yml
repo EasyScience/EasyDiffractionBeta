@@ -61,7 +61,7 @@ jobs:
           echo "PACKAGE_NAME=$(python utils.py --get project.name)" >> $GITHUB_ENV
           echo "PACKAGE_PATH=$GITHUB_WORKSPACE/$(python utils.py --get project.name)" >> $GITHUB_ENV
           echo "RELEASE_TAG=$(python utils.py --get ci.app.info.release_tag)" >> $GITHUB_ENV
-          echo "TAG_STRING=$(python utils.py --get release.tag_template)" >> $GITHUB_ENV
+          echo "TAG_STRING=$(python utils.py --get project.version)" >> $GITHUB_ENV
           echo "RELEASE_TITLE=$(python utils.py --get ci.app.info.release_title)" >> $GITHUB_ENV
           echo "SCRIPTS_PATH=$(python utils.py --get ci.project.subdirs.scripts)" >> $GITHUB_ENV
           echo "DISTRIBUTION_PATH=$(python utils.py --get ci.project.subdirs.distribution)" >> $GITHUB_ENV
@@ -152,7 +152,7 @@ jobs:
         uses: lando/code-sign-action@v2
         with:
           # ci\distribution\EasyDiffraction_v0.9.1a0_windows-2022
-          file: ${{ env.DISTRIBUTION_PATH }}/${{ env.APP_NAME }} + "_" + ${{ env.TAG_STRING }} + "_windows-2022.exe"
+          file: ${{ env.DISTRIBUTION_PATH }}/${{ env.APP_NAME }} + "_v" + ${{ env.TAG_STRING }} + "_windows-2022.exe"
           certificate-data: ${{ secrets.WINDOZE_CERT_DATA }}
           certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD }}
           keylocker-host: ${{ secrets.KEYLOCKER_HOST }}
