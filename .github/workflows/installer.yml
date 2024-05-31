@@ -142,10 +142,6 @@ jobs:
           ${{ secrets.MACOS_CERTIFICATE_ENCODED }} ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
           ${{ secrets.APPSTORE_NOTARIZATION_USERNAME }} ${{ secrets.APPSTORE_NOTARIZATION_PASSWORD }}
 
-      - name: print the current directory content only on windows
-        if: runner.os == 'Windows'
-        run: dir ${{ env.DISTRIBUTION_PATH }}
-
       - name: Sign the windows binary
         if: runner.os == 'Windows'
         uses: lando/code-sign-action@v2
@@ -157,10 +153,6 @@ jobs:
           keylocker-host: ${{ secrets.KEYLOCKER_HOST }}
           keylocker-api-key: ${{ secrets.KEYLOCKER_API_KEY }}
           keylocker-cert-sha1-hash: ${{ secrets.KEYLOCKER_CERT_SHA1_HASH }}
-
-      - name: print the current directory content only on windows, recursively, with powershell
-        if: runner.os == 'Windows'
-        run: Get-ChildItem -Recurse
 
       - name: Create zip archive of offline app installer for distribution
         run: >
