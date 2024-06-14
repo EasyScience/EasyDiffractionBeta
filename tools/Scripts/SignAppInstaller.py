@@ -38,7 +38,7 @@ def signMacos():
         message = f'sign code on {CONFIG.os}'
         keychain_name = 'codesign.keychain'
         keychain_password = 'password'
-        mac_certificate_fpath = 'certificate.p12'
+        mac_certificate_fname = 'certificate.p12'
 
         try:
             sub_message = f'create keychain "{keychain_name}"'
@@ -86,9 +86,9 @@ def signMacos():
             Functions.printSuccessMessage(sub_message)
 
         try:
-            sub_message = f'create certificate file "{mac_certificate_fpath}"'
+            sub_message = f'create certificate file "{mac_certificate_fname}"'
             certificate_decoded = base64.b64decode(MACOS_CERTIFICATE_ENCODED)
-            with open(mac_certificate_fpath, 'wb') as f:
+            with open(mac_certificate_fname, 'wb') as f:
                 f.write(certificate_decoded)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
@@ -97,10 +97,10 @@ def signMacos():
             Functions.printSuccessMessage(sub_message)
 
         try:
-            sub_message = f'import certificate "{mac_certificate_fpath}" to created keychain "{keychain_name}"'
+            sub_message = f'import certificate "{mac_certificate_fname}" to created keychain "{keychain_name}"'
             Functions.run(
                 'security', 'import',
-                mac_certificate_fpath,
+                mac_certificate_fname,
                 '-k', keychain_name,
                 '-P', MACOS_CERTIFICATE_PASSWORD,
                 '-T', '/usr/bin/codesign')
