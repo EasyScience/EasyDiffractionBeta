@@ -114,7 +114,7 @@ def signMacos():
             sub_message = f'show certificates'
             Functions.run(
                 'security', 'find-identity',
-                '-v')
+                keychain_name)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
             sys.exit(1)
