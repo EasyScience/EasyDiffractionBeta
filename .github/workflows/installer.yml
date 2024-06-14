@@ -91,7 +91,7 @@ jobs:
         if: github.event_name == 'push'
         uses: lando/code-sign-action@v2
         with:
-          file: '/Users/runner/work/EasyDiffractionBeta/EasyDiffractionBeta/ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app'
+          file: 'ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app'
           certificate-data: ${{ secrets.MACOS_CERTIFICATE_ENCODED }}
           certificate-password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
           apple-notary-user: ${{ secrets.APPSTORE_NOTARIZATION_USERNAME }}
