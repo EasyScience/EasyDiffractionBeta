@@ -192,13 +192,14 @@ def signMacos():
         try:
             sub_message = f'notarize app installer "{CONFIG.setup_zip_path_short}" for distribution outside of the Mac App Store' # Notarize the app by submitting a zipped package of the app bundle
             Functions.run(
-                'xcrun', 'altool',
-                '--notarize-app',
-                '--file', CONFIG.setup_zip_path_short,
-                '--type', 'macos',
-                '--primary-bundle-id', CONFIG['ci']['codesign']['bundle_id'],
-                '--username', APPSTORE_NOTARIZATION_USERNAME,
-                '--password', APPSTORE_NOTARIZATION_PASSWORD)
+                'xcrun', 'notarytool', 'submit',
+                '--apple-id', APPSTORE_NOTARIZATION_USERNAME,
+                '--team-id', 'W2AG9MPZ43',
+                '--password', APPSTORE_NOTARIZATION_PASSWORD,
+                '--verbose',
+                '--progress',
+                '--wait',
+                CONFIG.setup_zip_path_short)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
             sys.exit(1)
