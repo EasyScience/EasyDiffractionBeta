@@ -251,7 +251,7 @@ def signMacos():
             Functions.run(
                 'spctl',
                 '--assess',
-                '--vv',
+                '--verbose',
                 CONFIG.setup_exe_path)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
