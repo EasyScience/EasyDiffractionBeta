@@ -79,49 +79,10 @@ jobs:
           python ${{ env.SCRIPTS_PATH }}/MakeInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
 
-      - name: Sign offline app installer (version 0)
-        if: github.event_name == 'push___'
-        run: |
-          echo "### security create-keychain -p password codesign.keychain"
-          security create-keychain -p password codesign.keychain
-          echo "### security default-keychain -s codesign.keychain"
-          security default-keychain -s codesign.keychain
-          echo "### security list-keychains"
-          security list-keychains
-          echo "### security unlock-keychain -p password codesign.keychain"
-          security unlock-keychain -p password codesign.keychain
-          echo "### echo MACOS_CERTIFICATE_ENCODED | base64 --decode > certificate.p12"
-          echo ${{ secrets.MACOS_CERTIFICATE_ENCODED }} | base64 --decode > certificate.p12
-          echo "### security import certificate.p12 -k codesign.keychain -P MACOS_CERTIFICATE_PASSWORD -T /usr/bin/codesign"
-          security import certificate.p12 -k codesign.keychain -P ${{ secrets.MACOS_CERTIFICATE_PASSWORD }} -T /usr/bin/codesign
-          echo "### security find-identity codesign.keychain"
-          security find-identity codesign.keychain
-          echo "### security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k password codesign.keychain"
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k password codesign.keychain
-          echo "### codesign --force --verbose --timestamp --options=runtime --keychain codesign.keychain --identifier org.easyscience.easydiffraction --sign W2AG9MPZ43 ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
-          codesign --force --verbose --timestamp --options=runtime --keychain codesign.keychain --identifier org.easyscience.easydiffraction --sign W2AG9MPZ43 ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
-          echo "### codesign --display --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
-          codesign --display --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
-          echo "### codesign --verify --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
-          codesign --verify --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
-
-      - name: Sign offline app installer (version 1)
+      - name: Sign offline app installer
         if: github.event_name == 'push'
         run: >
           python ${{ env.SCRIPTS_PATH }}/SignAppInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
           ${{ secrets.MACOS_CERTIFICATE_ENCODED }} ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
           ${{ secrets.APPSTORE_NOTARIZATION_USERNAME }} ${{ secrets.APPSTORE_NOTARIZATION_PASSWORD }}
-
-      - name: Sign offline app installer (version 2)
-        if: github.event_name == 'push___'
-        uses: lando/code-sign-action@v2
-        with:
-          file: 'ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app/Contents/MacOS/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon'
-          certificate-data: ${{ secrets.MACOS_CERTIFICATE_ENCODED }}
-          certificate-password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
-          apple-notary-user: ${{ secrets.APPSTORE_NOTARIZATION_USERNAME }}
-          apple-notary-password: ${{ secrets.APPSTORE_NOTARIZATION_PASSWORD }}
-          apple-notary-tool: notarytool
-          apple-team-id: 'W2AG9MPZ43'
-          options: --options runtime
