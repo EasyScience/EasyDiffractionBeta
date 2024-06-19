@@ -81,6 +81,36 @@ jobs:
 
       - name: Sign offline app installer (version 1)
         if: github.event_name == 'push'
+        run: |
+          echo "security create-keychain -p password codesign.keychain"
+          security create-keychain -p password codesign.keychain
+          echo "security default-keychain -s codesign.keychain"
+          security default-keychain -s codesign.keychain
+          echo "security list-keychains"
+          security list-keychains
+          echo "security unlock-keychain -p password codesign.keychain"
+          security unlock-keychain -p password codesign.keychain
+          echo "*** | base64 --decode > certificate.p12"
+          echo ${{ secrets.MACOS_CERTIFICATE_ENCODED }} | base64 --decode > certificate.p12
+          echo "security import certificate.p12 -k codesign.keychain -P ***"
+          security import certificate.p12 -k codesign.keychain -P ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          echo "security find-identity codesign.keychain"
+          security find-identity codesign.keychain
+          echo "security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k password codesign.keychain"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k password codesign.keychain
+          echo "codesign --display --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
+          codesign --display --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
+          echo "codesign --verify --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
+          codesign --verify --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
+          echo "codesign --force --verbose --timestamp --options=runtime --identifier org.easyscience.easydiffraction --sign W2AG9MPZ43 ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
+          codesign --force --verbose --timestamp --options=runtime --identifier org.easyscience.easydiffraction --sign W2AG9MPZ43 ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
+          echo "codesign --display --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
+          codesign --display --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
+          echo "codesign --verify --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
+          codesign --verify --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
+
+      - name: Sign offline app installer (version 1)
+        if: github.event_name == 'push'
         run: >
           python ${{ env.SCRIPTS_PATH }}/SignAppInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
