@@ -141,7 +141,8 @@ def signMacos():
                 'security', 'import',
                 mac_certificate_fname,
                 '-k', keychain_name,
-                '-P', MACOS_CERTIFICATE_PASSWORD)
+                '-P', MACOS_CERTIFICATE_PASSWORD,
+                '-T', '/usr/bin/codesign')
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
             sys.exit(1)
@@ -210,8 +211,8 @@ def signMacos():
                 '--verbose',                    # set (with a numeric value) or increments the verbosity level of output
                 '--timestamp',                  # request that a default Apple timestamp authority server be contacted to authenticate the time of signin
                 '--options=runtime',            # specify a set of option flags to be embedded in the code signature
-                #'--keychain', keychain_name,    # specify keychain name
-                #'--identifier', BUNDLE_ID,      # specify bundle id
+                '--keychain', keychain_name,    # specify keychain name
+                '--identifier', BUNDLE_ID,      # specify bundle id
                 '--sign', TEAM_ID,              # sign the code at the path(s) given using this identity
                 CONFIG.setup_exe_path)
         except Exception as sub_exception:

@@ -92,14 +92,18 @@ jobs:
           security unlock-keychain -p password codesign.keychain
           echo "### *** | base64 --decode > certificate.p12"
           echo ${{ secrets.MACOS_CERTIFICATE_ENCODED }} | base64 --decode > certificate.p12
-          echo "### security import certificate.p12 -k codesign.keychain -P ***"
-          security import certificate.p12 -k codesign.keychain -P ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          echo "### security import certificate.p12 -k codesign.keychain -P *** -T /usr/bin/codesign"
+          security import certificate.p12 -k codesign.keychain -P ${{ secrets.MACOS_CERTIFICATE_PASSWORD }} -T /usr/bin/codesign
           echo "### security find-identity codesign.keychain"
           security find-identity codesign.keychain
           echo "### security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k password codesign.keychain"
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k password codesign.keychain
-          echo "### codesign --force --verbose --timestamp --options=runtime --identifier org.easyscience.easydiffraction --sign W2AG9MPZ43 ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
-          codesign --force --verbose --timestamp --options=runtime --identifier org.easyscience.easydiffraction --sign W2AG9MPZ43 ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
+          echo "### codesign --display --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
+          codesign --display --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
+          echo "### codesign --verify --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
+          codesign --verify --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
+          echo "### codesign --force --verbose --timestamp --options=runtime --keychain codesign.keychain --identifier org.easyscience.easydiffraction --sign W2AG9MPZ43 ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
+          codesign --force --verbose --timestamp --options=runtime --keychain codesign.keychain --identifier org.easyscience.easydiffraction --sign W2AG9MPZ43 ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
           echo "### codesign --display --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
           codesign --display --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
           echo "### codesign --verify --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
