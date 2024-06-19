@@ -216,6 +216,10 @@ def signMacos():
         else:
             Functions.printSuccessMessage(sub_message)
 
+
+        return
+
+
         ########################
         # Notarize app installer
         ########################
