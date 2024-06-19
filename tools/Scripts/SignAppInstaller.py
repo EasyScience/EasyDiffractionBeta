@@ -274,11 +274,6 @@ def signMacos():
 
         try:
             sub_message = f'download and attach (staple) tickets for notarized executables to app installer "{CONFIG.setup_exe_path}"'
-            time.sleep(180)  # Sleep for 3 minutes before calling the stapler to handle notarization lag on Apple server
-                             # Or maybe one could instead get 'RequestUUID' from the previous 'xcrun altool --notarize-app...' output and
-                             # check in the loop until notarization is succeded via 'xcrun altool --notarization-info UUID...'?
-                             # If notarization is in progress, the '--notarization-info' output should contain 'Status: in progress'
-                             # If notarization is succeded, the '--notarization-info' output should contain 'Status: success'
             Functions.run(
                 'xcrun', 'stapler',
                 'staple', CONFIG.setup_exe_path)
