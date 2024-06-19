@@ -80,7 +80,7 @@ jobs:
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
 
       - name: Sign offline app installer (version 0)
-        if: github.event_name == 'push'
+        if: github.event_name == 'push___'
         run: |
           echo "### security create-keychain -p password codesign.keychain"
           security create-keychain -p password codesign.keychain
@@ -105,6 +105,14 @@ jobs:
           echo "### codesign --verify --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app"
           codesign --verify --verbose ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app
 
+      - name: Sign offline app installer (version 1)
+        if: github.event_name == 'push'
+        run: >
+          python ${{ env.SCRIPTS_PATH }}/SignAppInstaller.py
+          ${{ env.BRANCH_NAME }} ${{ matrix.os }}
+          ${{ secrets.MACOS_CERTIFICATE_ENCODED }} ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          ${{ secrets.APPSTORE_NOTARIZATION_USERNAME }} ${{ secrets.APPSTORE_NOTARIZATION_PASSWORD }}
+
       - name: Sign offline app installer (version 2)
         if: github.event_name == 'push'
         uses: lando/code-sign-action@v2
@@ -117,11 +125,3 @@ jobs:
           apple-notary-tool: notarytool
           apple-team-id: 'W2AG9MPZ43'
           options: --options runtime
-
-      - name: Sign offline app installer (version 1)
-        if: github.event_name == 'push'
-        run: >
-          python ${{ env.SCRIPTS_PATH }}/SignAppInstaller.py
-          ${{ env.BRANCH_NAME }} ${{ matrix.os }}
-          ${{ secrets.MACOS_CERTIFICATE_ENCODED }} ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
-          ${{ secrets.APPSTORE_NOTARIZATION_USERNAME }} ${{ secrets.APPSTORE_NOTARIZATION_PASSWORD }}

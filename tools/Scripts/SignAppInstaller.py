@@ -142,7 +142,7 @@ def signMacos():
                 mac_certificate_fname,
                 '-k', keychain_name,
                 '-P', MACOS_CERTIFICATE_PASSWORD,
-                '-T', '/usr/bin/codesign')
+                '-T', '/usr/bin/codesign')  # Without '-T ...' codesign asking to enter keychain password and thus CI freezes
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
             sys.exit(1)
