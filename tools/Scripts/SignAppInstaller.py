@@ -172,8 +172,6 @@ def signMacos():
         else:
             Functions.printSuccessMessage(sub_message)
 
-        return
-
         try:
             sub_message = f'sign installer app "{CONFIG.setup_exe_path}" with imported certificate'
             Functions.run(
@@ -191,6 +189,8 @@ def signMacos():
             sys.exit(1)
         else:
             Functions.printSuccessMessage(sub_message)
+
+        return
 
         try:
             sub_message = f'display information about the code at "{CONFIG.setup_exe_path}" after signing'
