@@ -15,7 +15,9 @@ import Functions
 
 CONFIG = Config.Config(sys.argv[1], sys.argv[2])
 
-MACOS_IDENTITY = CONFIG['ci']['codesign']['macos']['identity']
+IDENTITY = CONFIG['ci']['codesign']['apple']['identity']
+BUNDLE_ID = CONFIG['ci']['codesign']['bundle_id']
+TEAM_ID = CONFIG['ci']['codesign']['apple']['team_id']
 MACOS_CERTIFICATE_ENCODED = sys.argv[3]       # Encoded content of the certificate.p12 file
 MACOS_CERTIFICATE_PASSWORD = sys.argv[4]      # Password associated with the certificate.p12 file
 APPSTORE_NOTARIZATION_USERNAME = sys.argv[5]  # Apple ID (esss.se personal account) added to https://developer.apple.com
@@ -102,8 +104,7 @@ def signMacos():
                 'security', 'import',
                 mac_certificate_fname,
                 '-k', keychain_name,
-                '-P', MACOS_CERTIFICATE_PASSWORD,
-                '-T', '/usr/bin/codesign')
+                '-P', MACOS_CERTIFICATE_PASSWORD)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
             sys.exit(1)
@@ -139,15 +140,42 @@ def signMacos():
         ####################
 
         try:
+            sub_message = f'display information about the code at "{CONFIG.setup_exe_path}" before signing'
+            Functions.run(
+                'codesign',
+                '--display',                # nested code content such as helpers, frameworks, and plug-ins, should be recursively signed
+                '--verbose',                # replace any existing signature on the path(s) given
+                CONFIG.setup_exe_path)
+        except Exception as sub_exception:
+            Functions.printFailMessage(sub_message, sub_exception)
+            sys.exit(1)
+        else:
+            Functions.printSuccessMessage(sub_message)
+
+        try:
             sub_message = f'sign installer app "{CONFIG.setup_exe_path}" with imported certificate'
             Functions.run(
                 'codesign',
-                '--deep',                   # nested code content such as helpers, frameworks, and plug-ins, should be recursively signed
-                '--force',                  # replace any existing signature on the path(s) given
-                '--verbose=1',              # set (with a numeric value) or increments the verbosity level of output
-                '--timestamp',              # request that a default Apple timestamp authority server be contacted to authenticate the time of signin
-                '--options=runtime',        # specify a set of option flags to be embedded in the code signature
-                '--sign', MACOS_IDENTITY,   # sign the code at the path(s) given using this identity
+                '--force',                      # replace any existing signature on the path(s) given
+                '--verbose',                    # set (with a numeric value) or increments the verbosity level of output
+                '--timestamp',                  # request that a default Apple timestamp authority server be contacted to authenticate the time of signin
+                '--options=runtime',            # specify a set of option flags to be embedded in the code signature
+                '--keychain', keychain_name,    # specify keychain name
+                '--identifier', BUNDLE_ID,      # specify bundle id
+                '--sign', IDENTITY,             # sign the code at the path(s) given using this identity
+                CONFIG.setup_exe_path)
+        except Exception as sub_exception:
+            Functions.printFailMessage(sub_message, sub_exception)
+            sys.exit(1)
+        else:
+            Functions.printSuccessMessage(sub_message)
+
+        try:
+            sub_message = f'display information about the code at "{CONFIG.setup_exe_path}" after signing'
+            Functions.run(
+                'codesign',
+                '--display',                # nested code content such as helpers, frameworks, and plug-ins, should be recursively signed
+                '--verbose',                # replace any existing signature on the path(s) given
                 CONFIG.setup_exe_path)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
@@ -160,7 +188,7 @@ def signMacos():
             Functions.run(
                 'codesign',
                 '--verify',                 # verification of code signatures
-                '--verbose=1',              # set (with a numeric value) or increments the verbosity level of output
+                '--verbose',                # set (with a numeric value) or increments the verbosity level of output
                 CONFIG.setup_exe_path)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
@@ -194,7 +222,7 @@ def signMacos():
             Functions.run(
                 'xcrun', 'notarytool', 'submit',
                 '--apple-id', APPSTORE_NOTARIZATION_USERNAME,
-                '--team-id', 'W2AG9MPZ43',
+                '--team-id', TEAM_ID,
                 '--password', APPSTORE_NOTARIZATION_PASSWORD,
                 '--verbose',
                 '--progress',

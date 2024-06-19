@@ -98,9 +98,8 @@ config_style = 'style.qss'
 
 [ci.codesign]
 bundle_id = 'org.easyscience.easydiffraction'
-
-[ci.codesign.macos]
-identity = '3rd Party Mac Developer Application: European Spallation Source Eric (W2AG9MPZ43)'
+apple.identity = 'Developer ID Application: European Spallation Source Eric (W2AG9MPZ43)'
+apple.team_id = 'W2AG9MPZ43'
 
 [ci.app.icon]
 dir = ['Gui', 'Resources', 'Logo']
