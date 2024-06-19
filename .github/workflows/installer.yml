@@ -114,7 +114,7 @@ jobs:
           ${{ secrets.APPSTORE_NOTARIZATION_USERNAME }} ${{ secrets.APPSTORE_NOTARIZATION_PASSWORD }}
 
       - name: Sign offline app installer (version 2)
-        if: github.event_name == 'push'
+        if: github.event_name == 'push___'
         uses: lando/code-sign-action@v2
         with:
           file: 'ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app/Contents/MacOS/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon'
