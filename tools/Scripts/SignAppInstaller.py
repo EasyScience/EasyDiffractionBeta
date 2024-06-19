@@ -13,14 +13,14 @@ import Config
 import Functions
 
 
-BRANCH_NAME = sys.argv[1]
-PLATFORM = sys.argv[2]
+GIT_BRANCH = sys.argv[1]
+MATRIX_OS = sys.argv[2]
 MACOS_CERTIFICATE_ENCODED = sys.argv[3]       # Encoded content of the .p12 certificate file (exported from certificate of Developer ID Application type)
 MACOS_CERTIFICATE_PASSWORD = sys.argv[4]      # Password associated with the .p12 certificate
 APPSTORE_NOTARIZATION_USERNAME = sys.argv[5]  # Apple ID (esss.se personal account) added to https://developer.apple.com
 APPSTORE_NOTARIZATION_PASSWORD = sys.argv[6]  # App specific password for EasyDiffraction from https://appleid.apple.com
 
-CONFIG = Config.Config(BRANCH_NAME, PLATFORM)
+CONFIG = Config.Config(GIT_BRANCH, MATRIX_OS)
 
 IDENTITY = CONFIG['ci']['codesign']['apple']['identity']
 BUNDLE_ID = CONFIG['ci']['codesign']['bundle_id']
@@ -29,6 +29,36 @@ TEAM_ID = CONFIG['ci']['codesign']['apple']['team_id']
 print('IDENTITY', IDENTITY)
 print('BUNDLE_ID', BUNDLE_ID)
 print('TEAM_ID', TEAM_ID)
+
+
+def debuggg():
+    keychain_name = 'codesign.keychain'
+    print('keychain_name', keychain_name)
+
+    try:
+        sub_message = f'sign installer app "{CONFIG.setup_exe_path}" with imported certificate'
+        Functions.run(
+            'codesign',
+            '--deep',
+            '--force',                      # replace any existing signature on the path(s) given
+            '--verbose',                    # set (with a numeric value) or increments the verbosity level of output
+            '--timestamp',                  # request that a default Apple timestamp authority server be contacted to authenticate the time of signin
+            '--options=runtime',            # specify a set of option flags to be embedded in the code signature
+            #'--keychain', keychain_name,    # specify keychain name
+            #'--identifier', BUNDLE_ID,      # specify bundle id
+            '--sign', TEAM_ID,              # sign the code at the path(s) given using this identity
+            CONFIG.setup_exe_path)
+    except Exception as sub_exception:
+        Functions.printFailMessage(sub_message, sub_exception)
+        sys.exit(1)
+    else:
+        Functions.printSuccessMessage(sub_message)
+
+    exit()
+
+
+
+
 
 def signLinux():
     Functions.printNeutralMessage('Code signing on Linux is not supported yet')
@@ -146,8 +176,6 @@ def signMacos():
         # Sign app installer
         ####################
 
-        return
-
         try:
             sub_message = f'display information about the code at "{CONFIG.setup_exe_path}" before signing'
             Functions.run(
@@ -182,8 +210,8 @@ def signMacos():
                 '--verbose',                    # set (with a numeric value) or increments the verbosity level of output
                 '--timestamp',                  # request that a default Apple timestamp authority server be contacted to authenticate the time of signin
                 '--options=runtime',            # specify a set of option flags to be embedded in the code signature
-                '--keychain', keychain_name,    # specify keychain name
-                '--identifier', BUNDLE_ID,      # specify bundle id
+                #'--keychain', keychain_name,    # specify keychain name
+                #'--identifier', BUNDLE_ID,      # specify bundle id
                 '--sign', TEAM_ID,              # sign the code at the path(s) given using this identity
                 CONFIG.setup_exe_path)
         except Exception as sub_exception:
@@ -191,6 +219,8 @@ def signMacos():
             sys.exit(1)
         else:
             Functions.printSuccessMessage(sub_message)
+
+        return
 
         try:
             sub_message = f'display information about the code at "{CONFIG.setup_exe_path}" after signing'
