@@ -15,16 +15,22 @@ import Functions
 
 CONFIG = Config.Config(sys.argv[1], sys.argv[2])
 
-IDENTITY = CONFIG['ci']['codesign']['apple']['identity']
-BUNDLE_ID = CONFIG['ci']['codesign']['bundle_id']
-TEAM_ID = CONFIG['ci']['codesign']['apple']['team_id']
-MACOS_CERTIFICATE_ENCODED = sys.argv[3]       # Encoded content of the certificate.p12 file
-MACOS_CERTIFICATE_PASSWORD = sys.argv[4]      # Password associated with the certificate.p12 file
+MACOS_CERTIFICATE_ENCODED = sys.argv[3]       # Encoded content of the .p12 certificate file (exported from certificate of Developer ID Application type)
+MACOS_CERTIFICATE_PASSWORD = sys.argv[4]      # Password associated with the .p12 certificate
 APPSTORE_NOTARIZATION_USERNAME = sys.argv[5]  # Apple ID (esss.se personal account) added to https://developer.apple.com
 APPSTORE_NOTARIZATION_PASSWORD = sys.argv[6]  # App specific password for EasyDiffraction from https://appleid.apple.com
 
+IDENTITY = CONFIG['ci']['codesign']['apple']['identity']
+BUNDLE_ID = CONFIG['ci']['codesign']['bundle_id']
+TEAM_ID = CONFIG['ci']['codesign']['apple']['team_id']
+
+print('IDENTITY', IDENTITY)
+print('BUNDLE_ID', BUNDLE_ID)
+print('TEAM_ID', TEAM_ID)
+exit()
+
 def signLinux():
-    Functions.printNeutralMessage('No code signing needed for linux')
+    Functions.printNeutralMessage('Code signing on Linux is not supported yet')
     return
 
 def signWindows():
@@ -143,8 +149,8 @@ def signMacos():
             sub_message = f'display information about the code at "{CONFIG.setup_exe_path}" before signing'
             Functions.run(
                 'codesign',
-                '--display',                # nested code content such as helpers, frameworks, and plug-ins, should be recursively signed
-                '--verbose',                # replace any existing signature on the path(s) given
+                '--display',
+                '--verbose',
                 CONFIG.setup_exe_path)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
@@ -174,8 +180,8 @@ def signMacos():
             sub_message = f'display information about the code at "{CONFIG.setup_exe_path}" after signing'
             Functions.run(
                 'codesign',
-                '--display',                # nested code content such as helpers, frameworks, and plug-ins, should be recursively signed
-                '--verbose',                # replace any existing signature on the path(s) given
+                '--display',
+                '--verbose',
                 CONFIG.setup_exe_path)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
