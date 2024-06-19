@@ -79,6 +79,19 @@ jobs:
           python ${{ env.SCRIPTS_PATH }}/MakeInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
 
+      - name: Sign offline app installer (version 2)
+        if: github.event_name == 'push'
+        uses: lando/code-sign-action@v2
+        with:
+          file: 'ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app'
+          certificate-data: ${{ secrets.MACOS_CERTIFICATE_ENCODED }}
+          certificate-password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          apple-notary-user: ${{ secrets.APPSTORE_NOTARIZATION_USERNAME }}
+          apple-notary-password: ${{ secrets.APPSTORE_NOTARIZATION_PASSWORD }}
+          apple-notary-tool: notarytool
+          apple-team-id: 'W2AG9MPZ43'
+          options: --options runtime
+
       - name: Sign offline app installer (version 1)
         if: github.event_name == 'push'
         run: |
@@ -116,16 +129,3 @@ jobs:
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
           ${{ secrets.MACOS_CERTIFICATE_ENCODED }} ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
           ${{ secrets.APPSTORE_NOTARIZATION_USERNAME }} ${{ secrets.APPSTORE_NOTARIZATION_PASSWORD }}
-
-      - name: Sign offline app installer (version 2)
-        if: github.event_name == 'push'
-        uses: lando/code-sign-action@v2
-        with:
-          file: 'ci/distribution/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon.app/Contents/MacOS/EasyDiffraction_v0.9.1a0_macos-14-AppleSilicon'
-          certificate-data: ${{ secrets.MACOS_CERTIFICATE_ENCODED }}
-          certificate-password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
-          apple-notary-user: ${{ secrets.APPSTORE_NOTARIZATION_USERNAME }}
-          apple-notary-password: ${{ secrets.APPSTORE_NOTARIZATION_PASSWORD }}
-          apple-notary-tool: notarytool
-          apple-team-id: 'W2AG9MPZ43'
-          options: --options runtime --entitlements entitlements.xml
