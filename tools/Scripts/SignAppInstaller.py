@@ -178,32 +178,6 @@ def signMacos():
         ####################
 
         try:
-            sub_message = f'display information about the code at "{CONFIG.setup_exe_path}" before signing'
-            Functions.run(
-                'codesign',
-                '--display',
-                '--verbose',
-                CONFIG.setup_exe_path)
-        except Exception as sub_exception:
-            Functions.printFailMessage(sub_message, sub_exception)
-            sys.exit(1)
-        else:
-            Functions.printSuccessMessage(sub_message)
-
-        try:
-            sub_message = f'verify app signatures for installer "{CONFIG.setup_exe_path}" before signing'
-            Functions.run(
-                'codesign',
-                '--verify',                 # verification of code signatures
-                '--verbose',                # set (with a numeric value) or increments the verbosity level of output
-                CONFIG.setup_exe_path)
-        except Exception as sub_exception:
-            Functions.printFailMessage(sub_message, sub_exception)
-            sys.exit(1)
-        else:
-            Functions.printSuccessMessage(sub_message)
-
-        try:
             sub_message = f'sign installer app "{CONFIG.setup_exe_path}" with imported certificate'
             Functions.run(
                 'codesign',
