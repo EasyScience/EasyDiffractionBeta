@@ -210,7 +210,7 @@ def signMacos():
             Functions.run(
                 'xcrun', 'notarytool', 'submit',
                 '--apple-id', APPLE_NOTARY_USER,
-                '--team-id', TEAM_ID,
+                '--team-id', CONFIG['ci']['codesign']['apple']['team_id'],
                 '--password', APPLE_NOTARY_PASSWORD,
                 '--verbose',
                 '--progress',
