@@ -12,7 +12,7 @@ import importlib.util
 import numpy as np
 from uncertainties import ufloat
 
-from PySide6.QtCore import Qt, QObject, QCoreApplication, Signal, Slot, Property
+from PySide6.QtCore import Qt, QObject, QCoreApplication, QUrl, Signal, Slot, Property
 #from PySide6.QtGui import QStyleHints
 from PySide6.QtWidgets import QApplication
 
@@ -259,6 +259,16 @@ class BackendHelpers(QObject):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
+    @Slot(str, result=str)
+    def urlToLocalFile(self, url: str):
+        fpath = QUrl(url).toLocalFile()
+        return fpath
+
+    @Slot(str, result=str)
+    def localFileToUrl(self, fpath: str):
+        url = QUrl.fromLocalFile(fpath).toString()
+        return url
 
     @Slot(int)
     def exitApp(self, exitCode):

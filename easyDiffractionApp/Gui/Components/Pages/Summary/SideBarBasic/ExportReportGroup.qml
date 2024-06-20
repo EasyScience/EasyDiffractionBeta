@@ -5,14 +5,21 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
+import QtCore
 
 import EasyApp.Gui.Style as EaStyle
+import EasyApp.Gui.Globals as EaGlobals
 import EasyApp.Gui.Elements as EaElements
+import EasyApp.Gui.Logic as EaLogic
 
 import Gui.Globals as Globals
 
 
 Column {
+    property string projectLocation: Globals.Proxies.main.project.location +
+                                     EaLogic.Utils.osPathSep() +
+                                     'summary'
+
     spacing: EaStyle.Sizes.fontPixelSize
 
     // Name field + format selector
@@ -26,8 +33,8 @@ Column {
             topInset: nameLabel.height
             topPadding: topInset + padding
             horizontalAlignment: TextInput.AlignLeft
-            placeholderText: qsTr("Enter report file name here")
-            //Component.onCompleted: text = 'report'
+            placeholderText: qsTr("Enter summary file name here")
+            Component.onCompleted: text = 'summary'
             EaElements.Label {
                 id: nameLabel
                 text: qsTr("Name")
@@ -44,8 +51,7 @@ Column {
             textRole: "text"
             valueRole: "value"
             model: [
-                { value: 'html', text: qsTr("Interactive HTML") },
-                { value: 'pdf', text: qsTr("Static PDF") }
+                { value: 'html', text: qsTr("HTML") }
             ]
             EaElements.Label {
                 id: formatLabel
@@ -63,6 +69,7 @@ Column {
         rightPadding: chooseButton.width
         horizontalAlignment: TextInput.AlignLeft
         placeholderText: qsTr("Enter report location here")
+        Component.onCompleted: text = projectLocation
         EaElements.Label {
             id: locationLabel
             text: qsTr("Location")
@@ -86,10 +93,11 @@ Column {
         text: qsTr('Save')
         onClicked: {
             console.debug(`Clicking '${text}' button: ${this}`)
-            if (formatField.currentValue === 'html') {
-                Globals.Proxies.main.summary.saveHtmlReport(reportLocationField.text)
-            } else if (formatField.currentValue === 'pdf') {
-                //Globals.Vars.reportWebView.printToPdf(reportLocationField.text)
+            if (formatField.currentValue === 'html' || formatField.currentValue === 'pdf') {
+                Globals.Proxies.main.summary.saveAsHtml(reportLocationField.text,
+                                                        nameField.text)
+            } else {
+                console.error(`Unsupported file format '${formatField.currentValue}'`)
             }
         }
     }
@@ -98,8 +106,10 @@ Column {
     FolderDialog {
         id: reportParentDirDialog
         title: qsTr("Choose report parent directory")
-        //folder: Globals.Proxies.main.project.currentProjectPath
-        //Component.onCompleted: selectedFolder = projectPathDict().parent
+    }
+
+    onProjectLocationChanged: {
+        reportParentDirDialog.currentFolder = Globals.Proxies.main.backendHelpers.localFileToUrl(projectLocation)
     }
 
 }
