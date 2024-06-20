@@ -13,51 +13,44 @@ import Gui.Globals as Globals
 
 
 Rectangle {
-    id: container
-
-    anchors.fill: parent
 
     color: EaStyle.Colors.textViewBackground
     Behavior on color { EaAnimations.ThemeChange {} }
 
-    // ListView
-    ListView {
-        id: listView
+    // Flickable
+    Flickable {
+        id: flick
 
         anchors.fill: parent
-        anchors.topMargin: EaStyle.Sizes.fontPixelSize
-        anchors.bottomMargin: EaStyle.Sizes.fontPixelSize
-        anchors.leftMargin: EaStyle.Sizes.fontPixelSize
+
+        contentWidth: textArea.contentWidth
+        contentHeight: textArea.contentHeight
 
         clip: true
+        flickableDirection: Flickable.VerticalFlick
 
         ScrollBar.vertical: EaElements.ScrollBar {
             policy: ScrollBar.AsNeeded
             interactive: false
         }
 
-        model: [Globals.Proxies.main.summary.dataBlocksCif]
+        // Main text area
+        EaElements.TextArea {
+            id: textArea
 
-        // ListView Delegate
-        delegate: TextEdit {
             readOnly: true
 
-            font.family: EaStyle.Fonts.monoFontFamily
-            font.pixelSize: EaStyle.Sizes.fontPixelSize
+            width: flick.width
+            topPadding: 0
+            bottomPadding: 0
+            padding: 2.5 * EaStyle.Sizes.fontPixelSize
 
-            color: EaStyle.Colors.themeForeground
-            Behavior on color { EaAnimations.ThemeChange {} }
-
-            selectionColor: EaStyle.Colors.themeAccent
-            Behavior on selectionColor { EaAnimations.ThemeChange {} }
-
-            selectedTextColor: EaStyle.Colors.themeBackground
-            Behavior on selectedTextColor { EaAnimations.ThemeChange {} }
-
-            text: listView.model[index] + '\n'
-       }
-        // ListView Delegate
+            textFormat: TextEdit.RichText
+            text: Globals.Proxies.main.summary.asHtml
+        }
+        // Main text area
 
     }
-    // ListView
+    // Flickable
+
 }
