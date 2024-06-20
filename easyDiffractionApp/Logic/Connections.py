@@ -29,6 +29,7 @@ class Connections(QObject):
         self._proxy.experiment.currentIndexChanged.connect(self.onExperimentCurrentIndexChanged)
         self._proxy.experiment.dataBlocksNoMeasChanged.connect(self.onExperimentDataBlocksNoMeasChanged)
         self._proxy.experiment.dataBlocksChanged.connect(self.onExperimentDataBlocksChanged)
+        self._proxy.experiment.yMeasArraysChanged.connect(self.onSummaryDataBlocksCifChanged)
 
         # Analysis
         self._proxy.analysis.definedChanged.connect(self.onAnalysisDefined)
@@ -44,6 +45,15 @@ class Connections(QObject):
         self._proxy.fitting.fitFinished.connect(self.onFittingFitFinished)
         self._proxy.fitting.chiSqSignificantlyChanged.connect(self.onFittingChiSqSignificantlyChanged)
         self._proxy.fitting.minimizerMethodChanged.connect(self.onFittingMinimizerMethodChanged)
+
+        # Summary
+        self._proxy.summary.dataBlocksCifChanged.connect(self.onSummaryDataBlocksCifChanged)
+
+        # Status
+        self._proxy.status.calculatorChanged.connect(self.onSummaryDataBlocksCifChanged)
+        self._proxy.status.minimizerChanged.connect(self.onSummaryDataBlocksCifChanged)
+        self._proxy.status.variablesChanged.connect(self.onSummaryDataBlocksCifChanged)
+        self._proxy.status.goodnessOfFitChanged.connect(self.onSummaryDataBlocksCifChanged)
 
     #########
     # Project
@@ -344,3 +354,10 @@ class Connections(QObject):
 
     def onFittingMinimizerMethodChanged(self):
         self._proxy.status.minimizer = f'Lmfit ({self._proxy.fitting.minimizerMethod})'
+
+    #########
+    # Summary
+    #########
+
+    def onSummaryDataBlocksCifChanged(self):
+        self._proxy.summary.setAsHtml()

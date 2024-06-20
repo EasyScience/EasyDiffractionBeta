@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-13, macos-14]  # [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
+        os: [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]  # [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
 
     steps:
       - name: Check-out repository
@@ -128,19 +128,18 @@ jobs:
       - name: Create freezed python app bundle with PyInstaller
         run: python ${{ env.SCRIPTS_PATH }}/FreezeApp.py
 
-      #- name: Create both online and offline app installer from freezed app bundle
       - name: Create offline app installer from freezed app bundle with QtIFW
         run: >
           python ${{ env.SCRIPTS_PATH }}/MakeInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
 
-      - name: Sign offline app installer (master branch)
-        if: github.event_name == 'push' && env.BRANCH_NAME == 'master'
+      - name: Sign offline app installer (macOS)
+        if: github.event_name == 'push' && runner.os == 'macOS'
         run: >
           python ${{ env.SCRIPTS_PATH }}/SignAppInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
-          ${{ secrets.MACOS_CERTIFICATE_ENCODED }} ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
-          ${{ secrets.APPSTORE_NOTARIZATION_USERNAME }} ${{ secrets.APPSTORE_NOTARIZATION_PASSWORD }}
+          ${{ secrets.APPLE_CERT_DATA }} ${{ secrets.APPLE_CERT_PASSWORD }}
+          ${{ secrets.APPLE_NOTARY_USER }} ${{ secrets.APPLE_NOTARY_PASSWORD }}
 
       - name: Sign the windows binary
         if: runner.os == 'Windows'
@@ -162,7 +161,7 @@ jobs:
       - name: Upload double-zipped offline app installer for the next job step
         uses: actions/upload-artifact@v4
         with:
-          name: zipped-app-installer_${{ runner.os }}-${{ runner.arch }}  # zip of another zip
+          name: zipped-app-installer_${{ matrix.os }}-${{ runner.arch }}  # zip of another zip
           path: ${{ env.DISTRIBUTION_PATH }}/*.zip
           compression-level: 0  # no compression
           if-no-files-found: error
@@ -288,7 +287,7 @@ jobs:
       - name: Download zipped offline app installer from from the previous job step
         uses: actions/download-artifact@v4
         with:
-          name: zipped-app-installer_${{ runner.os }}-${{ runner.arch }}  # zip of another zip
+          name: zipped-app-installer_${{ matrix.os }}-${{ runner.arch }}  # zip of another zip
 
       - name: Unzip archive with offline app installer for distribution
         run: >

@@ -3,7 +3,9 @@
 // © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import QtQuick
+import QtQuick.Controls
 
+import EasyApp.Gui.Style as EaStyle
 import EasyApp.Gui.Elements as EaElements
 import EasyApp.Gui.Components as EaComponents
 
@@ -13,12 +15,9 @@ import Gui.Globals as Globals
 EaComponents.SideBarColumn {
 
     EaElements.GroupBox {
-        enabled: Globals.Proxies.main.project.created &&
-                 !Globals.Proxies.main.project.location.includes(":/Examples")
-        title: qsTr("Export summary")
         collapsible: false
 
-        Loader { source: 'SideBarBasic/ExportReportGroup.qml' }
+        Loader { source: 'SideBarText/TextView.qml' }
     }
 
 }

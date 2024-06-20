@@ -13,11 +13,6 @@ EaComponents.SideBarColumn {
     width: EaStyle.Sizes.sideBarContentWidth
     height: 2 * EaStyle.Sizes.sideBarContentWidth
 
-
-
-
-
-
     EaElements.TextArea {
         id: textArea
 
