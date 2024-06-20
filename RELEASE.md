@@ -2,8 +2,11 @@ This is a test version of EasyDiffraction with improved GUI and overall performa
 
 ### New Features
 
-- Fitting time-of-flight (TOF) data using the [CrysPy](https://github.com/ikibalin/cryspy) calculation engine is now supported.
+- Measured and processed TOF data are now correctly displayed on the Summary page
+- Installers for macOS and Windows are now signed
 
 ### Bug Fixes
 
-- Fixed visibility of structure viewer on macOS.
+- The analysis page now has an _html_-based analysis summary
+- The CIF-based report on the Analysis page has now been moved from _Main View_ to _Sidebar_ (`Text mode` tab)
+- User can now save the analysis summary in _html_ format

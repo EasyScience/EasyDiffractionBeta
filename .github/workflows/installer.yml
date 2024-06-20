@@ -138,8 +138,10 @@ jobs:
           python ${{ env.SCRIPTS_PATH }}/MakeInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
 
-      - name: Sign, notirize and staple offline app installer (macOS)
-        if: github.event_name == 'push' && runner.os == 'macOS'
+      - name: Sign, notarize and staple offline app installer (macOS)
+        if: |
+          runner.os == 'macOS' && github.event_name == 'push' &&
+          (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop')
         run: >
           python ${{ env.SCRIPTS_PATH }}/SignAppInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
@@ -147,7 +149,9 @@ jobs:
           ${{ secrets.APPLE_NOTARY_USER }} ${{ secrets.APPLE_NOTARY_PASSWORD }}
 
       - name: Sign offline app installer (Windows)
-        if: github.event_name == 'push' && runner.os == 'Windows'
+        if: |
+          runner.os == 'Windows' && github.event_name == 'push' &&
+          (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop')
         uses: lando/code-sign-action@v2
         with:
           file: ${{ env.SETUP_EXE_PATH }}
