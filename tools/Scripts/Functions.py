@@ -49,6 +49,7 @@ def printNeutralMessage(message):
 
 
 def run(*args):
+    printNeutralMessage(' '.join(args))
     subprocess.run(
         args,
         capture_output=False,

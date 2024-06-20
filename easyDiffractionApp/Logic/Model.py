@@ -175,6 +175,7 @@ class Model(QObject):
             console.debug(f"Loading model(s) from: {fpath}")
             with open(fpath, 'r') as file:
                 edCif = file.read()
+            edCif = re.sub(r'data_(.*)', lambda m: m.group(0).lower(), edCif)  # Lowercase all data block names
             self.loadModelsFromEdCif(edCif)
 
     @Slot(str)

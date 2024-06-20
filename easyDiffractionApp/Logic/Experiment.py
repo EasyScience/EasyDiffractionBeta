@@ -3,6 +3,7 @@
 # © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import os
+import re
 import copy
 from io import StringIO
 import numpy as np
@@ -232,6 +233,9 @@ class Experiment(QObject):
             else:
                 console.error(f"Unsupported file extension {fext} of {fpath}")
                 return
+
+            # Lowercase all data block names
+            procData = re.sub(r'data_(.*)', lambda m: m.group(0).lower(), procData)
 
             self.loadExperimentsFromEdCif(procData)
 

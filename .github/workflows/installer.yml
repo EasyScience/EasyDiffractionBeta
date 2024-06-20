@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-13, macos-14]  # [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
+        os: [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]  # [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
 
     steps:
       - name: Check-out repository
@@ -59,6 +59,7 @@ jobs:
           echo "APP_NAME=$(python utils.py --get release.app_name)" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$(python utils.py --get project.name)" >> $GITHUB_ENV
           echo "PACKAGE_PATH=$GITHUB_WORKSPACE/$(python utils.py --get project.name)" >> $GITHUB_ENV
+          echo "PACKAGE_VERSION=$(python utils.py --get project.version)" >> $GITHUB_ENV
           echo "RELEASE_TAG=$(python utils.py --get ci.app.info.release_tag)" >> $GITHUB_ENV
           echo "RELEASE_TITLE=$(python utils.py --get ci.app.info.release_title)" >> $GITHUB_ENV
           echo "SCRIPTS_PATH=$(python utils.py --get ci.project.subdirs.scripts)" >> $GITHUB_ENV
@@ -67,6 +68,11 @@ jobs:
           echo "QTIFW_PATH=$(python utils.py --get ci.qtifw.setup.installation_path.${{ runner.os }})" >> $GITHUB_ENV
           echo "PYTHON_PACKAGES_PATH=$(python utils.py --get ci.cache.python_packages_path)" >> $GITHUB_ENV
           echo "GIT_INSTALL_URL=git+$GITHUB_SERVER_URL/$GITHUB_REPOSITORY@${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
+
+      - name: Declare dependent env variables on push and pull_request
+        shell: bash
+        run: |
+          echo "SETUP_EXE_PATH=$(python ${{ env.SCRIPTS_PATH }}/Config.py ${{ env.BRANCH_NAME }} ${{ matrix.os }} setup_exe_path)" >> $GITHUB_ENV
 
       - name: Create python resources file
         run: pyside6-rcc ${{ env.PACKAGE_PATH }}/resources.qrc -o ${{ env.PACKAGE_PATH }}/resources.py
@@ -127,19 +133,33 @@ jobs:
       - name: Create freezed python app bundle with PyInstaller
         run: python ${{ env.SCRIPTS_PATH }}/FreezeApp.py
 
-      #- name: Create both online and offline app installer from freezed app bundle
       - name: Create offline app installer from freezed app bundle with QtIFW
         run: >
           python ${{ env.SCRIPTS_PATH }}/MakeInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
 
-      - name: Sign offline app installer (master branch)
-        if: github.event_name == 'push' && env.BRANCH_NAME == 'master'
+      - name: Sign, notarize and staple offline app installer (macOS)
+        if: |
+          runner.os == 'macOS' && github.event_name == 'push' &&
+          (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop')
         run: >
           python ${{ env.SCRIPTS_PATH }}/SignAppInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
-          ${{ secrets.MACOS_CERTIFICATE_ENCODED }} ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
-          ${{ secrets.APPSTORE_NOTARIZATION_USERNAME }} ${{ secrets.APPSTORE_NOTARIZATION_PASSWORD }}
+          ${{ secrets.APPLE_CERT_DATA }} ${{ secrets.APPLE_CERT_PASSWORD }}
+          ${{ secrets.APPLE_NOTARY_USER }} ${{ secrets.APPLE_NOTARY_PASSWORD }}
+
+      - name: Sign offline app installer (Windows)
+        if: |
+          runner.os == 'Windows' && github.event_name == 'push' &&
+          (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop')
+        uses: lando/code-sign-action@v2
+        with:
+          file: ${{ env.SETUP_EXE_PATH }}
+          certificate-data: ${{ secrets.WINDOZE_CERT_DATA }}
+          certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD }}
+          keylocker-host: ${{ secrets.KEYLOCKER_HOST }}
+          keylocker-api-key: ${{ secrets.KEYLOCKER_API_KEY }}
+          keylocker-cert-sha1-hash: ${{ secrets.KEYLOCKER_CERT_SHA1_HASH }}
 
       - name: Create zip archive of offline app installer for distribution
         run: >
@@ -149,7 +169,7 @@ jobs:
       - name: Upload double-zipped offline app installer for the next job step
         uses: actions/upload-artifact@v4
         with:
-          name: zipped-app-installer_${{ runner.os }}-${{ runner.arch }}  # zip of another zip
+          name: zipped-app-installer_${{ matrix.os }}-${{ runner.arch }}  # zip of another zip
           path: ${{ env.DISTRIBUTION_PATH }}/*.zip
           compression-level: 0  # no compression
           if-no-files-found: error
@@ -275,7 +295,7 @@ jobs:
       - name: Download zipped offline app installer from from the previous job step
         uses: actions/download-artifact@v4
         with:
-          name: zipped-app-installer_${{ runner.os }}-${{ runner.arch }}  # zip of another zip
+          name: zipped-app-installer_${{ matrix.os }}-${{ runner.arch }}  # zip of another zip
 
       - name: Unzip archive with offline app installer for distribution
         run: >

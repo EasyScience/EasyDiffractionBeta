@@ -60,12 +60,13 @@
         <file>Gui/Components/Pages/Project/SideBarAdvanced.qml</file>
         <file>Gui/Components/Pages/Project/SideBarBasic.qml</file>
         <file>Gui/Components/Pages/Project/SideBarText.qml</file>
-        <file>Gui/Components/Pages/Summary/MainContent/Report.qml</file>
         <file>Gui/Components/Pages/Summary/MainContent/TextView.qml</file>
         <file>Gui/Components/Pages/Summary/SideBarBasic/ExportReportGroup.qml</file>
+        <file>Gui/Components/Pages/Summary/SideBarText/TextView.qml</file>
         <file>Gui/Components/Pages/Summary/PageStructure.qml</file>
         <file>Gui/Components/Pages/Summary/SideBarAdvanced.qml</file>
         <file>Gui/Components/Pages/Summary/SideBarBasic.qml</file>
+        <file>Gui/Components/Pages/Summary/SideBarText.qml</file>
         <file>Gui/Components/ApplicationWindow.qml</file>
         <file>Gui/Components/GuiTestsController.qml</file>
         <file>Gui/Components/qmldir</file>
@@ -98,6 +99,7 @@
         <file>Gui/Sandbox/TableView.qml</file>
         <file>Gui/Sandbox/TextView.qml</file>
         <file>Gui/Sandbox/VariableMenu.qml</file>
+        <file>Gui/Sandbox/Report.qml</file>
         <file>Gui/Tests/NoProjectCreated.qml</file>
         <file>Gui/Tests/qmldir</file>
         <file>Gui/main.qml</file>
