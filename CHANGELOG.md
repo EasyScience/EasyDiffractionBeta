@@ -4,14 +4,14 @@ This is a test version of EasyDiffraction with improved GUI and overall performa
 
 ### New Features
 
-- Measured and processed TOF data are now correctly displayed on the Summary page
+- The analysis page now has an _html_-based analysis summary
+- The CIF-based report on the Summary page has now been moved from _Main View_ to _Sidebar_ (`Text mode` tab)
+- User can now save the analysis summary in _html_ format
 - Installers for macOS and Windows are now signed
 
 ### Bug Fixes
 
-- The analysis page now has an _html_-based analysis summary
-- The CIF-based report on the Summary page has now been moved from _Main View_ to _Sidebar_ (`Text mode` tab)
-- User can now save the analysis summary in _html_ format
+- Measured and processed TOF data are now correctly displayed on the Summary page
 
 # Version 0.9.1-alpha0 (29 May 2024)
 
