@@ -131,5 +131,20 @@ class Config():
         return video_tutorial_path
 
 
-if __name__ == "__main__":
-    Config()
+### Main
+
+def main():
+    if len(sys.argv) != 4:
+        return
+
+    git_branch = sys.argv[1]
+    matrix_os = sys.argv[2]
+    property_name = sys.argv[3]
+
+    config = Config(git_branch, matrix_os)
+    property_value = getattr(config, property_name)
+
+    print(property_value)
+
+if __name__ == '__main__':
+    main()

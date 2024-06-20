@@ -59,8 +59,8 @@ jobs:
           echo "APP_NAME=$(python utils.py --get release.app_name)" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$(python utils.py --get project.name)" >> $GITHUB_ENV
           echo "PACKAGE_PATH=$GITHUB_WORKSPACE/$(python utils.py --get project.name)" >> $GITHUB_ENV
+          echo "PACKAGE_VERSION=$(python utils.py --get project.version)" >> $GITHUB_ENV
           echo "RELEASE_TAG=$(python utils.py --get ci.app.info.release_tag)" >> $GITHUB_ENV
-          echo "TAG_STRING=$(python utils.py --get project.version)" >> $GITHUB_ENV
           echo "RELEASE_TITLE=$(python utils.py --get ci.app.info.release_title)" >> $GITHUB_ENV
           echo "SCRIPTS_PATH=$(python utils.py --get ci.project.subdirs.scripts)" >> $GITHUB_ENV
           echo "DISTRIBUTION_PATH=$(python utils.py --get ci.project.subdirs.distribution)" >> $GITHUB_ENV
@@ -68,6 +68,11 @@ jobs:
           echo "QTIFW_PATH=$(python utils.py --get ci.qtifw.setup.installation_path.${{ runner.os }})" >> $GITHUB_ENV
           echo "PYTHON_PACKAGES_PATH=$(python utils.py --get ci.cache.python_packages_path)" >> $GITHUB_ENV
           echo "GIT_INSTALL_URL=git+$GITHUB_SERVER_URL/$GITHUB_REPOSITORY@${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
+
+      - name: Declare dependent env variables on push and pull_request
+        shell: bash
+        run: |
+          echo "SETUP_EXE_PATH=$(python ${{ env.SCRIPTS_PATH }}/Config.py ${{ env.BRANCH_NAME }} ${{ matrix.os }} setup_exe_path)" >> $GITHUB_ENV
 
       - name: Create python resources file
         run: pyside6-rcc ${{ env.PACKAGE_PATH }}/resources.qrc -o ${{ env.PACKAGE_PATH }}/resources.py
@@ -133,7 +138,7 @@ jobs:
           python ${{ env.SCRIPTS_PATH }}/MakeInstaller.py
           ${{ env.BRANCH_NAME }} ${{ matrix.os }}
 
-      - name: Sign offline app installer (macOS)
+      - name: Sign, notirize and staple offline app installer (macOS)
         if: github.event_name == 'push' && runner.os == 'macOS'
         run: >
           python ${{ env.SCRIPTS_PATH }}/SignAppInstaller.py
@@ -141,12 +146,11 @@ jobs:
           ${{ secrets.APPLE_CERT_DATA }} ${{ secrets.APPLE_CERT_PASSWORD }}
           ${{ secrets.APPLE_NOTARY_USER }} ${{ secrets.APPLE_NOTARY_PASSWORD }}
 
-      - name: Sign the windows binary
-        if: runner.os == 'Windows'
+      - name: Sign offline app installer (Windows)
+        if: github.event_name == 'push' && runner.os == 'Windows'
         uses: lando/code-sign-action@v2
         with:
-          # ci\distribution\EasyDiffraction_v0.9.1a0_windows-2022
-          file: ${{ env.DISTRIBUTION_PATH }}/${{ env.APP_NAME }}_v${{ env.TAG_STRING }}_${{ matrix.os }}.exe
+          file: ${{ env.SETUP_EXE_PATH }}
           certificate-data: ${{ secrets.WINDOZE_CERT_DATA }}
           certificate-password: ${{ secrets.WINDOZE_CERT_PASSWORD }}
           keylocker-host: ${{ secrets.KEYLOCKER_HOST }}
