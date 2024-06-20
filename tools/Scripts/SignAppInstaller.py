@@ -22,10 +22,6 @@ APPLE_NOTARY_PASSWORD = sys.argv[6]  # App specific password for EasyDiffraction
 
 CONFIG = Config.Config(GIT_BRANCH, MATRIX_OS)
 
-IDENTITY = CONFIG['ci']['codesign']['apple']['identity']
-BUNDLE_ID = CONFIG['ci']['codesign']['bundle_id']
-TEAM_ID = CONFIG['ci']['codesign']['apple']['team_id']
-
 
 def signLinux():
     Functions.printNeutralMessage('Code signing on Linux is not supported yet')
@@ -148,13 +144,13 @@ def signMacos():
             sub_message = f'sign installer app "{CONFIG.setup_exe_path}" with imported certificate'
             Functions.run(
                 'codesign',
-                '--force',                      # replace any existing signature on the path(s) given
-                '--verbose',                    # set (with a numeric value) or increments the verbosity level of output
-                '--timestamp',                  # request that a default Apple timestamp authority server be contacted to authenticate the time of signin
-                '--options=runtime',            # specify a set of option flags to be embedded in the code signature
-                '--keychain', keychain_name,    # specify keychain name
-                '--identifier', BUNDLE_ID,      # specify bundle id
-                '--sign', TEAM_ID,              # sign the code at the path(s) given using this identity
+                '--force',                                                          # replace any existing signature on the path(s) given
+                '--verbose',                                                        # set (with a numeric value) or increments the verbosity level of output
+                '--timestamp',                                                      # request that a default Apple timestamp authority server be contacted to authenticate the time of signin
+                '--options=runtime',                                                # specify a set of option flags to be embedded in the code signature
+                '--keychain', keychain_name,                                        # specify keychain name
+                '--identifier', CONFIG['ci']['codesign']['apple']['product_id'],    # specify bundle id
+                '--sign', CONFIG['ci']['codesign']['apple']['team_id'],             # sign the code at the path(s) given using this identity
                 CONFIG.setup_exe_path)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
