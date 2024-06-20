@@ -15,49 +15,16 @@ import Functions
 
 GIT_BRANCH = sys.argv[1]
 MATRIX_OS = sys.argv[2]
-MACOS_CERTIFICATE_ENCODED = sys.argv[3]       # Encoded content of the .p12 certificate file (exported from certificate of Developer ID Application type)
-MACOS_CERTIFICATE_PASSWORD = sys.argv[4]      # Password associated with the .p12 certificate
-APPSTORE_NOTARIZATION_USERNAME = sys.argv[5]  # Apple ID (esss.se personal account) added to https://developer.apple.com
-APPSTORE_NOTARIZATION_PASSWORD = sys.argv[6]  # App specific password for EasyDiffraction from https://appleid.apple.com
+APPLE_CERT_DATA = sys.argv[3]        # Encoded content of the .p12 certificate file (exported from certificate of Developer ID Application type)
+APPLE_CERT_PASSWORD = sys.argv[4]    # Password associated with the .p12 certificate
+APPLE_NOTARY_USER = sys.argv[5]      # Apple ID (esss.se personal account) added to https://developer.apple.com
+APPLE_NOTARY_PASSWORD = sys.argv[6]  # App specific password for EasyDiffraction from https://appleid.apple.com
 
 CONFIG = Config.Config(GIT_BRANCH, MATRIX_OS)
 
 IDENTITY = CONFIG['ci']['codesign']['apple']['identity']
 BUNDLE_ID = CONFIG['ci']['codesign']['bundle_id']
 TEAM_ID = CONFIG['ci']['codesign']['apple']['team_id']
-
-print('IDENTITY', IDENTITY)
-print('BUNDLE_ID', BUNDLE_ID)
-print('TEAM_ID', TEAM_ID)
-
-
-def debuggg():
-    keychain_name = 'codesign.keychain'
-    print('keychain_name', keychain_name)
-
-    try:
-        sub_message = f'sign installer app "{CONFIG.setup_exe_path}" with imported certificate'
-        Functions.run(
-            'codesign',
-            '--deep',
-            '--force',                      # replace any existing signature on the path(s) given
-            '--verbose',                    # set (with a numeric value) or increments the verbosity level of output
-            '--timestamp',                  # request that a default Apple timestamp authority server be contacted to authenticate the time of signin
-            '--options=runtime',            # specify a set of option flags to be embedded in the code signature
-            #'--keychain', keychain_name,    # specify keychain name
-            #'--identifier', BUNDLE_ID,      # specify bundle id
-            '--sign', TEAM_ID,              # sign the code at the path(s) given using this identity
-            CONFIG.setup_exe_path)
-    except Exception as sub_exception:
-        Functions.printFailMessage(sub_message, sub_exception)
-        sys.exit(1)
-    else:
-        Functions.printSuccessMessage(sub_message)
-
-    exit()
-
-
-
 
 
 def signLinux():
@@ -126,7 +93,7 @@ def signMacos():
 
         try:
             sub_message = f'create certificate file "{mac_certificate_fname}"'
-            certificate_decoded = base64.b64decode(MACOS_CERTIFICATE_ENCODED)
+            certificate_decoded = base64.b64decode(APPLE_CERT_DATA)
             with open(mac_certificate_fname, 'wb') as f:
                 f.write(certificate_decoded)
         except Exception as sub_exception:
@@ -141,7 +108,7 @@ def signMacos():
                 'security', 'import',
                 mac_certificate_fname,
                 '-k', keychain_name,
-                '-P', MACOS_CERTIFICATE_PASSWORD,
+                '-P', APPLE_CERT_PASSWORD,
                 '-T', '/usr/bin/codesign')  # Without '-T ...' codesign asking to enter keychain password and thus CI freezes
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
@@ -246,9 +213,9 @@ def signMacos():
             sub_message = f'notarize app installer "{CONFIG.setup_zip_path_short}" for distribution outside of the Mac App Store' # Notarize the app by submitting a zipped package of the app bundle
             Functions.run(
                 'xcrun', 'notarytool', 'submit',
-                '--apple-id', APPSTORE_NOTARIZATION_USERNAME,
+                '--apple-id', APPLE_NOTARY_USER,
                 '--team-id', TEAM_ID,
-                '--password', APPSTORE_NOTARIZATION_PASSWORD,
+                '--password', APPLE_NOTARY_PASSWORD,
                 '--verbose',
                 '--progress',
                 '--wait',
