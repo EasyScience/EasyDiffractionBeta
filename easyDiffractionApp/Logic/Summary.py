@@ -277,7 +277,7 @@ class Summary(QObject):
 
     def setAsHtml(self):
         proxy = self._proxy
-        if proxy.model.dataBlocks == []:
+        if proxy.model.dataBlocks == [] or proxy.experiment.dataBlocksNoMeas == [] or proxy.experiment._yMeasArrays == []:
             return
 
         html = _HTML_TEMPLATE

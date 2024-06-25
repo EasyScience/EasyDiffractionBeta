@@ -237,6 +237,8 @@ class CryspyParser:
             # NEED to remove this and use our handling of a background as for TOF case
             '_pd_background.line_segment_X': '_pd_background_2theta',
             '_pd_background.line_segment_intensity': '_pd_background_intensity',
+            '_pd_background.X_coordinate': '_pd_background_X_coordinate',
+
         }
         edToCryspyNamesMap['tof'] = {
             '_pd_instr.zero': '_tof_parameters_Zero',
@@ -256,8 +258,12 @@ class CryspyParser:
             '_pd_instr.sigma1': '_tof_profile_sigma1',
             '_pd_instr.sigma2': '_tof_profile_sigma2',
 
-            '_tof_background.time_max': '_tof_background_time_max',
-            '_tof_background.coeff': '_tof_background_coeff',
+            ###'_tof_background.time_max': '_tof_background_time_max',
+            ###'_tof_background.coeff': '_tof_background_coeff',
+
+            '_pd_background.line_segment_X': '_tof_backgroundpoint_time',
+            '_pd_background.line_segment_intensity': '_tof_backgroundpoint_intensity',
+            '_pd_background.X_coordinate': '_tof_backgroundpoint.X_coordinate',
 
             '_pd_meas.time_of_flight': '_tof_meas_time',
             '_pd_meas.intensity_total_su': '_tof_meas_intensity_sigma',  # before _pd_meas.intensity_total!
@@ -1251,14 +1257,14 @@ class CryspyParser:
                             #    fit = item.gamma2_refinement
                             #))
 
-                    # Ed (pycifstar processed) background section
-                    elif type(item) is cryspy.B_parent_classes.cl_2_loop.LoopN and item.items[0].PREFIX == 'pd_background':
-                        pycifstar_bkg_points = item.items
+                    # Cryspy background section (TOF, points)
+                    elif type(item) is cryspy.C_item_loop_classes.cl_1_tof_background_by_points.TOFBackgroundPointL:
+                        cryspy_bkg_points = item.items
                         ed_bkg_points = []
-                        for idx, pycifstar_bkg_point in enumerate(pycifstar_bkg_points):
+                        for idx, cryspy_bkg_point in enumerate(cryspy_bkg_points):
                             ed_bkg_point = {}
                             ed_bkg_point['line_segment_X'] = dict(Parameter(
-                                pycifstar_bkg_point.line_segment_x,
+                                cryspy_bkg_point.time,
                                 idx = idx,
                                 category = '_pd_background',
                                 name = 'line_segment_X',
@@ -1268,13 +1274,12 @@ class CryspyParser:
                                 cifDict = 'pd'
                             ))
                             ed_bkg_point['line_segment_intensity'] = dict(Parameter(
-                                pycifstar_bkg_point.line_segment_intensity,
-                                #error = pycifstar_bkg_point.line_segment_intensity_sigma,
-                                error = 1.0,
+                                cryspy_bkg_point.intensity,
+                                error = cryspy_bkg_point.intensity_sigma,
                                 idx = idx,
                                 category = '_pd_background',
                                 prettyCategory = 'bkg',
-                                rowName = f'{pycifstar_bkg_point.line_segment_x:g}µs',  # formatting float to str without trailing zeros
+                                rowName = f'{cryspy_bkg_point.time:g}µs',  # formatting float to str without trailing zeros
                                 name = 'line_segment_intensity',
                                 prettyName = 'intensity',
                                 shortPrettyName = 'Ibkg',
@@ -1284,7 +1289,7 @@ class CryspyParser:
                                 cifDict = 'pd',
                                 pctDelta = 25,
                                 fittable = True,
-                                fit = pycifstar_bkg_point.line_segment_intensity_refinement
+                                fit = cryspy_bkg_point.intensity_refinement
                             ))
                             ed_bkg_point['X_coordinate'] = dict(Parameter(
                                 'time-of-flight',
@@ -1299,7 +1304,7 @@ class CryspyParser:
                             ed_bkg_points.append(ed_bkg_point)
                         ed_experiment_no_meas['loops']['_pd_background'] = ed_bkg_points
 
-                    # Cryspy background section (TOF, polinom coeffs?)
+                    # Cryspy background section (TOF, polinom coeffs)
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_tof_background.TOFBackground:
                         if hasattr(item, 'time_max'):
                             if not '_tof_background' in ed_experiment_no_meas['params']:
