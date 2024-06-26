@@ -135,13 +135,14 @@ EaComponents.SideBarColumn {
                 if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
                     return ''
                 }
-                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
-                    return 'SideBarBasic/PdBackground.qml'
-                } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
-                    return 'SideBarBasic/PdBackground_TOF.qml'
-                } else {
-                    return ''
-                }
+                //if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                //    return 'SideBarBasic/PdBackground.qml'
+                //} else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                //    return 'SideBarBasic/PdBackground_TOF.qml'
+                //} else {
+                //    return ''
+                //}
+                return 'SideBarBasic/PdBackground.qml'
             }
         }
     }

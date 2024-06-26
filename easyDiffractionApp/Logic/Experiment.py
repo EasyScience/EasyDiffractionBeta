@@ -23,12 +23,44 @@ try:
         str_to_globaln
     from cryspy.procedure_rhochi.rhochi_by_dictionary import \
         rhochi_calc_chi_sq_by_dictionary
-    console.debug('CrysPy module imported')
+    #console.debug('CrysPy module imported')
 except ImportError:
-    console.debug('No CrysPy module found')
+    console.error('No CrysPy module found')
 
 
-_DEFAULT_DATA_BLOCK_NO_MEAS = """data_pnd
+_DEFAULT_DATA_BLOCK_NO_MEAS_TOF = """data_pnd
+
+_diffrn_radiation.probe neutron
+
+_pd_instr.2theta_bank 144.845
+_pd_instr.dtt1 7476.91
+_pd_instr.dtt2 -1.54
+_pd_instr.zero -9.24
+_pd_instr.alpha0 0.0
+_pd_instr.alpha1 0.5971
+_pd_instr.beta0 0.04221
+_pd_instr.beta1 0.00946
+_pd_instr.sigma0 0.30
+_pd_instr.sigma1 7.01
+
+loop_
+_pd_phase_block.id
+_pd_phase_block.scale
+ph 1.0
+
+loop_
+_pd_background.line_segment_X
+_pd_background.line_segment_intensity
+0 100
+150000 100
+
+loop_
+_pd_meas.time_of_flight
+_pd_meas.intensity_total
+_pd_meas.intensity_total_su
+"""
+
+_DEFAULT_DATA_BLOCK_NO_MEAS_CWL = """data_pnd
 
 _diffrn_radiation.probe neutron
 _diffrn_radiation_wavelength.wavelength 1.9
@@ -63,7 +95,7 @@ _pd_meas.intensity_total
 _pd_meas.intensity_total_su
 """
 
-_DEFAULT_DATA_BLOCK = _DEFAULT_DATA_BLOCK_NO_MEAS + """36.5 1    1
+_DEFAULT_DATA_BLOCK_CWL = _DEFAULT_DATA_BLOCK_NO_MEAS_CWL + """36.5 1    1
 37.0 10   3
 37.5 700  25
 38.0 1100 30
@@ -169,7 +201,7 @@ class Experiment(QObject):
     @Slot()
     def addDefaultExperiment(self):
         console.debug('Adding default experiment')
-        self.loadExperimentsFromEdCif(_DEFAULT_DATA_BLOCK)
+        self.loadExperimentsFromEdCif(_DEFAULT_DATA_BLOCK_CWL)
 
     @Slot('QVariant')
     def loadExperimentsFromResources(self, fpaths):
@@ -213,9 +245,9 @@ class Experiment(QObject):
 
                 # Extract measured data and calculate standard uncertainty if needed
                 if data.shape[0] == 3:
-                    ttheta, intensity, intensity_su = data
+                    x, intensity, intensity_su = data
                 elif data.shape[0] == 2:
-                    ttheta, intensity = data
+                    x, intensity = data
                     intensity_su = np.sqrt(intensity)
                 else:
                     console.error(f"Failed to load data from file {fpath}. Supported number of columns: 2 or 3")
@@ -223,11 +255,14 @@ class Experiment(QObject):
 
                 # Convert data from numpy arrays to string
                 sio = StringIO()
-                np.savetxt(sio, np.c_[ttheta, intensity, intensity_su], fmt='%10.6f')
+                np.savetxt(sio, np.c_[x, intensity, intensity_su], fmt='%10.6f')
                 procData = sio.getvalue()
 
                 # Add default CIF instrumental block and measured data header
-                procData = _DEFAULT_DATA_BLOCK_NO_MEAS + procData
+                if x.max() < 180:
+                    procData = _DEFAULT_DATA_BLOCK_NO_MEAS_CWL + procData
+                else:
+                    procData = _DEFAULT_DATA_BLOCK_NO_MEAS_TOF + procData
 
             # Other formats not supported
             else:
@@ -250,7 +285,7 @@ class Experiment(QObject):
         elif 'time_of_flight' in edCif:
             edCif += '\n_pd_instr.peak_shape Gauss'  # 'pseudo-Voigt' is default
             #edCif += '\n_pd_instr.peak_shape pseudo-Voigt'
-            edCif += '\n_tof_background_time_max 1000.0'
+            ###edCif += '\n_tof_background_time_max 1000.0'
             cryspyCif = CryspyParser.edCifToCryspyCif(edCif, 'tof')
         cryspyExperimentsObj = str_to_globaln(cryspyCif)
 
@@ -357,11 +392,11 @@ class Experiment(QObject):
             range_max = currentDataBlock['params']['_pd_meas']['2theta_range_max']['value']
             edRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
         elif 'time_of_flight' in edCif:
+            edCif += '\n\n_pd_instr.peak_shape Gauss'
             diffrn_radiation_type = 'tof'
             experiment_prefix = 'tof'
-            time_max = currentDataBlock['params']['_tof_background']['time_max']['value']
-            edCif += '\n\n_pd_instr.peak_shape Gauss'
-            edCif += f'\n_tof_background.time_max {time_max}'
+            ###time_max = currentDataBlock['params']['_tof_background']['time_max']['value']
+            ###edCif += f'\n_tof_background.time_max {time_max}'
             range_min = currentDataBlock['params']['_pd_meas']['tof_range_min']['value']
             range_max = currentDataBlock['params']['_pd_meas']['tof_range_max']['value']
             edRangeCif = f'_pd_meas.tof_range_min {range_min}\n_pd_meas.tof_range_max {range_max}'
@@ -691,7 +726,7 @@ class Experiment(QObject):
         # _pd_background
         if category == '_pd_background':
             if diffrn_radiation_type == 'cwl':
-                console.debug('Background is handeled by CrysPy')  # NEED FIX: do as in TOF
+                console.debug('Background is handeled by CrysPy')
                 if name == 'line_segment_X':
                     path[1] = 'background_ttheta'
                     path[2] = rowIndex
@@ -700,7 +735,14 @@ class Experiment(QObject):
                     path[1] = 'background_intensity'
                     path[2] = rowIndex
             elif diffrn_radiation_type == 'tof':
-                console.debug('Background is handeled by ED, not CrysPy')
+                console.debug('Background is handeled by CrysPy')
+                if name == 'line_segment_X':
+                    path[1] = 'background_time'
+                    path[2] = rowIndex
+                    value = np.deg2rad(value)
+                if name == 'line_segment_intensity':
+                    path[1] = 'background_intensity'
+                    path[2] = rowIndex
 
         # _pd_phase_block
         if category == '_pd_phase_block':
