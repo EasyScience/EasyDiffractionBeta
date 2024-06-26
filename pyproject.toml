@@ -29,7 +29,7 @@ dependencies = [
     'numpy<2',
     'lmfit',
     'orjson',
-    'cryspy @ git+https://github.com/ikibalin/cryspy.git@beta',
+    'cryspy @ git+https://github.com/ikibalin/cryspy.git@a8bdceca054ed5aa1efa446d54477d7564e64214',
     'EasyApp @ git+https://github.com/easyscience/EasyApp.git@new-easy-app2'
 ]
 
