@@ -23,9 +23,9 @@ try:
         str_to_globaln
     from cryspy.procedure_rhochi.rhochi_by_dictionary import \
         rhochi_calc_chi_sq_by_dictionary
-    console.debug('CrysPy module imported')
+    #console.debug('CrysPy module imported')
 except ImportError:
-    console.debug('No CrysPy module found')
+    console.error('No CrysPy module found')
 
 
 _DEFAULT_DATA_BLOCK_NO_MEAS_TOF = """data_pnd

@@ -16,7 +16,7 @@ try:
     import cryspy
     from cryspy.procedure_rhochi.rhochi_by_dictionary import \
         rhochi_calc_chi_sq_by_dictionary
-    console.debug('CrysPy module imported')
+    #console.debug('CrysPy module imported')
 except ImportError:
     console.error('No CrysPy module found')
 

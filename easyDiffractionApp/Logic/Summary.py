@@ -11,7 +11,7 @@ from Logic.Helpers import IO
 
 try:
     import cryspy
-    console.debug('CrysPy module imported')
+    #console.debug('CrysPy module imported')
 except ImportError:
     console.error('No CrysPy module found')
 

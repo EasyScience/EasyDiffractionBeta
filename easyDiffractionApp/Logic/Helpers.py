@@ -59,10 +59,18 @@ class ResourcePaths:
             self.mainQml = f'qrc:/{self.mainQml}'
             self.splashScreenQml = f'qrc:/{self.splashScreenQml}'
             self.imports.append('qrc:/')
-            console.info(f'Resources: {resources}')
+            resourcesPath = resources.__file__
+            console.info(f'Resources: {resourcesPath}')
         except ImportError:
             self.imports.append('.')
             console.debug('No python resources (rc) file found')
+
+        try:
+            import cryspy
+            cryspyPath = os.path.abspath(cryspy.__path__[0])
+            console.info(f'CrysPy module: {cryspyPath}')
+        except ImportError:
+            console.error('No CrysPy module found')
 
         import EasyApp
         easyAppPath = os.path.abspath(EasyApp.__path__[0])

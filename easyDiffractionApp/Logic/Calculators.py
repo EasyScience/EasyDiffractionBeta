@@ -14,7 +14,7 @@ try:
         str_to_globaln
     from cryspy.A_functions_base.function_2_space_group import \
         get_it_coordinate_system_codes_by_it_number
-    console.debug('CrysPy module imported')
+    #console.debug('CrysPy module imported')
 except ImportError:
     console.error('No CrysPy module found')
 

@@ -10,7 +10,7 @@ from EasyApp.Logic.Logging import console
 try:
     from cryspy.H_functions_global.function_1_cryspy_objects import \
         str_to_globaln
-    console.debug('CrysPy module imported')
+    #console.debug('CrysPy module imported')
 except ImportError:
     console.error('No CrysPy module found')
 
