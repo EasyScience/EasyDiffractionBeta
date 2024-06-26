@@ -11,7 +11,7 @@ from Logic.Helpers import IO
 
 try:
     import cryspy
-    console.debug('CrysPy module imported')
+    #console.debug('CrysPy module imported')
 except ImportError:
     console.error('No CrysPy module found')
 
@@ -277,7 +277,7 @@ class Summary(QObject):
 
     def setAsHtml(self):
         proxy = self._proxy
-        if proxy.model.dataBlocks == []:
+        if proxy.model.dataBlocks == [] or proxy.experiment.dataBlocksNoMeas == [] or proxy.experiment._yMeasArrays == []:
             return
 
         html = _HTML_TEMPLATE

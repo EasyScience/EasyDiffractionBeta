@@ -11,26 +11,25 @@ _pd_instr.beta1 0.00224
 _pd_instr.sigma0 0.409
 _pd_instr.sigma1 8.118
 
-_tof_background.coeff1 25101(108)
-_tof_background.coeff2 6940(199)
-_tof_background.coeff3 8460(189)
-_tof_background.coeff4 3452(162)
-_tof_background.coeff5 2812(157)
-_tof_background.coeff6 545(122)
-_tof_background.coeff7 1000(128)
-_tof_background.coeff8 9(77)
-_tof_background.coeff9 116(78)
-_tof_background.coeff10 0.0
-_tof_background.coeff11 0.0
-_tof_background.coeff12 0.0
-_tof_background.coeff13 0.0
-_tof_background.coeff14 0.0
-_tof_background.coeff15 0.0
-_tof_background.coeff16 0.0
-_tof_background.coeff17 0.0
-_tof_background.coeff18 0.0
-
 _diffrn_radiation.probe neutron
+
+loop_
+_pd_background.line_segment_X
+_pd_background.line_segment_intensity
+_pd_background.X_coordinate
+3000.0 33469(55) time-of-flight
+4000.0 27344(46) time-of-flight
+5000.0 23749(54) time-of-flight
+6000.0 20995(65) time-of-flight
+7000.0 19795(71) time-of-flight
+9000.0 18381(91) time-of-flight
+11000.0 18983(136) time-of-flight
+13000.0 20745(237) time-of-flight
+15000.0 19626(352) time-of-flight
+16000.0 22778(634) time-of-flight
+17000.0 23899(837) time-of-flight
+18000.0 25356(985) time-of-flight
+19000.0 25188(1649) time-of-flight
 
 loop_
 _pd_phase_block.id

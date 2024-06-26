@@ -1,41 +1,37 @@
 data_sepd
 
+_diffrn_radiation.probe neutron
+
 _pd_instr.2theta_bank 144.845
 _pd_instr.dtt1 7476.91
 _pd_instr.dtt2 -1.54
-_pd_instr.zero -9.26(5)
+_pd_instr.zero -9.24(5)
 _pd_instr.alpha0 0.0
 _pd_instr.alpha1 0.5971
 _pd_instr.beta0 0.04221
 _pd_instr.beta1 0.00946
-_pd_instr.sigma0 0.21(6)
-_pd_instr.sigma1 7.08(6)
+_pd_instr.sigma0 0.30(6)
+_pd_instr.sigma1 7.01(6)
 
-_tof_background.coeff1 154.8(6)
-_tof_background.coeff2 1(1)
-_tof_background.coeff3 36.8(9)
-_tof_background.coeff4 12.1(8)
-_tof_background.coeff5 17.7(8)
-_tof_background.coeff6 5.0(7)
-_tof_background.coeff7 6.8(5)
-_tof_background.coeff8 0.0
-_tof_background.coeff9 0.0
-_tof_background.coeff10 0.0
-_tof_background.coeff11 0.0
-_tof_background.coeff12 0.0
-_tof_background.coeff13 0.0
-_tof_background.coeff14 0.0
-_tof_background.coeff15 0.0
-_tof_background.coeff16 0.0
-_tof_background.coeff17 0.0
-_tof_background.coeff18 0.0
-
-_diffrn_radiation.probe neutron
+loop_
+_pd_background.line_segment_X
+_pd_background.line_segment_intensity
+_pd_background.X_coordinate
+2000.0 221.1 time-of-flight
+4000.0 169.5 time-of-flight
+6000.0 135.4 time-of-flight
+10000.0 121.4 time-of-flight
+14000.0 132.2 time-of-flight
+18000.0 134 time-of-flight
+22000.0 143 time-of-flight
+25000.0 183 time-of-flight
+28000.0 165 time-of-flight
+29995.0 204 time-of-flight
 
 loop_
 _pd_phase_block.id
 _pd_phase_block.scale
-si 15.01(4)
+si 14.97(4)
 
 loop_
 _pd_meas.time_of_flight
