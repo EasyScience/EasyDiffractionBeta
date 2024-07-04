@@ -21,11 +21,21 @@ Rectangle {
     EaCharts.QtCharts1dMeasVsCalc {
         id: chartView
 
+        property var experimentDataBlocksNoMeas: Globals.Proxies.main.experiment.dataBlocksNoMeas
+        onExperimentDataBlocksNoMeasChanged: {
+            if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                axisX.title = '2θ (degree)'
+            } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                axisX.title = 'TOF (µs)'
+            } else {
+                axisX.title = ''
+            }
+        }
+
         anchors.topMargin: EaStyle.Sizes.toolButtonHeight - EaStyle.Sizes.fontPixelSize - 1
 
         useOpenGL: EaGlobals.Vars.useOpenGL //Globals.Proxies.main.plotting.useWebGL1d
 
-        axisX.title: "2θ (degree)"
         axisX.min: Globals.Proxies.rangeValue('xMin')
         axisX.max: Globals.Proxies.rangeValue('xMax')
         axisX.minAfterReset: Globals.Proxies.rangeValue('xMin')

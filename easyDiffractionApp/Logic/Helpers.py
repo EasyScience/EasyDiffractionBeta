@@ -65,13 +65,6 @@ class ResourcePaths:
             self.imports.append('.')
             console.debug('No python resources (rc) file found')
 
-        try:
-            import cryspy
-            cryspyPath = os.path.abspath(cryspy.__path__[0])
-            console.info(f'CrysPy module: {cryspyPath}')
-        except ImportError:
-            console.error('No CrysPy module found')
-
         import EasyApp
         easyAppPath = os.path.abspath(EasyApp.__path__[0])
         self.imports.append(os.path.join(easyAppPath, '..'))
