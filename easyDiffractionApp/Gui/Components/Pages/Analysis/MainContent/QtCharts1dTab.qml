@@ -52,12 +52,22 @@ Column {
             EaCharts.QtCharts1dBase {
                 id: mainChart
 
+                property var experimentDataBlocksNoMeas: Globals.Proxies.main.experiment.dataBlocksNoMeas
+                onExperimentDataBlocksNoMeasChanged: {
+                    if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                        axisX.title = '2θ (degree)'
+                    } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                        axisX.title = 'TOF (µs)'
+                    } else {
+                        axisX.title = ''
+                    }
+                }
+
                 anchors.topMargin: EaStyle.Sizes.toolButtonHeight - EaStyle.Sizes.fontPixelSize - 1
                 anchors.bottomMargin: -12 - EaStyle.Sizes.fontPixelSize
 
                 useOpenGL: container.useOpenGL
 
-                axisX.title: "2θ (degree)"
                 axisX.titleVisible: false
                 axisX.labelsVisible: false
                 axisX.min: Globals.Proxies.rangeValue('xMin')

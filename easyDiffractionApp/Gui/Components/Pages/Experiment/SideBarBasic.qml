@@ -125,7 +125,7 @@ EaComponents.SideBarColumn {
             if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
                 return Globals.Proxies.experimentLoopTitle(qsTr('Background'), '_pd_background')
             } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
-                return qsTr('Background')
+                return Globals.Proxies.experimentLoopTitle(qsTr('Background'), '_pd_background')
             }
         }
         icon: 'wave-square'
