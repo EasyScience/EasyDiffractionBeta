@@ -16,8 +16,9 @@ class Config():
         # Main
         self.__dict__ = Functions.config()
         self.os = Functions.osName()
+        self.processor = Functions.processor()
         self.branch_name = branch_name
-        self.matrix_os = matrix_os
+        self.matrix_os = self.matrixOs(matrix_os)
 
         # Application
         self.app_version = self.__dict__['project']['version']
@@ -41,8 +42,13 @@ class Config():
         self.setup_arch = self.__dict__['ci']['app']['setup']['arch'][self.os]
         #self.setup_name_suffix = f'_{self.setup_os}_{self.setup_arch}_v{self.app_version}'
         self.setup_name_suffix = f'_v{self.app_version}_{self.setup_os}'
-        #if self.matrix_os is not None:
-        #    self.setup_name_suffix = f'_v{self.app_version}_{self.matrix_os}'
+        if self.matrix_os is not None:
+            self.setup_name_suffix = f'_v{self.app_version}_{self.matrix_os}'
+        if self.os == 'macos':
+            if self.processor == 'i386':
+                self.setup_name_suffix = f'{self.setup_name_suffix}-Intel'
+            elif self.processor == 'arm':
+                self.setup_name_suffix = f'{self.setup_name_suffix}-AppleSilicon'
         self.setup_name = f'{self.app_name}{self.setup_name_suffix}'
         self.setup_file_ext = self.__dict__['ci']['app']['setup']['file_ext'][self.os]
         self.setup_full_name = f'{self.setup_name}{self.setup_file_ext}'
@@ -62,6 +68,16 @@ class Config():
 
     def __getitem__(self, key):
         return self.__dict__[key]
+
+    def matrixOs(self, matrix_os):
+        if matrix_os is None:
+            return None
+        if 'ubuntu-24.04' in matrix_os:
+            matrix_os = 'ubuntu-22.04'  # NEED FIX: Temporary solution to test the 22.04 build on 24.04
+        elif 'flyci' in matrix_os:
+            matrix_os = matrix_os.removeprefix('flyci-')  # Simplify the default flyci name
+            matrix_os = matrix_os.removesuffix('-m2')  # Simplify the default flyci name
+        return matrix_os
 
     # https://doc.qt.io/qtinstallerframework/scripting.html
     def installationDir(self):
@@ -115,5 +131,20 @@ class Config():
         return video_tutorial_path
 
 
-if __name__ == "__main__":
-    Config()
+### Main
+
+def main():
+    if len(sys.argv) != 4:
+        return
+
+    git_branch = sys.argv[1]
+    matrix_os = sys.argv[2]
+    property_name = sys.argv[3]
+
+    config = Config(git_branch, matrix_os)
+    property_value = getattr(config, property_name)
+
+    print(property_value)
+
+if __name__ == '__main__':
+    main()

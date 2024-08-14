@@ -1,0 +1,11 @@
+data_CeCuAl3
+
+_project.description "neutrons, powder, time-of-flight, Polaris@ISIS"
+
+loop_
+_model.cif_file_name
+cecual.cif
+
+loop_
+_experiment.cif_file_name
+polaris.cif

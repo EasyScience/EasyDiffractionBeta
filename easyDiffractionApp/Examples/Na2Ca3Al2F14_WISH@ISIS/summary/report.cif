@@ -1,0 +1,67 @@
+data_ncaf
+
+_cell.length_a 10.250256
+_cell.length_b 10.250256
+_cell.length_c 10.250256
+_cell.angle_alpha 90.0
+_cell.angle_beta 90.0
+_cell.angle_gamma 90.0
+
+_space_group.name_H-M_alt "I 21 3"
+_space_group.IT_coordinate_system_code 1
+
+loop_
+_atom_site.label
+_atom_site.type_symbol
+_atom_site.fract_x
+_atom_site.fract_y
+_atom_site.fract_z
+_atom_site.occupancy
+_atom_site.ADP_type
+_atom_site.B_iso_or_equiv
+Ca Ca 0.4662(3) 0.0 0.25 1.0 Biso 0.81(7)
+Al Al 0.25171 0.25171 0.25171 1.0 Biso 0.70(9)
+Na Na 0.08481 0.08481 0.08481 1.0 Biso 1.8(2)
+F1 F 0.1376(2) 0.3054(2) 0.1195(2) 1.0 Biso 0.80(6)
+F2 F 0.3624(3) 0.3632(3) 0.1868(3) 1.0 Biso 1.28(6)
+F3 F 0.4612 0.4612 0.4612 1.0 Biso 0.75(8)
+
+data_wish
+
+_pd_instr.2theta_bank 152.827
+_pd_instr.dtt1 20773.9(3)
+_pd_instr.dtt2 -1.08308
+_pd_instr.zero -15.0(5)
+_pd_instr.alpha0 -0.0160(8)
+_pd_instr.alpha1 0.121(3)
+_pd_instr.beta0 0.00663(3)
+_pd_instr.beta1 0.0100(3)
+_pd_instr.sigma0 0.0
+_pd_instr.sigma1 7.5(2)
+_pd_instr.sigma2 0.0
+
+_tof_background.coeff1 307(16)
+_tof_background.coeff2 63(32)
+_tof_background.coeff3 18(31)
+_tof_background.coeff4 -27(30)
+_tof_background.coeff5 -45(29)
+_tof_background.coeff6 -45(27)
+_tof_background.coeff7 -46(25)
+_tof_background.coeff8 -45(23)
+_tof_background.coeff9 -40(20)
+_tof_background.coeff10 -31(17)
+_tof_background.coeff11 -23(15)
+_tof_background.coeff12 -21(12)
+_tof_background.coeff13 -16(10)
+_tof_background.coeff14 -11(8)
+_tof_background.coeff15 -5(6)
+_tof_background.coeff16 -3(4)
+_tof_background.coeff17 1(2)
+_tof_background.coeff18 -2(2)
+
+_diffrn_radiation.probe neutron
+
+loop_
+_pd_phase_block.id
+_pd_phase_block.scale
+ncaf 1.087(5)

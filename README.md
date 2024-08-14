@@ -1,6 +1,12 @@
+```
+NOTE: This is a test version of EasyDiffraction with improved GUI and overall performance.
+This version temporarily does not use the EasyScience framework, contains only CrysPy as
+calculation engine and uses only Lmfit for minimization.
+```
+
 ## [![CI Build][20]][21] [![Release][30]][31] [![Downloads][70]][71] [![Lines of code][82]][80] [![Total lines][81]][80] [![Files][83]][80] [![License][50]][51]
 
-<img height="80"><img src="./resources/images/ed_logo.svg" height="65">
+<img src="./resources/images/ed_logo.svg" height="65">
 
 **EasyDiffraction** is a scientific software for modelling and analysis of diffraction data. Currently, **EasyDiffraction** covers classical 1D unpolarized neutron powder diffraction data collected using constant wavelength (CW) or time-of-flight (TOF) diffractometers.
 
@@ -80,13 +86,13 @@ For bug reports and feature requests, please use [Issue Tracker](https://github.
 
 <!---CI Build Status--->
 
-[20]: https://img.shields.io/github/actions/workflow/status/easyscience/easydiffractionapp/installer.yml?branch=master
-[21]: https://github.com/easyscience/easydiffractionapp/actions/workflows/installer.yml?query=workflow%3A%22Build+Installer%22+branch%3Amaster
+[20]: https://img.shields.io/github/actions/workflow/status/easyscience/easydiffractionbeta/installer.yml?branch=master
+[21]: https://github.com/easyscience/easydiffractionbeta/actions/workflows/installer.yml?query=workflow%3A%22Build+Installer%22+branch%3Amaster
 
 <!---Release--->
 
-[30]: https://img.shields.io/github/release/easyscience/easydiffractionapp.svg?include_prereleases
-[31]: https://github.com/easyscience/easydiffractionapp/releases
+[30]: https://img.shields.io/github/release/easyscience/easydiffractionbeta.svg?include_prereleases
+[31]: https://github.com/easyscience/easydiffractionbeta/releases
 
 <!---License--->
 
@@ -100,15 +106,15 @@ For bug reports and feature requests, please use [Issue Tracker](https://github.
 
 <!---Downloads--->
 
-[70]: https://img.shields.io/github/downloads/easyscience/easydiffractionapp/total.svg
-[71]: https://github.com/easyscience/easydiffractionapp/releases
+[70]: https://img.shields.io/github/downloads/easyscience/easydiffractionbeta/total.svg
+[71]: https://github.com/easyscience/easydiffractionbeta/releases
 
 <!---Code statistics--->
 
-[80]: https://github.com/easyscience/easydiffractionapp
-[81]: https://tokei.rs/b1/github/easyscience/easydiffractionapp
-[82]: https://tokei.rs/b1/github/easyscience/easydiffractionapp?category=code
-[83]: https://tokei.rs/b1/github/easyscience/easydiffractionapp?category=files
+[80]: https://github.com/easyscience/easydiffractionbeta
+[81]: https://tokei.rs/b1/github/easyscience/easydiffractionbeta
+[82]: https://tokei.rs/b1/github/easyscience/easydiffractionbeta?category=code
+[83]: https://tokei.rs/b1/github/easyscience/easydiffractionbeta?category=files
 
 <!---W3C validation--->
 

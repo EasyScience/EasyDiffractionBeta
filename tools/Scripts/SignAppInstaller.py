@@ -13,16 +13,18 @@ import Config
 import Functions
 
 
-CONFIG = Config.Config(sys.argv[1], sys.argv[2])
+GIT_BRANCH = sys.argv[1]
+MATRIX_OS = sys.argv[2]
+APPLE_CERT_DATA = sys.argv[3]        # Encoded content of the .p12 certificate file (exported from certificate of Developer ID Application type)
+APPLE_CERT_PASSWORD = sys.argv[4]    # Password associated with the .p12 certificate
+APPLE_NOTARY_USER = sys.argv[5]      # Apple ID (esss.se personal account) added to https://developer.apple.com
+APPLE_NOTARY_PASSWORD = sys.argv[6]  # App specific password for EasyDiffraction from https://appleid.apple.com
 
-MACOS_IDENTITY = CONFIG['ci']['codesign']['macos']['identity']
-MACOS_CERTIFICATE_ENCODED = sys.argv[3]       # Encoded content of the certificate.p12 file
-MACOS_CERTIFICATE_PASSWORD = sys.argv[4]      # Password associated with the certificate.p12 file
-APPSTORE_NOTARIZATION_USERNAME = sys.argv[5]  # Apple ID (esss.se personal account) added to https://developer.apple.com
-APPSTORE_NOTARIZATION_PASSWORD = sys.argv[6]  # App specific password for EasyDiffraction from https://appleid.apple.com
+CONFIG = Config.Config(GIT_BRANCH, MATRIX_OS)
+
 
 def signLinux():
-    Functions.printNeutralMessage('No code signing needed for linux')
+    Functions.printNeutralMessage('Code signing on Linux is not supported yet')
     return
 
 def signWindows():
@@ -38,7 +40,7 @@ def signMacos():
         message = f'sign code on {CONFIG.os}'
         keychain_name = 'codesign.keychain'
         keychain_password = 'password'
-        mac_certificate_fpath = 'certificate.p12'
+        mac_certificate_fname = 'certificate.p12'
 
         try:
             sub_message = f'create keychain "{keychain_name}"'
@@ -86,9 +88,9 @@ def signMacos():
             Functions.printSuccessMessage(sub_message)
 
         try:
-            sub_message = f'create certificate file "{mac_certificate_fpath}"'
-            certificate_decoded = base64.b64decode(MACOS_CERTIFICATE_ENCODED)
-            with open(mac_certificate_fpath, 'wb') as f:
+            sub_message = f'create certificate file "{mac_certificate_fname}"'
+            certificate_decoded = base64.b64decode(APPLE_CERT_DATA)
+            with open(mac_certificate_fname, 'wb') as f:
                 f.write(certificate_decoded)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
@@ -97,13 +99,13 @@ def signMacos():
             Functions.printSuccessMessage(sub_message)
 
         try:
-            sub_message = f'import certificate "{mac_certificate_fpath}" to created keychain "{keychain_name}"'
+            sub_message = f'import certificate "{mac_certificate_fname}" to created keychain "{keychain_name}"'
             Functions.run(
                 'security', 'import',
-                mac_certificate_fpath,
+                mac_certificate_fname,
                 '-k', keychain_name,
-                '-P', MACOS_CERTIFICATE_PASSWORD,
-                '-T', '/usr/bin/codesign')
+                '-P', APPLE_CERT_PASSWORD,
+                '-T', '/usr/bin/codesign')  # Without '-T ...' codesign asking to enter keychain password and thus CI freezes
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
             sys.exit(1)
@@ -114,7 +116,7 @@ def signMacos():
             sub_message = f'show certificates'
             Functions.run(
                 'security', 'find-identity',
-                '-v')
+                keychain_name)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
             sys.exit(1)
@@ -142,12 +144,13 @@ def signMacos():
             sub_message = f'sign installer app "{CONFIG.setup_exe_path}" with imported certificate'
             Functions.run(
                 'codesign',
-                '--deep',                   # nested code content such as helpers, frameworks, and plug-ins, should be recursively signed
                 '--force',                  # replace any existing signature on the path(s) given
-                '--verbose=1',              # set (with a numeric value) or increments the verbosity level of output
+                '--verbose',                                                        # set (with a numeric value) or increments the verbosity level of output
                 '--timestamp',              # request that a default Apple timestamp authority server be contacted to authenticate the time of signin
                 '--options=runtime',        # specify a set of option flags to be embedded in the code signature
-                '--sign', MACOS_IDENTITY,   # sign the code at the path(s) given using this identity
+                '--keychain', keychain_name,                                        # specify keychain name
+                '--identifier', CONFIG['ci']['codesign']['apple']['product_id'],    # specify bundle id
+                '--sign', CONFIG['ci']['codesign']['apple']['team_id'],             # sign the code at the path(s) given using this identity
                 CONFIG.setup_exe_path)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
@@ -156,11 +159,24 @@ def signMacos():
             Functions.printSuccessMessage(sub_message)
 
         try:
-            sub_message = f'verify app signatures for installer "{CONFIG.setup_exe_path}"'
+            sub_message = f'display information about the code at "{CONFIG.setup_exe_path}" after signing'
+            Functions.run(
+                'codesign',
+                '--display',
+                '--verbose',
+                CONFIG.setup_exe_path)
+        except Exception as sub_exception:
+            Functions.printFailMessage(sub_message, sub_exception)
+            sys.exit(1)
+        else:
+            Functions.printSuccessMessage(sub_message)
+
+        try:
+            sub_message = f'verify app signatures for installer "{CONFIG.setup_exe_path}" after signing'
             Functions.run(
                 'codesign',
                 '--verify',                 # verification of code signatures
-                '--verbose=1',              # set (with a numeric value) or increments the verbosity level of output
+                '--verbose',                # set (with a numeric value) or increments the verbosity level of output
                 CONFIG.setup_exe_path)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
@@ -192,13 +208,14 @@ def signMacos():
         try:
             sub_message = f'notarize app installer "{CONFIG.setup_zip_path_short}" for distribution outside of the Mac App Store' # Notarize the app by submitting a zipped package of the app bundle
             Functions.run(
-                'xcrun', 'altool',
-                '--notarize-app',
-                '--file', CONFIG.setup_zip_path_short,
-                '--type', 'macos',
-                '--primary-bundle-id', CONFIG['ci']['codesign']['bundle_id'],
-                '--username', APPSTORE_NOTARIZATION_USERNAME,
-                '--password', APPSTORE_NOTARIZATION_PASSWORD)
+                'xcrun', 'notarytool', 'submit',
+                '--apple-id', APPLE_NOTARY_USER,
+                '--team-id', CONFIG['ci']['codesign']['apple']['team_id'],
+                '--password', APPLE_NOTARY_PASSWORD,
+                '--verbose',
+                '--progress',
+                '--wait',
+                CONFIG.setup_zip_path_short)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)
             sys.exit(1)
@@ -220,11 +237,6 @@ def signMacos():
 
         try:
             sub_message = f'download and attach (staple) tickets for notarized executables to app installer "{CONFIG.setup_exe_path}"'
-            time.sleep(180)  # Sleep for 3 minutes before calling the stapler to handle notarization lag on Apple server
-                             # Or maybe one could instead get 'RequestUUID' from the previous 'xcrun altool --notarize-app...' output and
-                             # check in the loop until notarization is succeded via 'xcrun altool --notarization-info UUID...'?
-                             # If notarization is in progress, the '--notarization-info' output should contain 'Status: in progress'
-                             # If notarization is succeded, the '--notarization-info' output should contain 'Status: success'
             Functions.run(
                 'xcrun', 'stapler',
                 'staple', CONFIG.setup_exe_path)
@@ -250,7 +262,7 @@ def signMacos():
             Functions.run(
                 'spctl',
                 '--assess',
-                '--vv',
+                '--verbose',
                 CONFIG.setup_exe_path)
         except Exception as sub_exception:
             Functions.printFailMessage(sub_message, sub_exception)

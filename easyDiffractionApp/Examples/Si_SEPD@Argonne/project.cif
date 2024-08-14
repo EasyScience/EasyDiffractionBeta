@@ -1,0 +1,11 @@
+data_Si
+
+_project.description "neutrons, powder, time-of-flight, SEPD@Argonne"
+
+loop_
+_model.cif_file_name
+si.cif
+
+loop_
+_experiment.cif_file_name
+sepd.cif

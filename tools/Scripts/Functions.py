@@ -11,6 +11,7 @@ import zipfile
 import subprocess
 import requests
 import shutil
+import platform
 from distutils import dir_util
 
 
@@ -48,6 +49,7 @@ def printNeutralMessage(message):
 
 
 def run(*args):
+    printNeutralMessage(' '.join(args))
     subprocess.run(
         args,
         capture_output=False,
@@ -113,6 +115,10 @@ def osName():
     else:
         print("- Unsupported platform '{0}'".format(platform))
         return None
+
+
+def processor():
+    return platform.processor()
 
 
 def environmentVariable(name, default=None):
