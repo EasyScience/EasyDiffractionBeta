@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
+// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors <support@easydiffraction.org>
 // SPDX-License-Identifier: BSD-3-Clause
-// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import QtQuick
 import QtQuick.Controls
@@ -22,7 +22,7 @@ EaComponents.ContentPage {
 
     mainView: EaComponents.MainContent {
         tabs: [
-            EaElements.TabButton { text: qsTr("Report") }
+            EaElements.TabButton { text: qsTr("Summary") }
         ]
 
         items: [
@@ -36,12 +36,14 @@ EaComponents.ContentPage {
     sideBar: EaComponents.SideBar {
         tabs: [
             EaElements.TabButton { text: qsTr("Basic controls") },
-            EaElements.TabButton { text: qsTr("Advanced controls"); enabled: false }
+            EaElements.TabButton { text: qsTr("Advanced controls"); enabled: false },
+            EaElements.TabButton { text: qsTr("Text mode") }
         ]
 
         items: [
             Loader { source: 'SideBarBasic.qml' },
-            Loader { source: 'SideBarAdvanced.qml' }
+            Loader { source: 'SideBarAdvanced.qml' },
+            Loader { source: 'SideBarText.qml' }
         ]
 
         continueButton.visible: false

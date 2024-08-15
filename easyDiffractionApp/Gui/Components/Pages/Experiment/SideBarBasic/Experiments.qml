@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2022 easyDiffraction contributors <support@easydiffraction.org>
+// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors <support@easydiffraction.org>
 // SPDX-License-Identifier: BSD-3-Clause
-// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import QtQuick
 import QtQuick.Controls
@@ -92,6 +92,7 @@ Column {
             }
 
             EaComponents.TableViewButton {
+                enabled: false
                 fontIcon: "minus-circle"
                 ToolTip.text: qsTr("Remove this dataset")
                 onClicked: Globals.Proxies.main.experiment.removeExperiment(index)
@@ -108,14 +109,14 @@ Column {
         spacing: EaStyle.Sizes.fontPixelSize
 
         EaElements.SideBarButton {
-            //enabled: !Globals.Proxies.main.experiment.defined
+            enabled: !Globals.Proxies.main.experiment.defined
             fontIcon: "upload"
             text: qsTr("Load experiment(s) from file(s)")
             onClicked: {
                 console.debug(`Clicking '${text}' button: ${this}`)
                 if (Globals.Vars.isTestMode) {
                     console.debug('*** Loading experiment from resources (test mode) ***')
-                    const fpaths = [':/Examples/Co2SiO4-Mult-Phases/experiments/d20.cif']
+                    const fpaths = [':/Examples/Co2SiO4-Mult-Phases_D20@ILL/experiments/d20.cif']
                     Globals.Proxies.main.experiment.loadExperimentsFromResources(fpaths)
                 } else {
                     openCifFileDialog.open()
@@ -144,7 +145,7 @@ Column {
     FileDialog{
         id: openCifFileDialog
         fileMode: FileDialog.OpenFiles
-        nameFilters: [ "CIF files (*.cif)", "ASCII data files (*.xye)"]
+        nameFilters: [ "CIF files (*.cif)", "ASCII data files - 3 columns (*.xye *.xys *.dat)", "ASCII data files - 2 columns (*.xy *.dat)"]
         onAccepted: {
             console.debug('*** Loading experiment(s) from file(s) ***')
             Globals.Proxies.main.experiment.loadExperimentsFromFiles(selectedFiles)

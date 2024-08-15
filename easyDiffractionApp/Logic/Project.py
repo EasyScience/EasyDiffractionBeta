@@ -32,39 +32,65 @@ _EMPTY_DESCRIPTION = dict(Parameter(
                     ))
 _EXAMPLES = [
     {
-        'name': 'La0.5Ba0.5CoO3',
+        'name': 'La0.5Ba0.5CoO3 (HRPT)',
         'description': 'neutrons, powder, constant wavelength, HRPT@PSI',
-        'path': ':/Examples/La0.5Ba0.5CoO3/project.cif'
+        'path': ':/Examples/La0.5Ba0.5CoO3_HRPT@PSI/project.cif'
 
      },
      {
-         'name': 'La0.5Ba0.5CoO3-Raw',
+         'name': 'La0.5Ba0.5CoO3-Raw (HRPT)',
          'description': 'neutrons, powder, constant wavelength, HRPT@PSI',
-         'path': ':/Examples/La0.5Ba0.5CoO3-Raw/project.cif'
+         'path': ':/Examples/La0.5Ba0.5CoO3-Raw_HRPT@PSI/project.cif'
 
       },
       {
-          'name': 'La0.5Ba0.5CoO3-Mult-Phases',
+          'name': 'La0.5Ba0.5CoO3-Mult-Phases (HRPT)',
           'description': 'neutrons, powder, constant wavelength, HRPT@PSI, 2 phases',
-          'path': ':/Examples/La0.5Ba0.5CoO3-Mult-Phases/project.cif'
+          'path': ':/Examples/La0.5Ba0.5CoO3-Mult-Phases_HRPT@PSI/project.cif'
       },
     {
-        'name': 'Co2SiO4',
+        'name': 'Co2SiO4 (D20)',
         'description': 'neutrons, powder, constant wavelength, D20@ILL',
-        'path': ':/Examples/Co2SiO4/project.cif'
+        'path': ':/Examples/Co2SiO4_D20@ILL/project.cif'
 
      },
     {
-        'name': 'Dy3Al5O12',
+        'name': 'Dy3Al5O12 (G41)',
         'description': 'neutrons, powder, constant wavelength, G41@LLB',
-        'path': ':/Examples/Dy3Al5O12/project.cif'
+        'path': ':/Examples/Dy3Al5O12_G41@LLB/project.cif'
 
      },
      {
-        'name': 'PbSO4',
+        'name': 'PbSO4 (D1A)',
         'description': 'neutrons, powder, constant wavelength, D1A@ILL',
-        'path': ':/Examples/PbSO4/project.cif'
+        'path': ':/Examples/PbSO4_D1A@ILL/project.cif'
 
+     },
+     {
+        'name': 'LaMnO3 (3T2)',
+        'description': 'neutrons, powder, constant wavelength, 3T2@LLB',
+        'path': ':/Examples/LaMnO3_3T2@LLB/project.cif'
+     },
+
+     {
+        'name': 'Si (SEPD)',
+        'description': 'neutrons, powder, time-of-flight, SEPD@Argonne',
+        'path': ':/Examples/Si_SEPD@Argonne/project.cif'
+     },
+     {
+        'name': 'CeCuAl3 (Polaris)',
+        'description': 'neutrons, powder, time-of-flight, Polaris@ISIS',
+        'path': ':/Examples/CeCuAl3_Polaris@ISIS/project.cif'
+     },
+     {
+        'name': 'Na2Ca3Al2F14 (Osiris)',
+        'description': 'neutrons, powder, time-of-flight, Osiris@ISIS',
+        'path': ':/Examples/Na2Ca3Al2F14_Osiris@ISIS/project.cif'
+     },
+     {
+        'name': 'Na2Ca3Al2F14 (WISH)',
+        'description': 'neutrons, powder, time-of-flight, WISH@ISIS',
+        'path': ':/Examples/Na2Ca3Al2F14_WISH@ISIS/project.cif'
      },
      #{
      #    'name': 'Co2SiO4-Mult-Phases',
@@ -96,7 +122,6 @@ class Project(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._proxy = parent
-
         self.resetAll()
 
     @Slot()
@@ -162,11 +187,12 @@ class Project(QObject):
         return self._recent
 
     @recent.setter
-    def recent(self, newValue):
-        newValue = newValue.toVariant()
-        if self._recent == newValue:
+    def recent(self, newFilePaths):
+        newFilePaths = newFilePaths.toVariant()
+        existingFilePaths = [fpath for fpath in newFilePaths if os.path.isfile(fpath)]
+        if self._recent == existingFilePaths:
             return
-        self._recent = newValue
+        self._recent = existingFilePaths
         self.recentChanged.emit()
 
     @Property(str, notify=locationChanged)
@@ -274,6 +300,13 @@ class Project(QObject):
 
     def loadProjectFromFile(self, fpath):
         console.debug(f"Loading project from: {fpath}")
+
+        if fpath in self._recent:
+            self._recent.remove(fpath)
+        self._recent.insert(0, fpath)
+        self._recent = self._recent[:10]
+        self.recentChanged.emit()
+
         with open(fpath, 'r') as file:
             edCif = file.read()
 

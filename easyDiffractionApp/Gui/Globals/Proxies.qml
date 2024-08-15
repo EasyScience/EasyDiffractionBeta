@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
+// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors <support@easydiffraction.org>
 // SPDX-License-Identifier: BSD-3-Clause
-// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 pragma Singleton
 
@@ -18,21 +18,15 @@ import Gui.Logic as Logic
 QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS > Reset Code Model"
 
     property var main: typeof pyProxy !== 'undefined' && pyProxy !== null ?
-                                         pyProxy:
+                                         pyProxy :
                                          qmlProxy
+    onMainChanged: console.debug(`Globals.proxies.main changed to ${main}`)
 
     //readonly property var main_model_dataBlocks: main.model.dataBlocks
     //readonly property var main_experiment_dataBlocks: main.experiment.dataBlocks
     readonly property var main_fittables_data: main.fittables.data
 
-    property int systemColorScheme: main.backendHelpers.systemColorScheme
-    onSystemColorSchemeChanged: EaStyle.Colors.systemColorScheme = systemColorScheme
-
     readonly property var qmlProxy: QtObject {
-
-        readonly property var backendHelpers: QtObject {
-            property int systemColorScheme: -1
-        }
 
         //////////
         // Logger
@@ -590,11 +584,11 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
 
     function projectMainParam(category, name) {
         if (!main.project.created) {
-            return { 'value': '', 'display_name': '' }
+            return { 'value': '', 'prettyName': '' }
         }
         const param = main.project.dataBlock.params[category][name]
         if (typeof param === 'undefined') {
-            return { 'value': '', 'display_name': '' }
+            return { 'value': '', 'prettyName': '' }
         }
         return param
     }
@@ -655,7 +649,6 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
 
     function modelMainParam(category, name) {
         if (!main.model.defined) {
-            console.debug(`***  Model not defined ***`)
             return {}
         }
         const blockIdx = main.model.currentIndex
@@ -663,7 +656,7 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
     }
 
     function modelLoopParam(category, name, rowIndex, blockIdx = main.model.currentIndex) {
-        if (!main.model.defined) {
+        if (!main.model.defined || typeof main.model.dataBlocks[blockIdx].loops[category][rowIndex] === 'undefined') {
             return {}
         }
         return main.model.dataBlocks[blockIdx].loops[category][rowIndex][name]
@@ -671,6 +664,7 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
 
     function setModelMainParamWithFullUpdate(param, field, value) {
         const blockIdx = main.model.currentIndex
+        console.debug(`*** Editing (full update) model no. ${blockIdx + 1} param ${param.category}.${param.name} '${field}' to ${value} ***`)
         main.model.setMainParamWithFullUpdate(blockIdx, param.category, param.name, field, value)
     }
 

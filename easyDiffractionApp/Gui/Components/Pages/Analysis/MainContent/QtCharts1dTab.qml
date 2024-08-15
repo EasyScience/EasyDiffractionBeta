@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
+// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors <support@easydiffraction.org>
 // SPDX-License-Identifier: BSD-3-Clause
-// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import QtQuick
 import QtQuick.Controls
@@ -52,12 +52,22 @@ Column {
             EaCharts.QtCharts1dBase {
                 id: mainChart
 
+                property var experimentDataBlocksNoMeas: Globals.Proxies.main.experiment.dataBlocksNoMeas
+                onExperimentDataBlocksNoMeasChanged: {
+                    if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                        axisX.title = '2θ (degree)'
+                    } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                        axisX.title = 'TOF (µs)'
+                    } else {
+                        axisX.title = ''
+                    }
+                }
+
                 anchors.topMargin: EaStyle.Sizes.toolButtonHeight - EaStyle.Sizes.fontPixelSize - 1
                 anchors.bottomMargin: -12 - EaStyle.Sizes.fontPixelSize
 
                 useOpenGL: container.useOpenGL
 
-                axisX.title: "2θ (degree)"
                 axisX.titleVisible: false
                 axisX.labelsVisible: false
                 axisX.min: Globals.Proxies.rangeValue('xMin')
@@ -98,7 +108,7 @@ Column {
                     axisX: mainChart.axisX
                     axisY: mainChart.axisY
 
-                    useOpenGL: mainChart.useOpenGL
+                    //useOpenGL: mainChart.useOpenGL
 
                     color: EaStyle.Colors.chartForegroundsExtra[2]
                     width: 2
@@ -115,7 +125,7 @@ Column {
                     axisX: mainChart.axisX
                     axisY: mainChart.axisY
 
-                    useOpenGL: mainChart.useOpenGL
+                    //useOpenGL: mainChart.useOpenGL
 
                     color: EaStyle.Colors.chartForegrounds[1]
                     width: 1
@@ -130,7 +140,7 @@ Column {
                     axisX: mainChart.axisX
                     axisY: mainChart.axisY
 
-                    useOpenGL: mainChart.useOpenGL
+                    //useOpenGL: mainChart.useOpenGL
 
                     color: calcSerieColor
                     width: 2
@@ -304,7 +314,7 @@ Column {
                     axisX: residualChart.axisX
                     axisY: residualChart.axisY
 
-                    useOpenGL: residualChart.useOpenGL
+                    //useOpenGL: residualChart.useOpenGL
 
                     color: EaStyle.Colors.chartForegrounds[2]
 

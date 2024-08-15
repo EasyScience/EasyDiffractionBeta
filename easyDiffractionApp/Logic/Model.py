@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
 # SPDX-License-Identifier: BSD-3-Clause
-# © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+# © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import copy
 import re
@@ -221,6 +221,7 @@ class Model(QObject):
             console.debug(f"Loading model(s) from: {fpath}")
             with open(fpath, 'r') as file:
                 edCif = file.read()
+            edCif = re.sub(r'data_(.*)', lambda m: m.group(0).lower(), edCif)  # Lowercase all data block names
             self.loadModelsFromEdCif(edCif)
 
     # @Slot(str)
@@ -845,7 +846,10 @@ class Model(QObject):
                 value = param.value
                 error = 0
                 if param.stderr is not None:
-                    error = param.stderr
+                    if param.stderr < 1e-6:
+                        error = 1e-6  # Temporary solution to compensate for too small uncertanties after lmfit
+                    else:
+                        error = param.stderr
 
                 # unit_cell_parameters
                 if group == 'unit_cell_parameters':

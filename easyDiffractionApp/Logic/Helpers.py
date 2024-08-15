@@ -1,16 +1,19 @@
 # SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
 # SPDX-License-Identifier: BSD-3-Clause
-# © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+# © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import argparse
 import orjson
 import os
 import pathlib
 import sys
-import time
-#from urllib.parse import urlparse
+import decimal
+import importlib.util
+import numpy as np
+from uncertainties import ufloat
 
-from PySide6.QtCore import Qt, QObject, QCoreApplication, Signal, Slot, Property
+from PySide6.QtCore import Qt, QObject, QCoreApplication, QUrl, Signal, Slot, Property
+#from PySide6.QtGui import QStyleHints
 from PySide6.QtWidgets import QApplication
 
 from EasyApp.Logic.Logging import console
@@ -33,10 +36,9 @@ class PersistentSettingsHandler:
 class ResourcePaths:
 
     def __init__(self):
-        self.mainQml = ''  # Current app main.qml file
-        self.splashScreenQml = ''  # Splash screen .qml file
+        self.mainQml = 'Gui/main.qml'  # Current app main.qml file
+        self.splashScreenQml = 'Gui/Components/SplashScreen.qml'  # Splash screen .qml file
         self.imports = []  # EasyApp qml components (EasyApp/...) & Current app qml components (Gui/...)
-        self.settings_ini = ''  # Persistent settings ini file location
         self.setPaths()
 
     def setPaths(self):
@@ -91,8 +93,11 @@ class EnvironmentVariables:
 
     @staticmethod
     def set():
-        os.environ['QSG_RHI_BACKEND'] = 'opengl'  # For QtCharts XYSeries useOpenGL
-        os.environ['QT_RHI_SHADER_DEBUG'] = '1'  # https://doc.qt.io/qt-6/qtquick3d-tool-shadergen.html
+        # see https://doc.qt.io/qt-6/qtquick3d-requirements.html
+        #os.environ['QSG_RHI_BACKEND'] = 'opengl'  # Requests the specific RHI backend. For QtCharts XYSeries useOpenGL
+        os.environ['QT_RHI_SHADER_DEBUG'] = '1'    # Enables the graphics API implementation's debug
+        os.environ['QSG_INFO'] = '1'               # Printing system information when initializing the Qt Quick scene graph
+        # misc
         #qsetenv("QT_QPA_PLATFORM", "windows:darkmode=[1|2]")
         #os.environ['QT_QPA_PLATFORM'] = 'windows:darkmode=[1|2]'
         #os.environ['QT_MESSAGE_PATTERN'] = "\033[32m%{time h:mm:ss.zzz}%{if-category}\033[32m %{category}:%{endif} %{if-debug}\033[34m%{function}%{endif}%{if-warning}\033[31m%{backtrace depth=3}%{endif}%{if-critical}\033[31m%{backtrace depth=3}%{endif}%{if-fatal}\033[31m%{backtrace depth=3}%{endif}\033[0m %{message}"
@@ -151,7 +156,7 @@ class Application(QApplication):  # QGuiApplication crashes when using in combin
         self.setOrganizationDomain('easyscience.software')
 
 
-class BackendHelpers(QObject):
+class ColorSchemeHandler(QObject):
     systemColorSchemeChanged = Signal()
 
     def __init__(self, parent=None):
@@ -173,6 +178,22 @@ class BackendHelpers(QObject):
         self._systemColorScheme = self.schemes[self._styleHints.colorScheme()]
         console.debug(f"New system color scheme: {self._systemColorScheme}")
         self.systemColorSchemeChanged.emit()
+
+
+class BackendHelpers(QObject):
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    @Slot(str, result=str)
+    def urlToLocalFile(self, url: str):
+        fpath = QUrl(url).toLocalFile()
+        return fpath
+
+    @Slot(str, result=str)
+    def localFileToUrl(self, fpath: str):
+        url = QUrl.fromLocalFile(fpath).toString()
+        return url
 
     @Slot(int)
     def exitApp(self, exitCode):
@@ -202,25 +223,41 @@ class BackendHelpers(QObject):
             furi = furi[1:].replace('/', os.path.sep)
         return furi
 
+    #@Slot(float, int, result=str)
+    #def toPrecision(self, x, n):
+    #    return str(decimal.Context(prec=n).create_decimal_from_float(x))
+
+    #@Slot(float, float, int, result=str)
+    #def toOtherPrecision(self, x, s, n):
+    #    xStr = f'{x}'
+    #    sStr = self.toPrecision(s, n)
+    #    return str(decimal.Decimal(xStr).quantize(decimal.Decimal(sStr)))
+
+    @Slot(float, float, result='QVariant')
+    def toStdDevSmalestPrecision(self, value, std_dev):
+        value_str, std_dev_str, _ = IO.toStdDevSmalestPrecision(value, std_dev)
+        return {'value': value_str, 'std_dev': std_dev_str}
+
 
 class PyProxyWorker(QObject):
-    pyProxyExposedToQml = Signal()
+    createdAndMovedToMainThread = Signal()
 
-    def __init__(self, engine, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self._engine = engine
+        self.proxy = None
 
-    def exposePyProxyToQml(self):
+    def createAndMoveToMainThread(self):
         from Logic.PyProxy import PyProxy
-        time.sleep(0.5)
-        console.debug('Slept for 0.5s to allow splash screen to start')
-        mainThread = QCoreApplication.instance().thread()
-        proxy = PyProxy()
-        console.debug('PyProxy object created')
-        proxy.moveToThread(mainThread)
-        self._engine.rootContext().setContextProperty('pyProxy', proxy)
-        self.pyProxyExposedToQml.emit()
-        console.debug('PyProxy object exposed to QML')
+        #time.sleep(0.5)
+        #console.debug('Slept for 0.5s to allow splash screen to start')
+        #mainThread = QCoreApplication.instance().thread()
+        mainThread = QApplication.instance().thread()
+        console.debug(f'Main thread id:{id(mainThread)} found')
+        self.proxy = PyProxy()
+        console.debug(f'PyProxy object id:{id(self.proxy)} created')
+        self.proxy.moveToThread(mainThread)
+        console.debug(f'PyProxy object id:{id(self.proxy)} moved to main thread id:{id(self.proxy.thread())}')
+        self.createdAndMovedToMainThread.emit()
 
 
 class TranslationsHandler(QObject):

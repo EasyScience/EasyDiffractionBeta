@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
+// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors <support@easydiffraction.org>
 // SPDX-License-Identifier: BSD-3-Clause
-// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import QtQuick
 import QtQuick.Controls
@@ -81,7 +81,7 @@ Rectangle {
                 EaElements.Label {
                     width: nameColumnWidth
                     font.bold: true
-                    text: parent.parameter.display_name
+                    text: parent.parameter.prettyName
                 }
                 EaElements.TextInput {
                     text: parent.parameter.value
@@ -222,7 +222,7 @@ Rectangle {
                     font.bold: true
                     text: typeof Globals.Proxies.main.project.dataBlock.loops._model === 'undefined' ?
                               '' :
-                              Globals.Proxies.main.project.dataBlock.loops._model[0].cif_file_name.display_name
+                              Globals.Proxies.main.project.dataBlock.loops._model[0].cif_file_name.prettyName
                 }
                 EaElements.Label {
                     text: typeof Globals.Proxies.main.project.dataBlock.loops._model === 'undefined' ?

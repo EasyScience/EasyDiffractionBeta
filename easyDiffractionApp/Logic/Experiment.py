@@ -1,10 +1,13 @@
 # SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
 # SPDX-License-Identifier: BSD-3-Clause
-# © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+# © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import os
+import re
 import copy
+from io import StringIO
 import numpy as np
+import time
 import pathlib
 
 from PySide6.QtCore import QObject, Signal, Slot, Property
@@ -21,7 +24,39 @@ from EasyApp.Logic.Logging import console
 from Logic.Data import Data
 
 
-_DEFAULT_DATA_BLOCK_NO_MEAS = """data_pnd
+_DEFAULT_DATA_BLOCK_NO_MEAS_TOF = """data_pnd
+
+_diffrn_radiation.probe neutron
+
+_pd_instr.2theta_bank 144.845
+_pd_instr.dtt1 7476.91
+_pd_instr.dtt2 -1.54
+_pd_instr.zero -9.24
+_pd_instr.alpha0 0.0
+_pd_instr.alpha1 0.5971
+_pd_instr.beta0 0.04221
+_pd_instr.beta1 0.00946
+_pd_instr.sigma0 0.30
+_pd_instr.sigma1 7.01
+
+loop_
+_pd_phase_block.id
+_pd_phase_block.scale
+ph 1.0
+
+loop_
+_pd_background.line_segment_X
+_pd_background.line_segment_intensity
+0 100
+150000 100
+
+loop_
+_pd_meas.time_of_flight
+_pd_meas.intensity_total
+_pd_meas.intensity_total_su
+"""
+
+_DEFAULT_DATA_BLOCK_NO_MEAS_CWL = """data_pnd
 
 _diffrn_radiation.probe neutron
 _diffrn_radiation_wavelength.wavelength 1.9
@@ -56,7 +91,7 @@ _pd_meas.intensity_total
 _pd_meas.intensity_total_su
 """
 
-_DEFAULT_DATA_BLOCK = _DEFAULT_DATA_BLOCK_NO_MEAS + """36.5 1    1
+_DEFAULT_DATA_BLOCK_CWL = _DEFAULT_DATA_BLOCK_NO_MEAS_CWL + """36.5 1    1
 37.0 10   3
 37.5 700  25
 38.0 1100 30
@@ -133,7 +168,7 @@ class Experiment(QObject):
         return self._job
 
     def defaultJob(self):
-        _, job = get_job_from_cif_string(_DEFAULT_DATA_BLOCK, interface=self._interface)
+        _, job = get_job_from_cif_string(_DEFAULT_DATA_BLOCK_CWL, interface=self._interface)
 
         return job
 
@@ -192,7 +227,7 @@ class Experiment(QObject):
     @Slot()
     def addDefaultExperiment(self):
         console.debug('Adding default experiment')
-        self.loadExperimentsFromEdCif(_DEFAULT_DATA_BLOCK)
+        self.loadExperimentsFromEdCif(_DEFAULT_DATA_BLOCK_CWL)
 
     @Slot('QVariant')
     def loadExperimentsFromResources(self, fpaths):
@@ -243,8 +278,16 @@ class Experiment(QObject):
         self._currentIndex = len(self._dataBlocksNoMeas) - 1
         if not self.defined:
             self.defined = bool(len(self._dataBlocksNoMeas))
-
         self._job.interface = self._interface
+
+        # FIXME: REMOVE HARDCODED CWL
+        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type'] = {}
+        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type']['value'] = 'cwl'
+        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type']['category'] = '_diffrn_radiation'
+        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type']['prettyCategory'] = 'radiation'
+        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type']['name'] = 'type'
+        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type']['prettyName'] = ''
+        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type']['fittable'] = False
         self.dataBlocksChanged.emit()
 
     def jobToBlock(self, job=None):
@@ -851,7 +894,7 @@ class Experiment(QObject):
         # Update the job object
         self.blocksToLoopJob(blockIdx, category, name, rowIndex, field, value)
 
-        if type(value) == float:
+        if isinstance(value, float):
             console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         else:
             console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
@@ -935,9 +978,14 @@ class Experiment(QObject):
         return True
 
     def calcDictPathByMainParam(self, blockIdx, category, name, value):
+        diffrn_radiation_type = self._dataBlocksNoMeas[blockIdx]['params']['_diffrn_radiation']['type']['value']
+        if diffrn_radiation_type == 'cwl':
+            experiment_prefix = 'pd'
+        elif diffrn_radiation_type == 'tof':
+            experiment_prefix = 'tof'
         blockName = self._dataBlocksNoMeas[blockIdx]['name']['value']
         path = ['','','']
-        path[0] = f"pd_{blockName}"
+        path[0] = f'{experiment_prefix}_{blockName}'
 
         # _diffrn_radiation_wavelength
         if category == '_diffrn_radiation_wavelength':
@@ -950,7 +998,8 @@ class Experiment(QObject):
             if name == '2theta_offset':
                 path[1] = 'offset_ttheta'
                 path[2] = 0
-                value = np.deg2rad(value)
+                if diffrn_radiation_type == 'cwl':
+                    value = np.deg2rad(value)
 
         # _pd_instr
         elif category == '_pd_instr':
@@ -986,6 +1035,36 @@ class Experiment(QObject):
                 path[1] = 'asymmetry_parameters'
                 path[2] = 3
 
+            elif name == 'dtt1':
+                path[1] = 'dtt1'
+                path[2] = 0
+            elif name == 'dtt2':
+                path[1] = 'dtt2'
+                path[2] = 0
+            elif name == 'zero':
+                path[1] = 'zero'
+                path[2] = 0
+
+            elif name in ['alpha0', 'alpha1']:
+                path[1] = 'profile_alphas'
+                path[2] = int(name[-1])
+            elif name in ['beta0', 'beta1']:
+                path[1] = 'profile_betas'
+                path[2] = int(name[-1])
+            elif name in ['sigma0', 'sigma1', 'sigma2']:  # sigma2: if profile_peak_shape == 'pseudo-Voigt'
+                path[1] = 'profile_sigmas'
+                path[2] = int(name[-1])
+            elif name in ['gamma0', 'gamma1', 'gamma2']:  # gamma0, gamma1, gamma2: if profile_peak_shape == 'pseudo-Voigt'
+                path[1] = 'profile_gammas'
+                path[2] = int(name[-1])
+
+        # _tof_background
+        elif category == '_tof_background':
+             if name.startswith('coeff'):
+                 coeff_index = int(name[5:])
+                 path[1] = 'background_coefficients'
+                 path[2] = coeff_index - 1
+
         # undefined
         else:
             console.error(f"Undefined parameter name '{category}{name}'")
@@ -993,12 +1072,19 @@ class Experiment(QObject):
         return path, value
 
     def calcDictPathByLoopParam(self, blockIdx, category, name, rowIndex, value):
+        diffrn_radiation_type = self._dataBlocksNoMeas[blockIdx]['params']['_diffrn_radiation']['type']['value']
+        if diffrn_radiation_type == 'cwl':
+            experiment_prefix = 'pd'
+        elif diffrn_radiation_type == 'tof':
+            experiment_prefix = 'tof'
         blockName = self._dataBlocksNoMeas[blockIdx]['name']['value']
         path = ['','','']
-        path[0] = f"pd_{blockName}"
+        path[0] = f"{experiment_prefix}_{blockName}"
 
         # _pd_background
         if category == '_pd_background':
+            if diffrn_radiation_type == 'cwl':
+                console.debug('Background is handeled by CrysPy')
             if name == 'line_segment_X':
                 path[1] = 'background_ttheta'
                 path[2] = rowIndex
@@ -1006,6 +1092,15 @@ class Experiment(QObject):
             if name == 'line_segment_intensity':
                 path[1] = 'background_intensity'
                 path[2] = rowIndex
+            elif diffrn_radiation_type == 'tof':
+                console.debug('Background is handeled by CrysPy')
+                if name == 'line_segment_X':
+                    path[1] = 'background_time'
+                    path[2] = rowIndex
+                    value = np.deg2rad(value)
+                if name == 'line_segment_intensity':
+                    path[1] = 'background_intensity'
+                    path[2] = rowIndex
 
         # _pd_phase_block
         if category == '_pd_phase_block':
@@ -1095,8 +1190,11 @@ class Experiment(QObject):
             block, group, idx = Data.strToCalcDictParamPath(param.name)
 
             # pd (powder diffraction) block
-            if block.startswith('pd_'):
-                blockName = block[3:]
+            if block.startswith('pd_') or block.startswith('tof_'):
+                if block.startswith('pd_'):
+                        blockName = block[3:]  # CWL
+                elif block.startswith('tof_'):
+                        blockName = block[4:]  # TOF
                 category = None
                 name = None
                 rowIndex = -1
@@ -1163,6 +1261,64 @@ class Experiment(QObject):
                     name = 'scale'
                     rowIndex = idx[0]
 
+                # zero (TOF)
+                elif group == 'zero':
+                    category = '_pd_instr'
+                    name = 'zero'
+
+                # dtt1 (TOF)
+                elif group == 'dtt1':
+                    category = '_pd_instr'
+                    name = 'dtt1'
+
+                # dtt2 (TOF)
+                elif group == 'dtt2':
+                    category = '_pd_instr'
+                    name = 'dtt2'
+
+                # profile_alphas (TOF)
+                elif group == 'profile_alphas':
+                    category = '_pd_instr'
+                    if idx[0] == 0:
+                        name = 'alpha0'
+                    elif idx[0] == 1:
+                        name = 'alpha1'
+
+                # profile_betas (TOF)
+                elif group == 'profile_betas':
+                    category = '_pd_instr'
+                    if idx[0] == 0:
+                        name = 'beta0'
+                    elif idx[0] == 1:
+                        name = 'beta1'
+
+                # profile_sigmas (TOF)
+                elif group == 'profile_sigmas':
+                    category = '_pd_instr'
+                    if idx[0] == 0:
+                        name = 'sigma0'
+                    elif idx[0] == 1:
+                        name = 'sigma1'
+                    elif idx[0] == 2:
+                        name = 'sigma2'
+
+                # background_coefficients (TOF)
+                elif group == 'background_coefficients':
+                    category = '_tof_background'
+                    name = f'coeff{idx[0]+1}'
+
+                # Unrecognized group
+                else:
+                    console.error(f'Unrecognized group {group} in parameter {param.name}')
+                    return
+
+                error = 0
+                if param.stderr is not None:
+                    if param.stderr < 1e-6:
+                        error = 1e-6  # Temporary solution to compensate for too small uncertanties after lmfit
+                    else:
+                        error = param.stderr
+
                 value = float(value)  # convert float64 to float (needed for QML access)
                 error = float(error)  # convert float64 to float (needed for QML access)
                 blockIdx = [block['name']['value'] for block in self._dataBlocksNoMeas].index(blockName)
@@ -1173,6 +1329,14 @@ class Experiment(QObject):
                 else:
                     self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'value', value)
                     self.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', error)
+
+            # Model (crystal phase) block
+            elif block.startswith('crystal_'):
+                pass
+
+            # Unknown block
+            else:
+                console.error(f'Unrecognized parameter {param.name}')
 
     def isSpinPolarized(self):
         # return self._interface.data()._cryspyDict['pd']['flags_polarization']['value']
@@ -1206,13 +1370,22 @@ class Experiment(QObject):
         #     self._proxy.fitting.chiSqStart = self._proxy.fitting.chiSq
 
     def setMeasuredArraysForSingleExperiment(self, idx):
+        diffrn_radiation_type = self.dataBlocksNoMeas[idx]['params']['_diffrn_radiation']['type']['value']
+        if diffrn_radiation_type == 'cwl':
+            experiment_prefix = 'pd'
+            x_array_name = 'ttheta'
+        elif diffrn_radiation_type == 'tof':
+            experiment_prefix = 'tof'
+            x_array_name = 'time'
+
         ed_name = self._dataBlocksNoMeas[idx]['name']['value']
-        calc_block_name = f'pd_{ed_name}'
+        calc_block_name = f'{experiment_prefix}_{ed_name}'
         calcInOutDict = self._interface.data()._inOutDict
 
         # X data
-        x_array = calcInOutDict[calc_block_name]['ttheta']
-        x_array = np.rad2deg(x_array)
+        x_array = calcInOutDict[calc_block_name][x_array_name]
+        if diffrn_radiation_type == 'cwl':
+            x_array = np.rad2deg(x_array)
         self.setXArray(x_array, idx)
 
         # Measured Y data
@@ -1223,13 +1396,28 @@ class Experiment(QObject):
         sy_meas_array = calcInOutDict[calc_block_name]['signal_exp'][1]
         self.setSYMeasArray(sy_meas_array, idx)
 
+    def calculatedYBkgArray(self, cryspy_block_idx, cryspy_block_name, x_array_name):
+        cryspyInOutDict =  self._interface.data()._inOutDict
+        y_array_name = 'signal_background'
+        y_bkg_array = cryspyInOutDict[cryspy_block_name][y_array_name]
+        return y_bkg_array
+
     def setCalculatedArraysForSingleExperiment(self, idx):
+        diffrn_radiation_type = self.dataBlocksNoMeas[idx]['params']['_diffrn_radiation']['type']['value']
+        if diffrn_radiation_type == 'cwl':
+            experiment_prefix = 'pd'
+            x_array_name = 'ttheta'
+        elif diffrn_radiation_type == 'tof':
+            experiment_prefix = 'tof'
+            x_array_name = 'time'
         ed_name = self._dataBlocksNoMeas[idx]['name']['value']
-        calc_block_name = f'pd_{ed_name}'
+        calc_block_name = f'{experiment_prefix}_{ed_name}'
         calcInOutDict = self._interface.data()._inOutDict
 
+        if 'signal_plus' not in list(calcInOutDict[calc_block_name].keys()):
+            return
         # Background Y data # NED FIX: use calculatedYBkgArray()
-        y_bkg_array = calcInOutDict[calc_block_name]['signal_background']
+        y_bkg_array = self.calculatedYBkgArray(idx, calc_block_name, x_array_name)
         self.setYBkgArray(y_bkg_array, idx)
 
         # Total calculated Y data (sum of all phases up and down polarisation plus background)
@@ -1249,8 +1437,9 @@ class Experiment(QObject):
         modelNames = [key[12:] for key in calcInOutDict[calc_block_name].keys() if 'dict_in_out' in key]
         xBraggDict = {}
         for modelName in modelNames:
-            x_bragg_array = calcInOutDict[calc_block_name][f'dict_in_out_{modelName}']['ttheta_hkl']
-            x_bragg_array = np.rad2deg(x_bragg_array)
+            x_bragg_array = calcInOutDict[calc_block_name][f'dict_in_out_{modelName}'][f'{x_array_name}_hkl']
+            if diffrn_radiation_type == 'cwl':
+                x_bragg_array = np.rad2deg(x_bragg_array)
             xBraggDict[modelName] = x_bragg_array
         self.setXBraggDict(xBraggDict, idx)
 

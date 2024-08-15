@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
+// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors <support@easydiffraction.org>
 // SPDX-License-Identifier: BSD-3-Clause
-// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import QtQuick
 import QtQuick.Controls
@@ -16,9 +16,19 @@ import Gui.Globals as Globals
 EaCharts.QtCharts1dMeasVsCalc {
     id: chart
 
+    property var experimentDataBlocksNoMeas: Globals.Proxies.main.experiment.dataBlocksNoMeas
+    onExperimentDataBlocksNoMeasChanged: {
+        if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+            axisX.title = '2θ (degree)'
+        } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+            axisX.title = 'TOF (µs)'
+        } else {
+            axisX.title = ''
+        }
+    }
+
     useOpenGL: EaGlobals.Vars.useOpenGL //Globals.Proxies.main.plotting.useWebGL1d
 
-    axisX.title: "2θ (degree)"
     axisX.min: parameterValue('xMin')
     axisX.max: parameterValue('xMax')
 

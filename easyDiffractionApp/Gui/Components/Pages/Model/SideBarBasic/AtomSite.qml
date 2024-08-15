@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2022 easyDiffraction contributors <support@easydiffraction.org>
+// SPDX-FileCopyrightText: 2023 EasyDiffraction contributors <support@easydiffraction.org>
 // SPDX-License-Identifier: BSD-3-Clause
-// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+// © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
 import QtQuick
 import QtQuick.Controls
@@ -49,7 +49,7 @@ EaElements.GroupColumn {
                 flexibleWidth: true
                 horizontalAlignment: Text.AlignLeft
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.modelLoopParam('_atom_site', 'label', 0).shortPrettyName ?? ''
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'label', 0).shortPrettyName ?? ''  // NEED FIX
             }
 
             EaComponents.TableViewLabel {
