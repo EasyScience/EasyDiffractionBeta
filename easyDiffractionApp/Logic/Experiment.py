@@ -280,16 +280,6 @@ class Experiment(QObject):
             self.defined = bool(len(self._dataBlocksNoMeas))
         self._job.interface = self._interface
 
-        # FIXME: REMOVE HARDCODED CWL
-        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type'] = {}
-        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type']['value'] = 'cwl'
-        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type']['category'] = '_diffrn_radiation'
-        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type']['prettyCategory'] = 'radiation'
-        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type']['name'] = 'type'
-        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type']['prettyName'] = ''
-        self._dataBlocksNoMeas[0]['params']['_diffrn_radiation']['type']['fittable'] = False
-        self.dataBlocksChanged.emit()
-
     def jobToBlock(self, job=None):
         '''
         Convert a Job object to a list of data blocks, without the measured data
@@ -310,6 +300,17 @@ class Experiment(QObject):
         dataBlock[param][category][name] = dict(Parameter(
                         value = 'neutron',  # This needs proper parsing in the library
                         permittedValues = ['neutron', 'x-ray'],
+                        category = category,
+                        name = name,
+                        shortPrettyName = name,
+                        url = url + category,
+                        cifDict = cifDict
+                    ))
+        name = 'type'
+        dataBlock[param][category][name] = dict(Parameter(
+                        value = 'cwl',  # This needs proper parsing in the library
+                        permittedValues = ['cwl', 'tof'],
+                        optional = True,
                         category = category,
                         name = name,
                         shortPrettyName = name,
