@@ -278,6 +278,7 @@ class Experiment(QObject):
         self._currentIndex = len(self._dataBlocksNoMeas) - 1
         if not self.defined:
             self.defined = bool(len(self._dataBlocksNoMeas))
+        self.dataBlocksChanged.emit()
         self._job.interface = self._interface
 
     def jobToBlock(self, job=None):
