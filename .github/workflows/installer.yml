@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04]  # [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]
+        os: [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]  # [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]
 
     steps:
       - name: Check-out repository
@@ -87,7 +87,6 @@ jobs:
           sudo apt-get install libegl1-mesa-dev
           Xvfb :0 -screen 0 1920x1080x24 -ac &
           echo "DISPLAY=:0" >> $GITHUB_ENV
-          ldd --version
 
       # Method 1:
       # Not working since Oct 2023. VMware is replaced by VirtualBox
@@ -221,7 +220,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04]  # [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]
+        os: [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]  # [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]
 
     steps:
       - name: Check-out repository
