@@ -5,6 +5,7 @@
 import copy
 import lmfit
 import numpy as np
+from funcy import print_durations
 
 from PySide6.QtCore import QObject, Signal, Slot, Property, QThreadPool
 
@@ -202,15 +203,21 @@ class Worker(QObject):
 
         tol = self._proxy.fitting.minimizerTol
         method = self._proxy.fitting.minimizerMethod.lower()
+
+        @print_durations()
+        def minimize(method=method, **kwargs):
+            result = mini.minimize(method=method, **kwargs)
+            return result
+
         if method in ['leastsq', 'least_squares']:
             self._iterStart == -1
-            result = mini.minimize(method=method,
-                                   ftol=tol,
-                                   xtol=tol)
+            result = minimize(method=method,
+                              ftol=tol,
+                              xtol=tol)
         elif method in ['bfgs', 'lbfgsb', 'l-bfgs-b']:
             self._iterStart == 1
-            result = mini.minimize(method=method,
-                                   tol=tol)
+            result = minimize(method=method,
+                              tol=tol)
         else:
             self.finished.emit()
             console.error(f'Optimization method {method} is not supported.')

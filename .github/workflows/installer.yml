@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]  # [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
+        os: [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]  # [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]
 
     steps:
       - name: Check-out repository
@@ -220,7 +220,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]  # [ubuntu-22.04, windows-2022, macos-13, flyci-macos-14-m2]
+        os: [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]  # [ubuntu-22.04, ubuntu-24.04, windows-2022, macos-13, macos-14]
 
     steps:
       - name: Check-out repository

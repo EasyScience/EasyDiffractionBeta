@@ -8,7 +8,7 @@ build-backend = "hatchling.build"
 # Note that while the project is called EasyDiffractionApp
 # the application itself is EasyDiffraction.
 name = 'easyDiffractionApp'
-version = '0.9.5'
+version = '0.9.6'
 description = 'Making diffraction data analysis and modelling easy.'
 authors = [
   {name = "Andrew Sazonov", email = "andrew.sazonov@ess.eu"}
@@ -30,7 +30,8 @@ dependencies = [
     'scipy<1.14',
     'lmfit',
     'orjson',
-    'cryspy @ git+https://github.com/ikibalin/cryspy.git@beta',
+    'funcy',
+    'cryspy @ git+https://github.com/ikibalin/cryspy.git@sigma2',
     'EasyApp @ git+https://github.com/easyscience/EasyApp.git@new-easy-app2'
 ]
 

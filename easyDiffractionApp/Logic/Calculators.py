@@ -1200,62 +1200,68 @@ class CryspyParser:
                                 fittable = True,
                                 fit = item.sigma1_refinement
                             ))
-                            #ed_experiment_no_meas['params']['_pd_instr']['sigma2'] = dict(Parameter(
-                            #    item.sigma2,
-                            #    error = item.sigma2_sigma,
-                            #    category = '_pd_instr',
-                            #    prettyCategory = 'inst',
-                            #    name = 'sigma2',
-                            #    prettyName = 'sigma2',
-                            #    shortPrettyName = 'σ2',
-                            #    icon = 'shapes',
-                            #    url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                            #    absDelta = 0.5,
-                            #    fittable = True,
-                            #    fit = item.sigma2_refinement
-                            #))
-                            #ed_experiment_no_meas['params']['_pd_instr']['gamma0'] = dict(Parameter(
-                            #    item.gamma0,
-                            #    error = item.gamma0_sigma,
-                            #    category = '_pd_instr',
-                            #    prettyCategory = 'inst',
-                            #    name = 'gamma0',
-                            #    prettyName = 'gamma0',
-                            #    shortPrettyName = 'γ0',
-                            #    icon = 'shapes',
-                            #    url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                            #    absDelta = 0.5,
-                            #    fittable = True,
-                            #    fit = item.gamma0_refinement
-                            #))
-                            #ed_experiment_no_meas['params']['_pd_instr']['gamma1'] = dict(Parameter(
-                            #    item.gamma1,
-                            #    error = item.gamma1_sigma,
-                            #    category = '_pd_instr',
-                            #    prettyCategory = 'inst',
-                            #    name = 'gamma1',
-                            #    prettyName = 'gamma1',
-                            #    shortPrettyName = 'γ1',
-                            #    icon = 'shapes',
-                            #    url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                            #    absDelta = 0.5,
-                            #    fittable = True,
-                            #    fit = item.gamma1_refinement
-                            #))
-                            #ed_experiment_no_meas['params']['_pd_instr']['gamma2'] = dict(Parameter(
-                            #    item.gamma2,
-                            #    error = item.gamma2_sigma,
-                            #    category = '_pd_instr',
-                            #    prettyCategory = 'inst',
-                            #    name = 'gamma2',
-                            #    prettyName = 'gamma2',
-                            #    shortPrettyName = 'γ2',
-                            #    icon = 'shapes',
-                            #    url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                            #    absDelta = 0.5,
-                            #    fittable = True,
-                            #    fit = item.gamma2_refinement
-                            #))
+                        if hasattr(item, 'sigma2'):
+                            if not '_pd_instr' in ed_experiment_no_meas['params']:
+                                ed_experiment_no_meas['params']['_pd_instr'] = {}
+                            ed_experiment_no_meas['params']['_pd_instr']['sigma2'] = dict(Parameter(
+                                item.sigma2,
+                                error = item.sigma2_sigma,
+                                category = '_pd_instr',
+                                prettyCategory = 'inst',
+                                name = 'sigma2',
+                                prettyName = 'sigma2',
+                                shortPrettyName = 'σ2',
+                                icon = 'shapes',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = item.sigma2_refinement
+                            ))
+                        if hasattr(item, 'gamma0') and hasattr(item, 'gamma1') and hasattr(item, 'gamma2'):
+                            if not '_pd_instr' in ed_experiment_no_meas['params']:
+                                ed_experiment_no_meas['params']['_pd_instr'] = {}
+                            ed_experiment_no_meas['params']['_pd_instr']['gamma0'] = dict(Parameter(
+                                item.gamma0,
+                                error = item.gamma0_sigma,
+                                category = '_pd_instr',
+                                prettyCategory = 'inst',
+                                name = 'gamma0',
+                                prettyName = 'gamma0',
+                                shortPrettyName = 'γ0',
+                                icon = 'shapes',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = item.gamma0_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_pd_instr']['gamma1'] = dict(Parameter(
+                                item.gamma1,
+                                error = item.gamma1_sigma,
+                                category = '_pd_instr',
+                                prettyCategory = 'inst',
+                                name = 'gamma1',
+                                prettyName = 'gamma1',
+                                shortPrettyName = 'γ1',
+                                icon = 'shapes',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = item.gamma1_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_pd_instr']['gamma2'] = dict(Parameter(
+                                item.gamma2,
+                                error = item.gamma2_sigma,
+                                category = '_pd_instr',
+                                prettyCategory = 'inst',
+                                name = 'gamma2',
+                                prettyName = 'gamma2',
+                                shortPrettyName = 'γ2',
+                                icon = 'shapes',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = item.gamma2_refinement
+                            ))
 
                     # Cryspy background section (TOF, points)
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_tof_background_by_points.TOFBackgroundPointL:
