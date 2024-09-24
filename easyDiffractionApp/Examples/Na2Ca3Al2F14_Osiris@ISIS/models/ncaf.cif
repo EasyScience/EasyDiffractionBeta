@@ -1,6 +1,6 @@
 data_ncaf
 
-_cell.length_a 10.2515
+_cell.length_a 10.2533(1)
 _cell.length_b 10.2515
 _cell.length_c 10.2515
 _cell.angle_alpha 90.0
@@ -19,9 +19,9 @@ _atom_site.fract_z
 _atom_site.occupancy
 _atom_site.ADP_type
 _atom_site.B_iso_or_equiv
-Ca Ca 0.4675(3) 0.0 0.25 1.0 Biso 0.36(7)
-Al Al 0.24896 0.24896 0.24896 1.0 Biso 0.32(8)
-Na Na 0.08606 0.08606 0.08606 1.0 Biso 1.4(1)
-F1 F 0.1375(2) 0.3052(2) 0.1209(2) 1.0 Biso 0.46(6)
-F2 F 0.3632(2) 0.3624(2) 0.1863(2) 1.0 Biso 0.97(6)
-F3 F 0.46094 0.46094 0.46094 1.0 Biso 0.01(7)
+Ca Ca 0.4678(3) 0.0 0.25 1.0 Biso 0.25(6)
+Al Al 0.24896 0.24896 0.24896 1.0 Biso 0.15(7)
+Na Na 0.08606 0.08606 0.08606 1.0 Biso 1.5(1)
+F1 F 0.1381(2) 0.3057(2) 0.1207(2) 1.0 Biso 0.42(5)
+F2 F 0.3627(2) 0.3629(2) 0.1868(2) 1.0 Biso 0.90(5)
+F3 F 0.46094 0.46094 0.46094 1.0 Biso 0.05(7)
