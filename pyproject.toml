@@ -31,8 +31,8 @@ dependencies = [
     'lmfit',
     'orjson',
     'funcy',
-    'cryspy @ git+https://github.com/ikibalin/cryspy.git@beta',
-    'EasyApp @ git+https://github.com/easyscience/EasyApp.git@new-easy-app2'
+    'cryspy @ git+https://github.com/ikibalin/cryspy.git@sigma2',
+    'EasyApp @ git+https://github.com/easyscience/EasyApp.git@master'
 ]
 
 [project.optional-dependencies]

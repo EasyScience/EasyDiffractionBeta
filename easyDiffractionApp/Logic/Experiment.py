@@ -42,6 +42,7 @@ _pd_instr.beta0 0.04221
 _pd_instr.beta1 0.00946
 _pd_instr.sigma0 0.30
 _pd_instr.sigma1 7.01
+_pd_instr.sigma2 0.0
 
 loop_
 _pd_phase_block.id
@@ -393,6 +394,7 @@ class Experiment(QObject):
             edRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
         elif 'time_of_flight' in edCif:
             edCif += '\n\n_pd_instr.peak_shape Gauss'
+            #edCif += '\n_pd_instr.peak_shape pseudo-Voigt'
             diffrn_radiation_type = 'tof'
             experiment_prefix = 'tof'
             ###time_max = currentDataBlock['params']['_tof_background']['time_max']['value']
