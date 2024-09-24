@@ -10,7 +10,7 @@ _pd_instr.beta0 0.00670(3)
 _pd_instr.beta1 0.0100(3)
 _pd_instr.sigma0 0.0
 _pd_instr.sigma1 0.0
-_pd_instr.sigma2 3.96(10)
+_pd_instr.sigma2 15.7(8)
 
 _diffrn_radiation.probe neutron
 
@@ -25,10 +25,10 @@ _pd_background.X_coordinate
 16454.75 533(17) time-of-flight
 17352.281 496(14) time-of-flight
 18743.455 428(10) time-of-flight
-20179.508 453(10) time-of-flight
+20179.508 452(10) time-of-flight
 21368.736 397(9) time-of-flight
-22176.04 469(12) time-of-flight
-22827.227 478(9) time-of-flight
+22176.04 468(12) time-of-flight
+22827.227 477(9) time-of-flight
 24644.729 380(6) time-of-flight
 26439.791 381(5) time-of-flight
 28257.293 378(4) time-of-flight
