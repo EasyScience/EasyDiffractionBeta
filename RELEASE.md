@@ -2,4 +2,4 @@ This is a test version of EasyDiffraction with improved GUI and overall performa
 
 ### New Features
 
-- The number of parameters describing the time-of-flight (TOF) peak profile has now been extended by sigma2
+- Single-crystal diffraction option for constant wavelength data is now implemented.
