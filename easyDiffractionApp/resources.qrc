@@ -17,15 +17,17 @@
         <file>Gui/Components/Pages/Experiment/MainContent/QtCharts1dTab.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/DiffrnRadiation.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/Experiments.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground_TOF.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrPeakAsymm_CWL.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_CWL.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_TOF.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_CWL.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_TOF.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_CWL.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_TOF.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground_PD.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground_PD-TOF-poli.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrPeakAsymm_PD-CWL.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_PD-CWL.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_PD-TOF.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_PD-CWL.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_PD-TOF.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_SG.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/Extinction_SG.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_PD-CWL.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_PD-TOF.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/Phase.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarText/Experiments.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarText/TextView.qml</file>

@@ -13,6 +13,15 @@ import Gui.Globals as Globals
 
 
 EaElements.GroupColumn {
+    property string phaseKey: {
+        if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd') {
+            return '_pd_phase_block'
+        } else if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'sg') {
+            return '_exptl_crystal'
+        } else {
+            return ''
+        }
+    }
 
     // Table
     EaComponents.TableView {
@@ -23,9 +32,27 @@ EaElements.GroupColumn {
         // Table model
         // We only use the length of the model object defined in backend logic and
         // directly access that model in every row using the TableView index property.
-        model: typeof Globals.Proxies.main.experiment.dataBlocksNoMeas[Globals.Proxies.main.experiment.currentIndex] === 'undefined' ?
-            [] :
-            Globals.Proxies.main.experiment.dataBlocksNoMeas[Globals.Proxies.main.experiment.currentIndex].loops._pd_phase_block
+        model: {
+            if (typeof Globals.Proxies.main.experiment.dataBlocksNoMeas[
+                        Globals.Proxies.main.experiment.currentIndex] === 'undefined') {
+                return []
+            }
+            if (typeof Globals.Proxies.main.experiment.dataBlocksNoMeas[
+                        Globals.Proxies.main.experiment.currentIndex].loops._pd_phase_block !== 'undefined') {
+                return Globals.Proxies.main.experiment.dataBlocksNoMeas[
+                    Globals.Proxies.main.experiment.currentIndex].loops._pd_phase_block
+            } else if (typeof Globals.Proxies.main.experiment.dataBlocksNoMeas[
+                           Globals.Proxies.main.experiment.currentIndex].loops._exptl_crystal !== 'undefined') {
+                return Globals.Proxies.main.experiment.dataBlocksNoMeas[
+                            Globals.Proxies.main.experiment.currentIndex].loops._exptl_crystal
+            } else {
+                console.error('No phase names found')
+                return []
+            }
+        }
+            //typeof Globals.Proxies.main.experiment.dataBlocksNoMeas[Globals.Proxies.main.experiment.currentIndex] === 'undefined' ?
+            //[] :
+            //Globals.Proxies.main.experiment.dataBlocksNoMeas[Globals.Proxies.main.experiment.currentIndex].loops._pd_phase_block
         // Table model
 
         // Header row
@@ -45,14 +72,14 @@ EaElements.GroupColumn {
                 width: EaStyle.Sizes.fontPixelSize * 6.0
                 horizontalAlignment: Text.AlignLeft
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.experimentLoopParam('_pd_phase_block', 'id', 0).shortPrettyName ?? ''  // 0 = 1st element index
+                text: Globals.Proxies.experimentLoopParam(phaseKey, 'id', 0).shortPrettyName ?? ''  // 0 = 1st element index
             }
 
             EaComponents.TableViewLabel {
                 width: EaStyle.Sizes.fontPixelSize * 4.0
                 horizontalAlignment: Text.AlignHCenter
                 color: EaStyle.Colors.themeForegroundMinor
-                text: Globals.Proxies.experimentLoopParam('_pd_phase_block', 'scale', 0).shortPrettyName ?? ''  // 0 = 1st element index
+                text: Globals.Proxies.experimentLoopParam(phaseKey, 'scale', 0).shortPrettyName ?? ''  // 0 = 1st element index
             }
 
             EaComponents.TableViewLabel {
@@ -85,12 +112,12 @@ EaElements.GroupColumn {
 
             EaComponents.TableViewParameter {
                 readOnly: true
-                parameter: Globals.Proxies.experimentLoopParam('_pd_phase_block', 'id', index)
+                parameter: Globals.Proxies.experimentLoopParam(phaseKey, 'id', index)
                 onEditingFinished: Globals.Proxies.setExperimentLoopParamWithFullUpdate(parameter, 'value', text)
             }
 
             EaComponents.TableViewParameter {
-                parameter: Globals.Proxies.experimentLoopParam('_pd_phase_block', 'scale', index)
+                parameter: Globals.Proxies.experimentLoopParam(phaseKey, 'scale', index)
                 onEditingFinished: Globals.Proxies.setExperimentLoopParam(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setExperimentLoopParam(parameter, 'fit', fitCheckBox.checked)
             }

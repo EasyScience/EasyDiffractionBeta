@@ -100,24 +100,39 @@ class Worker(QObject):
         totalResid = np.empty(0)
         for dataBlock in self._proxy.experiment.dataBlocksNoMeas:
             diffrn_radiation_type = dataBlock['params']['_diffrn_radiation']['type']['value']
-            if diffrn_radiation_type == 'cwl':
+            sample_type = dataBlock['params']['_sample']['type']['value']
+
+            if diffrn_radiation_type == 'cwl' and sample_type == 'pd':
                 experiment_prefix = 'pd'
-            elif diffrn_radiation_type == 'tof':
+            elif diffrn_radiation_type == 'tof' and sample_type == 'pd':
                 experiment_prefix = 'tof'
+            elif diffrn_radiation_type == 'cwl' and sample_type == 'sg':
+                experiment_prefix = 'diffrn'
 
             ed_name = dataBlock['name']['value']
             cryspy_name = f'{experiment_prefix}_{ed_name}'
             cryspyInOutDict = self._proxy.data._cryspyInOutDict
+            cryspyDict = self._proxy.data._cryspyDict
 
-            y_meas_array = cryspyInOutDict[cryspy_name]['signal_exp'][0]
-            sy_meas_array = cryspyInOutDict[cryspy_name]['signal_exp'][1]
-            y_bkg_array = cryspyInOutDict[cryspy_name]['signal_background']
-            y_calc_all_phases_array = cryspyInOutDict[cryspy_name]['signal_plus'] + \
-                                      cryspyInOutDict[cryspy_name]['signal_minus']
-            y_calc_all_phases_array_with_bkg = y_calc_all_phases_array + y_bkg_array
+            if sample_type == 'sg':
+                y_meas_array = cryspyDict[cryspy_name]['intensity_es'][0]
+                sy_meas_array = cryspyDict[cryspy_name]['intensity_es'][1]
+                y_calc_array = cryspyInOutDict[cryspy_name]['intensity_calc']
 
-            resid = (y_calc_all_phases_array_with_bkg - y_meas_array) / sy_meas_array
-            totalResid = np.append(totalResid, resid)
+                resid = (y_meas_array - y_calc_array) / sy_meas_array
+                totalResid = np.append(totalResid, resid)
+
+            elif sample_type == 'pd':
+                y_meas_array = cryspyInOutDict[cryspy_name]['signal_exp'][0]
+                sy_meas_array = cryspyInOutDict[cryspy_name]['signal_exp'][1]
+                y_bkg_array = cryspyInOutDict[cryspy_name]['signal_background']
+                y_calc_all_phases_array = cryspyInOutDict[cryspy_name]['signal_plus'] + \
+                                          cryspyInOutDict[cryspy_name]['signal_minus']
+                y_calc_all_phases_array_with_bkg = y_calc_all_phases_array + y_bkg_array
+
+                #resid = (y_calc_all_phases_array_with_bkg - y_meas_array) / sy_meas_array
+                resid = (y_meas_array - y_calc_all_phases_array_with_bkg) / sy_meas_array
+                totalResid = np.append(totalResid, resid)
 
         return totalResid
 
@@ -392,8 +407,8 @@ class Fitting(QObject):
         else:
             if self._proxy.fittables._freeParamsCount > 0:
                 self.isFittingNow = True
-                #self._worker.runLmfit()
-                self._threadpool.start(self._worker.runLmfit)
+                self._worker.runLmfit()
+                #self._threadpool.start(self._worker.runLmfit)
                 console.debug('Minimization process has been started in a separate thread')
             else:
                 self._proxy.status.fitStatus = 'No free params'
