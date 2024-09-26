@@ -74,11 +74,11 @@ _EXAMPLES = [
         'description': 'neutrons, powder, time-of-flight, SEPD@Argonne',
         'path': ':/Examples/Si_SEPD@Argonne/project.cif'
      },
-     {
-        'name': 'CeCuAl3 (Polaris)',
-        'description': 'neutrons, powder, time-of-flight, Polaris@ISIS',
-        'path': ':/Examples/CeCuAl3_Polaris@ISIS/project.cif'
-     },
+     #{
+     #   'name': 'CeCuAl3 (Polaris)',
+     #   'description': 'neutrons, powder, time-of-flight, Polaris@ISIS',
+     #   'path': ':/Examples/CeCuAl3_Polaris@ISIS/project.cif'
+     #},
      {
         'name': 'Na2Ca3Al2F14 (Osiris)',
         'description': 'neutrons, powder, time-of-flight, Osiris@ISIS',
@@ -88,6 +88,11 @@ _EXAMPLES = [
         'name': 'Na2Ca3Al2F14 (WISH)',
         'description': 'neutrons, powder, time-of-flight, WISH@ISIS',
         'path': ':/Examples/Na2Ca3Al2F14_WISH@ISIS/project.cif'
+     },
+     {
+        'name': 'CeO2 (iMATERIA)',
+        'description': 'neutrons, powder, time-of-flight, iMATERIA@J-PARC',
+        'path': ':/Examples/CeO2_iMATERIA@J-PARC/project.cif'
      },
      {
         'name': 'Tb2Ti2O7 (HEiDi)',

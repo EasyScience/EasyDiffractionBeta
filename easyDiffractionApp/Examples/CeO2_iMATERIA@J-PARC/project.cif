@@ -1,0 +1,11 @@
+data_ceo
+
+_project.description "neutrons, powder, time-of-flight, iMATERIA@J-PARC"
+
+loop_
+_model.cif_file_name
+ceo.cif
+
+loop_
+_experiment.cif_file_name
+imateria.cif
