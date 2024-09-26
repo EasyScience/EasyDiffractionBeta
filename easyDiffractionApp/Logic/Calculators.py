@@ -164,7 +164,8 @@ class CryspyParser:
                             continue
 
                         if isinstance(value, (float, int)):  # If parameter is number
-                            value = np.float32(value)  # Simplifies output
+                            if isinstance(value, float):
+                                value = np.float32(value)  # Simplifies output
                             if param["fit"]:
                                 error = param["error"]
                                 #error = np.float32(error)  # Simplifies output
@@ -173,7 +174,7 @@ class CryspyParser:
                                 else:
                                     _, _, paramStr = IO.toStdDevSmalestPrecision(value, error) # Adds brackets with standard uncertainty for free params
                             else:
-                                paramStr = str(value)  # Keeps 32bit presicion format in contrast to f'{...}'
+                                paramStr = str(value)  # Keeps 32bit precision format in contrast to f'{...}'
                         elif isinstance(value, str):  # If parameter is of string type
                             if ' ' in value:  # Adds quotes to text with spaces, e.g. P n m a -> "P n m a"
                                 paramStr = f'"{value}"'
@@ -188,10 +189,11 @@ class CryspyParser:
                     cif += f'{line}\n'
         cif = cif.strip()
         cif = cif.replace('\n\n\n', '\n\n')
+        cif = cif.replace('\n\n\n', '\n\n')
         return cif
 
     @staticmethod
-    def edCifToCryspyCif(edCif, diffrn_radiation_type='cwl'):
+    def edCifToCryspyCif(edCif, experiment_type='pd-cwl'):
         rawToEdNamesCif = {
             '_symmetry_space_group_name_H-M': '_space_group.name_H-M_alt',
             '_atom_site_thermal_displace_type': '_atom_site.ADP_type',
@@ -210,7 +212,7 @@ class CryspyParser:
             '_model.cif_file_name': '_model_cif_file_name',
             '_experiment.cif_file_name': '_experiment_cif_file_name'
         }
-        edToCryspyNamesMap['cwl'] = {
+        edToCryspyNamesMap['pd-cwl'] = {
             '_diffrn_radiation_wavelength.wavelength': '_setup_wavelength',
 
             '_pd_calib.2theta_offset': '_setup_offset_2theta',
@@ -240,7 +242,7 @@ class CryspyParser:
             '_pd_background.X_coordinate': '_pd_background_X_coordinate',
 
         }
-        edToCryspyNamesMap['tof'] = {
+        edToCryspyNamesMap['pd-tof'] = {
             '_pd_instr.zero': '_tof_parameters_Zero',
             '_pd_instr.dtt1': '_tof_parameters_Dtt1',
             '_pd_instr.dtt2': '_tof_parameters_dtt2',
@@ -272,6 +274,22 @@ class CryspyParser:
             '_pd_meas.tof_range_min': '_range_time_min',
             '_pd_meas.tof_range_max': '_range_time_max',
         }
+        edToCryspyNamesMap['sg-cwl'] = {
+            '_diffrn_radiation_wavelength.wavelength': '_setup_wavelength',
+
+            '_extinction.model': '_extinction_model',
+            '_extinction.mosaicity': '_extinction_mosaicity',
+            '_extinction.radius': '_extinction_radius',
+
+            #'_exptl_crystal.id': '_phase_label',
+            #'_exptl_crystal.scale': '_phase_scale',
+
+            '_refln.index_h': '_diffrn_refln_index_h',
+            '_refln.index_k':  '_diffrn_refln_index_k',
+            '_refln.index_l':  '_diffrn_refln_index_l',
+            '_refln.intensity_meas_su': '_diffrn_refln_intensity_sigma',  # before _refln.intensity_meas!
+            '_refln.intensity_meas': '_diffrn_refln_intensity',
+        }
         edToCryspyValuesMap = {
             'x-ray': 'X-rays',
             'neutron': 'neutrons',
@@ -282,7 +300,7 @@ class CryspyParser:
             cryspyCif = cryspyCif.replace(rawName, edName)
         for edName, cryspyName in edToCryspyNamesMap['base'].items():
             cryspyCif = cryspyCif.replace(edName, cryspyName)
-        for edName, cryspyName in edToCryspyNamesMap[diffrn_radiation_type].items():
+        for edName, cryspyName in edToCryspyNamesMap[experiment_type].items():
             cryspyCif = cryspyCif.replace(edName, cryspyName)
         for edValue, cryspyValue in edToCryspyValuesMap.items():
             cryspyCif = cryspyCif.replace(edValue, cryspyValue)
@@ -720,7 +738,11 @@ class CryspyParser:
     def cryspyObjAndDictToEdExperiments(cryspy_obj, cryspy_dict):  # NEED to be modified similar to cryspyObjAndDictToEdModels -> cryspyObjToEdModels
 
         experiment_names = []
-        exp_substrings = ['pd_', 'tof_', 'data_']  # possible experiment prefixes
+        # possible experiment prefixes
+        exp_substrings = ['pd_',  # 'pd-cwl
+                          'tof_',  # 'pd-tof'
+                          'diffrn_',  # 'sg-cwl'
+                          'data_']
         # get experiment names from cryspy_dict
         for key in cryspy_dict.keys():
             for substring in exp_substrings:
@@ -756,9 +778,10 @@ class CryspyParser:
 
                     # DATABLOCK SINGLES
 
-                    # Ranges category (CWL)
+                    # Ranges category
                     if type(item) == cryspy.C_item_loop_classes.cl_1_range.Range:
                         ed_experiment_no_meas['params']['_pd_meas'] = {}
+                        # pd-cwl ranges
                         if hasattr(item, 'ttheta_min') and hasattr(item, 'ttheta_max'):
                             ed_experiment_no_meas['params']['_pd_meas']['2theta_range_min'] = dict(Parameter(
                                 item.ttheta_min,
@@ -790,7 +813,7 @@ class CryspyParser:
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/',
                                 cifDict = 'pd'
                             ))
-                        # Ranges category (TOF)
+                        # pd-tof ranges
                         elif hasattr(item, 'time_min') and hasattr(item, 'time_max'):
                             ed_experiment_no_meas['params']['_pd_meas']['tof_range_min'] = dict(Parameter(
                                 item.time_min,
@@ -825,7 +848,8 @@ class CryspyParser:
 
                     # DATABLOCK SINGLES
 
-                    # Phases section
+                    # Phase(s) section
+                    # pd-cwl and pd-tof phases
                     if type(item) is cryspy.C_item_loop_classes.cl_1_phase.PhaseL:
                         cryspy_phases = item.items
                         ed_phases = []
@@ -860,6 +884,41 @@ class CryspyParser:
                             ))
                             ed_phases.append(ed_phase)
                         ed_experiment_no_meas['loops']['_pd_phase_block'] = ed_phases
+                    # sg-cwl phase
+                    elif type(item) is cryspy.C_item_loop_classes.cl_1_phase.Phase:
+                        cryspy_phases = [item]
+                        ed_phases = []
+                        for idx, cryspy_phase in enumerate(cryspy_phases):
+                            ed_phase = {}
+                            ed_phase['id'] = dict(Parameter(
+                                cryspy_phase.label,
+                                idx = idx,
+                                category = '_exptl_crystal',
+                                name = 'id',
+                                shortPrettyName = 'label',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_phase/',
+                                cifDict = 'core'
+                            ))
+                            ed_phase['scale'] = dict(Parameter(
+                                cryspy_phase.scale,
+                                error = cryspy_phase.scale_sigma,
+                                idx = idx,
+                                category = '_exptl_crystal',
+                                prettyCategory = 'phase',
+                                rowName = cryspy_phase.label,
+                                name = 'scale',
+                                prettyName = 'scale',
+                                shortPrettyName = 'scale',
+                                icon = 'weight',
+                                categoryIcon = 'layer-group',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_phase/',
+                                cifDict = 'core',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = cryspy_phase.scale_refinement
+                            ))
+                            ed_phases.append(ed_phase)
+                        ed_experiment_no_meas['loops']['_exptl_crystal'] = ed_phases
 
                     # Cryspy setup section (TOF/CWL)
                     elif type(item) == cryspy.C_item_loop_classes.cl_1_setup.Setup:
@@ -912,6 +971,51 @@ class CryspyParser:
                                 units = '°',
                                 fittable = True,
                                 fit = item.offset_ttheta_refinement
+                            ))
+
+                    # Cryspy extinction parameters section
+                    # sg-cwl
+                    elif type(item) is cryspy.C_item_loop_classes.cl_1_extinction.Extinction:
+                        if hasattr(item, 'model') and hasattr(item, 'mosaicity') and hasattr(item, 'radius'):
+                            if not '_extinction' in ed_experiment_no_meas['params']:
+                                ed_experiment_no_meas['params']['_extinction'] = {}
+                            ed_experiment_no_meas['params']['_extinction']['model'] = dict(Parameter(
+                                item.model,
+                                category = '_extinction',
+                                prettyCategory = 'ext',
+                                name = 'model',
+                                prettyName = 'model',
+                                shortPrettyName = 'model',
+                                icon = 'arrow-down',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/'
+                            ))
+                            ed_experiment_no_meas['params']['_extinction']['mosaicity'] = dict(Parameter(
+                                item.mosaicity,
+                                error = item.mosaicity_sigma,
+                                category = '_extinction',
+                                prettyCategory = 'ext',
+                                name = 'mosaicity',
+                                prettyName = 'mosaicity',
+                                shortPrettyName = 'mosaicity',  # NEED FIX: rename to one letter...
+                                icon = 'arrow-down',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.mosaicity_refinement
+                            ))
+                            ed_experiment_no_meas['params']['_extinction']['radius'] = dict(Parameter(
+                                item.radius,
+                                error = item.radius_sigma,
+                                category = '_extinction',
+                                prettyCategory = 'ext',
+                                name = 'radius',
+                                prettyName = 'radius',
+                                shortPrettyName = 'radius',  # NEED FIX: rename to one letter...
+                                icon = 'arrow-down',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
+                                pctDelta = 25,
+                                fittable = True,
+                                fit = item.radius_refinement
                             ))
 
                     # Cryspy instrument resolution section (CWL)
@@ -1625,7 +1729,7 @@ class CryspyParser:
                             ed_bkg_points.append(ed_bkg_point)
                         ed_experiment_no_meas['loops']['_pd_background'] = ed_bkg_points
 
-                    # Cryspy measured data section (TOF)
+                    # Cryspy measured data section: pd-tof
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_tof_meas.TOFMeasL:
                         if not '_diffrn_radiation' in ed_experiment_no_meas['params']:
                             ed_experiment_no_meas['params']['_diffrn_radiation'] = {}
@@ -1636,6 +1740,16 @@ class CryspyParser:
                             name='type',
                             shortPrettyName='type',
                             url='https://docs.easydiffraction.org/app/project/dictionaries/_diffrn_radiation/'
+                        ))
+                        if not '_sample' in ed_experiment_no_meas['params']:
+                            ed_experiment_no_meas['params']['_sample'] = {}
+                        ed_experiment_no_meas['params']['_sample']['type'] = dict(Parameter(
+                            'pd',
+                            optional=True,
+                            category='_sample',
+                            name='type',  # NEED FIX. If needed, should be different form _diffrn_radiation.type
+                            shortPrettyName='type',  # NEED FIX. If needed, should be different form _diffrn_radiation.type
+                            url='https://docs.easydiffraction.org/app/project/dictionaries/_diffrn_radiation/'  # NEED FIX
                         ))
                         cryspy_meas_points = item.items
                         ed_meas_points = []
@@ -1677,7 +1791,7 @@ class CryspyParser:
                         pd_meas_range_inc = (pd_meas_range_max - pd_meas_range_min) / (len(ed_meas_points) - 1)
                         ed_experiment_no_meas['params']['_pd_meas']['tof_range_inc']['value'] = pd_meas_range_inc
 
-                    # Cryspy measured data section (CWL)
+                    # Cryspy measured data section: pd-cwl
                     elif type(item) is cryspy.C_item_loop_classes.cl_1_pd_meas.PdMeasL:
                         if not '_diffrn_radiation' in ed_experiment_no_meas['params']:
                             ed_experiment_no_meas['params']['_diffrn_radiation'] = {}
@@ -1688,6 +1802,16 @@ class CryspyParser:
                             name='type',
                             shortPrettyName='type',
                             url='https://docs.easydiffraction.org/app/project/dictionaries/_diffrn_radiation/'
+                        ))
+                        if not '_sample' in ed_experiment_no_meas['params']:
+                            ed_experiment_no_meas['params']['_sample'] = {}
+                        ed_experiment_no_meas['params']['_sample']['type'] = dict(Parameter(
+                            'pd',
+                            optional=True,
+                            category='_sample',
+                            name='type',  # NEED FIX. If needed, should be different form _diffrn_radiation.type
+                            shortPrettyName='type',  # NEED FIX. If needed, should be different form _diffrn_radiation.type
+                            url='https://docs.easydiffraction.org/app/project/dictionaries/_diffrn_radiation/'  # NEED FIX
                         ))
                         cryspy_meas_points = item.items
                         ed_meas_points = []
@@ -1728,6 +1852,80 @@ class CryspyParser:
                         pd_meas_range_max = ed_meas_points[-1]['2theta_scan']['value']
                         pd_meas_range_inc = (pd_meas_range_max - pd_meas_range_min) / (len(ed_meas_points) - 1)
                         ed_experiment_no_meas['params']['_pd_meas']['2theta_range_inc']['value'] = pd_meas_range_inc
+
+                    # Cryspy measured data section: sg-cwl
+                    elif type(item) is cryspy.C_item_loop_classes.cl_1_diffrn_refln.DiffrnReflnL:
+                        if not '_diffrn_radiation' in ed_experiment_no_meas['params']:
+                            ed_experiment_no_meas['params']['_diffrn_radiation'] = {}
+                        ed_experiment_no_meas['params']['_diffrn_radiation']['type'] = dict(Parameter(
+                            'cwl',
+                            optional=True,
+                            category='_diffrn_radiation',
+                            name='type',
+                            shortPrettyName='type',
+                            url='https://docs.easydiffraction.org/app/project/dictionaries/_diffrn_radiation/'
+                        ))
+                        if not '_sample' in ed_experiment_no_meas['params']:
+                            ed_experiment_no_meas['params']['_sample'] = {}
+                        ed_experiment_no_meas['params']['_sample']['type'] = dict(Parameter(
+                            'sg',
+                            optional=True,
+                            category='_sample',
+                            name='type',  # NEED FIX. If needed, should be different form _diffrn_radiation.type
+                            shortPrettyName='type',  # NEED FIX. If needed, should be different form _diffrn_radiation.type
+                            url='https://docs.easydiffraction.org/app/project/dictionaries/_diffrn_radiation/'  # NEED FIX
+                        ))
+                        cryspy_meas_points = item.items
+                        ed_meas_points = []
+                        for idx, cryspy_meas_point in enumerate(cryspy_meas_points):
+                            ed_meas_point = {}
+                            ed_meas_point['index_h'] = dict(Parameter(
+                                cryspy_meas_point.index_h,
+                                idx = idx,
+                                category = '_refln',
+                                name = 'index_h',
+                                shortPrettyName = 'h',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_meas/',
+                                cifDict = 'core'
+                            ))
+                            ed_meas_point['index_k'] = dict(Parameter(
+                                cryspy_meas_point.index_k,
+                                idx = idx,
+                                category = '_refln',
+                                name = 'index_k',
+                                shortPrettyName = 'k',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_meas/',
+                                cifDict = 'core'
+                            ))
+                            ed_meas_point['index_l'] = dict(Parameter(
+                                cryspy_meas_point.index_l,
+                                idx = idx,
+                                category = '_refln',
+                                name = 'index_l',
+                                shortPrettyName = 'l',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_meas/',
+                                cifDict = 'core'
+                            ))
+                            ed_meas_point['intensity_total'] = dict(Parameter(
+                                cryspy_meas_point.intensity,
+                                idx = idx,
+                                category = '_refln',
+                                name = 'intensity_meas',
+                                shortPrettyName = 'I',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_meas/',
+                                cifDict = 'core'
+                            ))
+                            ed_meas_point['intensity_total_su'] = dict(Parameter(
+                                cryspy_meas_point.intensity_sigma,
+                                idx = idx,
+                                category = '_refln',
+                                name = 'intensity_meas_su',
+                                shortPrettyName = 'sI',
+                                url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_meas/',
+                                cifDict = 'core'
+                            ))
+                            ed_meas_points.append(ed_meas_point)
+                        ed_experiment_meas_only['loops']['_refln'] = ed_meas_points
 
             if ed_experiment_meas_only is not None:
                 ed_experiments_meas_only.append(ed_experiment_meas_only)

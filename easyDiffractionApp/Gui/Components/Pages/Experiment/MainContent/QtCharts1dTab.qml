@@ -23,10 +23,16 @@ Rectangle {
 
         property var experimentDataBlocksNoMeas: Globals.Proxies.main.experiment.dataBlocksNoMeas
         onExperimentDataBlocksNoMeasChanged: {
-            if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
-                axisX.title = '2θ (degree)'
-            } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
-                axisX.title = 'TOF (µs)'
+            if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd') {
+                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                    axisX.title = '2θ (degree)'
+                } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                    axisX.title = 'TOF (µs)'
+                } else {
+                    axisX.title = ''
+                }
+            } else if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'sg') {
+                axisX.title = 'sinθ/λ (Å⁻¹)'
             } else {
                 axisX.title = ''
             }
@@ -42,7 +48,9 @@ Rectangle {
         axisX.maxAfterReset: Globals.Proxies.rangeValue('xMax')
         axisX.onRangeChanged: if (Globals.Proxies.main.project.created) saveImgTimer.restart()
 
-        axisY.title: "Imeas, Ibkg"
+        axisY.title: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd' ?
+                         "Imeas, Ibkg" :
+                         "Imeas"
         axisY.min: Globals.Proxies.rangeValue('yMin')
         axisY.max: Globals.Proxies.rangeValue('yMax')
         axisY.minAfterReset: Globals.Proxies.rangeValue('yMin')
@@ -147,6 +155,7 @@ Rectangle {
                     color: chartView.measSerie.color
                 }
                 EaElements.Label {
+                    visible: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd'
                     text: '─  Ibkg (background)'
                     color: chartView.bkgSerie.color
                 }

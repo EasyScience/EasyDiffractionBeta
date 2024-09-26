@@ -337,16 +337,23 @@ class Summary(QObject):
             radiation_type = radiation_type.replace('cwl', 'constant wavelength')
             radiation_type = radiation_type.replace('tof', 'time-of-flight')
             num_data_points = len(proxy.experiment._yMeasArrays[idx])
-            if 'tof_range_min' in experiment['params']['_pd_meas']:
-                range_min = experiment['params']['_pd_meas']['tof_range_min']['value']
-                range_max = experiment['params']['_pd_meas']['tof_range_max']['value']
-                range_inc = experiment['params']['_pd_meas']['tof_range_inc']['value']
-                range_units = '&micro;s'
-            else:
-                range_min = experiment['params']['_pd_meas']['2theta_range_min']['value']
-                range_max = experiment['params']['_pd_meas']['2theta_range_max']['value']
-                range_inc = experiment['params']['_pd_meas']['2theta_range_inc']['value']
-                range_units = '&deg;'
+            if '_pd_meas' in experiment['params']:
+                if 'tof_range_min' in experiment['params']['_pd_meas']:  # pd-tof
+                    range_min = experiment['params']['_pd_meas']['tof_range_min']['value']
+                    range_max = experiment['params']['_pd_meas']['tof_range_max']['value']
+                    range_inc = experiment['params']['_pd_meas']['tof_range_inc']['value']
+                    range_units = '&micro;s'
+                elif '2theta_range_min' in experiment['params']['_pd_meas']:  # pd-cwl
+                    range_min = experiment['params']['_pd_meas']['2theta_range_min']['value']
+                    range_max = experiment['params']['_pd_meas']['2theta_range_max']['value']
+                    range_inc = experiment['params']['_pd_meas']['2theta_range_inc']['value']
+                    range_units = '&deg;'
+            elif '_exptl_crystal' in experiment['loops']:  # sg-cwl
+                cryspy_block_name = f'diffrn_{experiment_name}'
+                range_min = self._proxy.data._cryspyInOutDict[cryspy_block_name]['sthovl'].min()
+                range_max = self._proxy.data._cryspyInOutDict[cryspy_block_name]['sthovl'].max()
+                range_inc = '-'
+                range_units = 'Å⁻¹'
 
             html_experiment = _HTML_DATA_COLLECTION_TEMPLATE
             html_experiment = html_experiment.replace('experiment_name', f'{experiment_name}')

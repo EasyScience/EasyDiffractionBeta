@@ -716,8 +716,13 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
             return title
         }
         const blockIdx = main.experiment.currentIndex
-        const count = main.experiment.dataBlocksNoMeas[blockIdx].loops[category].length
-        return `${title} (${count})`
+        const experimentLoops = main.experiment.dataBlocksNoMeas[blockIdx].loops
+        if (typeof experimentLoops[category] === 'undefined') {
+            return title
+        } else {
+            const count = experimentLoops[category].length
+            return `${title} (${count})`
+        }
     }
 
     function experimentMainParam(category, name) {

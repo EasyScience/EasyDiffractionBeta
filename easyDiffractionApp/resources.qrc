@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>Gui/Components/Pages/Analysis/MainContent/Plotly1dTab.qml</file>
         <file>Gui/Components/Pages/Analysis/MainContent/QtCharts1dTab.qml</file>
+        <file>Gui/Components/Pages/Analysis/MainContent/ScChartTab.qml</file>
         <file>Gui/Components/Pages/Analysis/SideBarAdvanced/Calculator.qml</file>
         <file>Gui/Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml</file>
         <file>Gui/Components/Pages/Analysis/SideBarAdvanced/ParamNames.qml</file>
@@ -17,15 +18,17 @@
         <file>Gui/Components/Pages/Experiment/MainContent/QtCharts1dTab.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/DiffrnRadiation.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/Experiments.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground_TOF.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrPeakAsymm_CWL.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_CWL.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_TOF.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_CWL.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_TOF.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_CWL.qml</file>
-        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_TOF.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground_PD.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdBackground_PD-TOF-poli.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrPeakAsymm_PD-CWL.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_PD-CWL.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdPeakProfile_PD-TOF.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_PD-CWL.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_PD-TOF.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdInstrParams_SG.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/Extinction_SG.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_PD-CWL.qml</file>
+        <file>Gui/Components/Pages/Experiment/SideBarBasic/PdMeas_PD-TOF.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarBasic/Phase.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarText/Experiments.qml</file>
         <file>Gui/Components/Pages/Experiment/SideBarText/TextView.qml</file>
@@ -229,5 +232,21 @@
         <file>Examples/Na2Ca3Al2F14_WISH@ISIS/models/ncaf_light.png</file>
         <file>Examples/Na2Ca3Al2F14_WISH@ISIS/summary/report.cif</file>
         <file>Examples/Na2Ca3Al2F14_WISH@ISIS/project.cif</file>
+        <file>Examples/CeO2_iMATERIA@J-PARC/experiments/imateria.cif</file>
+        <file>Examples/CeO2_iMATERIA@J-PARC/experiments/imateria_dark.png</file>
+        <file>Examples/CeO2_iMATERIA@J-PARC/experiments/imateria_light.png</file>
+        <file>Examples/CeO2_iMATERIA@J-PARC/models/ceo.cif</file>
+        <file>Examples/CeO2_iMATERIA@J-PARC/models/ceo_dark.png</file>
+        <file>Examples/CeO2_iMATERIA@J-PARC/models/ceo_light.png</file>
+        <file>Examples/CeO2_iMATERIA@J-PARC/summary/report.cif</file>
+        <file>Examples/CeO2_iMATERIA@J-PARC/project.cif</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/experiments/heidi.cif</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/experiments/heidi_dark.png</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/experiments/heidi_light.png</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/models/tbti.cif</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/models/tbti_dark.png</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/models/tbti_light.png</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/summary/report.cif</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/project.cif</file>
     </qresource>
 </RCC>
