@@ -34,10 +34,25 @@ dependencies = [
     'jsbeautifier',
     'toml',
     'darkdetect',
+    'funcy',
     'numdifftools',
     'cryspy @ git+https://github.com/ikibalin/cryspy.git@sigma2',
     'EasyApp @ git+https://github.com/easyscience/EasyApp.git@beta',
     'easyDiffraction @ git+https://github.com/easyscience/easyDiffractionLib.git@new_job_dev'
+]
+
+[project.optional-dependencies]
+ci = [
+  'toml',
+  'pyinstaller',
+  'requests',
+  'licensename',
+  'dephell_licenses'
+]
+test = [
+  'pytest>=5.2',
+  'pytest-image-diff',
+  'pytest-benchmark'
 ]
 
 [project.urls]
