@@ -12,10 +12,10 @@ from PySide6.QtCore import QFile, QTextStream, QIODevice
 from PySide6.QtQml import QJSValue
 
 # Parameter is App-centric, should be moved to the App
-from easyDiffractionLib.io.cryspy_parser import Parameter
-from easyDiffractionLib.io.cif import dataBlockToCif
-from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
-from easyDiffractionLib.Jobs import get_job_from_cif_string
+from easydiffraction.io.cryspy_parser import Parameter
+from easydiffraction.io.cif import dataBlockToCif
+from easydiffraction.io.Helpers import formatMsg, generalizePath
+#from easydiffraction.Jobs import 
 
 from EasyApp.Logic.Logging import console
 from Logic.Data import Data
@@ -111,7 +111,8 @@ class Experiment(QObject):
         self._currentIndex = -1
 
         self._interface = interface
-        self._job = self.defaultJob()
+        #self._job = self.defaultJob()
+        self._job = self._proxy.job
         self._dataBlocksNoMeas = []
         self._dataBlocksMeasOnly = []
 
@@ -129,13 +130,14 @@ class Experiment(QObject):
 
         self._chartRanges = []
 
+    @property
     def job(self):
         return self._job
 
-    def defaultJob(self):
-        _, job = get_job_from_cif_string(_DEFAULT_DATA_BLOCK, interface=self._interface)
+    # def defaultJob(self):
+    #     # _, job = get_job_from_cif_string(_DEFAULT_DATA_BLOCK, interface=self._interface)
 
-        return job
+    #     return job
 
     # QML accessible properties
 
@@ -216,35 +218,35 @@ class Experiment(QObject):
         for idx, fpath in enumerate(fpaths):
             fpath = fpath.toLocalFile()
             fpath = generalizePath(fpath)
+            # add exp to the Job object
+            self.job.add_experiment_from_file(fpath)
             _, fext = os.path.splitext(fpath)
-            console.debug(f"Loading experiment(s) from: {fpath}")
+            #console.debug(f"Loading experiment(s) from: {fpath}")
             with open(fpath, 'r') as file:
                 fileContent = file.read()
                 name = pathlib.Path(fpath).stem
             if fext == '.xye':
                 fileContent = _DEFAULT_DATA_BLOCK_NO_MEAS + fileContent
                 name = None
-
+            # add experiment to the internal dictionary
+            # this should be changed to convert the Job object to a data block instead
             self.loadExperimentFromCifString(fileContent, name)
 
     def loadExperimentFromCifString(self, cifString="", job_name=""):
         console.debug(f"Loading experiment(s) from: {job_name}")
         self.loadExperimentsFromEdCif(cifString)
 
-        phases = self._proxy._model.phases
-        _, self._job = get_job_from_cif_string(cifString, job_name, phases=phases, interface=self._interface)
-
-        blocks = self.jobToBlock(job=self._job)
+        blocks = self.jobToBlock(job=self.job)
         self._dataBlocksNoMeas.append(blocks)
 
-        blocks = self.jobToData(job=self._job)
+        blocks = self.jobToData(job=self.job)
         self._dataBlocksMeasOnly.append(blocks)
 
         self._currentIndex = len(self._dataBlocksNoMeas) - 1
         if not self.defined:
             self.defined = bool(len(self._dataBlocksNoMeas))
 
-        self._job.interface = self._interface
+        # self._job.interface = self._interface
         self.dataBlocksChanged.emit()
 
     def jobToBlock(self, job=None):
@@ -462,7 +464,7 @@ class Experiment(QObject):
         category = '_pd_meas'
         name = '2theta_range_min'
         dataBlock[param][category] = {}
-        x_name = job.name + '_' + job.name + '_tth'
+        x_name = job.name + '_' + job.experiment.name + '_tth'
         xmin = job.datastore.store[x_name].data[0]
         dataBlock[param][category][name] = dict(Parameter(
                             str(xmin),
@@ -509,7 +511,8 @@ class Experiment(QObject):
         # background
         category = '_pd_background'
         ed_bkg_points = []
-        job_bg_points = job.backgrounds[0]
+        #job_bg_points = job.background[0]
+        job_bg_points = job.experiment.pattern.backgrounds[0]
         for idx, bkg_point in enumerate(job_bg_points):
             ed_bkg_point = {}
             name = 'line_segment_X'
@@ -619,12 +622,16 @@ class Experiment(QObject):
         category = '_pd_meas'
         dataBlock[param][category] = {}
         ed_points = {}
-        x_name = job.name + '_' + job.name + '_tth'
-        y_name = job.name + '_' + job.name + '_I0'
-        err_name = job.name + '_' + job.name + '_I1'
+        x_name = job.name + '_' + job.experiment.name + '_tth'
+        y_name = job.name + '_' + job.experiment.name + '_I0'
+        err_name = job.name + '_' + job.experiment.name + '_I1'
         x_points = job.datastore.store[x_name].data
-        y_points = np.ones_like(x_points) #job.datastore.store[y_name].data
-        err_points = job.datastore.store[err_name].data
+        # y_points = np.ones_like(x_points) #job.datastore.store[y_name].data
+        y_points = job.datastore.store[y_name].data
+        if err_name not in job.datastore.store:
+            err_points = np.zeros_like(x_points)
+        else:
+            err_points = job.datastore.store[err_name].data
 
         name = '2theta_scan'
 
@@ -866,7 +873,7 @@ class Experiment(QObject):
         p_name = BLOCK2JOB[name]
         p_category = BLOCK2JOB[category]
         # get category
-        job_with_category = getattr(self._job, p_category)
+        job_with_category = getattr(self.job, p_category)
         if field == 'value':
             setattr(job_with_category, p_name, value)
         elif field == 'error':
@@ -883,7 +890,7 @@ class Experiment(QObject):
         p_category = BLOCK2JOB[category]
         # get category
         # assumption of the first loop, since there is only one background currently
-        job_with_category = getattr(self._job, p_category)[0]
+        job_with_category = getattr(self.job, p_category)[0]
         # should we get the loop item?
         # this works for the background, but not for scale etc.
         try:
@@ -1206,7 +1213,8 @@ class Experiment(QObject):
         #     self._proxy.fitting.chiSqStart = self._proxy.fitting.chiSq
 
     def setMeasuredArraysForSingleExperiment(self, idx):
-        ed_name = self._dataBlocksNoMeas[idx]['name']['value']
+        #ed_name = self._dataBlocksNoMeas[idx]['name']['value']
+        ed_name = self.job.experiment.name
         calc_block_name = f'pd_{ed_name}'
         calcInOutDict = self._interface.data()._inOutDict
 
@@ -1224,7 +1232,8 @@ class Experiment(QObject):
         self.setSYMeasArray(sy_meas_array, idx)
 
     def setCalculatedArraysForSingleExperiment(self, idx):
-        ed_name = self._dataBlocksNoMeas[idx]['name']['value']
+        #ed_name = self._dataBlocksNoMeas[idx]['name']['value']
+        ed_name = self.job.experiment.name
         calc_block_name = f'pd_{ed_name}'
         calcInOutDict = self._interface.data()._inOutDict
 

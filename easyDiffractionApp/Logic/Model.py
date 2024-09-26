@@ -10,19 +10,19 @@ from PySide6.QtCore import QObject, Signal, Slot, Property, QThreadPool
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 from PySide6.QtQml import QJSValue
 
-from easyDiffractionLib import Phases, Phase, Lattice, Site, SpaceGroup
+from easydiffraction import Phases, Phase, Lattice, Site, SpaceGroup
 
-from easyCrystallography.Components.AtomicDisplacement import AtomicDisplacement
-# from easyCrystallography.Components.SpaceGroup import SpaceGroup
-from easyDiffractionLib.io.cif import dataBlockToCif
-from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
+from easycrystallography.Components.AtomicDisplacement import AtomicDisplacement
+# from easycrystallography.Components.SpaceGroup import SpaceGroup
+from easydiffraction.io.cif import dataBlockToCif
+from easydiffraction.io.Helpers import formatMsg, generalizePath
 from EasyApp.Logic.Logging import console
 
 from Logic.Tables import PERIODIC_TABLE # TODO CHANGE THIS TO PERIODICTABLE
 from Logic.Tables import COLOR_TABLE
 import periodictable as pt
 from Logic.Data import Data
-from easyCrystallography.Symmetry.tools import SpacegroupInfo
+from easycrystallography.Symmetry.tools import SpacegroupInfo
 
 
 _DEFAULT_CIF_BLOCK = """data_default
@@ -96,7 +96,8 @@ class Model(QObject):
         self._spaceGroupNames = self.createSpaceGroupNames()
         self._isotopesNames = self.createIsotopesNames()
 
-        self.phases = Phases()
+        #self.phases = Phases()
+        self.job = self._proxy.job
 
     # QML accessible properties
 
@@ -156,13 +157,14 @@ class Model(QObject):
     def addDefaultPhase(self):
         default_phase = self._defaultPhase()
         r = re.compile('(.+[^0-9])\d*$')
-        known_phases = [r.findall(s)[0] for s in self.phases.phase_names]  # Strip out any 1, 2, 3 etc we may have added
+        known_phases = [r.findall(s)[0] for s in self.job.phases.phase_names]  # Strip out any 1, 2, 3 etc we may have added
         if default_phase.name in known_phases:
             idx = known_phases.count(default_phase.name)
             default_phase.name = default_phase.name + str(idx)
         # print('Disabling scale')
         default_phase.scale.fixed = True
-        self.phases.append(default_phase)
+        self.job.add_phase(default_phase)
+        # self.phases.append(default_phase)
 
     # @staticmethod
     def _defaultPhase(self):
@@ -230,10 +232,11 @@ class Model(QObject):
         phases.interface = self._interface
         for phase in phases:
             phase.scale.fixed = True
-            self.phases.append(phase)
-        self._currentIndex = len(self.phases) - 1
+            # self.phases.append(phase)
+            self.job.add_phase(phase=phase)
+        self._currentIndex = len(self.job.phases) - 1
         # convert phase into dataBlocks
-        dataBlocks = self.phaseToBlocks(self.phases)
+        dataBlocks = self.phaseToBlocks(self.job.phases)
         self._dataBlocks.append(dataBlocks)
         self.defined = bool(len(self._dataBlocks))
 
@@ -306,21 +309,21 @@ class Model(QObject):
         category = '_space_group'
         blocks[params][category] = {}
         name = 'name_H-M_alt'
-        blocks[params][category][name] = self.fromDescriptorObject(phase.spacegroup.space_group_HM_name)
+        blocks[params][category][name] = self.fromDescriptorObject(phase.space_group.space_group_HM_name)
         blocks[params][category][name]['shortPrettyName'] = "name"
         blocks[params][category][name]['enabled'] = True
         blocks[params][category][name]['category'] = category
         blocks[params][category][name]['name'] = name
         name = 'crystal_system'
         blocks[params][category][name] = {}
-        blocks[params][category][name]['value'] = phase.spacegroup.crystal_system
+        blocks[params][category][name]['value'] = phase.space_group.crystal_system
         blocks[params][category][name]['shortPrettyName'] = "crystal system"
         blocks[params][category][name]['name'] = name
         blocks[params][category][name]['category'] = category
         blocks[params][category][name]['url'] = blocks[params][category]['name_H-M_alt']['url']
         name = 'IT_number'
         blocks[params][category][name] = {}
-        blocks[params][category][name]['value'] = phase.spacegroup.int_number
+        blocks[params][category][name]['value'] = phase.space_group.int_number
         blocks[params][category][name]['shortPrettyName'] = "number"
         blocks[params][category][name]['name'] = name
         blocks[params][category][name]['category'] = category
@@ -329,9 +332,9 @@ class Model(QObject):
 
         name = 'IT_coordinate_system_code'
         blocks[params][category][name] = {}
-        setting = phase.spacegroup.setting.raw_value if phase.spacegroup.setting is not None else ""
+        setting = phase.space_group.setting.raw_value if phase.space_group.setting is not None else ""
         blocks[params][category][name]['value'] = setting
-        blocks[params][category][name]['permittedValues'] = SpaceGroup.find_settings_by_number(phase.spacegroup.int_number)
+        blocks[params][category][name]['permittedValues'] = SpaceGroup.find_settings_by_number(phase.space_group.int_number)
         blocks[params][category][name]['shortPrettyName'] = "code"
         blocks[params][category][name]['name'] = name
         blocks[params][category][name]['category'] = category
@@ -456,7 +459,7 @@ class Model(QObject):
         by the data block key names.
         """
         # find the correct parameter in the phase object
-        phase = self.phases[blockIdx]
+        phase = self.job.phases[blockIdx]
         p_name = BLOCK2PHASE[name]
         p_category = BLOCK2PHASE[category]
         # get category
@@ -475,7 +478,7 @@ class Model(QObject):
         by the data block key names.
         """
         # find the correct parameter in the phase object
-        phase = self.phases[blockIdx]
+        phase = self.job.phases[blockIdx]
         p_name = BLOCK2PHASE[name]
         p_category = BLOCK2PHASE[category]
         # get category
@@ -491,8 +494,9 @@ class Model(QObject):
         pass
 
     def removePhase(self, phase_name: str):
-        if phase_name in self.phases.phase_names:
-            del self.phases[phase_name]
+        if phase_name in self.job.phases.phase_names:
+            self.job.remove_phase(phase_name)
+            # del self.phases[phase_name]
             return True
         return False
 
@@ -515,7 +519,7 @@ class Model(QObject):
         currentModelName = currentDataBlock['name']['value']
 
         # self._interface.remove_phase(currentModelName) # delete phase info on interface
-        self._interface.remove_phase(phases_obj=self.phases, phase_obj=self.phases[self.currentIndex])
+        self._interface.remove_phase(phases_obj=self.job.phases, phase_obj=self.job.phases[self.currentIndex])
         self.removePhase(currentModelName) # delete phase locally
         del self._dataBlocks[index]
 
@@ -532,8 +536,9 @@ class Model(QObject):
         self._currentIndex = -1
         self._dataBlocks = []
         self._dataBlocksCif = []
-        for name in self.phases.phase_names:
-            del self.phases[name]
+        for name in self.job.phases.phase_names:
+            self.job.remove_phase(name)
+            # del self.phases[name]
         self.dataBlocksChanged.emit()
         console.debug("All models removed")
 

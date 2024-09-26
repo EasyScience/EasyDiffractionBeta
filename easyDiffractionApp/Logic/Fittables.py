@@ -7,7 +7,7 @@ from PySide6.QtCore import QObject, Signal, Slot, Property
 
 from EasyApp.Logic.Logging import console
 from Logic.Helpers import Converter
-from easyDiffractionLib.io.Helpers import formatMsg
+from easydiffraction.io.Helpers import formatMsg
 
 _EMPTY_DATA = [
     {

@@ -17,12 +17,16 @@ from Logic.Summary import Summary
 from Logic.Status import Status
 from Logic.Plotting import Plotting
 from Logic.Helpers import BackendHelpers
-from easyDiffractionLib.interface import InterfaceFactory
+from easydiffraction.interface import InterfaceFactory
+from easydiffraction import Job
 
 
 class PyProxy(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
+        # instantiate the Job object.
+        # This is done only once, since in the App world there is only one Job
+        self._job = Job()
         self.interface = InterfaceFactory()
         self._logger = LoggerLevelHandler(self)
         self._project = Project(self)
@@ -37,6 +41,7 @@ class PyProxy(QObject):
         self._plotting = Plotting(self)
         self._connections = Connections(self)
         self._backendHelpers = BackendHelpers(self)
+
 
     @Property('QVariant', constant=True)
     def logger(self):
@@ -89,3 +94,8 @@ class PyProxy(QObject):
     @Property('QVariant', constant=True)
     def backendHelpers(self):
         return self._backendHelpers
+
+    @Property('QVariant', constant=True)
+    def job(self):
+        # make the job available for all the proxies
+        return self._job

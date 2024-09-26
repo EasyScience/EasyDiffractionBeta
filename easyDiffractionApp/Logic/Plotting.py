@@ -9,7 +9,7 @@ from PySide6 import QtCharts
 
 from EasyApp.Logic.Logging import console
 from Logic.Helpers import Converter #, WebEngine
-from easyDiffractionLib.io.Helpers import formatMsg
+from easydiffraction.io.Helpers import formatMsg
 
 
 _LIBS_1D = ['QtCharts', 'Plotly']

@@ -5,7 +5,7 @@
 from PySide6.QtCore import QObject, Slot
 
 from EasyApp.Logic.Logging import console
-from easyDiffractionLib.io.Helpers import formatMsg
+from easydiffraction.io.Helpers import formatMsg
 
 
 class Connections(QObject):

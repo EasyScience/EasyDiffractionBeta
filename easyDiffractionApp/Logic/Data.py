@@ -5,7 +5,7 @@
 import numpy as np
 from PySide6.QtCore import QObject, Slot
 
-from easyDiffractionLib.calculators.cryspy import Data as  CalcData # TODO: make non-cryspy specific
+from easydiffraction.calculators.cryspy import Data as  CalcData # TODO: make non-cryspy specific
 
 class Data(QObject):
     def __init__(self, parent, interface=None):

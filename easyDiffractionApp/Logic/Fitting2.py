@@ -9,9 +9,10 @@ from typing import Callable, List
 
 from threading import Thread
 
-from easyCore.Fitting.Fitting import Fitter as CoreFitter
-from easyCore.Utils.io.xml import XMLSerializer
-from easyCore.Fitting.Constraints import ObjConstraint, NumericConstraint
+from easyscience.fitting.fitter import Fitter as CoreFitter
+from easyscience.Utils.io.xml import XMLSerializer
+from easyscience.Constraints import ObjConstraint, NumericConstraint
+from easyscience.fitting.minimizers.utils import FitResults
 
 from distutils.util import strtobool
 
@@ -35,7 +36,7 @@ class Fitting(QObject):
     currentMinimizerChanged = Signal()
     minimizerMethodChanged = Signal()
     currentCalculatorChanged = Signal()
-    finished = Signal(dict)
+    finished = Signal(FitResults)
     failed = Signal(str)
     constraintsRemoved = Signal()
 
@@ -44,19 +45,21 @@ class Fitting(QObject):
 
         self.parent = proxy
         self.interface = interface
+        self._job = self.parent.job
         # self.fitter = CoreFitter(self.parent.sample(), self.interface.fit_func)
-        self.fitter = CoreFitter(self.parent.experiment.job(), self.parent.experiment.job().create_simulation)
+        self.fitter = CoreFitter(self._job, self._job.calculate_profile)
         # self.fitter = CoreFitter(self.parent.experiment.job(), self.interface.fit_func)
 
         # Multithreading
         # self._fitter_thread = None
-        self.use_threading = True # change to False to disable threading for testing
+        self.use_threading = False # change to False to disable threading for testing
         self._fit_finished = True
         self._fit_results = _defaultFitResults()
         self.data = None
         self.is_fitting_now = False
         self._current_minimizer_method_index = 0
-        self._current_minimizer_method_name = self.fitter.available_methods()[0]  # noqa: E501
+        # self._current_minimizer_method_name = "lmfit" # self.fitter.available_methods()[0]  # noqa: E501
+        self._current_minimizer_method_name = 'least_squares'
         self.currentMinimizerChanged.connect(self.onCurrentMinimizerChanged)
 
         self.fit_thread = Thread(target=self.fit_threading)
@@ -208,7 +211,7 @@ class Fitting(QObject):
 
     def onSuccess(self, res):
         self.joinFitThread()
-        self.resetErrors()
+        # self.resetErrors()
         self.setSuccessFitResults(res)
         self.finishFit()
 
@@ -222,7 +225,8 @@ class Fitting(QObject):
     @Slot()
     def startStop(self):
         # self.data = self.parent.pdata()
-        name = 'pd_' + self.parent.experiment.job().name
+        # name = 'pd_' + self._job.name
+        name = 'pd_' + self._job.experiment.name
         self.data = self.interface.data()._inOutDict[name]
         if self.use_threading:
             if not self.fit_thread.is_alive():
@@ -316,14 +320,14 @@ class Fitting(QObject):
         self.interface.switch(new_name, fitter=self.fitter)
 
         # recreate the fitter with the new interface
-        self.fitter = CoreFitter(self.parent.sample(), self.parent.sample().create_simulation)
+        self.fitter = CoreFitter(self.job, self.job.calculate_profile)
 
         print("***** _onCurrentCalculatorChanged")
         data = self.parent.pdata().simulations[0]
         data.name = f'{self.interface.current_interface_name} engine'
         # update interface on job
-        job = self.parent.sample()
-        job.interface = self.interface
+        #job = self.parent.sample()
+        #job.interface = self.interface
         self.parent.updateCalculatedData()
 
     # Constraints

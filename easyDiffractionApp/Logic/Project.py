@@ -9,10 +9,10 @@ from gemmi import cif
 from PySide6.QtCore import QObject, Signal, Slot, Property, QUrl
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 
-from easyDiffractionLib.io.cryspy_parser import Parameter
-from easyDiffractionLib.io.cif import dataBlockToCif
-from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
-from easyDiffractionLib.io.cif import cifV2ToV1
+from easydiffraction.io.cryspy_parser import Parameter
+from easydiffraction.io.cif import dataBlockToCif
+from easydiffraction.io.Helpers import formatMsg, generalizePath
+from easydiffraction.io.cif import cifV2ToV1
 from EasyApp.Logic.Logging import console
 
 
