@@ -469,27 +469,29 @@ class Experiment(QObject):
         edCif = edCifNoMeas + '\n\n' + edCifMeasOnly
 
         # Add parameters, which are optional for EasyDiffraction CIF, but required for CrysPy CIF
+        diffrn_radiation_type = currentDataBlock['params']['_diffrn_radiation']['type']['value']
+        sample_type = currentDataBlock['params']['_sample']['type']['value']
 
-        ### This is copy-paste from another place
-    #    diffrn_radiation_type = self._dataBlocksNoMeas[blockIdx]['params']['_diffrn_radiation']['type']['value']
-    #    sample_type = self._proxy.experiment.dataBlocksNoMeas[blockIdx]['params']['_sample']['type']['value']
+        if diffrn_radiation_type == 'cwl' and sample_type == 'pd':
+            experiment_prefix = 'pd'
+            experiment_type = 'pd-cwl'
+        elif diffrn_radiation_type == 'tof' and sample_type == 'pd':
+            experiment_prefix = 'tof'
+            experiment_type = 'pd-tof'
+        elif diffrn_radiation_type == 'cwl' and sample_type == 'sg':
+            experiment_prefix = 'diffrn'
+            experiment_type = 'sg-cwl'
 
-    #    if diffrn_radiation_type == 'cwl' and sample_type == 'pd':
-    #        experiment_prefix = 'pd'
-    #    elif diffrn_radiation_type == 'tof' and sample_type == 'pd':
-    #        experiment_prefix = 'tof'
-    #    elif diffrn_radiation_type == 'cwl' and sample_type == 'sg':
-    #        experiment_prefix = 'diffrn'
-        console.error('!!!!!!!!!!!!!!! Need to fix the experiment_prefix')
-        #### NEED FIX below
-
-        if '2theta_scan' in edCif:
+        #if '2theta_scan' in edCif:  # pd-cwl
+        if experiment_type == 'pd-cwl':
             diffrn_radiation_type = 'cwl'
             experiment_prefix = 'pd'
             range_min = currentDataBlock['params']['_pd_meas']['2theta_range_min']['value']
             range_max = currentDataBlock['params']['_pd_meas']['2theta_range_max']['value']
             edRangeCif = f'_pd_meas.2theta_range_min {range_min}\n_pd_meas.2theta_range_max {range_max}'
-        elif 'time_of_flight' in edCif:
+            edCif += '\n\n' + edRangeCif
+        #elif 'time_of_flight' in edCif:  # pd-tof
+        elif experiment_type == 'pd-tof':
             edCif += '\n\n_pd_instr.peak_shape Gauss'
             #edCif += '\n_pd_instr.peak_shape pseudo-Voigt'
             diffrn_radiation_type = 'tof'
@@ -499,11 +501,40 @@ class Experiment(QObject):
             range_min = currentDataBlock['params']['_pd_meas']['tof_range_min']['value']
             range_max = currentDataBlock['params']['_pd_meas']['tof_range_max']['value']
             edRangeCif = f'_pd_meas.tof_range_min {range_min}\n_pd_meas.tof_range_max {range_max}'
-        edCif += '\n\n' + edRangeCif
+            edCif += '\n\n' + edRangeCif
+        #elif 'index_h' in edCif:  # sg-cwl
+        elif experiment_type == 'sg-cwl':
+            edCif += '\n_setup_field 0.0'
+            edCif += '\n_diffrn_orient_matrix_ub_11 -0.088033'
+            edCif += '\n_diffrn_orient_matrix_ub_12 -0.088004'
+            edCif += '\n_diffrn_orient_matrix_ub_13  0.069970'
+            edCif += '\n_diffrn_orient_matrix_ub_21  0.034058'
+            edCif += '\n_diffrn_orient_matrix_ub_22 -0.188170'
+            edCif += '\n_diffrn_orient_matrix_ub_23 -0.013039'
+            edCif += '\n_diffrn_orient_matrix_ub_31  0.223600'
+            edCif += '\n_diffrn_orient_matrix_ub_32  0.125751'
+            edCif += '\n_diffrn_orient_matrix_ub_33  0.029490'
+            edCif += '\n_diffrn_orient_matrix_type   CCSL'
 
         # Create CrysPy CIF and objects
-        cryspyCif = CryspyParser.edCifToCryspyCif(edCif, diffrn_radiation_type)
+        cryspyCif = CryspyParser.edCifToCryspyCif(edCif, experiment_type)
         cryspyExperimentsObj = str_to_globaln(cryspyCif)
+
+        # add phase block
+        if experiment_type == 'sg-cwl':
+            for dataBlock in cryspyExperimentsObj.items:
+                firstModelName = ''
+                firstModelScale = 1.0
+                for item in cryspyExperimentsObj.items[0].items:
+                    if hasattr(item, 'items') and item.items[0].PREFIX == 'exptl_crystal':
+                        firstModelName = item.items[0].id
+                        firstModelScale = item.items[0].scale
+                        break
+                cryspyPhasesCif = f'_phase_label {firstModelName}\n_phase_scale {firstModelScale}'
+                cryspyPhasesObj = str_to_globaln(cryspyPhasesCif).items
+                dataBlock.add_items(cryspyPhasesObj)
+
+        # Create cryspy dictionary
         cryspyExperimentsDict = cryspyExperimentsObj.get_dictionary()
 
         # Powder diffraction experiment should have 'pd_' or 'tof_' prefix to be recognized by CrysPy
