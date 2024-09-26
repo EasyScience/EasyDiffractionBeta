@@ -27,12 +27,17 @@ EaComponents.ContentPage {
                 text: Globals.Proxies.main.experiment.defined ?
                           qsTr("Fitting") :
                           qsTr("Simulation")
-            }
+            },
+            EaElements.TabButton { text: qsTr("Meas vs Calc") }
         ]
 
         items: [
             Loader {
                 source: `MainContent/${EaGlobals.Vars.currentLib1d}1dTab.qml`
+                onStatusChanged: if (status === Loader.Ready) console.debug(`${source} loaded`)
+            },
+            Loader {
+                source: `MainContent/ScChartTab.qml`
                 onStatusChanged: if (status === Loader.Ready) console.debug(`${source} loaded`)
             }
         ]

@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>Gui/Components/Pages/Analysis/MainContent/Plotly1dTab.qml</file>
         <file>Gui/Components/Pages/Analysis/MainContent/QtCharts1dTab.qml</file>
+        <file>Gui/Components/Pages/Analysis/MainContent/ScChartTab.qml</file>
         <file>Gui/Components/Pages/Analysis/SideBarAdvanced/Calculator.qml</file>
         <file>Gui/Components/Pages/Analysis/SideBarAdvanced/Minimizer.qml</file>
         <file>Gui/Components/Pages/Analysis/SideBarAdvanced/ParamNames.qml</file>

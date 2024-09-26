@@ -134,6 +134,9 @@ Column {
                     color: EaStyle.Colors.chartForegroundsExtra[2]
                     width: 2
 
+                    //style: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd' ?
+                    //           Qt.SolidLine :
+                    //           Qt.NoPen
                     pointsVisible: true
 
                     onHovered: (point, state) => showMainTooltip(mainChart, point, state)
@@ -165,6 +168,13 @@ Column {
 
                     color: calcSerieColor
                     width: 2
+
+                    //style: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd' ?
+                    //           Qt.SolidLine :
+                    //           Qt.NoPen
+                    //pointsVisible: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd' ?
+                    //                   false :
+                    //                   true
 
                     onHovered: (point, state) => showMainTooltip(mainChart, point, state)
                 }

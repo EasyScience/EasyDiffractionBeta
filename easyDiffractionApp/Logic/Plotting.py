@@ -34,19 +34,20 @@ class Plotting(QObject):
             },
             'QtCharts': {
                 'experimentPage': {
-                    'measSerie': None,  # QtCharts.QXYSeries,
+                    'measSerie': None,  # QtCharts.QXYSeries
                     'bkgSerie': None,  # QtCharts.QXYSeries
                 },
                 'modelPage': {
-                    'calcSerie': None,  # QtCharts.QXYSeries,
+                    'calcSerie': None,  # QtCharts.QXYSeries
                     'braggSerie': None,  # QtCharts.QXYSeries
                 },
                 'analysisPage': {
-                    'measSerie': None,  # QtCharts.QXYSeries,
-                    'bkgSerie': None,  # QtCharts.QXYSeries,
-                    'totalCalcSerie': None,  # QtCharts.QXYSeries,
-                    'residSerie': None,  # QtCharts.QXYSeries,
-                    'braggSeries': {}  # QtCharts.QXYSeries
+                    'measSerie': None,  # QtCharts.QXYSeries
+                    'bkgSerie': None,  # QtCharts.QXYSeries
+                    'totalCalcSerie': None,  # QtCharts.QXYSeries
+                    'residSerie': None,  # QtCharts.QXYSeries
+                    'braggSeries': {},
+                    'scSerie': None,  # QtCharts.QXYSeries,
                 }
             }
         }
@@ -236,6 +237,7 @@ class Plotting(QObject):
 
     def qtchartsReplaceTotalCalculatedOnAnalysisChartAndRedraw(self):
         index = self._proxy.experiment.currentIndex
+        # Default powder chart (left tab)
         try:
             xArray = self._proxy.experiment._xArrays[index]
             yCalcTotalArray = self._proxy.experiment._yCalcTotalArrays[index]
@@ -245,6 +247,16 @@ class Plotting(QObject):
         calcSerie = self._chartRefs['QtCharts']['analysisPage']['totalCalcSerie']
         calcSerie.replaceNp(xArray, yCalcTotalArray)
         console.debug(IO.formatMsg('sub', 'Calc (total) curve', f'{xArray.size} points', 'on analysis page', 'replaced'))
+        # Default single-crystal chart (right tab)
+        try:
+            xArray = self._proxy.experiment._yCalcTotalArrays[index]
+            yArray = self._proxy.experiment._yMeasArrays[index]
+        except IndexError:
+            xArray = np.empty(0)
+            yArray = np.empty(0)
+        scSerie = self._chartRefs['QtCharts']['analysisPage']['scSerie']
+        scSerie.replaceNp(xArray, yArray)
+        console.debug(IO.formatMsg('sub', 'Meas vs Calc curve', f'{xArray.size} points', 'on analysis page', 'replaced'))
 
     def qtchartsReplaceResidualOnAnalysisChartAndRedraw(self):
         index = self._proxy.experiment.currentIndex

@@ -999,7 +999,7 @@ class CryspyParser:
                                 shortPrettyName = 'mosaicity',  # NEED FIX: rename to one letter...
                                 icon = 'arrow-down',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                                absDelta = 0.1,
+                                pctDelta = 25,
                                 fittable = True,
                                 fit = item.mosaicity_refinement
                             ))
@@ -1013,7 +1013,7 @@ class CryspyParser:
                                 shortPrettyName = 'radius',  # NEED FIX: rename to one letter...
                                 icon = 'arrow-down',
                                 url = 'https://docs.easydiffraction.org/app/project/dictionaries/_pd_instr/',
-                                absDelta = 0.1,
+                                pctDelta = 25,
                                 fittable = True,
                                 fit = item.radius_refinement
                             ))

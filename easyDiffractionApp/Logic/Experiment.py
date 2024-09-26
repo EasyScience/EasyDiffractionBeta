@@ -1226,15 +1226,36 @@ class Experiment(QObject):
     def setChartRangesForSingleExperiment(self, idx):
         x_array = self._xArrays[idx]
         y_meas_array = self._yMeasArrays[idx]
-        x_min = float(x_array.min())
-        x_max = float(x_array.max())
-        y_min = float(y_meas_array.min())
-        y_max = float(y_meas_array.max())
+        y_calc_total_array = self._yCalcTotalArrays[idx]
+        # pd
+        x_min = x_array.min()
+        x_max = x_array.max()
+        y_min = y_meas_array.min()
+        y_max = y_meas_array.max()
         y_range = y_max - y_min
         y_extra = y_range * 0.1
         y_min -= y_extra
         y_max += y_extra
-        ranges = {'xMin':x_min, 'xMax':x_max, 'yMin':y_min, 'yMax':y_max}
+        # sc
+        #x2_min = np.minimum(y_meas_array.min(), y_calc_total_array.min())
+        #x2_max = np.maximum(y_meas_array.max(), y_calc_total_array.max())
+        x2_min = y_meas_array.min()
+        x2_max = y_meas_array.max()
+        x2_range = x2_max - x2_min
+        x2_extra = x2_range * 0.1
+        x2_min -= x2_extra
+        x2_max += x2_extra
+        y2_min = x2_min
+        y2_max = x2_max
+        #
+        ranges = {'xMin': float(x_min),
+                  'xMax': float(x_max),
+                  'yMin': float(y_min),
+                  'yMax': float(y_max),
+                  'x2Min': float(x2_min),
+                  'x2Max': float(x2_max),
+                  'y2Min': float(y2_min),
+                  'y2Max': float(y2_max)}
         self.setChartRanges(ranges, idx)
 
     def replaceArrays(self):
