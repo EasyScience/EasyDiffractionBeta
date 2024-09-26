@@ -1,0 +1,11 @@
+data_tbti
+
+_project.description "neutrons, single-crystal, constant wavelength, HEiDi@MLZ"
+
+loop_
+_model.cif_file_name
+tbti.cif
+
+loop_
+_experiment.cif_file_name
+heidi.cif

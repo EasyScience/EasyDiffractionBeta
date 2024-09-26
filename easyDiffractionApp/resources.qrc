@@ -231,5 +231,11 @@
         <file>Examples/Na2Ca3Al2F14_WISH@ISIS/models/ncaf_light.png</file>
         <file>Examples/Na2Ca3Al2F14_WISH@ISIS/summary/report.cif</file>
         <file>Examples/Na2Ca3Al2F14_WISH@ISIS/project.cif</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/experiments/heidi.cif</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/experiments/heidi_dark.png</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/models/tbti.cif</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/models/tbti_dark.png</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/summary/report.cif</file>
+        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/project.cif</file>
     </qresource>
 </RCC>
