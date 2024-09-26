@@ -34,19 +34,20 @@ class Plotting(QObject):
             },
             'QtCharts': {
                 'experimentPage': {
-                    'measSerie': None,  # QtCharts.QXYSeries,
+                    'measSerie': None,  # QtCharts.QXYSeries
                     'bkgSerie': None,  # QtCharts.QXYSeries
                 },
                 'modelPage': {
-                    'calcSerie': None,  # QtCharts.QXYSeries,
+                    'calcSerie': None,  # QtCharts.QXYSeries
                     'braggSerie': None,  # QtCharts.QXYSeries
                 },
                 'analysisPage': {
-                    'measSerie': None,  # QtCharts.QXYSeries,
-                    'bkgSerie': None,  # QtCharts.QXYSeries,
-                    'totalCalcSerie': None,  # QtCharts.QXYSeries,
-                    'residSerie': None,  # QtCharts.QXYSeries,
-                    'braggSeries': {}  # QtCharts.QXYSeries
+                    'measSerie': None,  # QtCharts.QXYSeries
+                    'bkgSerie': None,  # QtCharts.QXYSeries
+                    'totalCalcSerie': None,  # QtCharts.QXYSeries
+                    'residSerie': None,  # QtCharts.QXYSeries
+                    'braggSeries': {},
+                    'scSerie': None,  # QtCharts.QXYSeries,
                 }
             }
         }
@@ -189,6 +190,10 @@ class Plotting(QObject):
         try:
             xArray = self._proxy.experiment._xArrays[index]
             yMeasArray = self._proxy.experiment._yMeasArrays[index]
+            if self._proxy.experiment.dataBlocksNoMeas[index]['params']['_sample']['type']['value'] == 'sg':  # sort
+                ind = np.argsort(xArray)
+                xArray = xArray[ind]
+                yMeasArray = yMeasArray[ind]
         except IndexError:
             xArray = np.empty(0)
             yMeasArray = np.empty(0)
@@ -215,6 +220,10 @@ class Plotting(QObject):
         try:
             xArray = self._proxy.experiment._xArrays[index]
             yMeasArray = self._proxy.experiment._yMeasArrays[index]
+            if self._proxy.experiment.dataBlocksNoMeas[index]['params']['_sample']['type']['value'] == 'sg':  # sort
+                ind = np.argsort(xArray)
+                xArray = xArray[ind]
+                yMeasArray = yMeasArray[ind]
         except IndexError:
             xArray = np.empty(0)
             yMeasArray = np.empty(0)
@@ -236,21 +245,40 @@ class Plotting(QObject):
 
     def qtchartsReplaceTotalCalculatedOnAnalysisChartAndRedraw(self):
         index = self._proxy.experiment.currentIndex
+        # Default powder chart (left tab)
         try:
             xArray = self._proxy.experiment._xArrays[index]
             yCalcTotalArray = self._proxy.experiment._yCalcTotalArrays[index]
+            if self._proxy.experiment.dataBlocksNoMeas[index]['params']['_sample']['type']['value'] == 'sg':  # sort
+                ind = np.argsort(xArray)
+                xArray = xArray[ind]
+                yCalcTotalArray = yCalcTotalArray[ind]
         except IndexError:
             xArray = np.empty(0)
             yCalcTotalArray = np.empty(0)
         calcSerie = self._chartRefs['QtCharts']['analysisPage']['totalCalcSerie']
         calcSerie.replaceNp(xArray, yCalcTotalArray)
         console.debug(IO.formatMsg('sub', 'Calc (total) curve', f'{xArray.size} points', 'on analysis page', 'replaced'))
+        # Default single-crystal chart (right tab)
+        try:
+            xArray = self._proxy.experiment._yCalcTotalArrays[index]
+            yArray = self._proxy.experiment._yMeasArrays[index]
+        except IndexError:
+            xArray = np.empty(0)
+            yArray = np.empty(0)
+        scSerie = self._chartRefs['QtCharts']['analysisPage']['scSerie']
+        scSerie.replaceNp(xArray, yArray)
+        console.debug(IO.formatMsg('sub', 'Meas vs Calc curve', f'{xArray.size} points', 'on analysis page', 'replaced'))
 
     def qtchartsReplaceResidualOnAnalysisChartAndRedraw(self):
         index = self._proxy.experiment.currentIndex
         try:
             xArray = self._proxy.experiment._xArrays[index]
             yResidArray = self._proxy.experiment._yResidArrays[index]
+            if self._proxy.experiment.dataBlocksNoMeas[index]['params']['_sample']['type']['value'] == 'sg':  # sort
+                ind = np.argsort(xArray)
+                xArray = xArray[ind]
+                yResidArray = yResidArray[ind]
         except IndexError:
             xArray = np.empty(0)
             yResidArray = np.empty(0)

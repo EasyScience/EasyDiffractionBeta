@@ -24,15 +24,20 @@ EaComponents.ContentPage {
     mainView: EaComponents.MainContent {
         tabs: [
             EaElements.TabButton {
-                text: Globals.Proxies.main.experiment.defined ?
+                text: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd' ?
                           qsTr("Fitting") :
-                          qsTr("Simulation")
-            }
+                          qsTr("I vs. sinθ/λ")
+            },
+            EaElements.TabButton { text: qsTr("Imeas vs. Icalc") }
         ]
 
         items: [
             Loader {
                 source: `MainContent/${EaGlobals.Vars.currentLib1d}1dTab.qml`
+                onStatusChanged: if (status === Loader.Ready) console.debug(`${source} loaded`)
+            },
+            Loader {
+                source: `MainContent/ScChartTab.qml`
                 onStatusChanged: if (status === Loader.Ready) console.debug(`${source} loaded`)
             }
         ]

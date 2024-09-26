@@ -18,10 +18,16 @@ EaCharts.QtCharts1dMeasVsCalc {
 
     property var experimentDataBlocksNoMeas: Globals.Proxies.main.experiment.dataBlocksNoMeas
     onExperimentDataBlocksNoMeasChanged: {
-        if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
-            axisX.title = '2θ (degree)'
-        } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
-            axisX.title = 'TOF (µs)'
+        if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd') {
+            if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                axisX.title = '2θ (degree)'
+            } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                axisX.title = 'TOF (µs)'
+            } else {
+                axisX.title = ''
+            }
+        } else if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'sg') {
+            axisX.title = 'sinθ/λ (Å⁻¹)'
         } else {
             axisX.title = ''
         }

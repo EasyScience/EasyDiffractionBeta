@@ -22,9 +22,22 @@ Column {
     property alias calcSerie: calcSerie
     property alias residSerie: residSerie
 
-    property var phaseNames: Globals.Proxies.main.experiment.dataBlocksNoMeas[
-                                 Globals.Proxies.main.experiment.currentIndex].loops._pd_phase_block.map(
-                                 phase => phase.id.value)
+    property var phaseNames: {
+        if (typeof Globals.Proxies.main.experiment.dataBlocksNoMeas[
+                    Globals.Proxies.main.experiment.currentIndex].loops._pd_phase_block !== 'undefined') {
+            return Globals.Proxies.main.experiment.dataBlocksNoMeas[
+                Globals.Proxies.main.experiment.currentIndex].loops._pd_phase_block.map(
+                phase => phase.id.value)
+        } else if (typeof Globals.Proxies.main.experiment.dataBlocksNoMeas[
+                       Globals.Proxies.main.experiment.currentIndex].loops._exptl_crystal !== 'undefined') {
+            return Globals.Proxies.main.experiment.dataBlocksNoMeas[
+                        Globals.Proxies.main.experiment.currentIndex].loops._exptl_crystal.map(
+                        phase => phase.id.value)
+        } else {
+            //console.error('No phase names found')
+            return []
+        }
+    }
 
     property string calcSerieColor: EaStyle.Colors.chartForegrounds[0]
 
@@ -54,10 +67,16 @@ Column {
 
                 property var experimentDataBlocksNoMeas: Globals.Proxies.main.experiment.dataBlocksNoMeas
                 onExperimentDataBlocksNoMeasChanged: {
-                    if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
-                        axisX.title = '2θ (degree)'
-                    } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
-                        axisX.title = 'TOF (µs)'
+                    if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd') {
+                        if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                            axisX.title = '2θ (degree)'
+                        } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                            axisX.title = 'TOF (µs)'
+                        } else {
+                            axisX.title = ''
+                        }
+                    } else if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'sg') {
+                        axisX.title = 'sinθ/λ (Å⁻¹)'
                     } else {
                         axisX.title = ''
                     }
@@ -76,7 +95,9 @@ Column {
                 axisX.maxAfterReset: Globals.Proxies.rangeValue('xMax')
                 axisX.onRangeChanged: alignAllCharts()
 
-                axisY.title: "Imeas, Icalc, Ibkg"
+                axisY.title: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd' ?
+                                 "Imeas, Icalc, Ibkg" :
+                                 "Imeas, Icalc"
                 axisY.min: Globals.Proxies.rangeValue('yMin')
                 axisY.max: Globals.Proxies.rangeValue('yMax')
                 axisY.minAfterReset: Globals.Proxies.rangeValue('yMin')
@@ -113,6 +134,9 @@ Column {
                     color: EaStyle.Colors.chartForegroundsExtra[2]
                     width: 2
 
+                    //style: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd' ?
+                    //           Qt.SolidLine :
+                    //           Qt.NoPen
                     pointsVisible: true
 
                     onHovered: (point, state) => showMainTooltip(mainChart, point, state)
@@ -144,6 +168,13 @@ Column {
 
                     color: calcSerieColor
                     width: 2
+
+                    //style: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd' ?
+                    //           Qt.SolidLine :
+                    //           Qt.NoPen
+                    //pointsVisible: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd' ?
+                    //                   false :
+                    //                   true
 
                     onHovered: (point, state) => showMainTooltip(mainChart, point, state)
                 }
@@ -394,10 +425,13 @@ Column {
                 color: measSerie.color
             }
             EaElements.Label {
-                text: '━  Total calculated (Icalc)'
+                text: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd' ?
+                          '━  Total calculated (Icalc)' :
+                          '━  Calculated (Icalc)'
                 color: calcSerie.color
             }
             EaElements.Label {
+                visible: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd'
                 text: '─  Background (Ibkg)'
                 color: bkgSerie.color
             }

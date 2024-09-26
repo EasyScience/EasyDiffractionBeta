@@ -3,14 +3,14 @@ data_sepd
 _pd_instr.2theta_bank 144.845
 _pd_instr.dtt1 7476.91
 _pd_instr.dtt2 -1.54
-_pd_instr.zero -9.30(5)
+_pd_instr.zero -9.29(5)
 _pd_instr.alpha0 0.0
 _pd_instr.alpha1 0.5971
 _pd_instr.beta0 0.04221
 _pd_instr.beta1 0.00946
-_pd_instr.sigma0 1.0(1)
-_pd_instr.sigma1 5.6(2)
-_pd_instr.sigma2 0.55(6)
+_pd_instr.sigma0 4.2(4)
+_pd_instr.sigma1 45.8(8)
+_pd_instr.sigma2 1.1(2)
 
 _diffrn_radiation.probe neutron
 
@@ -32,7 +32,7 @@ _pd_background.X_coordinate
 loop_
 _pd_phase_block.id
 _pd_phase_block.scale
-si 14.93(4)
+si 14.92(4)
 
 loop_
 _pd_meas.time_of_flight

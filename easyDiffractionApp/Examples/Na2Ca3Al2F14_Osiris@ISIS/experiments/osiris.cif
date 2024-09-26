@@ -3,14 +3,14 @@ data_osiris
 _pd_instr.2theta_bank 167.285
 _pd_instr.dtt1 17591.139
 _pd_instr.dtt2 -0.56
-_pd_instr.zero -4.1(4)
+_pd_instr.zero -3.3(4)
 _pd_instr.alpha0 0.0
-_pd_instr.alpha1 0.0780(8)
-_pd_instr.beta0 0.01179(7)
-_pd_instr.beta1 0.0399(7)
+_pd_instr.alpha1 0.0772(8)
+_pd_instr.beta0 0.01165(7)
+_pd_instr.beta1 0.0413(8)
 _pd_instr.sigma0 0.0
-_pd_instr.sigma1 7.0(2)
-_pd_instr.sigma2 2.77(8)
+_pd_instr.sigma1 95(4)
+_pd_instr.sigma2 13.9(5)
 
 _diffrn_radiation.probe neutron
 
@@ -18,21 +18,21 @@ loop_
 _pd_background.line_segment_X
 _pd_background.line_segment_intensity
 _pd_background.X_coordinate
-14918.0 1899(50) time-of-flight
-16000.0 1657(25) time-of-flight
-18000.0 1502(16) time-of-flight
-20000.0 1050(11) time-of-flight
+14918.0 1897(51) time-of-flight
+16000.0 1655(26) time-of-flight
+18000.0 1500(16) time-of-flight
+20000.0 1049(11) time-of-flight
 22000.0 879(7) time-of-flight
 25000.0 746(5) time-of-flight
 30000.0 606(4) time-of-flight
-35000.0 525(4) time-of-flight
+35000.0 524(4) time-of-flight
 40000.0 420(3) time-of-flight
 50000.0 363(2) time-of-flight
 70000.0 392(3) time-of-flight
 90000.0 419(5) time-of-flight
-110000.0 450(9) time-of-flight
-120000.0 460(13) time-of-flight
-135002.0 480(9) time-of-flight
+110000.0 451(9) time-of-flight
+120000.0 457(13) time-of-flight
+135002.0 479(10) time-of-flight
 
 loop_
 _pd_phase_block.id

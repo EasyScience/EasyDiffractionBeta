@@ -30,19 +30,26 @@ EaComponents.SideBarColumn {
     }
 
     EaElements.GroupBox {
+        id: measuredRangeGroup
         title: qsTr("Measured range")
         icon: 'arrows-alt-h'
-        visible: Globals.Proxies.main.experiment.defined
+        //visible: Globals.Proxies.main.experiment.defined
+        visible: false
 
         Loader { source: {
                 if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
+                    measuredRangeGroup.visible = false
                     return ''
                 }
-                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
-                    return 'SideBarBasic/PdMeas_CWL.qml'
-                } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
-                    return 'SideBarBasic/PdMeas_TOF.qml'
+                if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd') {
+                    measuredRangeGroup.visible = true
+                    if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                        return 'SideBarBasic/PdMeas_PD-CWL.qml'
+                    } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                        return 'SideBarBasic/PdMeas_PD-TOF.qml'
+                    }
                 } else {
+                    measuredRangeGroup.visible = false
                     return ''
                 }
             }
@@ -50,19 +57,61 @@ EaComponents.SideBarColumn {
     }
 
     EaElements.GroupBox {
+        id: diffrnRadiationGroup
         title: qsTr("Diffractometer")
         icon: 'microscope'
-        visible: Globals.Proxies.main.experiment.defined
+        //visible: Globals.Proxies.main.experiment.defined
+        visible: false
 
         Loader { source: {
                 if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
+                    diffrnRadiationGroup.visible = false
                     return ''
                 }
-                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
-                    return 'SideBarBasic/PdInstrParams_CWL.qml'
-                } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
-                    return 'SideBarBasic/PdInstrParams_TOF.qml'
+                if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd') {
+                    if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                        diffrnRadiationGroup.visible = true
+                        return 'SideBarBasic/PdInstrParams_PD-CWL.qml'
+                    } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                        diffrnRadiationGroup.visible = true
+                        return 'SideBarBasic/PdInstrParams_PD-TOF.qml'
+                    } else {
+                        diffrnRadiationGroup.visible = false
+                        return ''
+                    }
+                } else if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'sg') {
+                    if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                        diffrnRadiationGroup.visible = true
+                        return 'SideBarBasic/PdInstrParams_SG.qml'
+                    } else {
+                        diffrnRadiationGroup.visible = false
+                        return ''
+                    }
+                }
+            }
+        }
+    }
+
+    EaElements.GroupBox {
+        id: extinctionGroup
+        title: qsTr("Extinction")
+        icon: 'arrow-down'
+        //visible: Globals.Proxies.main.experiment.defined
+        visible: false
+
+        Loader { source: {
+                if (JSON.stringify(Globals.Proxies.experimentMainParam('_sample', 'type')) === '{}') {
+                    extinctionGroup.visible = false
+                    return ''
+                }
+                if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd') {
+                    extinctionGroup.visible = false
+                    return ''
+                } else if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'sg') {
+                    extinctionGroup.visible = true
+                    return 'SideBarBasic/Extinction_SG.qml'
                 } else {
+                    extinctionGroup.visible = false
                     return ''
                 }
             }
@@ -70,19 +119,26 @@ EaComponents.SideBarColumn {
     }
 
     EaElements.GroupBox {
+        id: peakProfileGroup
         title: qsTr("Profile shape")
         icon: 'shapes'
-        visible: Globals.Proxies.main.experiment.defined
+        //visible: Globals.Proxies.main.experiment.defined
+        visible: false
 
         Loader { source: {
                 if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
+                    peakProfileGroup.visible = false
                     return ''
                 }
-                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
-                    return 'SideBarBasic/PdPeakProfile_CWL.qml'
-                } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
-                    return 'SideBarBasic/PdPeakProfile_TOF.qml'
+                if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd') {
+                    peakProfileGroup.visible = true
+                    if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                        return 'SideBarBasic/PdPeakProfile_PD-CWL.qml'
+                    } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
+                        return 'SideBarBasic/PdPeakProfile_PD-TOF.qml'
+                    }
                 } else {
+                    peakProfileGroup.visible = false
                     return ''
                 }
             }
@@ -93,15 +149,17 @@ EaComponents.SideBarColumn {
         id: peakAsymmetryGroup
         title: qsTr("Peak asymmetry")
         icon: 'balance-scale-left'
+        visible: false
 
         Loader { source: {
                 if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
                     peakAsymmetryGroup.visible = false
                     return ''
                 }
-                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
+                if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl' &&
+                        Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd') {
                     peakAsymmetryGroup.visible = true
-                    return 'SideBarBasic/PdInstrPeakAsymm_CWL.qml'
+                    return 'SideBarBasic/PdInstrPeakAsymm_PD-CWL.qml'
                 } else {
                     peakAsymmetryGroup.visible = false
                     return ''
@@ -110,39 +168,25 @@ EaComponents.SideBarColumn {
         }
     }
 
-    /*
     EaElements.GroupBox {
+        id: backgroundGroup
         title: Globals.Proxies.experimentLoopTitle(qsTr('Background'), '_pd_background')
         icon: 'wave-square'
-        visible: Globals.Proxies.main.experiment.defined
-
-        Loader { source: 'SideBarBasic/PdBackground.qml' }
-    }
-    */
-
-    EaElements.GroupBox {
-        title: {
-            if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
-                return Globals.Proxies.experimentLoopTitle(qsTr('Background'), '_pd_background')
-            } else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
-                return Globals.Proxies.experimentLoopTitle(qsTr('Background'), '_pd_background')
-            }
-        }
-        icon: 'wave-square'
-        visible: Globals.Proxies.main.experiment.defined
+        //visible: Globals.Proxies.main.experiment.defined
+        visible: false
 
         Loader { source: {
                 if (JSON.stringify(Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type')) === '{}') {
+                    backgroundGroup.visible = false
                     return ''
                 }
-                //if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'cwl') {
-                //    return 'SideBarBasic/PdBackground.qml'
-                //} else if (Globals.Proxies.experimentMainParam('_diffrn_radiation', 'type').value === 'tof') {
-                //    return 'SideBarBasic/PdBackground_TOF.qml'
-                //} else {
-                //    return ''
-                //}
-                return 'SideBarBasic/PdBackground.qml'
+                if (Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd') {
+                    backgroundGroup.visible = true
+                    return 'SideBarBasic/PdBackground_PD.qml'
+                } else {
+                    backgroundGroup.visible = false
+                    return ''
+                }
             }
         }
     }
