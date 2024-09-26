@@ -209,6 +209,7 @@ class Experiment(QObject):
                 return
             stream = QTextStream(file)
             edCif = stream.readAll()
+            self.job.add_experiment_from_string(edCif)
             self.loadExperimentFromCifString(edCif, pathlib.Path(fpath).stem)
 
     @Slot('QVariant')
