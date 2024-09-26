@@ -28,7 +28,30 @@ except ImportError:
     console.error('No CrysPy module found')
 
 
-_DEFAULT_DATA_BLOCK_NO_MEAS_TOF = """data_pnd
+_DEFAULT_DATA_BLOCK_NO_MEAS_SC_CWL = """data_scd
+
+_diffrn_radiation.probe neutron
+
+_diffrn_radiation_wavelength.wavelength 1.0
+
+_extinction.model gauss
+_extinction.mosaicity 1000.0
+_extinction.radius 30.0
+
+loop_
+_exptl_crystal.id
+_exptl_crystal.scale
+ph 1.0
+
+loop_
+_refln.index_h
+_refln.index_k
+_refln.index_l
+_refln.intensity_meas
+_refln.intensity_meas_su
+"""
+
+_DEFAULT_DATA_BLOCK_NO_MEAS_PD_TOF = """data_pnd
 
 _diffrn_radiation.probe neutron
 
@@ -61,7 +84,7 @@ _pd_meas.intensity_total
 _pd_meas.intensity_total_su
 """
 
-_DEFAULT_DATA_BLOCK_NO_MEAS_CWL = """data_pnd
+_DEFAULT_DATA_BLOCK_NO_MEAS_PD_CWL = """data_pnd
 
 _diffrn_radiation.probe neutron
 _diffrn_radiation_wavelength.wavelength 1.9
@@ -96,7 +119,7 @@ _pd_meas.intensity_total
 _pd_meas.intensity_total_su
 """
 
-_DEFAULT_DATA_BLOCK_CWL = _DEFAULT_DATA_BLOCK_NO_MEAS_CWL + """36.5 1    1
+_DEFAULT_DATA_BLOCK_PD_CWL = _DEFAULT_DATA_BLOCK_NO_MEAS_PD_CWL + """36.5 1    1
 37.0 10   3
 37.5 700  25
 38.0 1100 30
@@ -202,7 +225,7 @@ class Experiment(QObject):
     @Slot()
     def addDefaultExperiment(self):
         console.debug('Adding default experiment')
-        self.loadExperimentsFromEdCif(_DEFAULT_DATA_BLOCK_CWL)
+        self.loadExperimentsFromEdCif(_DEFAULT_DATA_BLOCK_PD_CWL)
 
     @Slot('QVariant')
     def loadExperimentsFromResources(self, fpaths):
@@ -234,7 +257,7 @@ class Experiment(QObject):
                 with open(fpath, 'r') as file:
                     procData = file.read()
 
-            # If loading non-CIF data files
+            # If loading non-CIF data files (pd-cwl and pd-tof)
             elif fext == '.xye' or fext == '.xys' or fext == '.xy' or fext == '.dat':
 
                 # Try loading data file
@@ -261,9 +284,34 @@ class Experiment(QObject):
 
                 # Add default CIF instrumental block and measured data header
                 if x.max() < 180:
-                    procData = _DEFAULT_DATA_BLOCK_NO_MEAS_CWL + procData
+                    procData = _DEFAULT_DATA_BLOCK_NO_MEAS_PD_CWL + procData
                 else:
-                    procData = _DEFAULT_DATA_BLOCK_NO_MEAS_TOF + procData
+                    procData = _DEFAULT_DATA_BLOCK_NO_MEAS_PD_TOF + procData
+
+            # If loading non-CIF data files (sg-cwl)
+            elif fext == '.int':
+
+                # Try loading data file
+                try:
+                    data = np.loadtxt(fpath, unpack=True)
+                except Exception as exception:
+                    console.error(f"Failed to load data from file {fpath} with exception {exception}")
+                    return
+
+                # Extract measured data and calculate standard uncertainty if needed
+                if data.shape[0] == 5:
+                    h, k, l, intensity, intensity_su = data
+                else:
+                    console.error(f"Failed to load data from file {fpath}. Supported number of columns: 5")
+                    return
+
+                # Convert data from numpy arrays to string
+                sio = StringIO()
+                np.savetxt(sio, np.c_[h, k, l, intensity, intensity_su], fmt='%4i' '%4i' '%4i' '%12.3f' '%12.3f')
+                procData = sio.getvalue()
+
+                # Add default CIF instrumental block and measured data header
+                procData = _DEFAULT_DATA_BLOCK_NO_MEAS_SC_CWL + procData
 
             # Other formats not supported
             else:
@@ -344,31 +392,32 @@ class Experiment(QObject):
         loadedModelNames = [block['name']['value'] for block in self._proxy.model.dataBlocks]
         for dataBlock in cryspyExperimentsObj.items:
             cryspyExperimentType = type(dataBlock)
-            for itemIdx, item in enumerate(dataBlock.items):
-                if type(item) == cryspy.C_item_loop_classes.cl_1_phase.PhaseL:
-                    cryspyModelNames = [phase.label for phase in item.items]
-                    for modelIdx, modelName in enumerate(cryspyModelNames):
-                        if modelName not in loadedModelNames:
-                            del item.items[modelIdx]
-                    if not len(item.items):
-                        del dataBlock.items[itemIdx]
-            itemTypes = [type(item) for item in dataBlock.items]
-            # Add default phases if no phases are present
-            # Only pd-cwl and pd-tof experiments are consedered
-            # NEED FIX for sg-cwl experiments
-            if cryspy.C_item_loop_classes.cl_1_phase.PhaseL not in itemTypes and cryspyExperimentType != cryspy.E_data_classes.cl_2_diffrn.Diffrn:
-                defaultEdModelsCif = 'loop_\n_pd_phase_block.id\n_pd_phase_block.scale'
-                for modelName in loadedModelNames:
-                    defaultEdModelsCif += f'\n{modelName} 1.0'
-                cryspyPhasesCif = CryspyParser.edCifToCryspyCif(defaultEdModelsCif)
-                cryspyPhasesObj = str_to_globaln(cryspyPhasesCif).items
-                dataBlock.add_items(cryspyPhasesObj)
+            # pd-cwl and pd-tof experiments
+            if cryspyExperimentType == cryspy.E_data_classes.cl_2_pd.Pd or cryspyExperimentType == cryspy.E_data_classes.cl_2_tof.TOF:
+                # Delete phases not present in the loaded models
+                for itemIdx, item in enumerate(dataBlock.items):
+                    if type(item) == cryspy.C_item_loop_classes.cl_1_phase.PhaseL:
+                        cryspyModelNames = [phase.label for phase in item.items]
+                        for modelIdx, modelName in enumerate(cryspyModelNames):
+                            if modelName not in loadedModelNames:
+                                del item.items[modelIdx]
+                        if not len(item.items):
+                            del dataBlock.items[itemIdx]
+                itemTypes = [type(item) for item in dataBlock.items]
+                # Add default phases if no phases are present
+                if cryspy.C_item_loop_classes.cl_1_phase.PhaseL not in itemTypes and cryspyExperimentType != cryspy.E_data_classes.cl_2_diffrn.Diffrn:
+                    defaultEdModelsCif = 'loop_\n_pd_phase_block.id\n_pd_phase_block.scale'
+                    for modelName in loadedModelNames:
+                        defaultEdModelsCif += f'\n{modelName} 1.0'
+                    cryspyPhasesCif = CryspyParser.edCifToCryspyCif(defaultEdModelsCif)
+                    cryspyPhasesObj = str_to_globaln(cryspyPhasesCif).items
+                    dataBlock.add_items(cryspyPhasesObj)
+            # sg-cwl
             elif cryspyExperimentType == cryspy.E_data_classes.cl_2_diffrn.Diffrn:
-                firstModelName = ''  # loadedModelNames[0]
+                firstModelName = loadedModelNames[0]
                 firstModelScale = 1.0
                 for item in cryspyExperimentsObj.items[0].items:
                     if hasattr(item, 'items') and item.items[0].PREFIX == 'exptl_crystal':
-                        firstModelName = item.items[0].id
                         firstModelScale = item.items[0].scale
                         break
                 cryspyPhasesCif = f'_phase_label {firstModelName}\n_phase_scale {firstModelScale}'

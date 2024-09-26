@@ -24,11 +24,11 @@ EaComponents.ContentPage {
     mainView: EaComponents.MainContent {
         tabs: [
             EaElements.TabButton {
-                text: Globals.Proxies.main.experiment.defined ?
+                text: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd' ?
                           qsTr("Fitting") :
-                          qsTr("Simulation")
+                          qsTr("I vs. sinθ/λ")
             },
-            EaElements.TabButton { text: qsTr("Meas vs Calc") }
+            EaElements.TabButton { text: qsTr("Imeas vs. Icalc") }
         ]
 
         items: [

@@ -425,7 +425,9 @@ Column {
                 color: measSerie.color
             }
             EaElements.Label {
-                text: '━  Total calculated (Icalc)'
+                text: Globals.Proxies.experimentMainParam('_sample', 'type').value === 'pd' ?
+                          '━  Total calculated (Icalc)' :
+                          '━  Calculated (Icalc)'
                 color: calcSerie.color
             }
             EaElements.Label {

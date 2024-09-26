@@ -190,6 +190,10 @@ class Plotting(QObject):
         try:
             xArray = self._proxy.experiment._xArrays[index]
             yMeasArray = self._proxy.experiment._yMeasArrays[index]
+            if self._proxy.experiment.dataBlocksNoMeas[index]['params']['_sample']['type']['value'] == 'sg':  # sort
+                ind = np.argsort(xArray)
+                xArray = xArray[ind]
+                yMeasArray = yMeasArray[ind]
         except IndexError:
             xArray = np.empty(0)
             yMeasArray = np.empty(0)
@@ -216,6 +220,10 @@ class Plotting(QObject):
         try:
             xArray = self._proxy.experiment._xArrays[index]
             yMeasArray = self._proxy.experiment._yMeasArrays[index]
+            if self._proxy.experiment.dataBlocksNoMeas[index]['params']['_sample']['type']['value'] == 'sg':  # sort
+                ind = np.argsort(xArray)
+                xArray = xArray[ind]
+                yMeasArray = yMeasArray[ind]
         except IndexError:
             xArray = np.empty(0)
             yMeasArray = np.empty(0)
@@ -241,6 +249,10 @@ class Plotting(QObject):
         try:
             xArray = self._proxy.experiment._xArrays[index]
             yCalcTotalArray = self._proxy.experiment._yCalcTotalArrays[index]
+            if self._proxy.experiment.dataBlocksNoMeas[index]['params']['_sample']['type']['value'] == 'sg':  # sort
+                ind = np.argsort(xArray)
+                xArray = xArray[ind]
+                yCalcTotalArray = yCalcTotalArray[ind]
         except IndexError:
             xArray = np.empty(0)
             yCalcTotalArray = np.empty(0)
@@ -263,6 +275,10 @@ class Plotting(QObject):
         try:
             xArray = self._proxy.experiment._xArrays[index]
             yResidArray = self._proxy.experiment._yResidArrays[index]
+            if self._proxy.experiment.dataBlocksNoMeas[index]['params']['_sample']['type']['value'] == 'sg':  # sort
+                ind = np.argsort(xArray)
+                xArray = xArray[ind]
+                yResidArray = yResidArray[ind]
         except IndexError:
             xArray = np.empty(0)
             yResidArray = np.empty(0)
