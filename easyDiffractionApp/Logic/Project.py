@@ -11,7 +11,7 @@ from PySide6.QtCore import QFile, QTextStream, QIODevice
 
 from easydiffraction.io.cryspy_parser import Parameter
 from easydiffraction.io.cif import dataBlockToCif
-from easydiffraction.io.Helpers import formatMsg, generalizePath
+from easydiffraction.io.helpers import formatMsg, generalizePath
 from easydiffraction.io.cif import cifV2ToV1
 from EasyApp.Logic.Logging import console
 

@@ -15,7 +15,7 @@ from easydiffraction import Phases, Phase, Lattice, Site, SpaceGroup
 from easycrystallography.Components.AtomicDisplacement import AtomicDisplacement
 # from easycrystallography.Components.SpaceGroup import SpaceGroup
 from easydiffraction.io.cif import dataBlockToCif
-from easydiffraction.io.Helpers import formatMsg, generalizePath
+from easydiffraction.io.helpers import formatMsg, generalizePath
 from EasyApp.Logic.Logging import console
 
 from Logic.Tables import PERIODIC_TABLE # TODO CHANGE THIS TO PERIODICTABLE

@@ -7,7 +7,7 @@ from PySide6.QtCore import QObject, Signal, Slot, Property
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 
 from EasyApp.Logic.Logging import console
-from easydiffraction.io.Helpers import formatMsg, generalizePath
+from easydiffraction.io.helpers import formatMsg, generalizePath
 
 try:
     import cryspy

@@ -14,7 +14,7 @@ from PySide6.QtQml import QJSValue
 # Parameter is App-centric, should be moved to the App
 from easydiffraction.io.cryspy_parser import Parameter
 from easydiffraction.io.cif import dataBlockToCif
-from easydiffraction.io.Helpers import formatMsg, generalizePath
+from easydiffraction.io.helpers import formatMsg, generalizePath
 #from easydiffraction.Jobs import 
 
 from EasyApp.Logic.Logging import console
