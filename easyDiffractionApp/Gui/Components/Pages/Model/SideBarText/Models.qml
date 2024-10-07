@@ -64,7 +64,8 @@ EaElements.ComboBox {
 
                 EaComponents.TableViewParameter {
                     enabled: false
-                    text: comboBox.model[index].name
+                    // text: comboBox.model[index].name
+                    text: "none"
                 }
             }
         }

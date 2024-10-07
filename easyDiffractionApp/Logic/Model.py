@@ -50,7 +50,7 @@ O O 0 0 0 1 Biso 0
 
 BLOCK2PHASE = {
     '_cell': 'cell',
-    '_space_group': 'spacegroup',
+    '_space_group': 'space_group',
     '_atom_site': 'atoms',
     'occupancy': 'occupancy',
     'fract_x': 'fract_x',
@@ -66,6 +66,7 @@ BLOCK2PHASE = {
     'crystal_system': 'crystal_system',
     'IT_number': 'int_number',
     'IT_coordinate_system_code': 'setting',
+    'B_iso_or_equiv': 'Biso',
 }
 class Model(QObject):
     definedChanged = Signal()
@@ -197,7 +198,7 @@ class Model(QObject):
     def addDefaultModel(self):
         console.debug("Adding default model(s)")
         self.loadModelsFromEdCif(_DEFAULT_CIF_BLOCK)
-        self.addDefaultPhase()
+        # self.addDefaultPhase()
 
     @Slot('QVariant')
     def loadModelsFromResources(self, fpaths):
@@ -228,12 +229,15 @@ class Model(QObject):
     # @Slot(str)
     def loadModelsFromEdCif(self, edCif):
         # Update the Phases object
-        phases = Phases.from_cif_string(edCif)
-        phases.interface = self._interface
-        for phase in phases:
-            phase.scale.fixed = True
-            # self.phases.append(phase)
-            self.job.add_phase(phase=phase)
+        self.job.add_sample_from_string(edCif)
+
+        # phases = Phases.from_cif_string(edCif)
+        # phases.interface = self._interface
+        # for phase in phases:
+        #    phase.scale.fixed = True
+        #    # self.phases.append(phase)
+        #    self.job.add_phase(phase=phase)
+
         self._currentIndex = len(self.job.phases) - 1
         # convert phase into dataBlocks
         dataBlocks = self.phaseToBlocks(self.job.phases)
@@ -241,14 +245,15 @@ class Model(QObject):
         self.defined = bool(len(self._dataBlocks))
 
         self.setDataBlocksCif()
-        self.updateCifOnInterface()
+        self.updateCifOnInterface(cif=edCif)
         self.dataBlocksChanged.emit()
 
-    def updateCifOnInterface(self):
+    def updateCifOnInterface(self, cif=None):
         '''
         Update the CIF representation on the current interface
         '''
-        cif = self._dataBlocksCif[self.currentIndex][0]
+        if cif is None:
+            cif = self._dataBlocksCif[self.currentIndex][0]
         self._interface.updateModelCif(cif)
 
     def phaseToBlocks(self, phases):
@@ -483,6 +488,8 @@ class Model(QObject):
         p_category = BLOCK2PHASE[category]
         # get category
         phase_with_category = getattr(phase, p_category)[rowIndex]
+        if p_name == 'Biso':
+            phase_with_category = getattr(phase_with_category, 'adp')
         # get loop item
         phase_with_item = getattr(phase_with_category, p_name)
         if field == 'value':
@@ -691,10 +698,10 @@ class Model(QObject):
         if field == 'fit':
             path[1] = f'flags_{path[1]}'
 
-        oldValue = self._interface.data()._cryspyDict[path[0]][path[1]][path[2]]
+        oldValue = self._interface.data()._cryspyDict[path[0].lower()][path[1]][path[2]]
         if oldValue == value:
             return False
-        self._interface.data()._cryspyDict[path[0]][path[1]][path[2]] = value
+        self._interface.data()._cryspyDict[path[0].lower()][path[1]][path[2]] = value
 
         console.debug(formatMsg('sub', 'Calculator dict', f'{oldValue} → {value}', f'{path}'))
         return True

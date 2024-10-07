@@ -64,7 +64,7 @@ class Fittables(QObject):
     def data(self):
         #console.error('FITTABLES DATA GETTER')
         return self._data
-
+    
     @Property(str, notify=dataJsonChanged)
     def dataJson(self):
         return self._dataJson

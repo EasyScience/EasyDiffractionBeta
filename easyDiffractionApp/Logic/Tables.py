@@ -97,6 +97,23 @@ COLOR_TABLE = {
     "U": "#D0D0E0",
     "Np": "#D0D0E0",
     "Pu": "#D0D0E0",
+    "Am": "#D0D0E0",
+    "Cm": "#D0D0E0",
+    "Bk": "#D0D0E0",
+    "Cf": "#D0D0E0",
+    "Es": "#D0D0E0",
+    "Fm": "#D0D0E0",
+    "Md": "#D0D0E0",
+    "No": "#D0D0E0",
+    "Lr": "#D0D0E0",
+    "Rf": "#D0D0E0",
+    "Db": "#D0D0E0",
+    "Sg": "#D0D0E0",
+    "Bh": "#D0D0E0",
+    "Hs": "#D0D0E0",
+    "Mt": "#D0D0E0",
+    "Ds": "#D0D0E0",
+    "Rg": "#D0D0E0",
 }
 PERIODIC_TABLE = {
     "H": {

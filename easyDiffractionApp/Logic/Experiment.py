@@ -260,7 +260,7 @@ class Experiment(QObject):
         cifDict = 'core'
         dataBlock = {'name': '', 'params': {}, 'loops': {}}
         dataBlock['name'] = dict(Parameter(
-            value = job.name,
+            value = job.experiment.name,
             icon = 'microscope'))
         param = 'params'
         category = '_diffrn_radiation'
@@ -680,7 +680,8 @@ class Experiment(QObject):
         currentDataBlock = self._dataBlocksNoMeas[self.currentIndex]
         currentExperimentName = currentDataBlock['name']['value']
 
-        calcObjBlockNames = [item.data_name for item in self._interface.data()._calcObj]
+        # calcObjBlockNames = [item.data_name for item in self._interface.data()._calcObj]
+        calcObjBlockNames = [item.data_name for item in self._interface.data()._cryspyObj]
         calcObjBlockIdx = calcObjBlockNames.index(currentExperimentName)
 
         if not edCifNoMeas:
@@ -811,7 +812,9 @@ class Experiment(QObject):
         lastBkgPoint = self._dataBlocksNoMeas[blockIdx]['loops'][category][-1]
 
         newBkgPoint = copy.deepcopy(lastBkgPoint)
-        newBkgPoint['line_segment_X']['value'] += 10
+        point = float(newBkgPoint['line_segment_X']['value'])
+        newBkgPoint['line_segment_X']['value'] = point + 10
+        # newBkgPoint['line_segment_X']['value'] += 10
 
         self._dataBlocksNoMeas[blockIdx]['loops'][category].append(newBkgPoint)
         atomsCount = len(self._dataBlocksNoMeas[blockIdx]['loops'][category])
@@ -891,7 +894,8 @@ class Experiment(QObject):
         p_category = BLOCK2JOB[category]
         # get category
         # assumption of the first loop, since there is only one background currently
-        job_with_category = getattr(self.job, p_category)[0]
+        # job_with_category = getattr(self.job, p_category)[0]
+        job_with_category = getattr(self.job, p_category)
         # should we get the loop item?
         # this works for the background, but not for scale etc.
         try:
@@ -1190,21 +1194,20 @@ class Experiment(QObject):
     def runProfileCalculations(self):
 
         # shove it all into the calculator.
-
         result = self._interface.calculate_profile()
-        # debug stuff - remove before merging
-        # simx = self._xArrays
-        # simx = self._dataBlocksMeasOnly[0]['loops']['_pd_meas'][0]['2theta_scan']['value']
-        # result = self._job.create_simulation(simx)
-
         console.debug(formatMsg('sub', 'Profle calculations', 'finished'))
 
         chiSq = result[0]
-        self._proxy.fitting._pointsCount = result[1]
-        self._proxy.fitting._freeParamsCount = len(result[4])
-        self._proxy.fitting.chiSq = chiSq / (self._proxy.fitting._pointsCount - self._proxy.fitting._freeParamsCount)
+        chiSqn = chiSq / (result[1] - len(result[4]))
+        self._proxy.status.goodnessOfFit = f'{chiSqn:0.2f}'
 
-        gofLastIter = self._proxy.fitting.chiSq  # NEED FIX
+        # code left to reuse the format statements later
+        #################################################
+        # self._proxy.fitting._pointsCount = result[1]
+        # self._proxy.fitting._freeParamsCount = len(result[4])
+        # self._proxy.fitting.chiSq = chiSq / (self._proxy.fitting._pointsCount - self._proxy.fitting._freeParamsCount)
+
+        # gofLastIter = self._proxy.fitting.chiSq  # NEED FIX
         # if self._proxy.fitting.chiSqStart is None:
         #     self._proxy.status.goodnessOfFit = f'{gofLastIter:0.2f}'                           # NEED move to connection
         # else:

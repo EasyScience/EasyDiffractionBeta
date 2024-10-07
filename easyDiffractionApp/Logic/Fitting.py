@@ -10,7 +10,7 @@ import numpy as np
 from PySide6.QtCore import QObject, Signal, Slot, Property, QThreadPool
 
 from EasyApp.Logic.Logging import console
-from easydiffraction.io.helpers import formatMsg
+from easydiffraction.io.Helpers import formatMsg
 from Logic.Data import Data
 
 try:

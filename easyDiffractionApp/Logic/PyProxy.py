@@ -24,10 +24,11 @@ from easydiffraction import Job
 class PyProxy(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
+        # self.interface = InterfaceFactory()
         # instantiate the Job object.
         # This is done only once, since in the App world there is only one Job
         self._job = Job()
-        self.interface = InterfaceFactory()
+        self.interface = self._job.interface
         self._logger = LoggerLevelHandler(self)
         self._project = Project(self)
         self._experiment = Experiment(self, interface=self.interface)

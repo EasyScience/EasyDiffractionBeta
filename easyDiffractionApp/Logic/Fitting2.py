@@ -48,6 +48,7 @@ class Fitting(QObject):
         self._job = self.parent.job
         # self.fitter = CoreFitter(self.parent.sample(), self.interface.fit_func)
         self.fitter = CoreFitter(self._job, self._job.calculate_profile)
+        # self.fitter = CoreFitter(self._job, self._job.interface.calculate_profile)
         # self.fitter = CoreFitter(self.parent.experiment.job(), self.interface.fit_func)
 
         # Multithreading
@@ -90,6 +91,9 @@ class Fitting(QObject):
         self.interface._InterfaceFactoryTemplate__interface_obj.saved_kwargs = local_kwargs
         try:
             res = self.fitter.fit(x, y, **kwargs)
+
+            #self._job.fit(**kwargs)
+            # res = self._job.fitting_results
 
         except Exception as ex:
             self.failed.emit(str(ex))

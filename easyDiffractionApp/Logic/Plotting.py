@@ -91,7 +91,7 @@ class Plotting(QObject):
         #if self._chartRefs['QtCharts'][page][serie] == ref:
         #    return
         if ref.name():  # braggSeries
-            self._chartRefs['QtCharts'][page][serie][ref.name()] = ref
+            self._chartRefs['QtCharts'][page][serie][ref.name().lower()] = ref
             console.debug(formatMsg('sub', f'{serie} with name {ref.name()} on {page}: {ref}'))
         else:  # other series
             self._chartRefs['QtCharts'][page][serie] = ref
