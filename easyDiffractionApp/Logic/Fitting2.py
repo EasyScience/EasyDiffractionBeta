@@ -91,13 +91,13 @@ class Fitting(QObject):
         self.interface._InterfaceFactoryTemplate__interface_obj.saved_kwargs = local_kwargs
         try:
             res = self.fitter.fit(x, y, **kwargs)
-
-            #self._job.fit(**kwargs)
-            # res = self._job.fitting_results
-
         except Exception as ex:
             self.failed.emit(str(ex))
+            self.parent.status.fitStatus = 'Failure'
             return
+        self.parent.status.fitStatus = 'Success'
+        self.parent.fitting.chiSq = self.interface._InterfaceFactoryTemplate__interface_obj.calculator.chisq
+        self.parent.status.goodnessOfFit = self.interface._InterfaceFactoryTemplate__interface_obj.calculator.chisq
         self.finished.emit(res)
 
     def fit_polar(self):
