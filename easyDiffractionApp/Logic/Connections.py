@@ -290,6 +290,8 @@ class Connections(QObject):
     #########
 
     def onFittingFitFinished(self):
+        # Update the blocks first
+        self._proxy.model.updateBlocksFromPhases()
         # Model page
         console.debug(formatMsg('main', 'Updating structure view for the current model...'))
         self._proxy.model.updateCurrentModelStructView()
@@ -297,6 +299,7 @@ class Connections(QObject):
         self._proxy.model.setDataBlocksCif()
 
         # Experiment page
+        self._proxy.experiment.updateBlocksFromJob()
         console.debug(formatMsg('main', 'Replacing arrays...'))
         self._proxy.experiment.replaceArrays()
         console.debug(formatMsg('main', f'Redrawing curves on experiment page using {self._proxy.plotting.currentLib1d}...'))

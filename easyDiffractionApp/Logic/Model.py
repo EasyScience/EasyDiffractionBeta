@@ -248,6 +248,13 @@ class Model(QObject):
         self.updateCifOnInterface(cif=edCif)
         self.dataBlocksChanged.emit()
 
+    def updateBlocksFromPhases(self):
+        self._dataBlocks = [] # clear the list
+        for phase in self.job.phases:
+            self._dataBlocks.append(self.phaseToBlocks([phase]))
+        self.setDataBlocksCif()
+        self.dataBlocksChanged.emit()
+
     def updateCifOnInterface(self, cif=None):
         '''
         Update the CIF representation on the current interface

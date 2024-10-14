@@ -250,6 +250,12 @@ class Experiment(QObject):
         # self._job.interface = self._interface
         self.dataBlocksChanged.emit()
 
+    def updateBlocksFromJob(self):
+        blocks = self.jobToBlock(job=self.job)
+        self._dataBlocksNoMeas = []
+        self._dataBlocksNoMeas.append(blocks)
+        self.dataBlocksChanged.emit()
+
     def jobToBlock(self, job=None):
         '''
         Convert a Job object to a list of data blocks, without the measured data

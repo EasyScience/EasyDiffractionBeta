@@ -159,11 +159,13 @@ class Fittables(QObject):
                 changedIntern = self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
                 self._proxy.model.blocksToLoopPhase(blockIdx, category, name, rowIndex, field, value)
                 changedCryspy = self._proxy.model.editCalculatorDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
-        if changedIntern and changedCryspy:
-            if blockType == 'model':
-                self.modelChangedSilently.emit()
-            elif blockType == 'experiment':
-                self.experimentChangedSilently.emit()
+        #if changedIntern and changedCryspy:
+        ### genericUpdate now messes with changedIntern and changedCryspy
+        ### so we just force the updates
+        if blockType == 'model':
+            self.modelChangedSilently.emit()
+        elif blockType == 'experiment':
+            self.experimentChangedSilently.emit()
 
     def set(self):
         _data = []
