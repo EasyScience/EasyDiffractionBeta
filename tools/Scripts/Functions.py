@@ -5,15 +5,16 @@
 __author__ = "github.com/AndrewSazonov"
 __version__ = '0.0.1'
 
-import os, sys
-import toml
-import zipfile
-import subprocess
-import requests
-import shutil
+import os
 import platform
+import shutil
+import subprocess
+import sys
+import zipfile
 from distutils import dir_util
 
+import requests
+import toml
 
 # FUNCTIONS
 

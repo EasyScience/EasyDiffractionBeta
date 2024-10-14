@@ -5,13 +5,12 @@
 __author__ = "github.com/AndrewSazonov"
 __version__ = '0.0.1'
 
-import os
+import base64
 import sys
 import time
-import base64
+
 import Config
 import Functions
-
 
 CONFIG = Config.Config(sys.argv[1], sys.argv[2])
 
@@ -64,7 +63,7 @@ def signMacos():
             Functions.printSuccessMessage(sub_message)
 
         try:
-            sub_message = f'list keychains'
+            sub_message = 'list keychains'
             Functions.run(
                 'security', 'list-keychains')
         except Exception as sub_exception:
@@ -111,7 +110,7 @@ def signMacos():
             Functions.printSuccessMessage(sub_message)
 
         try:
-            sub_message = f'show certificates'
+            sub_message = 'show certificates'
             Functions.run(
                 'security', 'find-identity',
                 '-v')

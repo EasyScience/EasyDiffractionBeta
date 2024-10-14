@@ -2,23 +2,22 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
 
-from PySide6.QtCore import QObject, Property
-
 from EasyApp.Logic.Logging import LoggerLevelHandler
-from Logic.Connections import Connections
-from Logic.Project import Project
-from Logic.Experiment import Experiment
-from Logic.Model import Model
-from Logic.Data import Data
-from Logic.Analysis import Analysis
-from Logic.Fitting2 import Fitting
-from Logic.Fittables import Fittables
-from Logic.Summary import Summary
-from Logic.Status import Status
-from Logic.Plotting import Plotting
-from Logic.Helpers import BackendHelpers
-from easydiffraction.interface import InterfaceFactory
 from easydiffraction import Job
+from Logic.Analysis import Analysis
+from Logic.Connections import Connections
+from Logic.Data import Data
+from Logic.Experiment import Experiment
+from Logic.Fittables import Fittables
+from Logic.Fitting2 import Fitting
+from Logic.Helpers import BackendHelpers
+from Logic.Model import Model
+from Logic.Plotting import Plotting
+from Logic.Project import Project
+from Logic.Status import Status
+from Logic.Summary import Summary
+from PySide6.QtCore import Property
+from PySide6.QtCore import QObject
 
 
 class PyProxy(QObject):

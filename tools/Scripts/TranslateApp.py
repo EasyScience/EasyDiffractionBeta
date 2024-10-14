@@ -5,11 +5,13 @@
 __author__ = "github.com/AndrewSazonov"
 __version__ = '0.0.1'
 
-import os, sys
+import os
+import sys
 import xml.etree.ElementTree as ET
-import deepl
-import Functions, Config
 
+import Config
+import deepl
+import Functions
 
 AUTH_KEY = 'Authentication Key for DeepL API from https://www.deepl.com/account/summary'
 QT_BIN_DIR = '/Users/as/Qt/6.5.0/macos/bin'

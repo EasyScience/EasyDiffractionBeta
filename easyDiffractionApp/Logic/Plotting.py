@@ -3,14 +3,19 @@
 # © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
 
 import numpy as np
-from PySide6.QtCore import QObject, Signal, Slot, Property, Qt
-from PySide6.QtGui import QImage, QBrush
-from PySide6 import QtCharts
-
 from EasyApp.Logic.Logging import console
-from Logic.Helpers import Converter #, WebEngine
 from easydiffraction.io.helpers import formatMsg
+from Logic.Helpers import Converter  #, WebEngine
 
+# The following import, although seemingly unused, is essential. DO NOT REMOVE.
+from PySide6 import QtCharts  # noqa: F401
+from PySide6.QtCore import Property
+from PySide6.QtCore import QObject
+from PySide6.QtCore import Qt
+from PySide6.QtCore import Signal
+from PySide6.QtCore import Slot
+from PySide6.QtGui import QBrush
+from PySide6.QtGui import QImage
 
 _LIBS_1D = ['QtCharts', 'Plotly']
 
@@ -268,7 +273,8 @@ class Plotting(QObject):
                 yBraggArray = np.full_like(xBraggArray, -phaseIdx * 0.5)
                 braggSerie = self._chartRefs['QtCharts']['analysisPage']['braggSeries'][phaseName]
                 braggSerie.replaceNp(xBraggArray, yBraggArray)
-                console.debug(formatMsg('sub', f'Bragg peaks {phaseName}', f'{xBraggArray.size} points', 'on analysis page', 'replaced'))
+                console.debug(formatMsg('sub', f'Bragg peaks {phaseName}', f'{xBraggArray.size} points',
+                                        'on analysis page', 'replaced'))
         except IndexError:
             pass
 
@@ -282,7 +288,7 @@ class Plotting(QObject):
         arrayStr = Converter.dictToJson(xArray)
         script = f'setXData({arrayStr})'
         chart = self._chartRefs['Plotly']['experimentPage']
-        WebEngine.runJavaScriptWithoutCallback(chart, script)
+        WebEngine.runJavaScriptWithoutCallback(chart, script) # noqa: F821
 
     def plotlyReplaceMeasuredYOnExperimentChart(self):
         index = self._proxy.experiment.currentIndex
@@ -292,12 +298,12 @@ class Plotting(QObject):
         arrayStr = Converter.dictToJson(yMeasArray)
         script = f'setMeasuredYData({arrayStr})'
         chart = self._chartRefs['Plotly']['experimentPage']
-        WebEngine.runJavaScriptWithoutCallback(chart, script)
+        WebEngine.runJavaScriptWithoutCallback(chart, script) # noqa: F821
 
     def plotlyRedrawExperimentChart(self):
         chart = self._chartRefs['Plotly']['experimentPage']
         script = 'redrawPlot()'
-        WebEngine.runJavaScriptWithoutCallback(chart, script)
+        WebEngine.runJavaScriptWithoutCallback(chart, script) # noqa: F821
 
     # Plotly: Model
 
@@ -309,7 +315,7 @@ class Plotting(QObject):
         arrayStr = Converter.dictToJson(xArray)
         script = f'setXData({arrayStr})'
         chart = self._chartRefs['Plotly']['modelPage']
-        WebEngine.runJavaScriptWithoutCallback(chart, script)
+        WebEngine.runJavaScriptWithoutCallback(chart, script) # noqa: F821
 
     def plotlyReplaceCalculatedYOnModelChart(self):
         index = self._proxy.model.currentIndex
@@ -319,19 +325,19 @@ class Plotting(QObject):
         arrayStr = Converter.dictToJson(yCalcArray)
         script = f'setCalculatedYData({arrayStr})'
         chart = self._chartRefs['Plotly']['modelPage']
-        WebEngine.runJavaScriptWithoutCallback(chart, script)
+        WebEngine.runJavaScriptWithoutCallback(chart, script) # noqa: F821
 
     def plotlyRedrawModelChart(self):
         chart = self._chartRefs['Plotly']['modelPage']
         script = 'redrawPlot()'
-        WebEngine.runJavaScriptWithoutCallback(chart, script)
+        WebEngine.runJavaScriptWithoutCallback(chart, script) # noqa: F821
 
     def plotlyReplaceCalculatedYOnModelChartAndRedraw(self):
         chart = self._chartRefs['Plotly']['modelPage']
         array = self._proxy.model.calculated[self._proxy.model.currentIndex]['yArray']
         arrayStr = Converter.dictToJson(array)
         script = f'redrawPlotWithNewCalculatedYJson({{ y:[{arrayStr}] }})'
-        WebEngine.runJavaScriptWithoutCallback(chart, script)
+        WebEngine.runJavaScriptWithoutCallback(chart, script) # noqa: F821
 
     # Plotly: Analysis
 
@@ -343,7 +349,7 @@ class Plotting(QObject):
         arrayStr = Converter.dictToJson(xArray)
         script = f'setXData({arrayStr})'
         chart = self._chartRefs['Plotly']['analysisPage']
-        WebEngine.runJavaScriptWithoutCallback(chart, script)
+        WebEngine.runJavaScriptWithoutCallback(chart, script) # noqa: F821
 
     def plotlyReplaceMeasuredYOnAnalysisChart(self):
         index = self._proxy.experiment.currentIndex
@@ -353,7 +359,7 @@ class Plotting(QObject):
         arrayStr = Converter.dictToJson(yMeasArray)
         script = f'setMeasuredYData({arrayStr})'
         chart = self._chartRefs['Plotly']['analysisPage']
-        WebEngine.runJavaScriptWithoutCallback(chart, script)
+        WebEngine.runJavaScriptWithoutCallback(chart, script) # noqa: F821
 
     def plotlyReplaceTotalCalculatedYOnAnalysisChart(self):
         index = self._proxy.experiment.currentIndex
@@ -363,12 +369,12 @@ class Plotting(QObject):
         arrayStr = Converter.dictToJson(yTotalCalcArray)
         script = f'setCalculatedYData({arrayStr})'
         chart = self._chartRefs['Plotly']['analysisPage']
-        WebEngine.runJavaScriptWithoutCallback(chart, script)
+        WebEngine.runJavaScriptWithoutCallback(chart, script) # noqa: F821
 
     def plotlyRedrawAnalysisChart(self):
         chart = self._chartRefs['Plotly']['analysisPage']
         script = 'redrawPlot()'
-        WebEngine.runJavaScriptWithoutCallback(chart, script)
+        WebEngine.runJavaScriptWithoutCallback(chart, script) # noqa: F821
 
     def plotlyReplaceTotalCalculatedYOnAnalysisChartAndRedraw(self):
         if not self._proxy.analysis.defined:
@@ -380,4 +386,4 @@ class Plotting(QObject):
         arrayStr = Converter.dictToJson(yTotalCalcArray)
         script = f'redrawPlotWithNewCalculatedYJson({{ y:[{arrayStr}] }})'
         chart = self._chartRefs['Plotly']['analysisPage']
-        WebEngine.runJavaScriptWithoutCallback(chart, script)
+        WebEngine.runJavaScriptWithoutCallback(chart, script) # noqa: F821

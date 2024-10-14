@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
 
-from PySide6.QtCore import QObject, Slot
-
 from EasyApp.Logic.Logging import console
 from easydiffraction.io.helpers import formatMsg
+from PySide6.QtCore import QObject
+from PySide6.QtCore import Slot
 
 
 class Connections(QObject):
@@ -90,12 +90,14 @@ class Connections(QObject):
             self._proxy.experiment.runProfileCalculations()
             console.debug(formatMsg('main', 'Replacing arrays...'))
             self._proxy.experiment.replaceArrays()
-            console.debug(formatMsg('main', f'Redrawing curves on experiment page using {self._proxy.plotting.currentLib1d}...'))
+            console.debug(formatMsg('main',
+                        f'Redrawing curves on experiment page using {self._proxy.plotting.currentLib1d}...'))
             self._proxy.plotting.drawBackgroundOnExperimentChart()
 
         # Analysis page
         if self._proxy.analysis.defined:
-            console.debug(formatMsg('main', f'Redrawing curves on analysis page using {self._proxy.plotting.currentLib1d}...'))
+            console.debug(formatMsg('main',
+                        f'Redrawing curves on analysis page using {self._proxy.plotting.currentLib1d}...'))
             self._proxy.plotting.drawCalculatedOnAnalysisChart()
             self._proxy.plotting.drawResidualOnAnalysisChart()
             self._proxy.plotting.drawBraggOnAnalysisChart()
@@ -337,7 +339,7 @@ class Connections(QObject):
         # Experiment page
         console.debug(formatMsg('main', 'Replacing arrays...'))
         self._proxy.experiment.replaceArrays()
-        # self._proxy.plotting.drawBackgroundOnExperimentChart() # Not needed!!!! as it is updated on Experiment page clicked???
+        # self._proxy.plotting.drawBackgroundOnExperimentChart() # Not needed!! It is updated on Experiment page clicked?
 
         # Analysis page
         console.debug(formatMsg('main', f'Redrawing curves on analysis page using {self._proxy.plotting.currentLib1d}...'))

@@ -3,11 +3,13 @@
 # © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
 
 import numpy as np
-from PySide6.QtCore import QObject, Signal, Slot, Property
-
 from EasyApp.Logic.Logging import console
-from Logic.Helpers import Converter
 from easydiffraction.io.helpers import formatMsg
+from Logic.Helpers import Converter
+from PySide6.QtCore import Property
+from PySide6.QtCore import QObject
+from PySide6.QtCore import Signal
+from PySide6.QtCore import Slot
 
 _EMPTY_DATA = [
     {
@@ -112,7 +114,8 @@ class Fittables(QObject):
     @Slot(str, int, str, int, str, str, float)
     def edit(self, blockType, blockIdx, category, rowIndex, name, field, value):
         if rowIndex == -1:
-            console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
+            console.debug(formatMsg('main', 'Changing fittable',
+                                    f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
             if blockType == 'experiment':
                 self._proxy.experiment.setMainParam(blockIdx, category, name, field, value)
                 # Update the job object
@@ -122,7 +125,8 @@ class Fittables(QObject):
                 # Update the job object
                 self._proxy.model.blocksToPhase(blockIdx, category, name, field, value)
         else:
-            console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
+            console.debug(formatMsg('main', 'Changing fittable',
+                            f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
             if blockType == 'experiment':
                 self._proxy.experiment.setLoopParam(blockIdx, category, name, rowIndex, field, value)
                 self._proxy.experiment.blocksToLoopJob(blockIdx, category, name, rowIndex, field, value)
@@ -131,37 +135,49 @@ class Fittables(QObject):
                 self._proxy.model.blocksToLoopPhase(blockIdx, category, name, rowIndex, field, value)
 
     @Slot(str, int, str, int, str, str, float)
-    def editSilently(self, blockType, blockIdx, category, rowIndex, name, field, value):  # NEED FIX: Move to connections
+    def editSilently(self, blockType, blockIdx, category, rowIndex, name, field, value):
+        # NEED FIX: Move to connections
         changedIntern = False
         changedCryspy = False
         if rowIndex == -1:
-            console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
+            console.debug(formatMsg('main', 'Changing fittable',
+                                    f'{blockType}[{blockIdx}].{category}.{name}.{field} to {value}'))
             if blockType == 'experiment':
                 # update exp model and job object
-                self._proxy.experiment.editDataBlockMainParam(blockIdx, category, name, 'error', 0)  # NEED FIX. Temp solution to reset su
+                self._proxy.experiment.editDataBlockMainParam(blockIdx, category, name, 'error', 0) 
+                # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.experiment.editDataBlockMainParam(blockIdx, category, name, field, value)
                 # update cryspy model
                 changedCryspy = self._proxy.experiment.editCalcDictByMainParam(blockIdx, category, name, field, value)
             elif blockType == 'model':
-                self._proxy.model.editDataBlockMainParam(blockIdx, category, name, 'error', 0)  # NEED FIX. Temp solution to reset su
+                self._proxy.model.editDataBlockMainParam(blockIdx, category, name, 'error', 0)
+                # NEED FIX. Temp solution to reset su
                 changedIntern = self._proxy.model.editDataBlockMainParam(blockIdx, category, name, field, value)
                 self._proxy.model.blocksToPhase(blockIdx, category, name, field, value)
                 # update cryspy model
                 changedCryspy = self._proxy.model.editCalculatorDictByMainParam(blockIdx, category, name, field, value)
         else:
-            console.debug(formatMsg('main', 'Changing fittable', f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
+            console.debug(formatMsg('main', 'Changing fittable',
+                                    f'{blockType}[{blockIdx}].{category}[{rowIndex}].{name}.{field} to {value}'))
             if blockType == 'experiment':
-                self._proxy.experiment.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', 0)  # NEED FIX. Temp solution to reset su
-                changedIntern = self._proxy.experiment.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
-                changedCryspy = self._proxy.experiment.editCalcDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
+                self._proxy.experiment.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', 0)
+                # NEED FIX. Temp solution to reset su
+                changedIntern = \
+                self._proxy.experiment.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
+                changedCryspy = \
+                self._proxy.experiment.editCalcDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
             elif blockType == 'model':
-                self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', 0)  # NEED FIX. Temp solution to reset su
-                changedIntern = self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
+                self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, 'error', 0)
+                # NEED FIX. Temp solution to reset su
+                changedIntern = \
+                self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
                 self._proxy.model.blocksToLoopPhase(blockIdx, category, name, rowIndex, field, value)
-                changedCryspy = self._proxy.model.editCalculatorDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
-        #if changedIntern and changedCryspy:
+                changedCryspy = \
+                self._proxy.model.editCalculatorDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
+        if changedIntern and changedCryspy:
         ### genericUpdate now messes with changedIntern and changedCryspy
         ### so we just force the updates
+            pass
         if blockType == 'model':
             self.modelChangedSilently.emit()
         elif blockType == 'experiment':
@@ -189,12 +205,15 @@ class Fittables(QObject):
                         # fittable['blockIcon'] = block['name']['icon']
                         fittable['blockIcon'] = "layer-group"
                         fittable['category'] = paramContent['category']
-                        fittable['prettyCategory'] = paramContent['prettyCategory'] if 'prettyCategory' in paramContent else ''
+                        fittable['prettyCategory'] = \
+                            paramContent['prettyCategory'] if 'prettyCategory' in paramContent else ''
                         fittable['name'] = paramContent['name']
                         fittable['prettyName'] = paramContent['prettyName'] if 'prettyName' in paramContent else ''
-                        fittable['shortPrettyName'] = paramContent['shortPrettyName'] if 'shortPrettyName' in paramContent else ''
+                        fittable['shortPrettyName'] = \
+                            paramContent['shortPrettyName'] if 'shortPrettyName' in paramContent else ''
                         fittable['icon'] = paramContent['icon'] if 'icon' in paramContent else "map-marker-alt"
-                        fittable['categoryIcon'] = paramContent['categoryIcon'] if 'categoryIcon' in paramContent else "layer-group"
+                        fittable['categoryIcon'] = \
+                            paramContent['categoryIcon'] if 'categoryIcon' in paramContent else "layer-group"
                         fittable['enabled'] = paramContent['enabled']
                         fittable['value'] = paramContent['value']
                         fittable['error'] = paramContent['error']
@@ -212,7 +231,8 @@ class Fittables(QObject):
                             fittable['from'] = max(fittable['value'] * (100 - pctDelta) / 100, fittable['min'])
                             fittable['to'] = min(fittable['value'] * (100 + pctDelta) / 100, fittable['max'])
 
-                        fullName = f"{fittable['blockType']}.{fittable['blockName']}.{fittable['category']}.{fittable['name']}"
+                        fullName = \
+                            f"{fittable['blockType']}.{fittable['blockName']}.{fittable['category']}.{fittable['name']}"
                         if fittable['enabled']:
                             _modelParamsCount += 1
                             if fittable['fit']:
@@ -241,14 +261,17 @@ class Fittables(QObject):
                             # fittable['blockIcon'] = block['name']['icon']
                             fittable['blockIcon'] = "layer-group"
                             fittable['category'] = category
-                            fittable['prettyCategory'] = paramContent['prettyCategory'] if 'prettyCategory' in paramContent else ''
+                            fittable['prettyCategory'] = \
+                                paramContent['prettyCategory'] if 'prettyCategory' in paramContent else ''
                             fittable['rowName'] = paramContent['rowName'] if 'rowName' in paramContent else ''
                             fittable['rowIndex'] = rowIndex
                             fittable['name'] = paramContent['name']
                             fittable['prettyName'] = paramContent['prettyName'] if 'prettyName' in paramContent else ''
-                            fittable['shortPrettyName'] = paramContent['shortPrettyName'] if 'shortPrettyName' in paramContent else ''
+                            fittable['shortPrettyName'] = \
+                                paramContent['shortPrettyName'] if 'shortPrettyName' in paramContent else ''
                             fittable['icon'] = paramContent['icon'] if 'icon' in paramContent else "map-marker-alt"
-                            fittable['categoryIcon'] = paramContent['categoryIcon'] if 'categoryIcon' in paramContent else "layer-group"
+                            fittable['categoryIcon'] = \
+                                paramContent['categoryIcon'] if 'categoryIcon' in paramContent else "layer-group"
                             fittable['enabled'] = paramContent['enabled']
                             fittable['value'] = paramContent['value']
                             fittable['error'] = paramContent['error']
@@ -266,7 +289,8 @@ class Fittables(QObject):
                                 fittable['from'] = max(fittable['value'] * (100 - pctDelta) / 100, fittable['min'])
                                 fittable['to'] = min(fittable['value'] * (100 + pctDelta) / 100, fittable['max'])
 
-                            fullName = f"{fittable['blockType']}.{fittable['blockName']}.{fittable['category']}.{fittable['rowName']}.{fittable['name']}"
+                            fullName = \
+                                f"{fittable['blockType']}.{fittable['blockName']}.{fittable['category']}.{fittable['rowName']}.{fittable['name']}" # noqa: E501
                             if fittable['enabled']:
                                 _modelParamsCount += 1
                                 if fittable['fit']:
@@ -373,7 +397,7 @@ class Fittables(QObject):
                                 fittable['from'] = max(fittable['value'] * (100 - pctDelta) / 100, fittable['min'])
                                 fittable['to'] = min(fittable['value'] * (100 + pctDelta) / 100, fittable['max'])
 
-                            fullName = f"{fittable['blockType']}.{fittable['blockName']}.{fittable['category']}.{fittable['rowName']}.{fittable['name']}"
+                            fullName = f"{fittable['blockType']}.{fittable['blockName']}.{fittable['category']}.{fittable['rowName']}.{fittable['name']}" # noqa: E501
                             if fittable['enabled']:
                                 _experimentParamsCount += 1
                                 if fittable['fit']:

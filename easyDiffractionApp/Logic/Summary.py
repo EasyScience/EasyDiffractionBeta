@@ -3,11 +3,17 @@
 # © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
 
 import os
-from PySide6.QtCore import QObject, Signal, Slot, Property
-from PySide6.QtCore import QFile, QTextStream, QIODevice
 
 from EasyApp.Logic.Logging import console
-from easydiffraction.io.helpers import formatMsg, generalizePath
+from easydiffraction.io.helpers import formatMsg
+from easydiffraction.io.helpers import generalizePath
+from PySide6.QtCore import Property
+from PySide6.QtCore import QFile
+from PySide6.QtCore import QIODevice
+from PySide6.QtCore import QObject
+from PySide6.QtCore import QTextStream
+from PySide6.QtCore import Signal
+from PySide6.QtCore import Slot
 
 try:
     import cryspy
@@ -66,12 +72,12 @@ class Summary(QObject):
             blockCifNoMeas = self._proxy.experiment._dataBlocksCifNoMeas[idx]
             dataBlocksCifList.append(blockCifNoMeas)
             for dataBlock in cryspyObj.items:
-                if type(dataBlock) == cryspy.E_data_classes.cl_2_pd.Pd and dataBlock.data_name == block['name']['value']:
+                if type(dataBlock) is cryspy.E_data_classes.cl_2_pd.Pd and dataBlock.data_name == block['name']['value']:
                     for subBlock in dataBlock.items:
-                        if type(subBlock) == cryspy.C_item_loop_classes.cl_1_pd_proc.PdProcL:
+                        if type(subBlock) is cryspy.C_item_loop_classes.cl_1_pd_proc.PdProcL:
                             dataBlockProcCif = subBlock.to_cif()
                             dataBlocksCifList.append(dataBlockProcCif)
-                        elif type(subBlock) == cryspy.C_item_loop_classes.cl_1_pd_peak.PdPeakL:
+                        elif type(subBlock) is cryspy.C_item_loop_classes.cl_1_pd_peak.PdPeakL:
                             dataBlockPeakCif = subBlock.to_cif()
                             dataBlocksCifList.append(dataBlockPeakCif)
 

@@ -5,17 +5,21 @@
 import os
 import time
 from pathlib import Path
-from gemmi import cif
-from PySide6.QtCore import QObject, Signal, Slot, Property, QUrl
-from PySide6.QtCore import QFile, QTextStream, QIODevice
 
-from easydiffraction.io.cryspy_parser import Parameter
-from easydiffraction.io.cif import dataBlockToCif
-from easydiffraction.io.helpers import formatMsg, generalizePath
-from easydiffraction.io.cif import cifV2ToV1
 from EasyApp.Logic.Logging import console
-
-
+from easydiffraction.io.cif import dataBlockToCif
+from easydiffraction.io.cryspy_parser import Parameter
+from easydiffraction.io.helpers import formatMsg
+from easydiffraction.io.helpers import generalizePath
+from gemmi import cif
+from PySide6.QtCore import Property
+from PySide6.QtCore import QFile
+from PySide6.QtCore import QIODevice
+from PySide6.QtCore import QObject
+from PySide6.QtCore import QTextStream
+from PySide6.QtCore import QUrl
+from PySide6.QtCore import Signal
+from PySide6.QtCore import Slot
 
 _EMPTY_DATA = {
     'name': '',
@@ -144,7 +148,7 @@ class Project(QObject):
 
     @Property(bool, notify=needSaveChanged)
     def needSave(self):
-        return self._needSave and self._isExample == False
+        return self._needSave and not self._isExample
 
     @needSave.setter
     def needSave(self, newValue):
@@ -244,7 +248,7 @@ class Project(QObject):
 
         stream = QTextStream(file)
         edCif = stream.readAll()
-        cryspyCif = cifV2ToV1(edCif)
+        # cryspyCif = cifV2ToV1(edCif)
 
         block = cif.read_string(edCif).sole_block()
         self._dataBlock = gemmiObjToEdProject(block)
@@ -258,7 +262,8 @@ class Project(QObject):
 
         if '_experiment' in self._dataBlock['loops']:
             experimentFileNames = [item['cif_file_name']['value'] for item in self._dataBlock['loops']['_experiment']]
-            experimentFilePaths = [os.path.join(self._location, self._dirNames['experiments'], fileName) for fileName in experimentFileNames]
+            experimentFilePaths = [os.path.join(self._location, self._dirNames['experiments'], fileName) for
+                                   fileName in experimentFileNames]
             self._proxy.experiment.loadExperimentsFromResources(experimentFilePaths)
 
         reportFileName = 'report.cif'
@@ -294,7 +299,8 @@ class Project(QObject):
 
         if '_experiment' in self._dataBlock['loops']:
             experimentFileNames = [item['cif_file_name']['value'] for item in self._dataBlock['loops']['_experiment']]
-            experimentFilePaths = [os.path.join(self._location, self._dirNames['experiments'], fileName) for fileName in experimentFileNames]
+            experimentFilePaths = [os.path.join(self._location, self._dirNames['experiments'], fileName) for
+                                   fileName in experimentFileNames]
             experimentFilePaths = [QUrl.fromLocalFile(path) for path in experimentFilePaths]
             self._proxy.experiment.loadExperimentsFromFiles(experimentFilePaths)
 
@@ -323,7 +329,8 @@ class Project(QObject):
         names = [f"{block['name']['value']}" for block in self._proxy.model.dataBlocks]
         oldNames = []
         if '_model' in self._dataBlock['loops']:
-            oldNames = [os.path.splitext(item['cif_file_name']['value'])[0] for item in self._dataBlock['loops']['_model']]
+            oldNames = [os.path.splitext(item['cif_file_name']['value'])[0] for item in
+                        self._dataBlock['loops']['_model']]
         if oldNames == names:
             return
 
@@ -345,7 +352,8 @@ class Project(QObject):
         names = [f"{block['name']['value']}" for block in self._proxy.experiment.dataBlocksNoMeas]
         oldNames = []
         if '_experiment' in self._dataBlock['loops']:
-            oldNames = [os.path.splitext(item['cif_file_name']['value'])[0] for item in self._dataBlock['loops']['_experiment']]
+            oldNames = [os.path.splitext(item['cif_file_name']['value'])[0] for item in
+                        self._dataBlock['loops']['_experiment']]
         if oldNames == names:
             return
 
@@ -375,10 +383,12 @@ class Project(QObject):
         if oldValue == value:
             return False
         self._dataBlock['params'][category][name][field] = value
-        if type(value) == float:
-            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{blockType}.{category}.{name}.{field}'))
+        if type(value) is float:
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}',
+                                    f'{blockType}.{category}.{name}.{field}'))
         else:
-            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{blockType}.{category}.{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}',
+                                    f'{blockType}.{category}.{name}.{field}'))
         return True
 
     @Slot()
@@ -417,8 +427,11 @@ class Project(QObject):
 
         if self._proxy.experiment.defined:
             experimentFileNames = [item['cif_file_name']['value'] for item in self._dataBlock['loops']['_experiment']]
-            experimentFilePaths = [os.path.join(projectDirPath, self._dirNames['experiments'], fileName) for fileName in experimentFileNames]
-            for (experimentFilePath, dataBlockCifNoMeas, dataBlockCifMeasOnly) in zip(experimentFilePaths, self._proxy.experiment.dataBlocksCifNoMeas, self._proxy.experiment.dataBlocksCifMeasOnly):
+            experimentFilePaths = [os.path.join(projectDirPath, self._dirNames['experiments'], fileName)
+                                   for fileName in experimentFileNames]
+            for (experimentFilePath, dataBlockCifNoMeas, dataBlockCifMeasOnly) in \
+            zip(experimentFilePaths, self._proxy.experiment.dataBlocksCifNoMeas,
+                self._proxy.experiment.dataBlocksCifMeasOnly):
                 os.makedirs(os.path.dirname(experimentFilePath), exist_ok=True)
                 dataBlockCif = dataBlockCifNoMeas + '\n\n' + dataBlockCifMeasOnly
                 with open(experimentFilePath, 'w') as file:

@@ -2,15 +2,18 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # © 2021-2023 Contributors to the easyDiffraction project <https://github.com/easyScience/easyDiffractionApp>
 
-import os, sys
 import glob
+import os
 import site
-import PySide6, shiboken6
+import sys
+
+import Config
 import cryspy
 import EasyApp
-import Functions, Config
+import Functions
+import PySide6
+import shiboken6
 from PyInstaller.__main__ import run as pyInstallerMain
-
 
 CONFIG = Config.Config()
 

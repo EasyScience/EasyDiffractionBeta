@@ -2,13 +2,15 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # © 2021-2023 Contributors to the easyDiffraction project <https://github.com/easyScience/easyDiffractionApp>
 
-import os, sys
-import time
-import requests
+import os
+import sys
 import xml.dom.minidom
-import licensename, dephell_licenses
-import Functions, Config
 
+import Config
+import dephell_licenses
+import Functions
+import licensename
+import requests
 
 CONFIG = Config.Config(sys.argv[1], sys.argv[2])
 
@@ -42,7 +44,7 @@ def qtifwSetupDownloadUrl():
     base_path = CONFIG['ci']['qtifw']['setup']['base_path']
     qtifw_version = CONFIG['ci']['qtifw']['setup']['version']
     try:
-        message = f'access Qt Installer Framework download url'
+        message = 'access Qt Installer Framework download url'
         for repo in repos:
             url = f'https://{repo}/{base_path}/{qtifw_version}/{qtifwSetupFileName()}'
             if urlOk(url):
@@ -154,7 +156,7 @@ def installerConfigXml():
 
 def appPackageXml():
     try:
-        message = f"create app package content"
+        message = "create app package content"
         license_file = CONFIG['project']['license']['file']
         license_id = licensename.from_file(license_file)
         license_name = dephell_licenses.licenses.get_by_id(license_id).name

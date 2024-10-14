@@ -5,11 +5,12 @@
 __author__ = "github.com/AndrewSazonov"
 __version__ = '0.0.1'
 
-import os, sys
 import ftplib
-import pathlib
-import Functions, Config
+import os
+import sys
 
+import Config
+import Functions
 
 CONFIG = Config.Config(sys.argv[1], sys.argv[2])
 
@@ -17,7 +18,7 @@ FTP_PASSWORD = sys.argv[3]
 
 def connect(ftp, host, port):
     try:
-        message = f'connect to ftp server'
+        message = 'connect to ftp server'
         ftp.connect(host, port)
     except Exception as exception:
         Functions.printFailMessage(message, exception)
@@ -27,7 +28,7 @@ def connect(ftp, host, port):
 
 def login(ftp, user, password):
     try:
-        message = f'login to ftp server'
+        message = 'login to ftp server'
         ftp.login(user, password)
     except Exception as exception:
         Functions.printFailMessage(message, exception)

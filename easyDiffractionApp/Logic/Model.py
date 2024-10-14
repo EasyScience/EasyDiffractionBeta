@@ -3,27 +3,35 @@
 # © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
 
 import copy
-import re
 import random
+import re
+
 import numpy as np
-from PySide6.QtCore import QObject, Signal, Slot, Property, QThreadPool
-from PySide6.QtCore import QFile, QTextStream, QIODevice
-from PySide6.QtQml import QJSValue
-
-from easydiffraction import Phases, Phase, Lattice, Site, SpaceGroup
-
+import periodictable as pt
+from EasyApp.Logic.Logging import console
 from easycrystallography.Components.AtomicDisplacement import AtomicDisplacement
+from easycrystallography.Symmetry.tools import SpacegroupInfo
+from easydiffraction import Lattice
+from easydiffraction import Phase
+from easydiffraction import Site
+from easydiffraction import SpaceGroup
+
 # from easycrystallography.Components.SpaceGroup import SpaceGroup
 from easydiffraction.io.cif import dataBlockToCif
-from easydiffraction.io.helpers import formatMsg, generalizePath
-from EasyApp.Logic.Logging import console
-
-from Logic.Tables import PERIODIC_TABLE # TODO CHANGE THIS TO PERIODICTABLE
-from Logic.Tables import COLOR_TABLE
-import periodictable as pt
+from easydiffraction.io.helpers import formatMsg
+from easydiffraction.io.helpers import generalizePath
 from Logic.Data import Data
-from easycrystallography.Symmetry.tools import SpacegroupInfo
-
+from Logic.Tables import COLOR_TABLE
+from Logic.Tables import PERIODIC_TABLE  # TODO CHANGE THIS TO PERIODICTABLE
+from PySide6.QtCore import Property
+from PySide6.QtCore import QFile
+from PySide6.QtCore import QIODevice
+from PySide6.QtCore import QObject
+from PySide6.QtCore import QTextStream
+from PySide6.QtCore import QThreadPool
+from PySide6.QtCore import Signal
+from PySide6.QtCore import Slot
+from PySide6.QtQml import QJSValue
 
 _DEFAULT_CIF_BLOCK = """data_default
 
@@ -202,7 +210,7 @@ class Model(QObject):
 
     @Slot('QVariant')
     def loadModelsFromResources(self, fpaths):
-        if type(fpaths) == QJSValue:
+        if type(fpaths) is QJSValue:
             fpaths = fpaths.toVariant()
         for fpath in fpaths:
             console.debug(f"Loading model(s) from: {fpath}")
@@ -216,7 +224,7 @@ class Model(QObject):
 
     @Slot('QVariant')
     def loadModelsFromFiles(self, fpaths):
-        if type(fpaths) == QJSValue:
+        if type(fpaths) is QJSValue:
             fpaths = fpaths.toVariant()
         for fpath in fpaths:
             fpath = fpath.toLocalFile()
@@ -645,15 +653,15 @@ class Model(QObject):
         lastAtom = self._dataBlocks[blockIdx]['loops'][category][-1]
 
         newAtom = copy.deepcopy(lastAtom)
-        atom_type = random.choice(self.isotopesNames)
+        atom_type = random.choice(self.isotopesNames) # noqa: S311
 
         newAtom['label']['value'] = atom_type
         # type symbol is atom_type but with numerical prefix removed
         type_symbol = re.sub(r'[0-9]', '', atom_type)
         newAtom['type_symbol']['value'] = type_symbol
-        newAtom['fract_x']['value'] = random.uniform(0, 1)
-        newAtom['fract_y']['value'] = random.uniform(0, 1)
-        newAtom['fract_z']['value'] = random.uniform(0, 1)
+        newAtom['fract_x']['value'] = random.uniform(0, 1) # noqa: S311
+        newAtom['fract_y']['value'] = random.uniform(0, 1) # noqa: S311
+        newAtom['fract_z']['value'] = random.uniform(0, 1) # noqa: S311
         newAtom['occupancy']['value'] = 1
         newAtom['B_iso_or_equiv']['value'] = 0
 
@@ -679,10 +687,12 @@ class Model(QObject):
         if oldValue == value:
             return False
         self._dataBlocks[blockIdx]['params'][category][name][field] = value
-        if type(value) == float:
-            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{blockType}[{blockIdx}].{category}.{name}.{field}'))
+        if type(value) is float:
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}',
+                                    f'{blockType}[{blockIdx}].{category}.{name}.{field}'))
         else:
-            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{blockType}[{blockIdx}].{category}.{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}',
+                                    f'{blockType}[{blockIdx}].{category}.{name}.{field}'))
         return True
 
     def editDataBlockLoopParam(self, blockIdx, category, name, rowIndex, field, value):
@@ -691,10 +701,12 @@ class Model(QObject):
         if oldValue == value:
             return False
         self._dataBlocks[blockIdx]['loops'][category][rowIndex][name][field] = value
-        if type(value) == float:
-            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
+        if type(value) is float:
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value:.6f}',
+                                    f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         else:
-            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}', f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
+            console.debug(formatMsg('sub', 'Intern dict', f'{oldValue} → {value}',
+                                    f'{block}[{blockIdx}].{category}[{rowIndex}].{name}.{field}'))
         return True
 
     def editCalculatorDictByMainParam(self, blockIdx, category, name, field, value):
@@ -951,7 +963,7 @@ class Model(QObject):
             { "x":-0.5*a, "y": 0.5*b, "z": 0,     "rotx": 0, "roty": 90, "rotz": 90, "len": c },
             { "x": 0.5*a, "y": 0.5*b, "z": 0,     "rotx": 0, "roty": 90, "rotz": 90, "len": c },
         ]
-        console.debug(f"Structure view cell  for model no. {self._currentIndex + 1} has been set. Cell lengths: ({a}, {b}, {c})")
+        console.debug(f"Struct view cell for model no. {self._currentIndex + 1} has been set. Cell lengths: ({a}, {b}, {c})")
         self.structViewCellModelChanged.emit()
 
     def setCurrentModelStructViewAxesModel(self):
@@ -964,7 +976,7 @@ class Model(QObject):
             {"x": 0,   "y": 0.5, "z": 0,   "rotx": 0, "roty":  0, "rotz":   0, "len": b},
             {"x": 0,   "y": 0,   "z": 0.5, "rotx": 0, "roty": 90, "rotz":  90, "len": c}
         ]
-        console.debug(f"Structure view axes  for model no. {self._currentIndex + 1} has been set. Cell lengths: ({a}, {b}, {c})")
+        console.debug(f"Struct view axes for model no. {self._currentIndex + 1} has been set. Cell lengths: ({a}, {b}, {c})")
         self.structViewAxesModelChanged.emit()
 
     def setCurrentModelStructViewAtomsModel(self):
@@ -1040,7 +1052,8 @@ class Model(QObject):
         # Create dict from set for GUI
         self._structViewAtomsModel = [{'x':x, 'y':y, 'z':z, 'diameter':diameter, 'color':color}
                                       for x, y, z, diameter, color in structViewModel]
-        console.debug(formatMsg('sub', f'{len(atoms)} atom(s)', f'model no. {self._currentIndex + 1}', 'for structure view', 'defined'))
+        console.debug(formatMsg('sub', f'{len(atoms)} atom(s)', f'model no. {self._currentIndex + 1}',
+                                'for structure view', 'defined'))
         self.structViewAtomsModelChanged.emit()
 
     @staticmethod

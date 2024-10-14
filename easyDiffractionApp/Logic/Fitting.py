@@ -2,20 +2,24 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
 
+# file is no longer used, so supress ruff
+# ruff: noqa: E501
+
 import copy
+
 import lmfit
-
 import numpy as np
-
-from PySide6.QtCore import QObject, Signal, Slot, Property, QThreadPool
-
 from EasyApp.Logic.Logging import console
 from easydiffraction.io.Helpers import formatMsg
 from Logic.Data import Data
+from PySide6.QtCore import Property
+from PySide6.QtCore import QObject
+from PySide6.QtCore import QThreadPool
+from PySide6.QtCore import Signal
+from PySide6.QtCore import Slot
 
 try:
-    from cryspy.procedure_rhochi.rhochi_by_dictionary import \
-        rhochi_calc_chi_sq_by_dictionary
+    from cryspy.procedure_rhochi.rhochi_by_dictionary import rhochi_calc_chi_sq_by_dictionary
     console.debug('CrysPy module imported')
 except ImportError:
     console.error('No CrysPy module found')

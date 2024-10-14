@@ -5,10 +5,12 @@
 __author__ = "github.com/AndrewSazonov"
 __version__ = '0.0.1'
 
-import os, sys
+import os
 import pathlib
-import Functions, Config
+import sys
 
+import Config
+import Functions
 
 CONFIG = Config.Config()
 

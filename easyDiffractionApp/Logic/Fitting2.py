@@ -2,19 +2,22 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # © 2021-2023 Contributors to the easyDiffraction project <https://github.com/easyScience/easyDiffractionApp>
 
-from PySide6.QtCore import Signal, QObject, QThread, Property, Slot
+from distutils.util import strtobool
+from threading import Thread
+from typing import Callable
+from typing import List
 
 import numpy as np
-from typing import Callable, List
-
-from threading import Thread
-
+from easyscience.Constraints import NumericConstraint
+from easyscience.Constraints import ObjConstraint
 from easyscience.fitting.fitter import Fitter as CoreFitter
-from easyscience.Utils.io.xml import XMLSerializer
-from easyscience.Constraints import ObjConstraint, NumericConstraint
 from easyscience.fitting.minimizers.utils import FitResults
-
-from distutils.util import strtobool
+from easyscience.Utils.io.xml import XMLSerializer
+from PySide6.QtCore import Property
+from PySide6.QtCore import QObject
+from PySide6.QtCore import QThread
+from PySide6.QtCore import Signal
+from PySide6.QtCore import Slot
 
 
 def _defaultFitResults():
@@ -112,7 +115,7 @@ class Fitting(QObject):
         targets = [component for component in refinement if refinement[component]]
         try:
             x_, y_, fit_func = self.generate_pol_fit_func(x, exp_data.y, exp_data.yb, targets)
-        except Exception as ex:
+        except Exception:
             raise NotImplementedError('This is not implemented for this calculator yet')
         weights = 1/exp_data.e
         weights = np.tile(weights, len(targets))
@@ -340,10 +343,6 @@ class Fitting(QObject):
         if dependent_par_idx == -1 or value == "":
             print("Failed to add constraint: Unsupported type")
             return
-        # if independent_par_idx == -1:
-        #    print(f"Add constraint: {self.fitablesList()[dependent_par_idx]['label']}{relational_operator}{value}")
-        # else:
-        #    print(f"Add constraint: {self.fitablesList()[dependent_par_idx]['label']}{relational_operator}{value}{arithmetic_operator}{self.fitablesList()[independent_par_idx]['label']}")
         pars = [par for par in self.fitter.fit_object.get_parameters() if par.enabled]
         if arithmetic_operator != "" and independent_par_idx > -1:
             c = ObjConstraint(pars[dependent_par_idx],

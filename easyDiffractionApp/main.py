@@ -4,10 +4,10 @@
 
 # Import logger from EasyApp module
 import sys
+
 EASYAPP_LOCAL_PATH = '../../EasyApp'
 sys.path.append(EASYAPP_LOCAL_PATH)
-from EasyApp.Logic.Logging import console
-
+from EasyApp.Logic.Logging import console # noqa: E402, I001
 
 if __name__ == '__main__':
 
@@ -41,8 +41,8 @@ if __name__ == '__main__':
         engine.addImportPath(p)
     console.debug('Resource paths exposed to QML')
 
-    from PySide6.QtQml import qmlRegisterType
     from EasyApp.Logic.Maintenance import Updater
+    from PySide6.QtQml import qmlRegisterType
     qmlRegisterType(Updater, 'EasyApp.Logic.Maintenance', 1, 0, 'Updater')
     console.debug('Updater type registered instantiation in QML')
 
