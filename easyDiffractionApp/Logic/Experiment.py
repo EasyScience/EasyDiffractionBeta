@@ -75,8 +75,8 @@ ph 1.0
 loop_
 _pd_background.line_segment_X
 _pd_background.line_segment_intensity
-0 100
-150000 100
+0 0
+150000 0
 
 loop_
 _pd_meas.time_of_flight
@@ -110,8 +110,8 @@ ph 1.0
 loop_
 _pd_background.line_segment_X
 _pd_background.line_segment_intensity
-0 100
-180 100
+0 0
+180 0
 
 loop_
 _pd_meas.2theta_scan
