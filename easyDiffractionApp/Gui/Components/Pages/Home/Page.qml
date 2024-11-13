@@ -140,6 +140,7 @@ Item {
                     }
                 }
                 EaElements.Button {
+                    enabled: false
                     text: qsTr("Tutorial") + " 2: " + qsTr("Basic usage")
                     onClicked: {
                         console.debug(`Clicking '${text}' button: ${this}`)
