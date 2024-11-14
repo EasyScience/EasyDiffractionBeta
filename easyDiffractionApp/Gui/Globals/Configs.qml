@@ -12,7 +12,7 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
     readonly property var projectConfig: QtObject {
         readonly property var release: QtObject {  // NEED FIX
             readonly property string appName: 'EasyDiffraction'
-            readonly property string version: '0.9.8'
+            readonly property string version: '0.9.9'
             readonly property string appIssuesUrl: 'https://github.com/easyscience/easydiffractionapp/issues'
             readonly property string homePageUrl: 'https://easydiffraction.org'
             readonly property string docsUrl: 'https://docs.easydiffraction.org/app/'
