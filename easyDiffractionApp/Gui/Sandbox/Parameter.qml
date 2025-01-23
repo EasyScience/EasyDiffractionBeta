@@ -26,7 +26,7 @@ Rectangle {
                     'fit': true,
                     'name': '_cell_length_a',
                     'prettyName': 'length a',
-                    'units': 'Å',
+                    'unit': 'Å',
                     'url': 'https://google.com'}
     }
 }

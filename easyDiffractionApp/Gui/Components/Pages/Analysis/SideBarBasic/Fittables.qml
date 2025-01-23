@@ -247,7 +247,7 @@ Column {
             }
 
             EaComponents.TableViewLabel {
-                text: item.units
+                text: item.unit
                 color: EaStyle.Colors.themeForegroundMinor
             }
 

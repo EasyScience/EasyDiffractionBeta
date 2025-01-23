@@ -7,7 +7,7 @@ from PySide6.QtCore import QObject, Signal, Slot, Property
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 
 from EasyApp.Logic.Logging import console
-from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
+from Logic.Helpers import formatMsg
 
 try:
     import cryspy
@@ -394,7 +394,6 @@ class Summary(QObject):
 
     def loadReportFromFile(self, fpath):
         fpath = fpath.toLocalFile()
-        fpath = generalizePath(fpath)
         console.debug(f"Loading report from: {fpath}")
         if not os.path.isfile(fpath):
             console.error(f"File not found: {fpath}")

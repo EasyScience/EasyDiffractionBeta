@@ -9,10 +9,9 @@ from gemmi import cif
 from PySide6.QtCore import QObject, Signal, Slot, Property, QUrl
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 
-from easyDiffractionLib.io.cryspy_parser import Parameter
-from easyDiffractionLib.io.cif import dataBlockToCif
-from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
-from easyDiffractionLib.io.cif import cifV2ToV1
+from easydiffraction.calculators.cryspy.parser import Parameter
+from easydiffraction.io.cif import dataBlockToCif
+from easydiffraction.io.cif import cifV2ToV1
 from EasyApp.Logic.Logging import console
 
 
@@ -239,8 +238,6 @@ class Project(QObject):
 
     @Slot('QVariant')
     def loadRecentFromFile(self, fpath):
-        #fpath = fpath.toLocalFile()
-        #fpath = IO.generalizePath(fpath)
         self.loadProjectFromFile(fpath)
 
     @Slot(str)
@@ -251,7 +248,6 @@ class Project(QObject):
     @Slot('QVariant')
     def loadProject(self, fpath):
         fpath = fpath.toLocalFile()
-        fpath = generalizePath(fpath)
 
         if fpath in self._recent:
             self._recent.remove(fpath)

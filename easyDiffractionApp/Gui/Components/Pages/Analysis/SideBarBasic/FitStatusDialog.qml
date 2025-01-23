@@ -24,7 +24,7 @@ EaElements.Dialog {
     EaElements.Label {
         text: {
             if (Globals.Proxies.main.status.fitStatus === 'Success') {
-                return 'Optimization terminated successfully.'
+                return 'Optimization finished successfully.'
             } else if (Globals.Proxies.main.status.fitStatus === 'Failure') {
                 return 'Optimization failed.'
             } else if (Globals.Proxies.main.status.fitStatus === 'Aborted') {

@@ -9,9 +9,9 @@ from typing import Callable, List
 
 from threading import Thread
 
-from easyCore.Fitting.Fitting import Fitter as CoreFitter
-from easyCore.Utils.io.xml import XMLSerializer
-from easyCore.Fitting.Constraints import ObjConstraint, NumericConstraint
+from easyscience.fitting.fitter import Fitter as CoreFitter
+from easyscience.Utils.io.xml import XMLSerializer
+from easyscience.Constraints import ObjConstraint, NumericConstraint
 
 from distutils.util import strtobool
 
@@ -35,7 +35,7 @@ class Fitting(QObject):
     currentMinimizerChanged = Signal()
     minimizerMethodChanged = Signal()
     currentCalculatorChanged = Signal()
-    finished = Signal(dict)
+    finished = Signal()
     failed = Signal(str)
     constraintsRemoved = Signal()
 
@@ -45,8 +45,8 @@ class Fitting(QObject):
         self.parent = proxy
         self.interface = interface
         # self.fitter = CoreFitter(self.parent.sample(), self.interface.fit_func)
-        self.fitter = CoreFitter(self.parent.experiment.job(), self.parent.experiment.job().create_simulation)
-        # self.fitter = CoreFitter(self.parent.experiment.job(), self.interface.fit_func)
+        # self.fitter = CoreFitter(self.parent.experiment.job(), self.parent.experiment.job().create_simulation)
+        self.fitter = CoreFitter(self.parent.experiment.job(), self.interface.fit_func)
 
         # Multithreading
         # self._fitter_thread = None
@@ -54,9 +54,11 @@ class Fitting(QObject):
         self._fit_finished = True
         self._fit_results = _defaultFitResults()
         self.data = None
+        self.res = None
         self.is_fitting_now = False
         self._current_minimizer_method_index = 0
-        self._current_minimizer_method_name = self.fitter.available_methods()[0]  # noqa: E501
+        # self._current_minimizer_method_name = self.fitter.available_interfaces()[0]  # noqa: E501
+        self._current_minimizer_method_name = "least_squares"
         self.currentMinimizerChanged.connect(self.onCurrentMinimizerChanged)
 
         self.fit_thread = Thread(target=self.fit_threading)
@@ -86,12 +88,14 @@ class Fitting(QObject):
         # save some kwargs on the interface object for use in the calculator
         self.interface._InterfaceFactoryTemplate__interface_obj.saved_kwargs = local_kwargs
         try:
-            res = self.fitter.fit(x, y, **kwargs)
+            #res = self.fitter.fit(x, y, **kwargs)
+            self.parent.job.fit()
+            self.res = self.parent.job.fitting_results
 
         except Exception as ex:
             self.failed.emit(str(ex))
             return
-        self.finished.emit(res)
+        self.finished.emit()
 
     def fit_polar(self):
         data = self.data
@@ -129,7 +133,7 @@ class Fitting(QObject):
         except Exception as ex:
             self.failed.emit(str(ex))
             return
-        self.finished.emit(res)
+        self.finished.emit()
 
     def generate_pol_fit_func(
         self,
@@ -171,27 +175,28 @@ class Fitting(QObject):
         self._fit_results = _defaultFitResults()
         self._fit_results['success'] = 'Failure'  # not None but a string
 
-    def setSuccessFitResults(self, res):
+    def setSuccessFitResults(self):
         self._fit_results = {
-            "success": res.success,
-            "nvarys":  res.n_pars,
+            "success": self.res.success,
+            "nvarys":  self.res.n_pars,
             # "GOF":     float(res.goodness_of_fit),
-            "redchi2": float(res.reduced_chi)
+            "redchi2": float(self.res.reduced_chi)
         }
 
     def resetErrors(self):
         # Reset all errors to zero
-        all_pars = set(self.parent.sample().get_parameters())
+        # all_pars = set(self.parent.sample().get_parameters())
+        all_pars = set(self.fitter.fit_object.get_parameters())
         fit_pars = {par for par in all_pars if par.enabled and not par.fixed}
         to_zero = all_pars.difference(fit_pars)
-        borg = self.parent.sample()._borg
-        borg.stack.beginMacro('reset errors')
+        #borg = self.parent.sample()._borg
+        #borg.stack.beginMacro('reset errors')
         for par in to_zero:
             par.error = 0.
-        borg.stack.endMacro()
-        macro = borg.stack.history.popleft()
-        for command in macro._commands:
-            borg.stack.history[0]._commands.appendleft(command)
+        #borg.stack.endMacro()
+        #macro = borg.stack.history.popleft()
+        #for command in macro._commands:
+        #    borg.stack.history[0]._commands.appendleft(command)
 
     def joinFitThread(self):
         if self.fit_thread.is_alive():
@@ -206,10 +211,10 @@ class Fitting(QObject):
         # must re-instantiate the thread object
         self.fit_thread = Thread(target=self.startStop)
 
-    def onSuccess(self, res):
+    def onSuccess(self):
         self.joinFitThread()
         self.resetErrors()
-        self.setSuccessFitResults(res)
+        self.setSuccessFitResults()
         self.finishFit()
 
     def onFailed(self, ex):
@@ -222,7 +227,7 @@ class Fitting(QObject):
     @Slot()
     def startStop(self):
         # self.data = self.parent.pdata()
-        name = 'pd_' + self.parent.experiment.job().name
+        name = 'pd_' + self.parent.experiment.job().experiment.name
         self.data = self.interface.data()._inOutDict[name]
         if self.use_threading:
             if not self.fit_thread.is_alive():
@@ -244,7 +249,7 @@ class Fitting(QObject):
         self.minimizerMethodChanged.emit()
 
     def currentMinimizerIndex(self):
-        current_name = self.fitter.current_engine.name
+        current_name = self.fitter.minimizer.name
         index = self.fitter.available_engines.index(current_name)
         return index
 
@@ -404,7 +409,7 @@ class Fitter(QThread):
     Simple wrapper for calling a function in separate thread
     """
     failed = Signal(str)
-    finished = Signal(dict)
+    finished = Signal()
 
     def __init__(self, parent, obj, method_name, *args, **kwargs):
         QThread.__init__(self, parent)
@@ -422,7 +427,7 @@ class Fitter(QThread):
             except Exception as ex:
                 self.failed.emit(str(ex))
                 return str(ex)
-            self.finished.emit(res)
+            self.finished.emit()
         return res
 
     def stop(self):

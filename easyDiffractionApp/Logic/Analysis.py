@@ -5,7 +5,7 @@
 from PySide6.QtCore import QObject, Signal, Slot, Property
 
 from EasyApp.Logic.Logging import console
-from easyDiffractionLib.io.Helpers import formatMsg
+from Logic.Helpers import formatMsg
 
 
 class Analysis(QObject):

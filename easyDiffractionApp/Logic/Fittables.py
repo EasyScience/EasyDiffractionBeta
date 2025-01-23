@@ -7,7 +7,7 @@ from PySide6.QtCore import QObject, Signal, Slot, Property
 
 from EasyApp.Logic.Logging import console
 from Logic.Helpers import Converter
-from easyDiffractionLib.io.Helpers import formatMsg
+from Logic.Helpers import formatMsg
 
 _EMPTY_DATA = [
     {
@@ -19,7 +19,7 @@ _EMPTY_DATA = [
         "name": "",
         "parentIndex": 0,
         "parentName": "",
-        "units": "",
+        "unit": "",
         "value": 0,
         "enabeld": True
     }
@@ -198,7 +198,7 @@ class Fittables(QObject):
                         fittable['error'] = paramContent['error']
                         fittable['min'] = paramContent['min'] if 'min' in paramContent else -np.inf
                         fittable['max'] = paramContent['max'] if 'max' in paramContent else np.inf
-                        fittable['units'] = paramContent['units']
+                        fittable['unit'] = paramContent['unit']
                         fittable['fit'] = paramContent['fit']
 
                         absDelta = paramContent['absDelta'] if 'absDelta' in paramContent else None
@@ -252,7 +252,7 @@ class Fittables(QObject):
                             fittable['error'] = paramContent['error']
                             fittable['min'] = paramContent['min'] if 'min' in paramContent else -np.inf
                             fittable['max'] = paramContent['max'] if 'max' in paramContent else np.inf
-                            fittable['units'] = paramContent['units'] if 'units' in paramContent else ''
+                            fittable['unit'] = paramContent['unit'] if 'unit' in paramContent else ''
                             fittable['fit'] = paramContent['fit']
 
                             absDelta = paramContent['absDelta'] if 'absDelta' in paramContent else None
@@ -306,7 +306,7 @@ class Fittables(QObject):
                         fittable['error'] = paramContent['error']
                         fittable['min'] = paramContent['min']
                         fittable['max'] = paramContent['max']
-                        fittable['units'] = paramContent['units']
+                        fittable['unit'] = paramContent['unit']
                         fittable['fit'] = paramContent['fit']
 
                         absDelta = paramContent['absDelta']
@@ -359,7 +359,7 @@ class Fittables(QObject):
                             fittable['error'] = paramContent['error']
                             fittable['min'] = paramContent['min']
                             fittable['max'] = paramContent['max']
-                            fittable['units'] = paramContent['units']
+                            fittable['unit'] = paramContent['unit']
                             fittable['fit'] = paramContent['fit']
 
                             absDelta = paramContent['absDelta']

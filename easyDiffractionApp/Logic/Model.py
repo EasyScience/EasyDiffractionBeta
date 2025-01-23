@@ -10,19 +10,20 @@ from PySide6.QtCore import QObject, Signal, Slot, Property, QThreadPool
 from PySide6.QtCore import QFile, QTextStream, QIODevice
 from PySide6.QtQml import QJSValue
 
-from easyDiffractionLib import Phases, Phase, Lattice, Site, SpaceGroup
+from easydiffraction import Job
+from easydiffraction.job.model.phase import Phases
 
-from easyCrystallography.Components.AtomicDisplacement import AtomicDisplacement
-# from easyCrystallography.Components.SpaceGroup import SpaceGroup
-from easyDiffractionLib.io.cif import dataBlockToCif
-from easyDiffractionLib.io.Helpers import formatMsg, generalizePath
+from easycrystallography.Components.AtomicDisplacement import AtomicDisplacement
+from easydiffraction.io.cif import dataBlockToCif
+from Logic.Helpers import formatMsg
 from EasyApp.Logic.Logging import console
 
 from Logic.Tables import PERIODIC_TABLE # TODO CHANGE THIS TO PERIODICTABLE
 from Logic.Tables import COLOR_TABLE
 import periodictable as pt
 from Logic.Data import Data
-from easyCrystallography.Symmetry.tools import SpacegroupInfo
+from easycrystallography.Components.SpaceGroup import SpaceGroup
+from easycrystallography.Symmetry.tools import SpacegroupInfo
 
 
 _DEFAULT_CIF_BLOCK = """data_default
@@ -96,7 +97,9 @@ class Model(QObject):
         self._spaceGroupNames = self.createSpaceGroupNames()
         self._isotopesNames = self.createIsotopesNames()
 
-        self.phases = Phases()
+        self.createJob()
+
+        self.phases = self.job.phases #Phases()
 
     # QML accessible properties
 
@@ -118,7 +121,9 @@ class Model(QObject):
             return
         self._defined = newValue
         console.debug(formatMsg('main', f'Model defined: {newValue}'))
-
+        l = self._dataBlocks[0]['params']['_cell']['angle_gamma']['value']
+        console.debug(f"angle_gamma: {l}")
+        console.debug(f"occupancy: {self._dataBlocks[0]['loops']['_atom_site'][0]['occupancy']['value']}")
         self.definedChanged.emit()
 
     @Property(int, notify=currentIndexChanged)
@@ -153,6 +158,15 @@ class Model(QObject):
     def structViewAxesModel(self):
         return self._structViewAxesModel
 
+    def createJob(self):
+        # Create default job, so basic operations can be performed even without
+        # loading any models or experiments
+        self._job = Job(interface=self._interface)
+
+    @property
+    def job(self):
+        return self._job
+
     def addDefaultPhase(self):
         default_phase = self._defaultPhase()
         r = re.compile('(.+[^0-9])\d*$')
@@ -163,17 +177,7 @@ class Model(QObject):
         # print('Disabling scale')
         default_phase.scale.fixed = True
         self.phases.append(default_phase)
-
-    # @staticmethod
-    def _defaultPhase(self):
-        space_group = SpaceGroup('F d -3:2')
-        cell = Lattice(5.0, 3.0, 4.0, 90, 90, 90)
-        adp = AtomicDisplacement("Uiso")
-        atom = Site(label='O', specie='O', fract_x=0.0, fract_y=0.0, fract_z=0.0, adp=adp)#, interface=self._interface)
-        phase = Phase('Test', spacegroup=space_group, cell=cell)#, interface=self._interface)
-        phase.add_atom(atom)
-        return phase
-    
+   
     # QML accessible methods
     @Slot(str, str, result=str)
     def atomData(self, typeSymbol, key):
@@ -217,21 +221,16 @@ class Model(QObject):
             fpaths = fpaths.toVariant()
         for fpath in fpaths:
             fpath = fpath.toLocalFile()
-            fpath = generalizePath(fpath)
             console.debug(f"Loading model(s) from: {fpath}")
             with open(fpath, 'r') as file:
                 edCif = file.read()
             edCif = re.sub(r'data_(.*)', lambda m: m.group(0).lower(), edCif)  # Lowercase all data block names
             self.loadModelsFromEdCif(edCif)
 
-    # @Slot(str)
     def loadModelsFromEdCif(self, edCif):
         # Update the Phases object
-        phases = Phases.from_cif_string(edCif)
-        phases.interface = self._interface
-        for phase in phases:
-            phase.scale.fixed = True
-            self.phases.append(phase)
+        self.job.add_sample_from_string(edCif)
+        # self.phases is already updated by the job
         self._currentIndex = len(self.phases) - 1
         # convert phase into dataBlocks
         dataBlocks = self.phaseToBlocks(self.phases)
@@ -272,11 +271,12 @@ class Model(QObject):
         def addKeys():
             blocks[params][category][name]['category'] = category
             blocks[params][category][name]['name'] = name
-            blocks[params][category][name]['units'] = unit
+            blocks[params][category][name]['unit'] = unit
             blocks[params][category][name]['icon'] = icon
             blocks[params][category][name]['categoryIcon'] = categoryIcon
             blocks[params][category][name]['absDelta'] = absDelta
         blocks[params][category][name] = self.fromParameterObject(phase.cell.length_a)
+        blocks[params][category][name]['value'] = float(phase.cell.length_a.value)
         blocks[params][category][name]['shortPrettyName'] = "a"
         addKeys()
         name = 'length_b'
@@ -307,21 +307,21 @@ class Model(QObject):
         category = '_space_group'
         blocks[params][category] = {}
         name = 'name_H-M_alt'
-        blocks[params][category][name] = self.fromDescriptorObject(phase.spacegroup.space_group_HM_name)
+        blocks[params][category][name] = self.fromDescriptorObject(phase.space_group.space_group_HM_name)
         blocks[params][category][name]['shortPrettyName'] = "name"
         blocks[params][category][name]['enabled'] = True
         blocks[params][category][name]['category'] = category
         blocks[params][category][name]['name'] = name
         name = 'crystal_system'
         blocks[params][category][name] = {}
-        blocks[params][category][name]['value'] = phase.spacegroup.crystal_system
+        blocks[params][category][name]['value'] = phase.space_group.crystal_system
         blocks[params][category][name]['shortPrettyName'] = "crystal system"
         blocks[params][category][name]['name'] = name
         blocks[params][category][name]['category'] = category
         blocks[params][category][name]['url'] = blocks[params][category]['name_H-M_alt']['url']
         name = 'IT_number'
         blocks[params][category][name] = {}
-        blocks[params][category][name]['value'] = phase.spacegroup.int_number
+        blocks[params][category][name]['value'] = phase.space_group.int_number
         blocks[params][category][name]['shortPrettyName'] = "number"
         blocks[params][category][name]['name'] = name
         blocks[params][category][name]['category'] = category
@@ -330,9 +330,9 @@ class Model(QObject):
 
         name = 'IT_coordinate_system_code'
         blocks[params][category][name] = {}
-        setting = phase.spacegroup.setting.raw_value if phase.spacegroup.setting is not None else ""
+        setting = phase.space_group.setting.value if phase.space_group.setting is not None else ""
         blocks[params][category][name]['value'] = setting
-        blocks[params][category][name]['permittedValues'] = SpaceGroup.find_settings_by_number(phase.spacegroup.int_number)
+        blocks[params][category][name]['permittedValues'] = SpaceGroup.find_settings_by_number(phase.space_group.int_number)
         blocks[params][category][name]['shortPrettyName'] = "code"
         blocks[params][category][name]['name'] = name
         blocks[params][category][name]['category'] = category
@@ -354,7 +354,7 @@ class Model(QObject):
             atomDict[params]['prettyCategory'] = prettyCategory
             atomDict[params]['absDelta'] = absDelta
             atomDict[params]['icon'] = icon
-            atomDict[params]['rowName'] = atom.label.raw_value
+            atomDict[params]['rowName'] = atom.label.value
             atomDict[params]['min'] = -np.inf
             atomDict[params]['max'] = np.inf
 
@@ -395,23 +395,23 @@ class Model(QObject):
                 atomDict['ADP_type']['name'] = 'ADP_type'
                 absDelta = 0.1
                 unit = 'Å²'
-                if atom.adp.adp_type.raw_value == 'Biso':
+                if atom.adp.adp_type.value == 'Biso':
                     atomDict['ADP_type']['value'] = 'Biso'
                     params = 'B_iso_or_equiv'
                     icon = 'arrows-alt'
                     atomDict[params] = self.fromParameterObject(atom.adp.Biso)
                     atomDict[params]['shortPrettyName'] = "iso"
                     atomDict[params]['name'] = "B_iso_or_equiv"
-                    atomDict[params]['units'] = unit
+                    atomDict[params]['unit'] = unit
                     addKeys()
 
-                elif atom.adp.adp_type.raw_value == 'Uiso':
+                elif atom.adp.adp_type.value == 'Uiso':
                     atomDict['ADP_type']['value'] = 'Uiso'
                     params = 'U_iso_or_equiv'
                     atomDict[params] = self.fromParameterObject(atom.adp.Uiso)
                     atomDict[params]['shortPrettyName'] = "U_iso_or_equiv"
                     atomDict[params]['name'] = "U_iso_or_equiv"
-                    atomDict[params]['units'] = unit
+                    atomDict[params]['unit'] = unit
                     addKeys()
 
             blocks['loops']['_atom_site'].append(atomDict)
@@ -429,15 +429,15 @@ class Model(QObject):
             absDelta
         """
         dict_repr = {}
-        dict_repr['value'] = coreObject.raw_value
-        dict_repr['fit'] = not coreObject.fixed
-        dict_repr['fittable'] = coreObject.enabled
+        dict_repr['value'] = float(coreObject.value)
+        dict_repr['fit'] = not bool(coreObject.fixed)
+        dict_repr['fittable'] = bool(coreObject.enabled)
         dict_repr['prettyName'] = coreObject.display_name
-        dict_repr['error'] = coreObject.error
+        dict_repr['error'] = float(coreObject.error)
         dict_repr['url'] = coreObject.url
-        dict_repr['enabled'] = coreObject.enabled
-        dict_repr['min'] = -np.inf
-        dict_repr['max'] = np.inf
+        dict_repr['enabled'] = bool(coreObject.enabled)
+        dict_repr['min'] = float(coreObject.min)
+        dict_repr['max'] = float(coreObject.max)
         return dict_repr
         
     def fromDescriptorObject(self, coreObject):
@@ -445,7 +445,7 @@ class Model(QObject):
         Convert a Descriptor object into a dictionary representation
         """
         dict_repr = {}
-        dict_repr['value'] = coreObject.raw_value
+        dict_repr['value'] = coreObject.value
         dict_repr['prettyName'] = coreObject.display_name
         dict_repr['url'] = coreObject.url
         dict_repr['fittable'] = False # none of the descriptors are fittables
@@ -954,7 +954,7 @@ class Model(QObject):
 
     def setCurrentModelStructViewAtomsModel(self):
         '''
-        Create a list of atoms for structure view, using easyCrystallography to calculate equivalent positions
+        Create a list of atoms for structure view, using easycrystallography to calculate equivalent positions
         '''
         print("\nsetCurrentModelStructViewAtomsModel\n")
         structViewModel = set()

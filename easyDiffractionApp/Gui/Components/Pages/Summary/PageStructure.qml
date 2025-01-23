@@ -27,7 +27,7 @@ EaComponents.ContentPage {
 
         items: [
             Loader {
-                source: 'MainContent/TextView.qml'  // 'MainContent/Report.qml'
+                source: 'MainContent/TextView.qml'
                 onStatusChanged: if (status === Loader.Ready) console.debug(`${source} loaded`)
             }
         ]
@@ -36,7 +36,7 @@ EaComponents.ContentPage {
     sideBar: EaComponents.SideBar {
         tabs: [
             EaElements.TabButton { text: qsTr("Basic controls") },
-            EaElements.TabButton { text: qsTr("Advanced controls"); enabled: false },
+            EaElements.TabButton { text: qsTr("Extra controls"); enabled: false },
             EaElements.TabButton { text: qsTr("Text mode") }
         ]
 
