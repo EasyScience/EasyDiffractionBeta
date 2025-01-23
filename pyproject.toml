@@ -37,7 +37,7 @@ dependencies = [
     'numdifftools',
     'cryspy @ git+https://github.com/ikibalin/cryspy.git@beta',
     'EasyApp @ git+https://github.com/easyscience/EasyApp.git@beta',
-    'easyDiffraction @ git+https://github.com/easyscience/easyDiffraction.git'
+    'easyDiffraction @ git+https://github.com/easyscience/EasyDiffractionLib.git@new_param'
 ]
 
 [project.optional-dependencies]
