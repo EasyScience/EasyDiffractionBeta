@@ -46,7 +46,7 @@ class Fitting(QObject):
         self.interface = interface
         # self.fitter = CoreFitter(self.parent.sample(), self.interface.fit_func)
         # self.fitter = CoreFitter(self.parent.experiment.job(), self.parent.experiment.job().create_simulation)
-        self.fitter = CoreFitter(self.parent.experiment.job(), self.interface.fit_func)
+        self.fitter = CoreFitter(self.parent.experiment.job, self.interface.fit_func)
 
         # Multithreading
         # self._fitter_thread = None
@@ -227,7 +227,7 @@ class Fitting(QObject):
     @Slot()
     def startStop(self):
         # self.data = self.parent.pdata()
-        name = 'pd_' + self.parent.experiment.job().experiment.name
+        name = 'pd_' + self.parent.experiment.job.experiment.name
         self.data = self.interface.data()._inOutDict[name]
         if self.use_threading:
             if not self.fit_thread.is_alive():

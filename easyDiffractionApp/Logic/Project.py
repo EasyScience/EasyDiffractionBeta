@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023 EasyDiffraction contributors
 # SPDX-License-Identifier: BSD-3-Clause
-# © © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
+# © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffractionApp>
 
 import os
 import time
@@ -13,7 +13,7 @@ from easydiffraction.calculators.cryspy.parser import Parameter
 from easydiffraction.io.cif import dataBlockToCif
 from easydiffraction.io.cif import cifV2ToV1
 from EasyApp.Logic.Logging import console
-
+from Logic.Helpers import formatMsg
 
 
 _EMPTY_DATA = {
@@ -76,11 +76,11 @@ _EXAMPLES = [
         'description': 'neutrons, powder, time-of-flight, SEPD@Argonne',
         'path': ':/Examples/Si_SEPD@Argonne/project.cif'
      },
-     {
-        'name': 'CeCuAl3 (Polaris)',
-        'description': 'neutrons, powder, time-of-flight, Polaris@ISIS',
-        'path': ':/Examples/CeCuAl3_Polaris@ISIS/project.cif'
-     },
+     #{
+     #   'name': 'CeCuAl3 (Polaris)',
+     #   'description': 'neutrons, powder, time-of-flight, Polaris@ISIS',
+     #   'path': ':/Examples/CeCuAl3_Polaris@ISIS/project.cif'
+     #},
      {
         'name': 'Na2Ca3Al2F14 (Osiris)',
         'description': 'neutrons, powder, time-of-flight, Osiris@ISIS',
@@ -90,6 +90,16 @@ _EXAMPLES = [
         'name': 'Na2Ca3Al2F14 (WISH)',
         'description': 'neutrons, powder, time-of-flight, WISH@ISIS',
         'path': ':/Examples/Na2Ca3Al2F14_WISH@ISIS/project.cif'
+     },
+     {
+        'name': 'CeO2 (iMATERIA)',
+        'description': 'neutrons, powder, time-of-flight, iMATERIA@J-PARC',
+        'path': ':/Examples/CeO2_iMATERIA@J-PARC/project.cif'
+     },
+     {
+        'name': 'Tb2Ti2O7 (HEiDi)',
+        'description': 'neutrons, single crystal, constant wavelength, HEiDi@MLZ',
+        'path': ':/Examples/Tb2Ti2O7_HEiDi@MLZ/project.cif'
      },
      #{
      #    'name': 'Co2SiO4-Mult-Phases',
@@ -121,6 +131,7 @@ class Project(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._proxy = parent
+        self._recent = []
         self.resetAll()
 
     @Slot()
@@ -130,7 +141,6 @@ class Project(QObject):
         self._examples = _EXAMPLES
         self._created = False
         self._needSave = False
-        self._recent = []
         self._isExample = False
 
         self._location = str(Path.home())

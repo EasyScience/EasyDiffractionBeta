@@ -4,8 +4,8 @@ This is a test version of EasyDiffraction with improved GUI and overall performa
 
 ### Bug Fixes
 
-- The correct x-axis title is now displayed for graphs with TOF data
-- The startup splash screen now appears before the calculation libraries are loaded
+- The correct x-axis title is now displayed for graphs with TOF data.
+- The startup splash screen now appears before the calculation libraries are loaded.
 
 # Version 0.9.4 (26 Jun 2024)
 
@@ -13,7 +13,7 @@ This is a test version of EasyDiffraction with improved GUI and overall performa
 
 ### New Features
 
-- Point background is now implemented for time-of-flight (TOF) type of experiments
+- Point background is now implemented for time-of-flight (TOF) type of experiments.
 
 # Version 0.9.3 (21 Jun 2024)
 
@@ -21,7 +21,7 @@ This is a test version of EasyDiffraction with improved GUI and overall performa
 
 ### Bug Fixes
 
-- The package for Snap Store (Linux) has been added back
+- The package for Snap Store (Linux) has been added back.
 
 # Version 0.9.2 (20 Jun 2024)
 
@@ -29,14 +29,14 @@ This is a test version of EasyDiffraction with improved GUI and overall performa
 
 ### New Features
 
-- The analysis page now has an _html_-based analysis summary
-- The CIF-based report on the Summary page has now been moved from _Main View_ to _Sidebar_ (`Text mode` tab)
-- User can now save the analysis summary in _html_ format
-- Installers for macOS and Windows are now signed
+- The analysis page now has an _html_-based analysis summary.
+- The CIF-based report on the Summary page has now been moved from _Main View_ to _Sidebar_ (`Text mode` tab).
+- User can now save the analysis summary in _html_ format.
+- Installers for macOS and Windows are now signed.
 
 ### Bug Fixes
 
-- Measured and processed TOF data are now correctly displayed on the Summary page
+- Measured and processed TOF data are now correctly displayed on the Summary page.
 
 # Version 0.9.1-alpha0 (29 May 2024)
 

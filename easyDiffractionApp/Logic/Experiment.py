@@ -161,6 +161,7 @@ class Experiment(QObject):
 
         self._chartRanges = []
 
+    @Property('QVariant', constant=True)
     def job(self):
         return self._job
 
@@ -255,6 +256,8 @@ class Experiment(QObject):
 
     def loadExperimentFromCifString(self, cifString="", job_name=""):
         console.debug(f"Loading experiment(s) from: {job_name}")
+        # assure we reference the right interface
+        self._interface = self._job.interface
         self.loadExperimentsFromEdCif(cifString)
 
         self._job.add_experiment_from_string(cifString)
@@ -268,8 +271,9 @@ class Experiment(QObject):
         self._currentIndex = len(self._dataBlocksNoMeas) - 1
         if not self.defined:
             self.defined = bool(len(self._dataBlocksNoMeas))
+
         self.dataBlocksChanged.emit()
-        self._job.interface = self._interface
+        #self._job.interface = self._interface
 
     def jobToBlock(self, job=None, name=None):
         '''
@@ -1339,21 +1343,19 @@ class Experiment(QObject):
     def runProfileCalculations(self):
 
         # shove it all into the calculator.
+        # result = self._interface.calculate_profile()
 
-        result = self._interface.calculate_profile()
-        # debug stuff - remove before merging
-        # simx = self._xArrays
-        # simx = self._dataBlocksMeasOnly[0]['loops']['_pd_meas'][0]['2theta_scan']['value']
-        # result = self._job.create_simulation(simx)
+        # console.debug(formatMsg('sub', 'Profle calculations', 'finished'))
 
-        console.debug(formatMsg('sub', 'Profle calculations', 'finished'))
+        # chiSq = result[0]
+        # self._proxy.fitting._pointsCount = result[1]
+        # self._proxy.fitting._freeParamsCount = len(result[4])
+        # self._proxy.fitting.chiSq = chiSq / (self._proxy.fitting._pointsCount - self._proxy.fitting._freeParamsCount)
 
-        chiSq = result[0]
-        self._proxy.fitting._pointsCount = result[1]
-        self._proxy.fitting._freeParamsCount = len(result[4])
-        self._proxy.fitting.chiSq = chiSq / (self._proxy.fitting._pointsCount - self._proxy.fitting._freeParamsCount)
+        # gofLastIter = self._proxy.fitting.chiSq  # NEED FIX
 
-        gofLastIter = self._proxy.fitting.chiSq  # NEED FIX
+        _ = self._job.calculate_profile() # this fills out calculator _inOutDict
+
         # if self._proxy.fitting.chiSqStart is None:
         #     self._proxy.status.goodnessOfFit = f'{gofLastIter:0.2f}'                           # NEED move to connection
         # else:
@@ -1361,6 +1363,7 @@ class Experiment(QObject):
         #     self._proxy.status.goodnessOfFit = f'{gofStart:0.2f} → {gofLastIter:0.2f}'  # NEED move to connection
         # if not self._proxy.fitting._freezeChiSqStart:
         #     self._proxy.fitting.chiSqStart = self._proxy.fitting.chiSq
+        pass
 
     def setMeasuredArraysForSingleExperiment(self, idx):
         diffrn_radiation_type = self.dataBlocksNoMeas[idx]['params']['_diffrn_radiation']['type']['value']

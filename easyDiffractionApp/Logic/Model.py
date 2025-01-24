@@ -183,7 +183,7 @@ class Model(QObject):
     def atomData(self, typeSymbol, key):
         if typeSymbol == '':
             return ''
-        typeSymbol = re.sub(r'[0-9]', '', typeSymbol)  # '162Dy' -> 'Dy'
+        typeSymbol = re.sub(r'[0-9\+\-]', '', typeSymbol)  # '162Dy' -> 'Dy', 'Co2+' -> 'Co'
         if key == 'color':
             return COLOR_TABLE[typeSymbol]
         try:
@@ -620,7 +620,6 @@ class Model(QObject):
         console.debug(formatMsg('sub', 'Intern dict', 'removed', f'{block}[{blockIdx}].{category}[{rowIndex}]'))
 
     def appendDataBlockLoopRow(self, category):
-        print("\nappendDataBlockLoopRow\n")
         block = 'model'
         blockIdx = self._currentIndex
 
