@@ -12,6 +12,7 @@ from PySide6.QtQml import QJSValue
 
 from easydiffraction import Job
 from easydiffraction.job.model.phase import Phases
+from easydiffraction.calculators.wrapper_factory import WrapperFactory
 
 from easycrystallography.Components.AtomicDisplacement import AtomicDisplacement
 from easydiffraction.io.cif import dataBlockToCif
@@ -530,6 +531,10 @@ class Model(QObject):
     @Slot()
     def resetAll(self):
         self.defined = False
+        # self._interface = WrapperFactory()
+        # self.createJob()
+        # self._proxy.interface = self._interface
+        self.phases = self.job.phases
         self._currentIndex = -1
         self._dataBlocks = []
         self._dataBlocksCif = []

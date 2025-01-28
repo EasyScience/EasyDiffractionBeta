@@ -12,6 +12,7 @@ from threading import Thread
 from easyscience.fitting.fitter import Fitter as CoreFitter
 from easyscience.Utils.io.xml import XMLSerializer
 from easyscience.Constraints import ObjConstraint, NumericConstraint
+from easyscience import globad_object as borg
 
 from distutils.util import strtobool
 
@@ -38,6 +39,7 @@ class Fitting(QObject):
     finished = Signal()
     failed = Signal(str)
     constraintsRemoved = Signal()
+    jobToDataBlocks = Signal()
 
     def __init__(self, proxy=None, interface=None):
         super().__init__(proxy)
@@ -71,13 +73,7 @@ class Fitting(QObject):
         self._fit_finished = False
         self.fitStarted.emit()
 
-        x = self.data['ttheta']
-        y = self.data['signal_exp'][0]
-        e = self.data['signal_exp'][1]
-        weights = 1 / e
-
         kwargs = {
-            'weights': weights,
             'method': method
         }
 
@@ -182,6 +178,8 @@ class Fitting(QObject):
             # "GOF":     float(res.goodness_of_fit),
             "redchi2": float(self.res.reduced_chi)
         }
+        self.jobToDataBlocks.emit()
+        pass
 
     def resetErrors(self):
         # Reset all errors to zero
@@ -189,14 +187,14 @@ class Fitting(QObject):
         all_pars = set(self.fitter.fit_object.get_parameters())
         fit_pars = {par for par in all_pars if par.enabled and not par.fixed}
         to_zero = all_pars.difference(fit_pars)
-        #borg = self.parent.sample()._borg
-        #borg.stack.beginMacro('reset errors')
+        borg = self.parent.sample()._borg
+        borg.stack.beginMacro('reset errors')
         for par in to_zero:
             par.error = 0.
-        #borg.stack.endMacro()
-        #macro = borg.stack.history.popleft()
-        #for command in macro._commands:
-        #    borg.stack.history[0]._commands.appendleft(command)
+        borg.stack.endMacro()
+        macro = borg.stack.history.popleft()
+        for command in macro._commands:
+           borg.stack.history[0]._commands.appendleft(command)
 
     def joinFitThread(self):
         if self.fit_thread.is_alive():
@@ -209,7 +207,7 @@ class Fitting(QObject):
         if self.parent.experiment.isSpinPolarized():
             self.parent.setSpinComponent()
         # must re-instantiate the thread object
-        self.fit_thread = Thread(target=self.startStop)
+        self.fit_thread = Thread(target=self.fit_threading)
 
     def onSuccess(self):
         self.joinFitThread()
@@ -228,7 +226,7 @@ class Fitting(QObject):
     def startStop(self):
         # self.data = self.parent.pdata()
         name = 'pd_' + self.parent.experiment.job.experiment.name
-        self.data = self.interface.data()._inOutDict[name]
+        #self.data = self.interface.data()._inOutDict[name]
         if self.use_threading:
             if not self.fit_thread.is_alive():
                 self.is_fitting_now = True

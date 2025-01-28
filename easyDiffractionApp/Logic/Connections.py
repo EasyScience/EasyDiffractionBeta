@@ -45,6 +45,7 @@ class Connections(QObject):
         self._proxy.fitting.fitFinished.connect(self.onFittingFitFinished)
         # self._proxy.fitting.chiSqSignificantlyChanged.connect(self.onFittingChiSqSignificantlyChanged)
         self._proxy.fitting.minimizerMethodChanged.connect(self.onFittingMinimizerMethodChanged)
+        self._proxy.fitting.jobToDataBlocks.connect(self.onJobToDataBlocks)
 
         # Summary
         self._proxy.summary.dataBlocksCifChanged.connect(self.onSummaryDataBlocksCifChanged)
@@ -355,6 +356,20 @@ class Connections(QObject):
 
     def onFittingMinimizerMethodChanged(self):
         self._proxy.status.minimizer = f'Lmfit ({self._proxy.fitting.minimizerMethod})'
+
+    def onJobToDataBlocks(self):
+        '''
+        Update the parameter dictionaries based on the job objects
+        '''
+        # MODEL
+        dataBlocks = self._proxy.model.phaseToBlocks(self._proxy.job.phases)
+        index = self._proxy.model.currentIndex
+        # overwrite the current node
+        self._proxy.model._dataBlocks[index] = dataBlocks
+        # EXPERIMENT
+        blocks = self._proxy.experiment.jobToBlock(job=self._proxy.job)
+        index = self._proxy.experiment.currentIndex
+        self._proxy.experiment._dataBlocksNoMeas[index] = blocks
 
     #########
     # Summary

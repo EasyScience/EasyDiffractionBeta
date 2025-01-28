@@ -285,7 +285,7 @@ class Experiment(QObject):
         cifDict = 'core'
         dataBlock = {'name': '', 'params': {}, 'loops': {}}
         dataBlock['name'] = dict(Parameter(
-            value = name if name is not None else job.name,
+            value = name if name is not None else job.experiment.name,
             icon = 'microscope'))
         param = 'params'
         category = '_diffrn_radiation'
@@ -1380,6 +1380,7 @@ class Experiment(QObject):
 
         # X data
         x_array = calcInOutDict[calc_block_name][x_array_name]
+        x_array2 = self._proxy.job.experiment.x.values
         if diffrn_radiation_type == 'cwl':
             x_array = np.rad2deg(x_array)
         self.setXArray(x_array, idx)
