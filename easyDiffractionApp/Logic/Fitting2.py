@@ -12,7 +12,7 @@ from threading import Thread
 from easyscience.fitting.fitter import Fitter as CoreFitter
 from easyscience.Utils.io.xml import XMLSerializer
 from easyscience.Constraints import ObjConstraint, NumericConstraint
-from easyscience import globad_object as borg
+# from easyscience import globad_object as borg
 
 from distutils.util import strtobool
 
@@ -187,14 +187,13 @@ class Fitting(QObject):
         all_pars = set(self.fitter.fit_object.get_parameters())
         fit_pars = {par for par in all_pars if par.enabled and not par.fixed}
         to_zero = all_pars.difference(fit_pars)
-        borg = self.parent.sample()._borg
-        borg.stack.beginMacro('reset errors')
+        # borg.stack.beginMacro('reset errors')
         for par in to_zero:
             par.error = 0.
-        borg.stack.endMacro()
-        macro = borg.stack.history.popleft()
-        for command in macro._commands:
-           borg.stack.history[0]._commands.appendleft(command)
+        # borg.stack.endMacro()
+        # macro = borg.stack.history.popleft()
+        # for command in macro._commands:
+        #    borg.stack.history[0]._commands.appendleft(command)
 
     def joinFitThread(self):
         if self.fit_thread.is_alive():
