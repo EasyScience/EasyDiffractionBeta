@@ -54,6 +54,8 @@ BLOCK2PHASE = {
     '_cell': 'cell',
     '_space_group': 'spacegroup',
     '_atom_site': 'atoms',
+    'label': 'name',
+    'type_symbol': 'specie',
     'occupancy': 'occupancy',
     'fract_x': 'fract_x',
     'fract_y': 'fract_y',
@@ -363,10 +365,12 @@ class Model(QObject):
             atomDict = {}
             atomDict['type_symbol'] = {'shortPrettyName': 'type',
                                        'value': atom.specie.symbol,
-                                       'name': 'type_symbol'}
+                                       'name': 'type_symbol',
+                                       'category': category,}
             atomDict['label'] = self.fromDescriptorObject(atom.label)
             atomDict['label']['shortPrettyName'] = "label"
             atomDict['label']['name'] = 'label'
+            atomDict['label']['category'] = category
             params = 'fract_x'
             atomDict[params] = self.fromParameterObject(atom.fract_x)
             atomDict[params]['shortPrettyName'] = "x"
@@ -484,6 +488,12 @@ class Model(QObject):
         phase_with_category = getattr(phase, p_category)[rowIndex]
         # get loop item
         phase_with_item = getattr(phase_with_category, p_name)
+        if name == 'label':
+            phase_with_category.name = value
+            return
+        if name == 'type_symbol':
+            phase_with_item = pt.elements.symbol(value)
+            return
         if field == 'value':
             phase_with_item.value = value
         elif field == 'error':
@@ -531,9 +541,6 @@ class Model(QObject):
     @Slot()
     def resetAll(self):
         self.defined = False
-        # self._interface = WrapperFactory()
-        # self.createJob()
-        # self._proxy.interface = self._interface
         self.phases = self.job.phases
         self._currentIndex = -1
         self._dataBlocks = []

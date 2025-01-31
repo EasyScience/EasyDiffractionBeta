@@ -10,8 +10,8 @@ from easydiffraction.calculators.cryspy.calculator import Data as  CalcData # TO
 class Data(QObject):
     def __init__(self, parent, interface=None):
         super().__init__(parent)
-        self.interface = interface
-        self._data = self.interface.data()
+        self._interface = interface
+        self._data = self._interface.data()
         self._calcDict = self._data._cryspyDict
         self._calcObj = self._data._cryspyObj
         self._calcInOutDict = self._data._inOutDict

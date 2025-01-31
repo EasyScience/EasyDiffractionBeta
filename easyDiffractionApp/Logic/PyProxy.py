@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
-from PySide6.QtCore import QObject, Property
+from PySide6.QtCore import QObject, Property, Slot
 
 from EasyApp.Logic.Logging import LoggerLevelHandler
 from Logic.Connections import Connections
@@ -94,3 +94,23 @@ class PyProxy(QObject):
     @Property('QVariant', constant=True)
     def backendHelpers(self):
         return self._backendHelpers
+
+    @Slot()
+    def resetAll(self):
+        self.interface = WrapperFactory()
+        self.model._interface = self.interface
+        self.model.createJob()
+        self._model.resetAll()
+        self._experiment._interface = self.interface
+        self._experiment._job = self._model.job
+        self._experiment.resetAll()
+        self._data._interface = self.interface
+        self._data.resetAll()
+        self._analysis.resetAll()
+        self._fittables.resetAll()
+        self._fitting.interface = self.interface
+        self._fitting.resetAll()
+        self._summary._interface = self.interface
+        self._summary.resetAll()
+        self._project.resetAll()
+        self._status.resetAll()

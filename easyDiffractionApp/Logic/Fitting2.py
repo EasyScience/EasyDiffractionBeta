@@ -181,6 +181,12 @@ class Fitting(QObject):
         self.jobToDataBlocks.emit()
         pass
 
+    @Slot()
+    def resetAll(self):
+        self.resetErrors()
+        self._fit_results = _defaultFitResults()
+        self.fitter = CoreFitter(self.parent.experiment.job, self.interface.fit_func)
+
     def resetErrors(self):
         # Reset all errors to zero
         # all_pars = set(self.parent.sample().get_parameters())
