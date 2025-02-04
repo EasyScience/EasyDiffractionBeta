@@ -52,8 +52,10 @@ O O 0 0 0 1 Biso 0
 
 BLOCK2PHASE = {
     '_cell': 'cell',
-    '_space_group': 'spacegroup',
+    '_space_group': 'space_group',
     '_atom_site': 'atoms',
+    'label': 'name',
+    'type_symbol': 'specie',
     'occupancy': 'occupancy',
     'fract_x': 'fract_x',
     'fract_y': 'fract_y',
@@ -163,6 +165,8 @@ class Model(QObject):
         # Create default job, so basic operations can be performed even without
         # loading any models or experiments
         self._job = Job(interface=self._interface)
+        self._interface = self.job.interface
+        self.job._experiment._interface = self._interface
 
     @property
     def job(self):
@@ -363,10 +367,14 @@ class Model(QObject):
             atomDict = {}
             atomDict['type_symbol'] = {'shortPrettyName': 'type',
                                        'value': atom.specie.symbol,
-                                       'name': 'type_symbol'}
+                                       'name': 'type_symbol',
+                                       'category': category,
+                                       'idx': idx}
             atomDict['label'] = self.fromDescriptorObject(atom.label)
+            atomDict['label']['idx'] = idx
             atomDict['label']['shortPrettyName'] = "label"
             atomDict['label']['name'] = 'label'
+            atomDict['label']['category'] = category
             params = 'fract_x'
             atomDict[params] = self.fromParameterObject(atom.fract_x)
             atomDict[params]['shortPrettyName'] = "x"
@@ -484,6 +492,13 @@ class Model(QObject):
         phase_with_category = getattr(phase, p_category)[rowIndex]
         # get loop item
         phase_with_item = getattr(phase_with_category, p_name)
+        # label and type_symbol accessors are different
+        if name == 'label':
+            phase_with_category.label = value
+            return
+        if name == 'type_symbol':
+            phase_with_item = pt.elements.symbol(value)
+            return
         if field == 'value':
             phase_with_item.value = value
         elif field == 'error':
@@ -507,6 +522,7 @@ class Model(QObject):
         if edCif:
             self.removeModel(self.currentIndex)
             self.loadModelsFromEdCif(edCif)
+        self.updateCifOnInterface()
         self.dataBlocksChanged.emit()
 
     @Slot(int)
@@ -531,9 +547,6 @@ class Model(QObject):
     @Slot()
     def resetAll(self):
         self.defined = False
-        # self._interface = WrapperFactory()
-        # self.createJob()
-        # self._proxy.interface = self._interface
         self.phases = self.job.phases
         self._currentIndex = -1
         self._dataBlocks = []
@@ -621,7 +634,7 @@ class Model(QObject):
         block = 'model'
         blockIdx = self._currentIndex
         del self._dataBlocks[blockIdx]['loops'][category][rowIndex]
-
+        self.setDataBlocksCif()
         console.debug(formatMsg('sub', 'Intern dict', 'removed', f'{block}[{blockIdx}].{category}[{rowIndex}]'))
 
     def appendDataBlockLoopRow(self, category):
@@ -645,6 +658,7 @@ class Model(QObject):
 
         self._dataBlocks[blockIdx]['loops'][category].append(newAtom)
         atomsCount = len(self._dataBlocks[blockIdx]['loops'][category])
+        self.setDataBlocksCif()
         self.dataBlocksChanged.emit()
         console.debug(formatMsg('sub', 'Intern dict', 'added', f'{block}[{blockIdx}].{category}[{atomsCount}]'))
 
@@ -656,6 +670,7 @@ class Model(QObject):
 
         self._dataBlocks[blockIdx]['loops'][category].append(lastAtom)
         atomsCount = len(self._dataBlocks[blockIdx]['loops'][category])
+        self.setDataBlocksCif()
         self.dataBlocksChanged.emit()
         console.debug(formatMsg('sub', 'Intern dict', 'added', f'{block}[{blockIdx}].{category}[{atomsCount}]'))
 

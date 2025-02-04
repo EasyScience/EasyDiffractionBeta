@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # © 2023 Contributors to the EasyDiffraction project <https://github.com/easyscience/EasyDiffraction>
 
-from PySide6.QtCore import QObject, Property
+from PySide6.QtCore import QObject, Property, Slot
 
 from EasyApp.Logic.Logging import LoggerLevelHandler
 from Logic.Connections import Connections
@@ -23,10 +23,10 @@ from easydiffraction.calculators.wrapper_factory import WrapperFactory
 class PyProxy(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.interface = WrapperFactory()
         self._logger = LoggerLevelHandler(self)
         self._project = Project(self)
-        self._model = Model(self, interface=self.interface)
+        self._model = Model(self) # Model assigns a default job and interface
+        self.interface = self._model._interface
         # Now we have the default job so the subsequent modules can be initialized
         self._experiment = Experiment(self, interface=self.interface)
         self._data = Data(self, interface=self.interface)
@@ -94,3 +94,25 @@ class PyProxy(QObject):
     @Property('QVariant', constant=True)
     def backendHelpers(self):
         return self._backendHelpers
+
+    @Slot()
+    def resetAll(self):
+        # return
+        # self._model.resetAll()
+        # self.model.createJob()
+        self._model = Model(self) # Model assigns a default job and interface
+        self.interface = self._model._interface
+        #self.interface = self.model._interface
+        self._experiment.resetAll()
+        self._experiment._interface = self.interface
+        self._experiment._job = self._model.job
+        self._data.resetAll()
+        self._data._interface = self.interface
+        self._analysis.resetAll()
+        self._fitting.interface = self.interface
+        self._fittables.resetAll()
+        self._fitting.resetAll()
+        self._summary.resetAll()
+        self._summary._interface = self.interface
+        self._project.resetAll()
+        self._status.resetAll()

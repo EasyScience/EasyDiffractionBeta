@@ -111,12 +111,14 @@ BLOCK2JOB = {
     'reflex_asymmetry_p4': 'reflex_asymmetry_p4',
     '_pd_calib': 'pattern',
     '2theta_offset': 'zero_shift',
+    'probe': 'radiation',
 
     '_pd_background': 'backgrounds',
     'line_segment_X': 'x',
     'line_segment_intensity': 'y',
     'scale': 'scale',
     '_pd_phase_block': 'phases',
+    '_diffrn_radiation': 'pattern',
 }
 
 class Experiment(QObject):
@@ -712,8 +714,8 @@ class Experiment(QObject):
         currentDataBlock = self._dataBlocksNoMeas[self.currentIndex]
         currentExperimentName = currentDataBlock['name']['value']
 
-        calcObjBlockNames = [item.data_name for item in self._interface.data()._calcObj]
-        calcObjBlockIdx = calcObjBlockNames.index(currentExperimentName)
+        # calcObjBlockNames = [item.data_name for item in self._interface.data()._calcObj]
+        # calcObjBlockIdx = calcObjBlockNames.index(currentExperimentName)
 
         if not edCifNoMeas:
             edCifNoMeas = dataBlockToCif(currentDataBlock)
@@ -726,7 +728,7 @@ class Experiment(QObject):
         edCifMeasOnly = dataBlockToCif(self.dataBlocksMeasOnly[self.currentIndex],
                                                     includeBlockName=False)
 
-        edCif = edCifNoMeas + '\n\n' + edCifMeasOnly
+        edCif = edCifNoMeas #+ '\n\n' + edCifMeasOnly
 
         blocks = self._interface.replaceExpCif(edCif, currentExperimentName)
         self._dataBlocksNoMeas[self.currentIndex] = blocks
@@ -1380,17 +1382,18 @@ class Experiment(QObject):
 
         # X data
         x_array = calcInOutDict[calc_block_name][x_array_name]
-        x_array2 = self._proxy.job.experiment.x.values
         if diffrn_radiation_type == 'cwl':
             x_array = np.rad2deg(x_array)
         self.setXArray(x_array, idx)
 
         # Measured Y data
         y_meas_array = calcInOutDict[calc_block_name]['signal_exp'][0]
+        y_meas_array = self._job.experiment.y.values
         self.setYMeasArray(y_meas_array, idx)
 
         # Standard deviation of the measured Y data
-        sy_meas_array = calcInOutDict[calc_block_name]['signal_exp'][1]
+        # sy_meas_array = calcInOutDict[calc_block_name]['signal_exp'][1]
+        sy_meas_array = self._job.experiment.e.values
         self.setSYMeasArray(sy_meas_array, idx)
 
     def calculatedYBkgArray(self, cryspy_block_idx, cryspy_block_name, x_array_name):
@@ -1407,7 +1410,7 @@ class Experiment(QObject):
         elif diffrn_radiation_type == 'tof':
             experiment_prefix = 'tof'
             x_array_name = 'time'
-        #ed_name = self._dataBlocksNoMeas[idx]['name']['value']
+
         ed_name = self._job.experiment.name
         calc_block_name = f'{experiment_prefix}_{ed_name}'
         calcInOutDict = self._interface.data()._inOutDict

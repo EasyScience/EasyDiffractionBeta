@@ -606,14 +606,7 @@ QtObject { // If "Unknown component. (M300) in QtCreator", try: "Tools > QML/JS 
     }
 
     function resetAll() {
-        main.summary.resetAll()
-        main.analysis.resetAll()
-        main.experiment.resetAll()
-        main.model.resetAll()
-        main.project.resetAll()
-        main.fittables.resetAll()
-        main.data.resetAll()
-        main.status.resetAll()
+        main.resetAll()
     }
 
     function disableAllPages() {
