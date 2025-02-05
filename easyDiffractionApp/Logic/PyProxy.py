@@ -97,12 +97,8 @@ class PyProxy(QObject):
 
     @Slot()
     def resetAll(self):
-        # return
-        # self._model.resetAll()
-        # self.model.createJob()
         self._model = Model(self) # Model assigns a default job and interface
         self.interface = self._model._interface
-        #self.interface = self.model._interface
         self._experiment.resetAll()
         self._experiment._interface = self.interface
         self._experiment._job = self._model.job
@@ -116,3 +112,5 @@ class PyProxy(QObject):
         self._summary._interface = self.interface
         self._project.resetAll()
         self._status.resetAll()
+        # redo the slots
+        self._connections = Connections(self)
