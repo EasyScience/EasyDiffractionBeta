@@ -70,11 +70,11 @@ EaElements.GroupRow {
                 onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
                 fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
             }
-            //EaElements.ParamTextField {
-            //    parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'sigma2')
-            //    onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
-            //    fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
-            //}
+            EaElements.ParamTextField {
+                parameter: Globals.Proxies.experimentMainParam('_pd_instr', 'sigma2')
+                onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
+                fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
+            }
             //EaElements.ParamTextField {  // Empty spot for better visual alignment
             //    visible: false
             //}

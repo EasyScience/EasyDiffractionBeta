@@ -14,8 +14,10 @@ import Gui.Globals as Globals
 EaElements.GroupRow {
 
     EaElements.ParamTextField {
-        readOnly: true
+        //readOnly: true
         parameter: Globals.Proxies.experimentMainParam('_pd_instr', '2theta_bank')
+        onEditingFinished: Globals.Proxies.setExperimentMainParam(parameter, 'value', Number(text))
+        fitCheckBox.onToggled: Globals.Proxies.setExperimentMainParam(parameter, 'fit', fitCheckBox.checked)
     }
 
     EaElements.ParamTextField {
