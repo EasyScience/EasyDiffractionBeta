@@ -159,7 +159,7 @@ class Fittables(QObject):
                 changedIntern = self._proxy.model.editDataBlockLoopParam(blockIdx, category, name, rowIndex, field, value)
                 self._proxy.model.blocksToLoopPhase(blockIdx, category, name, rowIndex, field, value)
                 changedCryspy = self._proxy.model.editCalculatorDictByLoopParam(blockIdx, category, name, rowIndex, field, value)
-        if changedIntern and changedCryspy and field != 'fit': # hacky way of not triggering recalculation when switching fit on/off
+        if changedIntern and changedCryspy:# and field != 'fit': # hacky way of not triggering recalculation when switching fit on/off
             if blockType == 'model':
                 self.modelChangedSilently.emit()
             elif blockType == 'experiment':

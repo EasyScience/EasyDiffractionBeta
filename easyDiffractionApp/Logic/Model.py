@@ -124,9 +124,6 @@ class Model(QObject):
             return
         self._defined = newValue
         console.debug(formatMsg('main', f'Model defined: {newValue}'))
-        l = self._dataBlocks[0]['params']['_cell']['angle_gamma']['value']
-        console.debug(f"angle_gamma: {l}")
-        console.debug(f"occupancy: {self._dataBlocks[0]['loops']['_atom_site'][0]['occupancy']['value']}")
         self.definedChanged.emit()
 
     @Property(int, notify=currentIndexChanged)
@@ -324,6 +321,7 @@ class Model(QObject):
         blocks[params][category][name]['name'] = name
         blocks[params][category][name]['category'] = category
         blocks[params][category][name]['url'] = blocks[params][category]['name_H-M_alt']['url']
+        blocks[params][category][name]['optional'] = True
         name = 'IT_number'
         blocks[params][category][name] = {}
         blocks[params][category][name]['value'] = phase.space_group.int_number
@@ -332,6 +330,7 @@ class Model(QObject):
         blocks[params][category][name]['category'] = category
         blocks[params][category][name]['error'] = 0.0
         blocks[params][category][name]['url'] = blocks[params][category]['name_H-M_alt']['url']
+        blocks[params][category][name]['optional'] = True
 
         name = 'IT_coordinate_system_code'
         blocks[params][category][name] = {}
@@ -528,7 +527,8 @@ class Model(QObject):
     @Slot(int)
     def removeModel(self, index):
         console.debug(f"Removing model no. {index + 1}")
-
+        if len(self.dataBlocks) < index + 1:
+            return
         currentDataBlock = self.dataBlocks[index]
         currentModelName = currentDataBlock['name']['value']
 
@@ -707,9 +707,8 @@ class Model(QObject):
             path[1] = f'flags_{path[1]}'
 
         oldValue = self._interface.data()._cryspyDict[path[0]][path[1]][path[2]]
-        if oldValue == value:
-            return False
-        self._interface.data()._cryspyDict[path[0]][path[1]][path[2]] = value
+        if oldValue != value:
+            self._interface.data()._cryspyDict[path[0]][path[1]][path[2]] = value
 
         console.debug(formatMsg('sub', 'Calculator dict', f'{oldValue} → {value}', f'{path}'))
         return True

@@ -39,6 +39,7 @@ class Connections(QObject):
         self._proxy.fittables.variabilityFilterCriteriaChanged.connect(self.onFittablesFilterCriteriaChanged)
         self._proxy.fittables.paramsCountChanged.connect(self.onFittablesParamsCountChanged)
         self._proxy.fittables.modelChangedSilently.connect(self.onModelChangedSilently)
+
         self._proxy.fittables.experimentChangedSilently.connect(self.onExperimentChangedSilently)
 
         # Fitting
@@ -377,3 +378,32 @@ class Connections(QObject):
 
     def onSummaryDataBlocksCifChanged(self):
         self._proxy.summary.setAsHtml()
+
+    ########
+    # Reset
+    ########
+
+    def resetAll(self):
+        # disconnect all signals
+        self._proxy.project.dataBlockChanged.disconnect(self.onProjectDataBlockChanged)
+        self._proxy.project.createdChanged.disconnect(self.onProjectCreatedChanged)
+        self._proxy.model.currentIndexChanged.disconnect(self.onModelCurrentIndexChanged)
+        self._proxy.model.dataBlocksChanged.disconnect(self.onModelDataBlocksChanged)
+        self._proxy.experiment.currentIndexChanged.disconnect(self.onExperimentCurrentIndexChanged)
+        self._proxy.experiment.dataBlocksNoMeasChanged.disconnect(self.onExperimentDataBlocksNoMeasChanged)
+        self._proxy.experiment.dataBlocksChanged.disconnect(self.onExperimentDataBlocksChanged)
+        self._proxy.experiment.yMeasArraysChanged.disconnect(self.onSummaryDataBlocksCifChanged)
+        self._proxy.analysis.definedChanged.disconnect(self.onAnalysisDefined)
+        self._proxy.fittables.nameFilterCriteriaChanged.disconnect(self.onFittablesFilterCriteriaChanged)
+        self._proxy.fittables.variabilityFilterCriteriaChanged.disconnect(self.onFittablesFilterCriteriaChanged)
+        self._proxy.fittables.paramsCountChanged.disconnect(self.onFittablesParamsCountChanged)
+        self._proxy.fittables.modelChangedSilently.disconnect(self.onModelChangedSilently)
+        self._proxy.fittables.experimentChangedSilently.disconnect(self.onExperimentChangedSilently)
+        self._proxy.fitting.fitFinished.disconnect(self.onFittingFitFinished)
+        self._proxy.fitting.minimizerMethodChanged.disconnect(self.onFittingMinimizerMethodChanged)
+        self._proxy.fitting.jobToDataBlocks.disconnect(self.onJobToDataBlocks)
+        self._proxy.summary.dataBlocksCifChanged.disconnect(self.onSummaryDataBlocksCifChanged)
+        self._proxy.status.calculatorChanged.disconnect(self.onSummaryDataBlocksCifChanged)
+        self._proxy.status.minimizerChanged.disconnect(self.onSummaryDataBlocksCifChanged)
+        self._proxy.status.variablesChanged.disconnect(self.onSummaryDataBlocksCifChanged)
+        self._proxy.status.goodnessOfFitChanged.disconnect(self.onSummaryDataBlocksCifChanged)

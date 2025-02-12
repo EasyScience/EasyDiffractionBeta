@@ -97,6 +97,7 @@ class PyProxy(QObject):
 
     @Slot()
     def resetAll(self):
+        self._connections.resetAll() # Needs to be reset FIRST to disconnect all the signals
         self._model = Model(self) # Model assigns a default job and interface
         self.interface = self._model._interface
         self._experiment.resetAll()
