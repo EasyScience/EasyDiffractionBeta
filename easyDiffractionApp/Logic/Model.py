@@ -565,12 +565,25 @@ class Model(QObject):
         # but it's easier to just update the existing dict
         if field == 'value':
             self._dataBlocks[blockIdx]['params'][category][name]['value'] = value
+            # check dependencies for the given parameter
+            self.setParamDependencies(blockIdx, category, name, value)
         elif field == 'error':
             self._dataBlocks[blockIdx]['params'][category][name]['error'] = value
         elif field == 'fit':
             self._dataBlocks[blockIdx]['params'][category][name]['fit'] = value
+
         self.setDataBlocksCif()
+        # self.replaceModel(self._dataBlocksCif[0][0])
         self.replaceModel()
+
+    def setParamDependencies(self, blockIdx, category, name, value):
+        # changes to certain parameters trigger changes in other parameters
+        # 1. space group code change -> change space group name
+        if name == 'IT_coordinate_system_code':
+            spaceGroup = self._dataBlocks[blockIdx]['params']['_space_group']
+            group = self.job.phases[blockIdx].space_group
+            spaceGroup['name_H-M_alt']['value'] = group.hermann_mauguin
+        pass
 
     @Slot(int, str, str, str, 'QVariant')
     def setMainParam(self, blockIdx, category, name, field, value):
@@ -621,7 +634,8 @@ class Model(QObject):
         names = []
         for system in all_system_names:
             numbers = SpacegroupInfo.get_ints_from_system(system)
-            names.extend([SpacegroupInfo.get_symbol_from_int_number(n) for n in numbers])
+            for n in numbers:
+                names.extend(SpacegroupInfo.get_compatible_HM_from_int(n))
         return names
 
     def createIsotopesNames(self):
