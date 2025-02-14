@@ -260,7 +260,7 @@ class Experiment(QObject):
         console.debug(f"Loading experiment(s) from: {job_name}")
         # assure we reference the right interface
         self._interface = self._job.interface
-        self.loadExperimentsFromEdCif(cifString)
+        # self.loadExperimentsFromEdCif(cifString)
 
         self._job.add_experiment_from_string(cifString)
 
@@ -305,7 +305,7 @@ class Experiment(QObject):
                     ))
         name = 'type'
         dataBlock[param][category][name] = dict(Parameter(
-                        value = 'cwl',  # This needs proper parsing in the library
+                        value = 'tof' if job.type.is_tof else 'cwl',
                         permittedValues = ['cwl', 'tof'],
                         optional = True,
                         category = category,
@@ -314,167 +314,350 @@ class Experiment(QObject):
                         url = url + category,
                         cifDict = cifDict
                     ))
-        name = 'wavelength'
-        category = '_diffrn_radiation_wavelength'
-        prettyCategory = 'radiation'
-        dataBlock[param][category] = {}
-        dataBlock[param][category][name] = dict(Parameter(
-                        value = float(job.parameters.wavelength.value),
-                        error = float(job.parameters.wavelength.error),
-                        category = category,
-                        prettyCategory = prettyCategory,
-                        name = name,
-                        prettyName = name,
-                        shortPrettyName = name,
-                        icon = prettyCategory,
-                        url = url + category,
-                        cifDict = cifDict,
-                        absDelta = 0.01,
-                        unit = 'Å',
-                        fittable = True,
-                        fit = not job.parameters.wavelength.fixed
-                    ))
-        category = '_pd_instr'
-        prettyCategory = 'inst'
-        icon = 'grip-lines-vertical'
-        name = 'resolution_u'
-        dataBlock[param][category] = {}
-        dataBlock[param][category][name] = dict(Parameter(
-                        value = float(job.parameters.resolution_u.value),
-                        error = float(job.parameters.resolution_u.error),
-                        category = category,
-                        prettyCategory = prettyCategory,
-                        name = name,
-                        prettyName = name,
-                        shortPrettyName = 'u',
-                        icon = icon,
-                        url = url + category,
-                        absDelta = 0.1,
-                        fittable = True,
-                        fit = not job.parameters.resolution_u.fixed
-                    ))
-        name = 'resolution_v'
-        dataBlock[param][category][name] = dict(Parameter(
-                        value = float(job.parameters.resolution_v.value),
-                        error = float(job.parameters.resolution_v.error),
-                        category = category,
-                        prettyCategory = prettyCategory,
-                        name = name,
-                        prettyName = name,
-                        shortPrettyName = 'v',
-                        icon = icon,
-                        url = url + category,
-                        absDelta = 0.1,
-                        fittable = True,
-                        fit = not job.parameters.resolution_v.fixed
-                    ))
-        name = 'resolution_w'
-        dataBlock[param][category][name] = dict(Parameter(
-                        value = float(job.parameters.resolution_w.value),
-                        error = float(job.parameters.resolution_w.error),
-                        category = category,
-                        prettyCategory = prettyCategory,
-                        name = name,
-                        prettyName = name,
-                        shortPrettyName = 'w',
-                        icon = icon,
-                        url = url + category,
-                        absDelta = 0.1,
-                        fittable = True,
-                        fit = not job.parameters.resolution_w.fixed
-                    ))
-        name = 'resolution_x'
-        dataBlock[param][category][name] = dict(Parameter(
-                        value = float(job.parameters.resolution_x.value),
-                        error = float(job.parameters.resolution_x.error),
-                        category = category,
-                        prettyCategory = prettyCategory,
-                        name = name,
-                        prettyName = name,
-                        shortPrettyName = 'x',
-                        icon = icon,
-                        url = url + category,
-                        absDelta = 0.1,
-                        fittable = True,
-                        fit = not job.parameters.resolution_x.fixed
-                    ))
-        name = 'resolution_y'
-        dataBlock[param][category][name] = dict(Parameter(
-                        float(job.parameters.resolution_y.value),
-                        error = float(job.parameters.resolution_y.error),
-                        category = category,
-                        prettyCategory = prettyCategory,
-                        name = name,
-                        prettyName = name,
-                        shortPrettyName = 'y',
-                        icon = icon,
-                        url = url + category,
-                        absDelta = 0.1,
-                        fittable = True,
-                        fit = not job.parameters.resolution_y.fixed
-                    ))
-        icon = 'balance-scale-left'
-        name = 'reflex_asymmetry_p1'
-        dataBlock[param][category][name] = dict(Parameter(
-                            float(job.parameters.reflex_asymmetry_p1.value),
-                            error = float(job.parameters.reflex_asymmetry_p1.error),
+        if job.type.is_cwl:
+            name = 'wavelength'
+            category = '_diffrn_radiation_wavelength'
+            prettyCategory = 'radiation'
+            dataBlock[param][category] = {}
+            dataBlock[param][category][name] = dict(Parameter(
+                            value = float(job.parameters.wavelength.value),
+                            error = float(job.parameters.wavelength.error),
                             category = category,
                             prettyCategory = prettyCategory,
                             name = name,
-                            prettyName = "asymmetry p1",
-                            shortPrettyName = "p1",
-                            icon = icon,
+                            prettyName = name,
+                            shortPrettyName = name,
+                            icon = prettyCategory,
                             url = url + category,
-                            absDelta = 0.5,
+                            cifDict = cifDict,
+                            absDelta = 0.01,
+                            unit = 'Å',
                             fittable = True,
-                            fit = not job.parameters.reflex_asymmetry_p1.fixed
+                            fit = not job.parameters.wavelength.fixed
                         ))
-        name = 'reflex_asymmetry_p2'
-        dataBlock[param][category][name] = dict(Parameter(
-                            float(job.parameters.reflex_asymmetry_p2.value),
-                            error = float(job.parameters.reflex_asymmetry_p2.error),
+            category = '_pd_instr'
+            prettyCategory = 'inst'
+            icon = 'grip-lines-vertical'
+            name = 'resolution_u'
+            dataBlock[param][category] = {}
+            dataBlock[param][category][name] = dict(Parameter(
+                            value = float(job.parameters.resolution_u.value),
+                            error = float(job.parameters.resolution_u.error),
                             category = category,
                             prettyCategory = prettyCategory,
                             name = name,
-                            prettyName = "asymmetry p2",
-                            shortPrettyName = "p2",
+                            prettyName = name,
+                            shortPrettyName = 'u',
                             icon = icon,
                             url = url + category,
-                            absDelta = 0.5,
+                            absDelta = 0.1,
                             fittable = True,
-                            fit = not job.parameters.reflex_asymmetry_p2.fixed
+                            fit = not job.parameters.resolution_u.fixed
                         ))
-        name = 'reflex_asymmetry_p3'
-        dataBlock[param][category][name] = dict(Parameter(
-                            float(job.parameters.reflex_asymmetry_p3.value),
-                            error = float(job.parameters.reflex_asymmetry_p3.error),
+            name = 'resolution_v'
+            dataBlock[param][category][name] = dict(Parameter(
+                            value = float(job.parameters.resolution_v.value),
+                            error = float(job.parameters.resolution_v.error),
                             category = category,
                             prettyCategory = prettyCategory,
                             name = name,
-                            prettyName = "asymmetry p3",
-                            shortPrettyName = "p3",
+                            prettyName = name,
+                            shortPrettyName = 'v',
                             icon = icon,
                             url = url + category,
-                            absDelta = 0.5,
+                            absDelta = 0.1,
                             fittable = True,
-                            fit = not job.parameters.reflex_asymmetry_p3.fixed
+                            fit = not job.parameters.resolution_v.fixed
                         ))
-        name = 'reflex_asymmetry_p4'
-        dataBlock[param][category][name] = dict(Parameter(
-                            float(job.parameters.reflex_asymmetry_p4.value),
-                            error = float(job.parameters.reflex_asymmetry_p4.error),
+            name = 'resolution_w'
+            dataBlock[param][category][name] = dict(Parameter(
+                            value = float(job.parameters.resolution_w.value),
+                            error = float(job.parameters.resolution_w.error),
                             category = category,
                             prettyCategory = prettyCategory,
                             name = name,
-                            prettyName = "asymmetry p4",
-                            shortPrettyName = "p4",
+                            prettyName = name,
+                            shortPrettyName = 'w',
                             icon = icon,
                             url = url + category,
-                            absDelta = 0.5,
+                            absDelta = 0.1,
                             fittable = True,
-                            fit = not job.parameters.reflex_asymmetry_p4.fixed
+                            fit = not job.parameters.resolution_w.fixed
                         ))
-
+            name = 'resolution_x'
+            dataBlock[param][category][name] = dict(Parameter(
+                            value = float(job.parameters.resolution_x.value),
+                            error = float(job.parameters.resolution_x.error),
+                            category = category,
+                            prettyCategory = prettyCategory,
+                            name = name,
+                            prettyName = name,
+                            shortPrettyName = 'x',
+                            icon = icon,
+                            url = url + category,
+                            absDelta = 0.1,
+                            fittable = True,
+                            fit = not job.parameters.resolution_x.fixed
+                        ))
+            name = 'resolution_y'
+            dataBlock[param][category][name] = dict(Parameter(
+                            float(job.parameters.resolution_y.value),
+                            error = float(job.parameters.resolution_y.error),
+                            category = category,
+                            prettyCategory = prettyCategory,
+                            name = name,
+                            prettyName = name,
+                            shortPrettyName = 'y',
+                            icon = icon,
+                            url = url + category,
+                            absDelta = 0.1,
+                            fittable = True,
+                            fit = not job.parameters.resolution_y.fixed
+                        ))
+            icon = 'balance-scale-left'
+            name = 'reflex_asymmetry_p1'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.reflex_asymmetry_p1.value),
+                                error = float(job.parameters.reflex_asymmetry_p1.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = "asymmetry p1",
+                                shortPrettyName = "p1",
+                                icon = icon,
+                                url = url + category,
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = not job.parameters.reflex_asymmetry_p1.fixed
+                            ))
+            name = 'reflex_asymmetry_p2'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.reflex_asymmetry_p2.value),
+                                error = float(job.parameters.reflex_asymmetry_p2.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = "asymmetry p2",
+                                shortPrettyName = "p2",
+                                icon = icon,
+                                url = url + category,
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = not job.parameters.reflex_asymmetry_p2.fixed
+                            ))
+            name = 'reflex_asymmetry_p3'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.reflex_asymmetry_p3.value),
+                                error = float(job.parameters.reflex_asymmetry_p3.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = "asymmetry p3",
+                                shortPrettyName = "p3",
+                                icon = icon,
+                                url = url + category,
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = not job.parameters.reflex_asymmetry_p3.fixed
+                            ))
+            name = 'reflex_asymmetry_p4'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.reflex_asymmetry_p4.value),
+                                error = float(job.parameters.reflex_asymmetry_p4.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = "asymmetry p4",
+                                shortPrettyName = "p4",
+                                icon = icon,
+                                url = url + category,
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = not job.parameters.reflex_asymmetry_p4.fixed
+                            ))
+        if job.type.is_tof:
+            category = '_pd_instr'
+            prettyCategory = 'inst'
+            icon = 'hashtag'
+            name = '2theta_bank'
+            dataBlock[param][category] = {}
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.ttheta_bank.value),
+                                error = float(job.parameters.ttheta_bank.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = '2θ bank',
+                                shortPrettyName = '2θ bank',
+                                icon = 'hashtag',
+                                url = url + category,
+                                cifDict = 'pd',
+                                absDelta = 0.2,
+                                fittable = True,
+                                fit = not job.parameters.ttheta_bank.fixed
+                            ))
+            name = 'dtt1'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.dtt1.value),
+                                error = float(job.parameters.dtt1.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = 'dtt1',
+                                shortPrettyName = 'dtt1',
+                                icon = 'radiation',
+                                url = url + category,
+                                cifDict = 'pd',
+                                absDelta = 100.0,
+                                unit = '°',
+                                fittable = True,
+                                fit = not job.parameters.dtt1.fixed
+                            ))
+            name = 'dtt2'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.dtt2.value),
+                                error = float(job.parameters.dtt2.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = 'dtt2',
+                                shortPrettyName = 'dtt2',
+                                icon = 'radiation',
+                                url = url + category,
+                                cifDict = 'pd',
+                                absDelta = 0.1,
+                                unit = '°',
+                                fittable = True,
+                                fit = not job.parameters.dtt2.fixed
+                            ))
+            name = 'zero'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.zero.value),
+                                error = float(job.parameters.zero.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = 'zero',
+                                shortPrettyName = 'zero',
+                                icon = 'arrows-alt-h',
+                                url = url + category,
+                                cifDict = 'pd',
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = not job.parameters.zero.fixed
+                            ))
+            name = 'alpha0'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.alpha0.value),
+                                error = float(job.parameters.alpha0.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = 'alpha0',
+                                shortPrettyName = 'α0',
+                                icon = 'shapes',
+                                url = url + category,
+                                cifDict = 'pd',
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = not job.parameters.alpha0.fixed
+                            ))
+            name = 'alpha1'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.alpha1.value),
+                                error = float(job.parameters.alpha1.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = 'alpha1',
+                                shortPrettyName = 'α1',
+                                icon = 'shapes',
+                                url = url + category,
+                                cifDict = 'pd',
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = not job.parameters.alpha1.fixed
+                            ))
+            name = 'beta0'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.beta0.value),
+                                error = float(job.parameters.beta0.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = 'beta0',
+                                shortPrettyName = 'β0',
+                                icon = 'shapes',
+                                url = url + category,
+                                cifDict = 'pd',
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = not job.parameters.beta0.fixed
+                            ))
+            name = 'beta1'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.beta1.value),
+                                error = float(job.parameters.beta1.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = 'beta1',
+                                shortPrettyName = 'β1',
+                                icon = 'shapes',
+                                url = url + category,
+                                cifDict = 'pd',
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = not job.parameters.beta1.fixed
+                            ))
+            name = 'sigma0'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.sigma0.value),
+                                error = float(job.parameters.sigma0.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = 'sigma0',
+                                shortPrettyName = 'σ0',
+                                icon = 'shapes',
+                                url = url + category,
+                                cifDict = 'pd',
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = not job.parameters.sigma0.fixed
+                            ))
+            name = 'sigma1'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.sigma1.value),
+                                error = float(job.parameters.sigma1.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = 'sigma1',
+                                shortPrettyName = 'σ1',
+                                icon = 'shapes',
+                                url = url + category,
+                                cifDict = 'pd',
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = not job.parameters.sigma1.fixed
+                            ))
+            name = 'sigma2'
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.parameters.sigma2.value),
+                                error = float(job.parameters.sigma2.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = 'sigma2',
+                                shortPrettyName = 'σ2',
+                                icon = 'shapes',
+                                url = url + category,
+                                cifDict = 'pd',
+                                absDelta = 0.5,
+                                fittable = True,
+                                fit = not job.parameters.sigma2.fixed
+                            ))
         # _pd_calib
         category = '_pd_calib'
         prettyCategory = 'calib'
@@ -498,45 +681,52 @@ class Experiment(QObject):
                             fit = not job.pattern.zero_shift.fixed
                         ))
 
-
+        # 
         # _pd_meas
         category = '_pd_meas'
-        name = '2theta_range_min'
         dataBlock[param][category] = {}
-        x_name = job.name + '_' + job.experiment.name + '_tth'
+        # By now, job knows its type
+        if job.type.is_tof:
+            name_min = 'tof_range_min'
+            name_max = 'tof_range_max'
+            name_inc = 'tof_range_inc'
+            x_name = job.name + '_' + job.experiment.name + '_time'
+        else:
+            name_min = '2theta_range_min'
+            name_max = '2theta_range_max'
+            name_inc = '2theta_range_inc'
+            x_name = job.name + '_' + job.experiment.name + '_tth'
         xmin = job.datastore.store[x_name].data[0]
-        dataBlock[param][category][name] = dict(Parameter(
+        dataBlock[param][category][name_min] = dict(Parameter(
                             str(xmin),
                             optional = True,
                             category = category,
-                            name = name,
+                            name = name_min,
                             prettyName = "range min",
                             shortPrettyName = "min",
                             url = url,
                             cifDict = 'pd'
                         ))
-        name = '2theta_range_max'
         xmax = job.datastore.store[x_name].data[-1]
-        dataBlock[param][category][name] = dict(Parameter(
+        dataBlock[param][category][name_max] = dict(Parameter(
                             str(xmax),
                             optional = True,
                             category = category,
-                            name = name,
+                            name = name_max,
                             prettyName = "range max",
                             shortPrettyName = "max",
                             url = url,
                             cifDict = 'pd',
                         ))
-        name = '2theta_range_inc'
         # inc = (xmax-xmin)/len(job.datastore.store[x_name].data)
         # 2nd point - 1st point (to change later)
         inc = job.datastore.store[x_name].data[1] - xmin
         inc = round(inc, 4)
-        dataBlock[param][category][name] = dict(Parameter(
+        dataBlock[param][category][name_inc] = dict(Parameter(
                             str(inc),
                             optional = True,
                             category = category,
-                            name = name,
+                            name = name_inc,
                             prettyName = "range inc",
                             shortPrettyName = "inc",
                             url = url,
@@ -584,8 +774,9 @@ class Experiment(QObject):
                 fit = not bkg_point.y.fixed
             ))
             name = 'X_coordinate'
+            display = '2theta' if job.type.is_cwl else 'time-of-flight'
             ed_bkg_point[name] = dict(Parameter(
-                '2theta',
+                display,
                 idx = idx,
                 category = category,
                 name = name,
@@ -661,7 +852,10 @@ class Experiment(QObject):
         dataBlock[param][category] = {}
         ed_points = {}
         name_core = job.name + '_' + job.experiment.name
-        x_name = name_core + '_tth'
+        if job.type.is_tof:
+            x_name = name_core + '_time'
+        else:
+            x_name = name_core + '_tth'
         y_name = name_core + '_I0'
         err_name = "s_" + name_core + '_I0'
         x_points = job.datastore.store[x_name].data

@@ -314,6 +314,7 @@ class Model(QObject):
         blocks[params][category][name]['enabled'] = True
         blocks[params][category][name]['category'] = category
         blocks[params][category][name]['name'] = name
+        blocks[params][category][name]['fit'] = False
         name = 'crystal_system'
         blocks[params][category][name] = {}
         blocks[params][category][name]['value'] = phase.space_group.crystal_system
@@ -342,6 +343,7 @@ class Model(QObject):
         blocks[params][category][name]['category'] = category
         blocks[params][category][name]['error'] = 0.0
         blocks[params][category][name]['url'] = blocks[params][category]['name_H-M_alt']['url']
+        blocks[params][category][name]['fit'] = False
 
         ###### ATOMS
         blocks['loops']['_atom_site'] = []
