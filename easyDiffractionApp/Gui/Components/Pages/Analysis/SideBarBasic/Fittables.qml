@@ -228,7 +228,7 @@ Column {
                 fit: item.fit
                 text: item.error === 0 ?
                           EaLogic.Utils.toDefaultPrecision(item.value) :
-                          Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(item.value, item.error).value
+                          Globals.Proxies.main.backendHelpers.toStdDevSmallestPrecision(item.value, item.error).value
                 onEditingFinished: {
                     focus = false
                     console.debug('')
@@ -255,7 +255,7 @@ Column {
                 elide: Text.ElideNone
                 text: item.error === 0 ?
                           '' :
-                          Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(item.value, item.error).std_dev
+                          Globals.Proxies.main.backendHelpers.toStdDevSmallestPrecision(item.value, item.error).std_dev
             }
 
             EaComponents.TableViewParameter {
@@ -334,7 +334,7 @@ Column {
                 //            EaLogic.Utils.toDefaultPrecision(slider.from)
                 return error === 0 ?
                             EaLogic.Utils.toDefaultPrecision(slider.from) :
-                            Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(slider.from, error).value
+                            Globals.Proxies.main.backendHelpers.toStdDevSmallestPrecision(slider.from, error).value
             }
         }
 
@@ -355,7 +355,7 @@ Column {
                 //            EaLogic.Utils.toDefaultPrecision(value)
                 return error === 0 ?
                             EaLogic.Utils.toDefaultPrecision(value) :
-                            Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(value, error).value
+                            Globals.Proxies.main.backendHelpers.toStdDevSmallestPrecision(value, error).value
             }
 
             onMoved: {
@@ -391,7 +391,7 @@ Column {
                 //            EaLogic.Utils.toDefaultPrecision(slider.to)
                 return error === 0 ?
                             EaLogic.Utils.toDefaultPrecision(slider.to) :
-                            Globals.Proxies.main.backendHelpers.toStdDevSmalestPrecision(slider.to, error).value
+                            Globals.Proxies.main.backendHelpers.toStdDevSmallestPrecision(slider.to, error).value
             }
         }
 
