@@ -7,16 +7,14 @@ import orjson
 import os
 import pathlib
 import sys
-import decimal
-import importlib.util
 import numpy as np
 from uncertainties import ufloat
 
 from PySide6.QtCore import Qt, QObject, QCoreApplication, QUrl, Signal, Slot, Property
-#from PySide6.QtGui import QStyleHints
 from PySide6.QtWidgets import QApplication
 
 from EasyApp.Logic.Logging import console
+from easydiffraction.io.cif import toStdDevSmalestPrecision as toStdDevSmalestPrecisionLib
 
 
 class PersistentSettingsHandler:
@@ -235,19 +233,9 @@ class BackendHelpers(QObject):
 
     @Slot(float, float, result='QVariant')
     def toStdDevSmalestPrecision(self, value, std_dev):
-        if std_dev > 1:
-            value_str = f'{round(value)}'
-            std_dev_str = f'{round(std_dev)}'
-            value_with_std_dev_str = f'{value_str}({std_dev_str})'
-        else:
-            precision = 1
-            std_dev_decimals = precision - int(np.floor(np.log10(std_dev) + 1))
-            std_dev = round(std_dev, std_dev_decimals)
-            std_dev_str = f'{std_dev:.{std_dev_decimals}f}'
-            value = round(value, std_dev_decimals)
-            value_str = f'{value:.{std_dev_decimals}f}'
-            clipped_std_dev = int(round(std_dev * 10**std_dev_decimals))
-            value_with_std_dev_str = f'{value_str}({clipped_std_dev})'
+        value, std_dev, _ = toStdDevSmalestPrecisionLib(value, std_dev)
+        value_str = f'{value}'
+        std_dev_str = f'{std_dev}'
         return {'value': value_str, 'std_dev': std_dev_str}
 
 
@@ -313,20 +301,3 @@ def formatMsg(type, *args):
     msg = ' ▌ '.join(msgs)
     msg = f'{mark} {msg}'
     return msg
-
-    @staticmethod
-    def toStdDevSmalestPrecision(value, std_dev):
-        if std_dev > 1:
-            value_str = f'{round(value)}'
-            std_dev_str = f'{round(std_dev)}'
-            value_with_std_dev_str = f'{value_str}({std_dev_str})'
-        else:
-            precision = 1
-            std_dev_decimals = precision - int(np.floor(np.log10(std_dev) + 1))
-            std_dev = round(std_dev, std_dev_decimals)
-            std_dev_str = f'{std_dev:.{std_dev_decimals}f}'
-            value = round(value, std_dev_decimals)
-            value_str = f'{value:.{std_dev_decimals}f}'
-            clipped_std_dev = int(round(std_dev * 10**std_dev_decimals))
-            value_with_std_dev_str = f'{value_str}({clipped_std_dev})'
-        return value_str, std_dev_str, value_with_std_dev_str
