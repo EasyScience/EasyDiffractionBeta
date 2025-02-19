@@ -155,9 +155,7 @@ EaElements.GroupColumn {
 
             EaComponents.TableViewParameter {
                 enabled: false
-                text: ""
-                // text: Globals.Proxies.modelLoopParam('_atom_site', 'site_symmetry_multiplicity', index).value +
-                //       Globals.Proxies.modelLoopParam('_atom_site', 'Wyckoff_symbol', index).value
+                text: Globals.Proxies.modelLoopParam('_atom_site', 'Wyckoff_symbol', index).value
             }
 
             EaComponents.TableViewParameter {

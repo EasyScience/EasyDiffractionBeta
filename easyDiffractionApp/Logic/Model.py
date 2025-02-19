@@ -398,6 +398,14 @@ class Model(QObject):
             icon = 'fill'
             addKeys()
 
+            atomDict['Wyckoff_symbol'] = {'shortPrettyName': 'WP',
+                                       'value': self.getWyckoffSymbol(atom),
+                                       'name': 'Wyckoff_symbol',
+                                       'category': category,
+                                       'idx': idx,
+                                       'optional': True,
+                                       'fittable': False}
+
             if hasattr(atom, 'adp') and isinstance(atom.adp, AtomicDisplacement):
                 atomDict['ADP_type'] = {}
                 atomDict['ADP_type']['display_name'] = 'type'
@@ -513,6 +521,31 @@ class Model(QObject):
             del self.phases[phase_name]
             return True
         return False
+
+    def getWyckoffSymbol(self, atom):
+        """
+        Query the calculator for the list of Wyckoff symbols.
+        THIS IS NOT HOW IT SHOULD BE DONE!
+        The method explicitly relies on Cryspy objects and therefore is not general.
+        """
+        if not hasattr(self._interface.data(), '_cryspyObj'):
+            return ''
+        c_obj = self._interface.data()._cryspyObj
+        if c_obj is None:
+            return ''
+
+        current_phase_name = self.phases[self.currentIndex].name.lower()
+
+        for crystal in c_obj:
+            if crystal.data_name.lower() == current_phase_name:
+                for a in crystal.atom_site:
+                    if a.label == atom.label.value:
+                        s = a.wyckoff_symbol
+                        m = a.multiplicity
+                        if s and m:
+                            return f'{m}{s}'
+
+        return ''
 
     @Slot(str)
     def replaceModel(self, edCif=''):

@@ -499,8 +499,12 @@ def gemmiObjToEdProject(starObj):
             category, name = param.pair[0].split('.')
             if category not in edProject['params']:
                 edProject['params'][category] = {}
+            # remove double quotes from param.pair[1]
+            value = param.pair[1]
+            if '"' in value:
+                value = value[1:-1]
             edProject['params'][category][name] = dict(Parameter(
-                param.pair[0],
+                value,
                 category = category,
                 name = name,
                 prettyName = 'Description',

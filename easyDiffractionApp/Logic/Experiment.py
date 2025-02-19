@@ -315,6 +315,29 @@ class Experiment(QObject):
                         cifDict = cifDict
                     ))
         if job.type.is_cwl:
+            # _pd_calib
+            category = '_pd_calib'
+            prettyCategory = 'calib'
+            icon = 'arrows-alt-h'
+            name = '2theta_offset'
+            dataBlock[param][category] = {}
+            dataBlock[param][category][name] = dict(Parameter(
+                                float(job.pattern.zero_shift.value),
+                                error = float(job.pattern.zero_shift.error),
+                                category = category,
+                                prettyCategory = prettyCategory,
+                                name = name,
+                                prettyName = '2θ offset',
+                                shortPrettyName = "offset",
+                                icon = icon,
+                                url = url + category,
+                                cifDict = 'pd',
+                                absDelta = 0.2,
+                                unit = '°',
+                                fittable = True,
+                                fit = not job.pattern.zero_shift.fixed
+                            ))
+
             name = 'wavelength'
             category = '_diffrn_radiation_wavelength'
             prettyCategory = 'radiation'
@@ -658,29 +681,6 @@ class Experiment(QObject):
                                 fittable = True,
                                 fit = not job.parameters.sigma2.fixed
                             ))
-        # _pd_calib
-        category = '_pd_calib'
-        prettyCategory = 'calib'
-        icon = 'arrows-alt-h'
-        name = '2theta_offset'
-        dataBlock[param][category] = {}
-        dataBlock[param][category][name] = dict(Parameter(
-                            float(job.pattern.zero_shift.value),
-                            error = float(job.pattern.zero_shift.error),
-                            category = category,
-                            prettyCategory = prettyCategory,
-                            name = name,
-                            prettyName = '2θ offset',
-                            shortPrettyName = "offset",
-                            icon = icon,
-                            url = url + category,
-                            cifDict = 'pd',
-                            absDelta = 0.2,
-                            unit = '°',
-                            fittable = True,
-                            fit = not job.pattern.zero_shift.fixed
-                        ))
-
         # 
         # _pd_meas
         category = '_pd_meas'
@@ -859,20 +859,31 @@ class Experiment(QObject):
         y_name = name_core + '_I0'
         err_name = "s_" + name_core + '_I0'
         x_points = job.datastore.store[x_name].data
-        y_points = np.ones_like(x_points) #job.datastore.store[y_name].data
+        y_points = job.datastore.store[y_name].data
         err_points = job.datastore.store[err_name].data
 
-        name = '2theta_scan'
-
-        ed_points[name] = dict(Parameter(
-            x_points,
-            category = category,
-            name = name,
-            prettyName = '2θ',
-            shortPrettyName = '2θ',
-            url = url + category,
-            cifDict = cifDict
-        ))
+        if job.type.is_cwl:
+            name = '2theta_scan'
+            ed_points[name] = dict(Parameter(
+                x_points,
+                category = category,
+                name = name,
+                prettyName = '2θ',
+                shortPrettyName = '2θ',
+                url = url + category,
+                cifDict = cifDict
+            ))
+        else:
+            name = 'time_of_flight'
+            ed_points[name] = dict(Parameter(
+                x_points,
+                category = category,
+                name = name,
+                prettyName = 'ms',
+                shortPrettyName = 'ms',
+                url = url + category,
+                cifDict = cifDict
+            ))
         name = 'intensity_total'
         ed_points[name] = dict(Parameter(
             y_points,
@@ -1119,7 +1130,7 @@ class Experiment(QObject):
         p_category = BLOCK2JOB[category]
         # get category
         # assumption of the first loop, since there is only one background currently
-        job_with_category = getattr(self._job, p_category)[0]
+        job_with_category = getattr(self._job, p_category)[rowIndex]
         # should we get the loop item?
         # this works for the background, but not for scale etc.
         try:
@@ -1749,6 +1760,34 @@ class Experiment(QObject):
         cifMeasOnlyReduced = ['\n'.join(block) for block in cifMeasOnlyReduced]
         cifMeasOnlyReduced = [f'\n{block}' for block in cifMeasOnlyReduced]
         cifMeasOnlyReduced = [block.rstrip() for block in cifMeasOnlyReduced]
+        # remove all the values from the last block
+        cifMeasOnlyReduced[0] = cifMeasOnlyReduced[0].split('[')[0]
+
+        meas_string = [block.split('\n')[-1] for block in self._dataBlocksCifMeasOnly][-1]
         self._dataBlocksCif = [[noMeas, measOnlyReduced] for (noMeas, measOnlyReduced) in zip(self._dataBlocksCifNoMeas, cifMeasOnlyReduced)]
+
+        import re
+        # Extract the three lists using regex
+        matches = re.findall(r'\[([^\]]+)\]', meas_string)
+        if len(matches) == 3:
+            ast, ae = self.parse_numbers(matches[0])
+            bs, be = self.parse_numbers(matches[1])
+            cs, ce = self.parse_numbers(matches[2])
+
+            values = ""
+            for i in range(3):
+                values += f"{ast[i]:<6} {bs[i]:<8} {cs[i]:<6}\n"
+            print("...    ...     ...")
+            values += ("..    ...     ...\n")
+            for i in range(3):
+                values += f"{ae[i]:<6} {be[i]:<8} {ce[i]:<6}\n"
+            self._dataBlocksCif[0].extend([values])
+
         console.debug(formatMsg('sub', f'{len(self._dataBlocksCif)} experiment(s)', 'simplified meas data', 'to CIF string', 'converted'))
         self.dataBlocksCifChanged.emit()
+
+    # Function to parse numbers, ignoring "..."
+    @staticmethod
+    def parse_numbers(lst_str):
+        values = [float(num) for num in lst_str.split() if num != '...']
+        return values[:3], values[-3:]  # First 3 and last 3 elements
