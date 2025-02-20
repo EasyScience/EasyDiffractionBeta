@@ -119,6 +119,16 @@ BLOCK2JOB = {
     'scale': 'scale',
     '_pd_phase_block': 'phases',
     '_diffrn_radiation': 'pattern',
+    'sigma2': 'sigma2',
+    'sigma1': 'sigma1',
+    'sigma0': 'sigma0',
+    'zero': 'zero',
+    'alpha1': 'alpha1',
+    'alpha0': 'alpha0',
+    'beta1': 'beta1',
+    'beta0': 'beta0',
+    'dtt2': 'dtt2',
+    'dtt1': 'dtt1',
 }
 
 class Experiment(QObject):
@@ -516,8 +526,7 @@ class Experiment(QObject):
                                 url = url + category,
                                 cifDict = 'pd',
                                 absDelta = 0.2,
-                                fittable = True,
-                                fit = not job.parameters.ttheta_bank.fixed
+                                fittable = False,
                             ))
             name = 'dtt1'
             dataBlock[param][category][name] = dict(Parameter(

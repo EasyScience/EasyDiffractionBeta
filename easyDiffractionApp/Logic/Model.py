@@ -70,6 +70,8 @@ BLOCK2PHASE = {
     'crystal_system': 'crystal_system',
     'IT_number': 'int_number',
     'IT_coordinate_system_code': 'setting',
+    'B_iso_or_equiv': 'b_iso_or_equiv',
+    'U_iso_or_equiv': 'u_iso_or_equiv',
 }
 class Model(QObject):
     definedChanged = Signal()
