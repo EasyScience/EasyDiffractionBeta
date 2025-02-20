@@ -110,7 +110,10 @@ class Status(QObject):
 
     @Property(str, notify=goodnessOfFitChanged)
     def goodnessOfFit(self):
-        return self._goodnessOfFit
+        try:
+            return str(self.truncate_float(float(self._goodnessOfFit)))
+        except ValueError:
+            return self._goodnessOfFit
 
     @goodnessOfFit.setter
     def goodnessOfFit(self, newValue):
@@ -142,3 +145,8 @@ class Status(QObject):
         self.goodnessOfFit = ''
         self.fitStatus = ''
         console.debug("All status info removed")
+
+    @staticmethod
+    def truncate_float(number, decimals=5):
+        factor = 10 ** decimals
+        return int(number * factor) / factor

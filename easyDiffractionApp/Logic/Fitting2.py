@@ -207,6 +207,11 @@ class Fitting(QObject):
 
     def finishFit(self):
         self._fit_finished = True
+        if 'redchi2' in self._fit_results:
+            self.parent.status.goodnessOfFit = str(self._fit_results['redchi2'])
+        else:
+            self.parent.status.goodnessOfFit = 'N/A'
+
         self.fitFinished.emit()
         # TODO: remove once background is correctly implemented in polarized
         if self.parent.experiment.isSpinPolarized():
