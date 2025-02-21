@@ -9,6 +9,7 @@ from typing import Callable, List
 
 from threading import Thread
 
+from EasyApp.Logic.Logging import console
 from easyscience.fitting.fitter import Fitter as CoreFitter
 from easyscience.Utils.io.xml import XMLSerializer
 from easyscience.Constraints import ObjConstraint, NumericConstraint
@@ -169,15 +170,18 @@ class Fitting(QObject):
 
     def setFailedFitResults(self):
         self._fit_results = _defaultFitResults()
+        console.info('Optimization failed')
+        self.parent.status.fitStatus = 'Failure'
         self._fit_results['success'] = 'Failure'  # not None but a string
 
     def setSuccessFitResults(self):
         self._fit_results = {
             "success": self.res.success,
             "nvarys":  self.res.n_pars,
-            # "GOF":     float(res.goodness_of_fit),
             "redchi2": float(self.res.reduced_chi)
         }
+        console.info('Optimization successfully finished')
+        self.parent.status.fitStatus = 'Success'
         self.jobToDataBlocks.emit()
         pass
 
