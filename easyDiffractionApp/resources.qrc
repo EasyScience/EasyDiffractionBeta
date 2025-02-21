@@ -236,13 +236,5 @@
         <file>Examples/CeO2_iMATERIA@J-PARC/models/ceo_light.png</file>
         <file>Examples/CeO2_iMATERIA@J-PARC/summary/report.cif</file>
         <file>Examples/CeO2_iMATERIA@J-PARC/project.cif</file>
-        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/experiments/heidi.cif</file>
-        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/experiments/heidi_dark.png</file>
-        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/experiments/heidi_light.png</file>
-        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/models/tbti.cif</file>
-        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/models/tbti_dark.png</file>
-        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/models/tbti_light.png</file>
-        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/summary/report.cif</file>
-        <file>Examples/Tb2Ti2O7_HEiDi@MLZ/project.cif</file>
     </qresource>
 </RCC>

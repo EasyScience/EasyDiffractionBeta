@@ -96,11 +96,11 @@ _EXAMPLES = [
         'description': 'neutrons, powder, time-of-flight, iMATERIA@J-PARC',
         'path': ':/Examples/CeO2_iMATERIA@J-PARC/project.cif'
      },
-     {
-        'name': 'Tb2Ti2O7 (HEiDi)',
-        'description': 'neutrons, single crystal, constant wavelength, HEiDi@MLZ',
-        'path': ':/Examples/Tb2Ti2O7_HEiDi@MLZ/project.cif'
-     },
+    #  {
+    #     'name': 'Tb2Ti2O7 (HEiDi)',
+    #     'description': 'neutrons, single crystal, constant wavelength, HEiDi@MLZ',
+    #     'path': ':/Examples/Tb2Ti2O7_HEiDi@MLZ/project.cif'
+    #  },
      #{
      #    'name': 'Co2SiO4-Mult-Phases',
      #    'description': 'neutrons, powder, constant wavelength, D20@ILL, 2 phases',
