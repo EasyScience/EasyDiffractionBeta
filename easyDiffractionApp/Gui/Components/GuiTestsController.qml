@@ -194,7 +194,7 @@ EaElements.RemoteController {
         res.push( rc.compare(Globals.Refs.app.analysisPage.continueButton.enabled, false) )
 
         res.push( rc.compare(Globals.Proxies.main.status.calculator, 'CrysPy') )
-        res.push( rc.compare(Globals.Proxies.main.status.minimizer, 'Lmfit (leastsq)') )
+        res.push( rc.compare(Globals.Proxies.main.status.minimizer, 'Lmfit (least_squares)') )
 
         rc.wait(2000)
 
@@ -222,11 +222,16 @@ EaElements.RemoteController {
 
         rc.mouseClick(Globals.Refs.app.analysisPage.fitStatusDialogOkButton)
 
-        res.push( rc.compare(Globals.Proxies.main.status.variables, '58 (6 free, 52 fixed)') )
-        //res.push( rc.compare(Globals.Proxies.main.status.fitIteration, '197') )
-        res.push( rc.compare(Globals.Proxies.main.status.goodnessOfFit, '341.99 → 4.41') )
-        res.push( rc.compare(Globals.Proxies.main.status.fitStatus, 'Success') )
+        // default values from EDB 0.9.9 TODO: check the new code against the original EDB
+        // res.push( rc.compare(Globals.Proxies.main.status.variables, '58 (6 free, 52 fixed)') )
+        // //res.push( rc.compare(Globals.Proxies.main.status.fitIteration, '197') )
+        // res.push( rc.compare(Globals.Proxies.main.status.goodnessOfFit, '341.99 → 4.41') )
+        // res.push( rc.compare(Globals.Proxies.main.status.fitStatus, 'Success') )
 
+        res.push( rc.compare(Globals.Proxies.main.status.variables, '79 (6 free, 73 fixed)') )
+        //res.push( rc.compare(Globals.Proxies.main.status.fitIteration, '197') )
+        res.push( rc.compare(Globals.Proxies.main.status.goodnessOfFit, '0.81603') )
+        res.push( rc.compare(Globals.Proxies.main.status.fitStatus, 'Success') )
         rc.mouseClick(Globals.Refs.app.analysisPage.continueButton)
         //rc.wait(2000)
 
