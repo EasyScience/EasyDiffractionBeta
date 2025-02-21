@@ -29,24 +29,25 @@ from easycrystallography.Symmetry.tools import SpacegroupInfo
 
 _DEFAULT_CIF_BLOCK = """data_default
 
-_space_group_name_H-M_alt "P b n m"
+_space_group.name_H-M_alt "P n m a"
+_space_group.IT_coordinate_system_code abc
 
-_cell_length_a 10
-_cell_length_b 6
-_cell_length_c 5
-_cell_angle_alpha 90
-_cell_angle_beta 90
-_cell_angle_gamma 90
+_cell.length_a 10
+_cell.length_b 6
+_cell.length_c 5
+_cell.angle_alpha 90
+_cell.angle_beta 90
+_cell.angle_gamma 90
 
 loop_
-_atom_site_label
-_atom_site_type_symbol
-_atom_site_fract_x
-_atom_site_fract_y
-_atom_site_fract_z
-_atom_site_occupancy
-_atom_site_adp_type
-_atom_site_B_iso_or_equiv
+_atom_site.label
+_atom_site.type_symbol
+_atom_site.fract_x
+_atom_site.fract_y
+_atom_site.fract_z
+_atom_site.occupancy
+_atom_site.adp_type
+_atom_site.B_iso_or_equiv
 O O 0 0 0 1 Biso 0
 """
 
@@ -170,17 +171,6 @@ class Model(QObject):
     @property
     def job(self):
         return self._job
-
-    def addDefaultPhase(self):
-        default_phase = self._defaultPhase()
-        r = re.compile('(.+[^0-9])\d*$')
-        known_phases = [r.findall(s)[0] for s in self.phases.phase_names]  # Strip out any 1, 2, 3 etc we may have added
-        if default_phase.name in known_phases:
-            idx = known_phases.count(default_phase.name)
-            default_phase.name = default_phase.name + str(idx)
-        # print('Disabling scale')
-        default_phase.scale.fixed = True
-        self.phases.append(default_phase)
    
     # QML accessible methods
     @Slot(str, str, result=str)
@@ -203,7 +193,6 @@ class Model(QObject):
     def addDefaultModel(self):
         console.debug("Adding default model(s)")
         self.loadModelsFromEdCif(_DEFAULT_CIF_BLOCK)
-        self.addDefaultPhase()
 
     @Slot('QVariant')
     def loadModelsFromResources(self, fpaths):
