@@ -47,6 +47,7 @@ class Connections(QObject):
         # self._proxy.fitting.chiSqSignificantlyChanged.connect(self.onFittingChiSqSignificantlyChanged)
         self._proxy.fitting.minimizerMethodChanged.connect(self.onFittingMinimizerMethodChanged)
         self._proxy.fitting.jobToDataBlocks.connect(self.onJobToDataBlocks)
+        self._proxy.fitting.bridge.intermediate_data_ready.connect(self.onIntermediateDataReady)
 
         # Summary
         self._proxy.summary.dataBlocksCifChanged.connect(self.onSummaryDataBlocksCifChanged)
@@ -371,6 +372,21 @@ class Connections(QObject):
         blocks = self._proxy.experiment.jobToBlock(job=self._proxy.job)
         index = self._proxy.experiment.currentIndex
         self._proxy.experiment._dataBlocksNoMeas[index] = blocks
+
+    def onIntermediateDataReady(self, iteration, data):
+        '''
+        Update the structure dictionary based on the intermediate data
+        '''
+        # every 10 iterations, send a signal to update the structure view
+        self._proxy.status.fitIteration = f'{iteration}'
+        if iteration % 10 == 0:
+            index = self._proxy.experiment.currentIndex
+            self._proxy.experiment.setCalculatedArraysForSingleExperiment(index)
+            self._proxy.plotting.drawCalculatedOnAnalysisChart()
+            self._proxy.plotting.drawResidualOnAnalysisChart()
+            self._proxy.plotting.drawBraggOnAnalysisChart()
+
+        pass
 
     #########
     # Summary

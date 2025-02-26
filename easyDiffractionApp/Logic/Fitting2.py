@@ -26,6 +26,9 @@ def _defaultFitResults():
         "redchi2": None
     }
 
+class BackendBridge(QObject):
+    # Signal to send data to the GUI
+    intermediate_data_ready = Signal(int, object)
 
 # class FittingLogic(QObject):
 class Fitting(QObject):
@@ -47,12 +50,10 @@ class Fitting(QObject):
 
         self.parent = proxy
         self.interface = interface
-        # self.fitter = CoreFitter(self.parent.sample(), self.interface.fit_func)
-        # self.fitter = CoreFitter(self.parent.experiment.job(), self.parent.experiment.job().create_simulation)
         self.fitter = CoreFitter(self.parent.experiment.job, self.interface.fit_func)
+        self.bridge = BackendBridge()
 
         # Multithreading
-        # self._fitter_thread = None
         self.use_threading = True # change to False to disable threading for testing
         self._fit_finished = True
         self._fit_results = _defaultFitResults()
@@ -64,29 +65,29 @@ class Fitting(QObject):
         self._current_minimizer_method_name = "least_squares"
         self.currentMinimizerChanged.connect(self.onCurrentMinimizerChanged)
 
-        self.fit_thread = Thread(target=self.fit_threading)
+        self.fit_thread = Thread(target=self.fit_threading, args=(self.bridge,))
         self.finished.connect(self.onSuccess)
         self.failed.connect(self.onFailed)
 
-    def fit_nonpolar(self):
+    def fit_nonpolar(self, *args):
 
         method = self._current_minimizer_method_name
         self._fit_finished = False
+        # reset the iter counter
+        self.interface._InterfaceFactoryTemplate__interface_obj._iteration = 0
         self.fitStarted.emit()
 
-        kwargs = {
-            'method': method
-        }
+        kwargs = {'method' : method}
 
-        local_kwargs = {}
+        # add the bridge info from args
+        if len(args) > 0:
+            kwargs['bridge'] = args[0]
+
         if method == 'least_squares':
             kwargs['minimizer_kwargs'] = {'diff_step': 1e-5}
 
-        # save some kwargs on the interface object for use in the calculator
-        self.interface._InterfaceFactoryTemplate__interface_obj.saved_kwargs = local_kwargs
         try:
-            #res = self.fitter.fit(x, y, **kwargs)
-            self.parent.job.fit()
+            self.parent.job.fit(**kwargs)
             self.res = self.parent.job.fitting_results
 
         except Exception as ex:
@@ -116,13 +117,13 @@ class Fitting(QObject):
             'method': method
         }
 
-        local_kwargs = {}
+        #local_kwargs = {}
         if method == 'least_squares':
             kwargs['minimizer_kwargs'] = {'diff_step': 1e-5}
 
         # save some kwargs on the interface object for use in the calculator
         # TODO FIX THIS THIS IS NOT THE WAY TO DO IT :-/
-        self.interface._InterfaceFactoryTemplate__interface_obj.saved_kwargs = local_kwargs
+        #self.interface._InterfaceFactoryTemplate__interface_obj.saved_kwargs = local_kwargs
         try:
             obj = self.fitter.fit_object
             fitter = CoreFitter(obj, fit_func)
@@ -162,11 +163,11 @@ class Fitting(QObject):
 
         return dummy_x.flatten(), calculated_y.flatten(), pol_fit_fuction
 
-    def fit_threading(self):
+    def fit_threading(self, *args):
         if self.parent.experiment.isSpinPolarized():
             self.fit_polar()
         else:
-            self.fit_nonpolar()
+            self.fit_nonpolar(*args)
 
     def setFailedFitResults(self):
         self._fit_results = _defaultFitResults()
@@ -221,7 +222,7 @@ class Fitting(QObject):
         if self.parent.experiment.isSpinPolarized():
             self.parent.setSpinComponent()
         # must re-instantiate the thread object
-        self.fit_thread = Thread(target=self.fit_threading)
+        self.fit_thread = Thread(target=self.fit_threading, args=(self.bridge,))
 
     def onSuccess(self):
         self.joinFitThread()
@@ -235,12 +236,15 @@ class Fitting(QObject):
         self.setFailedFitResults()
         self.finishFit()
 
-    # def fit(self):
     @Slot()
     def startStop(self):
-        # self.data = self.parent.pdata()
         name = 'pd_' + self.parent.experiment.job.experiment.name
-        #self.data = self.interface.data()._inOutDict[name]
+        self.parent.status.fitStatus = ''
+        if self.parent.fittables._freeParamsCount <= 0:
+            self.parent.status.fitStatus = 'No free params'
+            console.debug('Minimization process has not been started. No free parameters found.')
+            return
+
         if self.use_threading:
             if not self.fit_thread.is_alive():
                 self.is_fitting_now = True

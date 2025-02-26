@@ -1100,8 +1100,8 @@ class Experiment(QObject):
     def editDataBlockLoopParam(self, blockIdx, category, name, rowIndex, field, value):
         block = 'experiment'
         oldValue = self._dataBlocksNoMeas[blockIdx]['loops'][category][rowIndex][name][field]
-        if oldValue == value:
-            return False
+        #if oldValue == value:
+        #    return False
         # cheaper to do it directly than convert the phase object after its update.
         self._dataBlocksNoMeas[blockIdx]['loops'][category][rowIndex][name][field] = value
         # Update the job object
@@ -1167,8 +1167,8 @@ class Experiment(QObject):
             path[1] = f'flags_{path[1]}'
 
         oldValue = self._interface.data()._cryspyDict[path[0]][path[1]][path[2]]
-        if oldValue == value:
-            return False
+        #if oldValue == value:
+        #    return False
         self._interface.data()._cryspyDict[path[0]][path[1]][path[2]] = value
 
         console.debug(formatMsg('sub', 'Calc dict', f'{oldValue} → {value}', f'{path}'))
@@ -1183,8 +1183,8 @@ class Experiment(QObject):
             path[1] = f'flags_{path[1]}'
 
         oldValue = self._interface.data()._cryspyDict[path[0]][path[1]][path[2]]
-        if oldValue == value:
-            return False
+        #if oldValue == value:
+        #    return False
         self._interface.data()._cryspyDict[path[0]][path[1]][path[2]] = value
 
         console.debug(formatMsg('sub', 'calc dict', f'{oldValue} → {value}', f'{path}'))
