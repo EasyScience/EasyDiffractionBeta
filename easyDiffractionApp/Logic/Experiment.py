@@ -1616,7 +1616,7 @@ class Experiment(QObject):
         y_bkg_array = cryspyInOutDict[cryspy_block_name][y_array_name]
         return y_bkg_array
 
-    def setCalculatedArraysForSingleExperiment(self, idx):
+    def setCalculatedArraysForSingleExperiment(self, idx, y_calc_total_array=None):
         diffrn_radiation_type = self.dataBlocksNoMeas[idx]['params']['_diffrn_radiation']['type']['value']
         if diffrn_radiation_type == 'cwl':
             experiment_prefix = 'pd'
@@ -1632,13 +1632,17 @@ class Experiment(QObject):
         if 'signal_plus' not in list(calcInOutDict[calc_block_name].keys()):
             return
         # Background Y data # NED FIX: use calculatedYBkgArray()
-        y_bkg_array = self.calculatedYBkgArray(idx, calc_block_name, x_array_name)
+        # y_bkg_array = self.calculatedYBkgArray(idx, calc_block_name, x_array_name)
+        y_bkg_array = self.job.background
         self.setYBkgArray(y_bkg_array, idx)
 
         # Total calculated Y data (sum of all phases up and down polarisation plus background)
-        y_calc_total_array = calcInOutDict[calc_block_name]['signal_plus'] + \
-                             calcInOutDict[calc_block_name]['signal_minus'] + \
-                             y_bkg_array
+        if y_calc_total_array is None:
+            y_calc_total_array = calcInOutDict[calc_block_name]['signal_plus'] + \
+                                 calcInOutDict[calc_block_name]['signal_minus'] + \
+                                 y_bkg_array
+        else:
+            y_calc_total_array = y_calc_total_array
         self.setYCalcTotalArray(y_calc_total_array, idx)
 
         # Residual (Ymeas -Ycalc)

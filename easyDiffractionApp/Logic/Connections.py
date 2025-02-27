@@ -381,7 +381,7 @@ class Connections(QObject):
         self._proxy.status.fitIteration = f'{iteration}'
         if iteration % 10 == 0:
             index = self._proxy.experiment.currentIndex
-            self._proxy.experiment.setCalculatedArraysForSingleExperiment(index)
+            self._proxy.experiment.setCalculatedArraysForSingleExperiment(index, data)
             self._proxy.plotting.drawCalculatedOnAnalysisChart()
             self._proxy.plotting.drawResidualOnAnalysisChart()
             self._proxy.plotting.drawBraggOnAnalysisChart()
