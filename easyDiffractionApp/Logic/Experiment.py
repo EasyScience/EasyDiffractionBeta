@@ -1656,6 +1656,9 @@ class Experiment(QObject):
         modelNames = [key[12:] for key in calcInOutDict[calc_block_name].keys() if 'dict_in_out' in key]
         xBraggDict = {}
         for modelName in modelNames:
+            bragg_name = f'{x_array_name}_hkl'
+            if bragg_name not in calcInOutDict[calc_block_name][f'dict_in_out_{modelName}']:
+                continue
             x_bragg_array = calcInOutDict[calc_block_name][f'dict_in_out_{modelName}'][f'{x_array_name}_hkl']
             if diffrn_radiation_type == 'cwl':
                 x_bragg_array = np.rad2deg(x_bragg_array)
