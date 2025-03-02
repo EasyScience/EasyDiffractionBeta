@@ -62,7 +62,7 @@ class Fitting(QObject):
         self.is_fitting_now = False
         self._current_minimizer_method_index = 0
         # self._current_minimizer_method_name = self.fitter.available_interfaces()[0]  # noqa: E501
-        self._current_minimizer_method_name = "least_squares"
+        self._current_minimizer_method_name = "leastsq" # copy EDB default
         self.currentMinimizerChanged.connect(self.onCurrentMinimizerChanged)
 
         self.fit_thread = Thread(target=self.fit_threading, args=(self.bridge,))
